@@ -1,129 +1,165 @@
-import {lookupArchive} from "@subsquid/archive-registry"
-import * as ss58 from "@subsquid/ss58"
-import {BatchContext, BatchProcessorItem, SubstrateBatchProcessor} from "@subsquid/substrate-processor"
-import {Store, TypeormDatabase} from "@subsquid/typeorm-store"
-import {In} from "typeorm"
-import {Account, Transfer} from "./model"
-import {BalancesTransferEvent} from "./types/events"
-
+import { lookupArchive } from "@subsquid/archive-registry";
+import * as ss58 from "@subsquid/ss58";
+import {
+  BatchContext,
+  BatchProcessorItem,
+  SubstrateBatchProcessor,
+} from "@subsquid/substrate-processor";
+import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
+import {
+  Account,
+  Transfer,
+  Event,
+  Block,
+  Call,
+  Extrinsic,
+  Metadata,
+} from "./model";
 
 const processor = new SubstrateBatchProcessor()
-    .setDataSource({
-        // Lookup archive by the network name in the Subsquid registry
-        //archive: lookupArchive("kusama", {release: "FireSquid"})
+  .setDataSource({
+    archive: lookupArchive("aleph-zero-testnet", { release: "FireSquid" }),
+  })
+  .addEvent("*", {
+    data: {
+      event: true,
+    },
+  })
+  .addCall("*", {
+    data: {
+      call: true,
+      extrinsic: true,
+    },
+  } as const);
 
-        // Use archive created by archive/docker-compose.yml
-        archive: lookupArchive('kusama', {release: 'FireSquid'} )
-    })
-    .addEvent('Balances.Transfer', {
-        data: {
-            event: {
-                args: true,
-                extrinsic: {
-                    hash: true,
-                    fee: true
-                }
-            }
+type Item = BatchProcessorItem<typeof processor>;
+type Ctx = BatchContext<Store, Item>;
+
+let events: Event[] = [];
+let extrinsics: Extrinsic[] = [];
+let calls: Call[] = [];
+let metadata: Metadata[] = [];
+let blocks: Block[] = [];
+
+processor.run(new TypeormDatabase(), async (ctx) => {
+  for (let block of ctx.blocks) {
+    for (let item of block.items) {
+      let blockOrm = new Block({
+        id: block.header.id,
+        height: block.header.height,
+        hash: block.header.hash,
+        parentHash: block.header.parentHash,
+        timestamp: new Date(block.header.timestamp),
+        validator: block.header.validator,
+        stateRoot: block.header.stateRoot,
+        extrinsicsRoot: block.header.extrinsicsRoot,
+        spec: undefined,
+      });
+
+      blocks.push(blockOrm);
+
+      if (item.kind === "event") {
+        ctx.log.info(item);
+
+        let extrinsic = undefined;
+        if (item.event.extrinsic) {
+          extrinsic = new Extrinsic({
+            id: item.event.extrinsic?.id,
+            block: blockOrm,
+            indexInBlock: item.event.extrinsic?.indexInBlock,
+            version: item.event.extrinsic?.version,
+            signature: item.event.extrinsic?.signature,
+            success: item.event.extrinsic?.success,
+            error: item.event.extrinsic?.error,
+            fee: item.event.extrinsic?.fee,
+            tip: item.event.extrinsic?.tip,
+            hash: item.event.extrinsic?.hash,
+            pos: item.event.extrinsic?.pos,
+          });
+
+          extrinsics.push(extrinsic);
         }
-    } as const)
 
+        let call = undefined;
+        if (item.event.call) {
+          call = new Call({
+            id: item.event.call?.id,
+            block: blockOrm,
+            extrinsic: extrinsic,
+            success: item.event.call?.success,
+            error: item.event.call?.error,
+            origin: item.event.call?.origin,
+            name: item.event.call?.name,
+            args: item.event.call?.args,
+            pos: item.event.call?.pos,
+          });
 
-type Item = BatchProcessorItem<typeof processor>
-type Ctx = BatchContext<Store, Item>
-
-
-processor.run(new TypeormDatabase(), async ctx => {
-    let transfersData = getTransfers(ctx)
-
-    let accountIds = new Set<string>()
-    for (let t of transfersData) {
-        accountIds.add(t.from)
-        accountIds.add(t.to)
-    }
-
-    let accounts = await ctx.store.findBy(Account, {id: In([...accountIds])}).then(accounts => {
-        return new Map(accounts.map(a => [a.id, a]))
-    })
-
-    let transfers: Transfer[] = []
-
-    for (let t of transfersData) {
-        let {id, blockNumber, timestamp, extrinsicHash, amount, fee} = t
-
-        let from = getAccount(accounts, t.from)
-        let to = getAccount(accounts, t.to)
-
-        transfers.push(new Transfer({
-            id,
-            blockNumber,
-            timestamp,
-            extrinsicHash,
-            from,
-            to,
-            amount,
-            fee
-        }))
-    }
-
-    await ctx.store.save(Array.from(accounts.values()))
-    await ctx.store.insert(transfers)
-})
-
-
-interface TransferEvent {
-    id: string
-    blockNumber: number
-    timestamp: Date
-    extrinsicHash?: string
-    from: string
-    to: string
-    amount: bigint
-    fee?: bigint
-}
-
-
-function getTransfers(ctx: Ctx): TransferEvent[] {
-    let transfers: TransferEvent[] = []
-    for (let block of ctx.blocks) {
-        for (let item of block.items) {
-            if (item.name == "Balances.Transfer") {
-                let e = new BalancesTransferEvent(ctx, item.event)
-                let rec: {from: Uint8Array, to: Uint8Array, amount: bigint}
-                if (e.isV1020) {
-                    let [from, to, amount] = e.asV1020
-                    rec = { from, to, amount}
-                } else if (e.isV1050) {
-                    let [from, to, amount] = e.asV1050
-                    rec = { from, to, amount}
-                } else if (e.isV9130) {
-                    rec = e.asV9130
-                } else {
-                    throw new Error('Unsupported spec')
-                }
-                
-                transfers.push({
-                    id: item.event.id,
-                    blockNumber: block.header.height,
-                    timestamp: new Date(block.header.timestamp),
-                    extrinsicHash: item.event.extrinsic?.hash,
-                    from: ss58.codec('kusama').encode(rec.from),
-                    to: ss58.codec('kusama').encode(rec.to),
-                    amount: rec.amount,
-                    fee: item.event.extrinsic?.fee || 0n
-                })
-            }
+          calls.push(call);
         }
-    }
-    return transfers
-}
 
+        events.push(
+          new Event({
+            id: item.event.id,
+            block: blockOrm,
+            indexInBlock: item.event.indexInBlock,
+            phase: item.event.phase,
+            extrinsic: extrinsic,
+            call: call,
+            name: item.event.name,
+            args: item.event.args,
+            pos: item.event.pos,
+          })
+        );
+      } else if (item.kind === "call") {
+        ctx.log.info(item);
 
-function getAccount(m: Map<string, Account>, id: string): Account {
-    let acc = m.get(id)
-    if (acc == null) {
-        acc = new Account()
-        acc.id = id
-        m.set(id, acc)
+        let extrinsic = new Extrinsic({
+          id: item.extrinsic?.id,
+          block: blockOrm,
+          indexInBlock: item.extrinsic?.indexInBlock,
+          version: item.extrinsic?.version,
+          signature: item.extrinsic?.signature,
+          success: item.extrinsic?.success,
+          error: item.extrinsic?.error,
+          fee: item.extrinsic?.fee,
+          tip: item.extrinsic?.tip,
+          hash: item.extrinsic?.hash,
+          pos: item.extrinsic?.pos,
+        });
+
+        extrinsics.push(extrinsic);
+
+        let call = new Call({
+          id: item.call.id,
+          block: blockOrm,
+          extrinsic: extrinsic,
+          success: item.call.success,
+          error: item.call.error,
+          origin: item.call.origin,
+          name: item.call.name,
+          args: item.call.args,
+          pos: item.call.pos,
+        });
+
+        calls.push(call);
+      }
     }
-    return acc
+  }
+
+  await ctx.store.save(removeDuplicates(blocks));
+  await ctx.store.save(removeDuplicates(extrinsics));
+  await ctx.store.save(removeDuplicates(calls));
+  await ctx.store.save(removeDuplicates(events));
+});
+
+// @ts-ignore
+function removeDuplicates(items) {
+  const seen = new Set();
+  // @ts-ignore
+  const filtered = items.filter((i) => {
+    const duplicate = seen.has(i.id);
+    seen.add(i.id);
+    return !duplicate;
+  });
+  return filtered;
 }
