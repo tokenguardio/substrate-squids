@@ -18,14 +18,14 @@ type Transfer @entity {
 
 type Block @entity {
   id: ID!
-  height: Int!
-  hash: String!
+  height: Int! @index
+  hash: String! @index
   parentHash: String!
   stateRoot: String!
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   extrinsicsRoot: String
   spec: Metadata
-  validator: String
+  validator: String @index
   events: [Event!]! @derivedFrom(field: "block")
   calls: [Call!]! @derivedFrom(field: "block")
   extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
@@ -42,7 +42,7 @@ type Extrinsic @entity {
   call: Call!
   fee: BigInt
   tip: BigInt
-  hash: String!
+  hash: String! @index
   pos: Int!
   # all internal calls
   calls: [Call!] @derivedFrom(field: "extrinsic")
@@ -56,7 +56,7 @@ type Call @entity {
   success: Boolean!
   error: JSON
   origin: JSON
-  name: String!
+  name: String! @index
   args: JSON
   pos: Int!
 }
@@ -68,7 +68,7 @@ type Event @entity {
   phase: String!
   extrinsic: Extrinsic
   call: Call
-  name: String!
+  name: String! @index
   args: JSON
   pos: Int!
 }
