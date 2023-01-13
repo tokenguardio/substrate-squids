@@ -152,10 +152,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   await ctx.store.save(removeDuplicates(events));
 });
 
-// @ts-ignore
-function removeDuplicates(items) {
+function removeDuplicates<T extends { id: string }>(items: T[]): T[] {
   const seen = new Set();
-  // @ts-ignore
   const filtered = items.filter((i) => {
     const duplicate = seen.has(i.id);
     seen.add(i.id);
