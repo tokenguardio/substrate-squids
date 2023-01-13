@@ -146,17 +146,17 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     }
   }
 
-  await ctx.store.save(removeDuplicates(blocks));
-  await ctx.store.save(removeDuplicates(extrinsics));
-  await ctx.store.save(removeDuplicates(calls));
-  await ctx.store.save(removeDuplicates(events));
+  await ctx.store.save(removeDuplicates(blocks, "id"));
+  await ctx.store.save(removeDuplicates(extrinsics, "id"));
+  await ctx.store.save(removeDuplicates(calls, "id"));
+  await ctx.store.save(removeDuplicates(events, "id"));
 });
 
-function removeDuplicates<T extends { id: string }>(items: T[]): T[] {
+function removeDuplicates<T>(items: T[], key: keyof T): T[] {
   const seen = new Set();
   const filtered = items.filter((i) => {
-    const duplicate = seen.has(i.id);
-    seen.add(i.id);
+    const duplicate = seen.has(i[key]);
+    seen.add(i[key]);
     return !duplicate;
   });
   return filtered;
