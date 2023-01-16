@@ -30,6 +30,7 @@ export class Event {
     @ManyToOne_(() => Call, {nullable: true})
     call!: Call | undefined | null
 
+    @Index_()
     @Column_("text", {nullable: false})
     name!: string
 

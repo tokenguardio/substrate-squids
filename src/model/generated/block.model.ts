@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_, OneToMany as OneToMany_} from "typeorm"
 import {Metadata} from "./metadata.model"
 import {Event} from "./event.model"
 import {Call} from "./call.model"
@@ -13,9 +13,11 @@ export class Block {
     @PrimaryColumn_()
     id!: string
 
+    @Index_()
     @Column_("int4", {nullable: false})
     height!: number
 
+    @Index_()
     @Column_("text", {nullable: false})
     hash!: string
 
@@ -25,6 +27,7 @@ export class Block {
     @Column_("text", {nullable: false})
     stateRoot!: string
 
+    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
@@ -33,8 +36,9 @@ export class Block {
 
     @Index_()
     @ManyToOne_(() => Metadata, {nullable: true})
-    spec!: Metadata | undefined | null
+    spec!: Metadata
 
+    @Index_()
     @Column_("text", {nullable: true})
     validator!: string | undefined | null
 

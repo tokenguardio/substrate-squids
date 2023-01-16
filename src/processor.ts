@@ -15,9 +15,15 @@ import {
   Extrinsic,
   Metadata,
 } from "./model";
+import { MetadataResponse } from "./interfaces/gql-interfaces";
+import {
+  GraphqlRequest,
+  graphqlRequest,
+} from "@subsquid/util-internal-gql-request";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
+    chain: "wss://ws.test.azero.dev",
     archive: lookupArchive("aleph-zero-testnet", { release: "FireSquid" }),
   })
   .addEvent("*", {
@@ -41,26 +47,52 @@ let calls: Call[] = [];
 let metadata: Metadata[] = [];
 let blocks: Block[] = [];
 
+const metadataRequest: GraphqlRequest = {
+  url: "https://aleph-zero-testnet.archive.subsquid.io/graphql",
+  query:
+    "query MyQuery { metadata { blockHash blockHeight id specName specVersion hex}}",
+  retry: true,
+};
+let metadataInitialized = false;
+
 processor.run(new TypeormDatabase(), async (ctx) => {
+  if (!metadataInitialized) {
+    ctx.log.info("Initizalizing metadata");
+    const metadataResponse: MetadataResponse = await graphqlRequest(
+      metadataRequest
+    );
+    metadata = metadataResponse["metadata"].map(
+      (m) =>
+        new Metadata({
+          id: m.id,
+          specName: m.specName,
+          specVersion: m.specVersion,
+          blockHeight: m.blockHeight,
+          blockHash: m.blockHash,
+          hex: m.hex,
+        })
+    );
+    await ctx.store.insert(metadata);
+    metadataInitialized = true;
+  }
+
   for (let block of ctx.blocks) {
+    let metadataInstance = metadata.find((m) => m.id === block.header.specId);
+    let blockOrm = new Block({
+      id: block.header.id,
+      height: block.header.height,
+      hash: block.header.hash,
+      parentHash: block.header.parentHash,
+      timestamp: new Date(block.header.timestamp),
+      validator: block.header.validator,
+      stateRoot: block.header.stateRoot,
+      extrinsicsRoot: block.header.extrinsicsRoot,
+      spec: metadataInstance,
+    });
+    blocks.push(blockOrm);
     for (let item of block.items) {
-      let blockOrm = new Block({
-        id: block.header.id,
-        height: block.header.height,
-        hash: block.header.hash,
-        parentHash: block.header.parentHash,
-        timestamp: new Date(block.header.timestamp),
-        validator: block.header.validator,
-        stateRoot: block.header.stateRoot,
-        extrinsicsRoot: block.header.extrinsicsRoot,
-        spec: undefined,
-      });
-
-      blocks.push(blockOrm);
-
       if (item.kind === "event") {
         ctx.log.info(item);
-
         let extrinsic = undefined;
         if (item.event.extrinsic) {
           extrinsic = new Extrinsic({
@@ -76,10 +108,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             hash: item.event.extrinsic?.hash,
             pos: item.event.extrinsic?.pos,
           });
-
           extrinsics.push(extrinsic);
         }
-
         let call = undefined;
         if (item.event.call) {
           call = new Call({
@@ -93,10 +123,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             args: item.event.call?.args,
             pos: item.event.call?.pos,
           });
-
           calls.push(call);
         }
-
         events.push(
           new Event({
             id: item.event.id,
@@ -112,7 +140,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         );
       } else if (item.kind === "call") {
         ctx.log.info(item);
-
         let extrinsic = new Extrinsic({
           id: item.extrinsic?.id,
           block: blockOrm,
@@ -126,9 +153,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           hash: item.extrinsic?.hash,
           pos: item.extrinsic?.pos,
         });
-
         extrinsics.push(extrinsic);
-
         let call = new Call({
           id: item.call.id,
           block: blockOrm,
@@ -140,7 +165,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           args: item.call.args,
           pos: item.call.pos,
         });
-
         calls.push(call);
       }
     }

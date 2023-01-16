@@ -24,7 +24,7 @@ type Block @entity {
   stateRoot: String!
   timestamp: DateTime! @index
   extrinsicsRoot: String
-  spec: Metadata
+  spec: Metadata!
   validator: String @index
   events: [Event!]! @derivedFrom(field: "block")
   calls: [Call!]! @derivedFrom(field: "block")

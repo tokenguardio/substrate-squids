@@ -32,6 +32,7 @@ export class Call {
     @Column_("jsonb", {nullable: true})
     origin!: unknown | undefined | null
 
+    @Index_()
     @Column_("text", {nullable: false})
     name!: string
 

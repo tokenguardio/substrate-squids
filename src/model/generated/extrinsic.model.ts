@@ -41,6 +41,7 @@ export class Extrinsic {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     tip!: bigint | undefined | null
 
+    @Index_()
     @Column_("text", {nullable: false})
     hash!: string
 
