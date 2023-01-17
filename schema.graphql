@@ -85,3 +85,42 @@ type BalancesPallet @entity {
   reserved: BigInt
   destinationStatus: String
 }
+
+type StakingPallet @entity {
+  id: ID!
+  event: Event!
+  name: String! @index
+  eraIndex: Int
+  validatorPayout: BigInt
+  remainder: BigInt
+  stash: Address
+  amount: BigInt
+  staker: Address
+  validator: Address
+  slashEra: Int
+  fraction: String
+  sessionIndex: Int
+  nominator: Address
+  validatorStash: Address
+  prefs: String
+  mode: String
+}
+
+type NominationPoolsPallet @entity {
+  id: ID!
+  event: Event!
+  name: String! @index
+  depositor: Address
+  poolId: Int
+  member: Address
+  bonded: BigInt
+  joined: Boolean
+  payout: BigInt
+  balance: BigInt
+  points: BigInt
+  era: Int
+  newState: String
+  root: Address
+  stateToggler: Address
+  nominator: Address
+}

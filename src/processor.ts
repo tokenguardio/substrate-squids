@@ -12,10 +12,13 @@ import {
   Call,
   Extrinsic,
   Metadata,
-  BalancesPallet,
   Address,
+  BalancesPallet,
+  StakingPallet,
+  NominationPoolsPallet,
 } from "./model";
 import { MetadataResponse } from "./interfaces/gql-interfaces";
+import { mapStakingArgsToObject } from "./mappings/staking";
 import {
   GraphqlRequest,
   graphqlRequest,
@@ -46,8 +49,10 @@ let extrinsics: Extrinsic[] = [];
 let calls: Call[] = [];
 let metadata: Metadata[] = [];
 let blocks: Block[] = [];
-let balancesPallet: BalancesPallet[] = [];
 let addresses: Address[] = [];
+let balancesPallet: BalancesPallet[] = [];
+let stakingPallet: StakingPallet[] = [];
+let nominationPoolsPallet: NominationPoolsPallet[] = [];
 
 const metadataRequest: GraphqlRequest = {
   url: "https://aleph-zero-testnet.archive.subsquid.io/graphql",
@@ -140,7 +145,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         });
         events.push(event);
         if (item.event.name.startsWith("Balances.")) {
-          console.log(item.event.args);
           balancesPallet.push(
             new BalancesPallet({
               id: "balances-" + item.event.id,
@@ -155,6 +159,57 @@ processor.run(new TypeormDatabase(), async (ctx) => {
               free: item.event.args.free,
               reserved: item.event.args.reserved,
               destinationStatus: item.event.args.destinationStatus,
+            })
+          );
+        } else if (item.event.name.startsWith("NominationPoolsPallet.")) {
+          nominationPoolsPallet.push(
+            new NominationPoolsPallet({
+              id: "npools-" + item.event.id,
+              event: event,
+              name: item.event.name.split(".").pop(),
+              depositor: createAccount(item.event.args.depositor, addresses),
+              poolId: item.event.args.poolId,
+              member: createAccount(item.event.args.member, addresses),
+              bonded: item.event.args.bonded,
+              joined: item.event.args.joined,
+              payout: item.event.args.payout,
+              balance: item.event.args.balance,
+              points: item.event.args.points,
+              era: item.event.args.era,
+              newState: item.event.args.newState,
+              root: createAccount(item.event.args.root, addresses),
+              stateToggler: createAccount(
+                item.event.args.stateToggler,
+                addresses
+              ),
+              nominator: createAccount(item.event.args.nominator, addresses),
+            })
+          );
+        } else if (item.event.name.startsWith("Staking.")) {
+          let name = item.event.name.split(".").pop() as string;
+          let mappedArgs = mapStakingArgsToObject(name, item.event.args);
+          stakingPallet.push(
+            new StakingPallet({
+              id: "staking-" + item.event.id,
+              event: event,
+              name: name,
+              eraIndex: mappedArgs.eraIndex,
+              validatorPayout: mappedArgs.validatorPayout,
+              remainder: mappedArgs.remainder,
+              stash: createAccount(mappedArgs.stash, addresses),
+              amount: mappedArgs.amount,
+              staker: createAccount(mappedArgs.staker, addresses),
+              validator: createAccount(mappedArgs.validator, addresses),
+              slashEra: mappedArgs.slashEra,
+              fraction: mappedArgs.fraction,
+              sessionIndex: mappedArgs.sessionIndex,
+              nominator: createAccount(mappedArgs.nominator, addresses),
+              validatorStash: createAccount(
+                mappedArgs.validatorStash,
+                addresses
+              ),
+              prefs: mappedArgs.prefs,
+              mode: mappedArgs.mode,
             })
           );
         }
@@ -196,6 +251,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   await ctx.store.save(removeDuplicates(events, "id"));
   await ctx.store.save(removeDuplicates(addresses, "id"));
   await ctx.store.save(removeDuplicates(balancesPallet, "id"));
+  await ctx.store.save(removeDuplicates(stakingPallet, "id"));
+  await ctx.store.save(removeDuplicates(nominationPoolsPallet, "id"));
 });
 
 function createAccount(
