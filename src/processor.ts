@@ -7,13 +7,13 @@ import {
 } from "@subsquid/substrate-processor";
 import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
 import {
-  Account,
-  Transfer,
   Event,
   Block,
   Call,
   Extrinsic,
   Metadata,
+  BalancesPallet,
+  Address,
 } from "./model";
 import { MetadataResponse } from "./interfaces/gql-interfaces";
 import {
@@ -46,6 +46,8 @@ let extrinsics: Extrinsic[] = [];
 let calls: Call[] = [];
 let metadata: Metadata[] = [];
 let blocks: Block[] = [];
+let balancesPallet: BalancesPallet[] = [];
+let addresses: Address[] = [];
 
 const metadataRequest: GraphqlRequest = {
   url: "https://aleph-zero-testnet.archive.subsquid.io/graphql",
@@ -72,7 +74,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           hex: m.hex,
         })
     );
-    await ctx.store.insert(metadata);
+    await ctx.store.save(metadata);
     metadataInitialized = true;
   }
 
@@ -92,7 +94,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     blocks.push(blockOrm);
     for (let item of block.items) {
       if (item.kind === "event") {
-        ctx.log.info(item);
+        // ctx.log.info(item);
         let extrinsic = undefined;
         if (item.event.extrinsic) {
           extrinsic = new Extrinsic({
@@ -125,21 +127,39 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           });
           calls.push(call);
         }
-        events.push(
-          new Event({
-            id: item.event.id,
-            block: blockOrm,
-            indexInBlock: item.event.indexInBlock,
-            phase: item.event.phase,
-            extrinsic: extrinsic,
-            call: call,
-            name: item.event.name,
-            args: item.event.args,
-            pos: item.event.pos,
-          })
-        );
+        let event = new Event({
+          id: item.event.id,
+          block: blockOrm,
+          indexInBlock: item.event.indexInBlock,
+          phase: item.event.phase,
+          extrinsic: extrinsic,
+          call: call,
+          name: item.event.name,
+          args: item.event.args,
+          pos: item.event.pos,
+        });
+        events.push(event);
+        if (item.event.name.startsWith("Balances.")) {
+          console.log(item.event.args);
+          balancesPallet.push(
+            new BalancesPallet({
+              id: "balances-" + item.event.id,
+              event: event,
+              name: item.event.name.split(".").pop(),
+              account: createAccount(item.event.args.account, addresses),
+              freeBalance: item.event.args.freeBalance,
+              amount: item.event.args.amount,
+              from: createAccount(item.event.args.from, addresses),
+              to: createAccount(item.event.args.to, addresses),
+              who: createAccount(item.event.args.who, addresses),
+              free: item.event.args.free,
+              reserved: item.event.args.reserved,
+              destinationStatus: item.event.args.destinationStatus,
+            })
+          );
+        }
       } else if (item.kind === "call") {
-        ctx.log.info(item);
+        // ctx.log.info(item);
         let extrinsic = new Extrinsic({
           id: item.extrinsic?.id,
           block: blockOrm,
@@ -174,7 +194,24 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   await ctx.store.save(removeDuplicates(extrinsics, "id"));
   await ctx.store.save(removeDuplicates(calls, "id"));
   await ctx.store.save(removeDuplicates(events, "id"));
+  await ctx.store.save(removeDuplicates(addresses, "id"));
+  await ctx.store.save(removeDuplicates(balancesPallet, "id"));
 });
+
+function createAccount(
+  hexAddress: string,
+  addresses: Address[]
+): Address | null {
+  if (hexAddress == null) {
+    return null;
+  }
+  const address = new Address({
+    id: hexAddress,
+    ss58: ss58.codec(42).encode(Buffer.from(hexAddress.slice(2), "hex")),
+  });
+  addresses.push(address);
+  return address;
+}
 
 function removeDuplicates<T>(items: T[], key: keyof T): T[] {
   const seen = new Set();

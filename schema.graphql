@@ -1,19 +1,10 @@
-type Account @entity {
-  "Account address"
+type Metadata @entity {
   id: ID!
-  transfersTo: [Transfer!] @derivedFrom(field: "to")
-  transfersFrom: [Transfer!] @derivedFrom(field: "from")
-}
-
-type Transfer @entity {
-  id: ID!
-  blockNumber: Int! @index
-  timestamp: DateTime! @index
-  extrinsicHash: String @index
-  from: Account!
-  to: Account!
-  amount: BigInt! @index
-  fee: BigInt! # fee is calculated at the best effort and may be zero for some old extrinsics
+  specName: String!
+  specVersion: Int
+  blockHeight: Int!
+  blockHash: String!
+  hex: String!
 }
 
 type Block @entity {
@@ -73,18 +64,24 @@ type Event @entity {
   pos: Int!
 }
 
-type Metadata @entity {
-  id: ID!
-  specName: String!
-  specVersion: Int
-  blockHeight: Int!
-  blockHash: String!
-  hex: String!
-}
-
 type Address @entity {
   id: ID!
   ss58: String!
   type: String
   label: String
+}
+
+type BalancesPallet @entity {
+  id: ID!
+  event: Event!
+  name: String! @index
+  account: Address
+  freeBalance: BigInt
+  amount: BigInt
+  from: Address
+  to: Address
+  who: Address
+  free: BigInt
+  reserved: BigInt
+  destinationStatus: String
 }
