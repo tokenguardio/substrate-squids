@@ -1,53 +1,56 @@
 export function mapStakingArgsToObject(
   eventName: string,
-  parameters: string[]
+  args: string[]
 ): {
   eraIndex?: number;
-  validatorPayout?: any;
-  remainder?: any;
-  stash?: any;
-  amount?: any;
-  staker?: any;
-  validator?: any;
+  validatorPayout?: bigint;
+  remainder?: bigint;
+  stash?: string;
+  amount?: bigint;
+  staker?: string;
+  validator?: string;
   slashEra?: number;
-  fraction?: any;
+  fraction?: string;
   sessionIndex?: number;
-  nominator?: any;
-  validatorStash?: any;
-  prefs?: any;
-  mode?: any;
+  nominator?: string;
+  validatorStash?: string;
+  prefs?: string;
+  mode?: string;
 } {
+  if (!Array.isArray(args)) {
+    args = [args];
+  }
   let obj = {};
   switch (eventName) {
     case "EraPaid":
       obj = {
-        eraIndex: parseInt(parameters[0]),
-        validatorPayout: parameters[1],
-        remainder: parameters[2],
+        eraIndex: parseInt(args[0]),
+        validatorPayout: args[1],
+        remainder: args[2],
       };
       break;
     case "Rewarded":
       obj = {
-        stash: parameters[0],
-        amount: parameters[1],
+        stash: args[0],
+        amount: args[1],
       };
       break;
     case "Slashed":
       obj = {
-        staker: parameters[0],
-        amount: parameters[1],
+        staker: args[0],
+        amount: args[1],
       };
       break;
     case "SlashReported":
       obj = {
-        validator: parameters[0],
-        fraction: parameters[1],
-        slashEra: parseInt(parameters[2]),
+        validator: args[0],
+        fraction: args[1],
+        slashEra: parseInt(args[2]),
       };
       break;
     case "OldSlashingReportDiscarded":
       obj = {
-        sessionIndex: parseInt(parameters[0]),
+        sessionIndex: parseInt(args[0]),
       };
       break;
     case "StakersElected":
@@ -55,26 +58,26 @@ export function mapStakingArgsToObject(
       break;
     case "Bonded":
       obj = {
-        stash: parameters[0],
-        amount: parameters[1],
+        stash: args[0],
+        amount: args[1],
       };
       break;
     case "Unbonded":
       obj = {
-        stash: parameters[0],
-        amount: parameters[1],
+        stash: args[0],
+        amount: args[1],
       };
       break;
     case "Withdrawn":
       obj = {
-        stash: parameters[0],
-        amount: parameters[1],
+        stash: args[0],
+        amount: args[1],
       };
       break;
     case "Kicked":
       obj = {
-        nominator: parameters[0],
-        stash: parameters[1],
+        nominator: args[0],
+        stash: args[1],
       };
       break;
     case "StakingElectionFailed":
@@ -82,24 +85,24 @@ export function mapStakingArgsToObject(
       break;
     case "Chilled":
       obj = {
-        stash: parameters[0],
+        stash: args[0],
       };
       break;
     case "PayoutStarted":
       obj = {
-        eraIndex: parseInt(parameters[0]),
-        validatorStash: parameters[1],
+        eraIndex: parseInt(args[0]),
+        validatorStash: args[1],
       };
       break;
     case "ValidatorPrefsSet":
       obj = {
-        stash: parameters[0],
-        prefs: parameters[1],
+        stash: args[0],
+        prefs: args[1],
       };
       break;
     case "ForceEra":
       obj = {
-        mode: parameters[0],
+        mode: args[0],
       };
       break;
     default:

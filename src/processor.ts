@@ -256,7 +256,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 });
 
 function createAccount(
-  hexAddress: string,
+  hexAddress: string | undefined,
   addresses: Address[]
 ): Address | null {
   if (hexAddress == null) {
