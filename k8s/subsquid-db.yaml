@@ -35,3 +35,37 @@ spec:
               value: "squid"
             - name: POSTGRES_PASSWORD
               value: "squid"
+          volumeMounts:
+            - name: subsquid-db-volume
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: subsquid-db-volume
+          persistentVolumeClaim:
+            claimName: subsquid-db-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: subsquid-db-pvc
+spec:
+  volumeName: subsquid-db-pv
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: subsquid-db-pv
+spec:
+  capacity:
+    storage: 2Gi
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/subsquid-db
