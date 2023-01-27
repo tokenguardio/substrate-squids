@@ -26,8 +26,7 @@ import {
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    chain: "wss://ws.test.azero.dev",
-    archive: lookupArchive("aleph-zero-testnet", { release: "FireSquid" }),
+    archive: `http://${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
   })
   .addEvent("*", {
     data: {
@@ -55,7 +54,7 @@ let stakingPallet: StakingPallet[] = [];
 let nominationPoolsPallet: NominationPoolsPallet[] = [];
 
 const metadataRequest: GraphqlRequest = {
-  url: "https://aleph-zero-testnet.archive.subsquid.io/graphql",
+  url: `http://${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
   query:
     "query MyQuery { metadata { blockHash blockHeight id specName specVersion hex}}",
   retry: true,

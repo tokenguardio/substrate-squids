@@ -1,4 +1,4 @@
-FROM node:16-alpine AS node
+FROM --platform=linux/amd64 node:16-alpine AS node
 
 FROM node AS node-with-gyp
 RUN apk add g++ make python3
@@ -34,4 +34,4 @@ EXPOSE 3000
 EXPOSE 4000
 
 FROM squid AS processor
-CMD npx squid-typeorm-migration generate;npx squid-typeorm-migration apply;npm run processor:start
+CMD npx squid-typeorm-migration apply;npm run processor:start

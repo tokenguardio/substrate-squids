@@ -18,7 +18,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: DB_HOST
-              value: "subsquid-db-service.default"
+              value: "subsquid-db-service.azero-testnet"
             - name: DB_PORT
               value: "5432"
             - name: DB_NAME
@@ -29,17 +29,3 @@ spec:
               value: "squid"
       imagePullSecrets:
         - name: regcred
-# ---
-
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: processor-service
-# spec:
-#   selector:
-#     app: processor
-#   type: ClusterIP
-#   ports:
-#     - protocol: TCP
-#       port: 80
-#       targetPort: 80
