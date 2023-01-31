@@ -1,17 +1,126 @@
-type Account @entity {
-  "Account address"
+type Metadata @entity {
   id: ID!
-  transfersTo: [Transfer!] @derivedFrom(field: "to")
-  transfersFrom: [Transfer!] @derivedFrom(field: "from")
+  specName: String!
+  specVersion: Int
+  blockHeight: Int!
+  blockHash: String!
+  hex: String!
 }
 
-type Transfer @entity {
+type Block @entity {
   id: ID!
-  blockNumber: Int! @index
+  height: Int! @index
+  hash: String! @index
+  parentHash: String!
+  stateRoot: String!
   timestamp: DateTime! @index
-  extrinsicHash: String @index
-  from: Account!
-  to: Account!
-  amount: BigInt! @index
-  fee: BigInt! # fee is calculated at the best effort and may be zero for some old extrinsics
+  extrinsicsRoot: String
+  spec: Metadata!
+  validator: String @index
+  events: [Event!]! @derivedFrom(field: "block")
+  calls: [Call!]! @derivedFrom(field: "block")
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
+}
+
+type Extrinsic @entity {
+  id: ID!
+  block: Block!
+  indexInBlock: Int!
+  version: Int!
+  signature: JSON
+  success: Boolean!
+  error: JSON
+  call: Call!
+  fee: BigInt
+  tip: BigInt
+  hash: String! @index
+  pos: Int!
+  # all internal calls
+  calls: [Call!] @derivedFrom(field: "extrinsic")
+}
+
+type Call @entity {
+  id: ID!
+  parent: Call
+  block: Block!
+  extrinsic: Extrinsic!
+  success: Boolean!
+  error: JSON
+  origin: JSON
+  name: String! @index
+  args: JSON
+  pos: Int!
+}
+
+type Event @entity {
+  id: ID!
+  block: Block!
+  indexInBlock: Int!
+  phase: String!
+  extrinsic: Extrinsic
+  call: Call
+  name: String! @index
+  args: JSON
+  pos: Int!
+}
+
+type Address @entity {
+  id: ID!
+  ss58: String!
+  type: String
+  label: String
+}
+
+type BalancesPallet @entity {
+  id: ID!
+  event: Event!
+  name: String! @index
+  account: Address
+  freeBalance: BigInt
+  amount: BigInt
+  from: Address
+  to: Address
+  who: Address
+  free: BigInt
+  reserved: BigInt
+  destinationStatus: String
+}
+
+type StakingPallet @entity {
+  id: ID!
+  event: Event!
+  name: String! @index
+  eraIndex: Int
+  validatorPayout: BigInt
+  remainder: BigInt
+  stash: Address
+  amount: BigInt
+  staker: Address
+  validator: Address
+  slashEra: Int
+  fraction: String
+  sessionIndex: Int
+  nominator: Address
+  validatorStash: Address
+  prefs: String
+  mode: String
+}
+
+type NominationPoolsPallet @entity {
+  id: ID!
+  event: Event!
+  name: String! @index
+  depositor: Address
+  poolId: Int
+  member: Address
+  bonded: BigInt
+  joined: Boolean
+  payout: BigInt
+  balance: BigInt
+  points: BigInt
+  era: Int
+  newState: String
+  root: Address
+  stateToggler: Address
+  nominator: Address
 }
