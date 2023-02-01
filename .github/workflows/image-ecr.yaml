@@ -46,6 +46,7 @@ jobs:
           IMAGE_TAG: ${{ matrix.image-tag }}
           DOCKERFILE: ${{ matrix.dockerfile }}
         run: |
+          echo ls
           echo $ECR_REGISTRY
           echo $ECR_REPOSITORY
           echo $IMAGE_TAG
