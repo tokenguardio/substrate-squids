@@ -15,12 +15,13 @@ jobs:
     name: Build Image
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - dockerfile: processor.Dockerfile
             image-name: squid-azero-processor
             image-tag: latest
-          - dockerfile: querynode.Dockerfile
+          - dockerfile: queryNode.Dockerfile
             image-name: squid-azero-querynode
             image-tag: latest
 
@@ -46,10 +47,5 @@ jobs:
           IMAGE_TAG: ${{ matrix.image-tag }}
           DOCKERFILE: ${{ matrix.dockerfile }}
         run: |
-          ls
-          echo $ECR_REGISTRY
-          echo $ECR_REPOSITORY
-          echo $IMAGE_TAG
-          echo $DOCKERFILE
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $DOCKERFILE .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
