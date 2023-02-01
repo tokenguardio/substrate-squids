@@ -21,9 +21,9 @@ jobs:
           - dockerfile: processor.Dockerfile
             image-name: squid-azero-processor
             image-tag: latest
-          - dockerfile: queryNode.Dockerfile
-            image-name: squid-azero-querynode
-            image-tag: latest
+          # - dockerfile: queryNode.Dockerfile
+          #   image-name: squid-azero-querynode
+          #   image-tag: latest
 
     steps:
       - name: Check out code
