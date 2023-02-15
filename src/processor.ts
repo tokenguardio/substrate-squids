@@ -18,15 +18,15 @@ import {
   NominationPoolsPallet,
 } from "./model";
 import { MetadataResponse } from "./interfaces/gql-interfaces";
-import { mapStakingArgsToObject } from "./mappings/staking";
 import {
   GraphqlRequest,
   graphqlRequest,
 } from "@subsquid/util-internal-gql-request";
+import { normalizeEventArgs } from "./mappings/events";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `http://${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
+    archive: `https://reef.archive.subsquid.io/graphql`,
   })
   .addEvent("*", {
     data: {
@@ -54,7 +54,7 @@ let stakingPallet: StakingPallet[] = [];
 let nominationPoolsPallet: NominationPoolsPallet[] = [];
 
 const metadataRequest: GraphqlRequest = {
-  url: `http://${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
+  url: `https://reef.archive.subsquid.io/graphql`,
   query:
     "query MyQuery { metadata { blockHash blockHeight id specName specVersion hex}}",
   retry: true,
@@ -131,6 +131,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           });
           calls.push(call);
         }
+        let args = normalizeEventArgs(ctx, item.event);
         let event = new Event({
           id: item.event.id,
           block: blockOrm,
@@ -139,79 +140,10 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           extrinsic: extrinsic,
           call: call,
           name: item.event.name,
-          args: item.event.args,
+          args: args,
           pos: item.event.pos,
         });
         events.push(event);
-        if (item.event.name.startsWith("Balances.")) {
-          balancesPallet.push(
-            new BalancesPallet({
-              id: "balances-" + item.event.id,
-              event: event,
-              name: item.event.name.split(".").pop(),
-              account: createAccount(item.event.args.account, addresses),
-              freeBalance: item.event.args.freeBalance,
-              amount: item.event.args.amount,
-              from: createAccount(item.event.args.from, addresses),
-              to: createAccount(item.event.args.to, addresses),
-              who: createAccount(item.event.args.who, addresses),
-              free: item.event.args.free,
-              reserved: item.event.args.reserved,
-              destinationStatus: item.event.args.destinationStatus,
-            })
-          );
-        } else if (item.event.name.startsWith("NominationPoolsPallet.")) {
-          nominationPoolsPallet.push(
-            new NominationPoolsPallet({
-              id: "npools-" + item.event.id,
-              event: event,
-              name: item.event.name.split(".").pop(),
-              depositor: createAccount(item.event.args.depositor, addresses),
-              poolId: item.event.args.poolId,
-              member: createAccount(item.event.args.member, addresses),
-              bonded: item.event.args.bonded,
-              joined: item.event.args.joined,
-              payout: item.event.args.payout,
-              balance: item.event.args.balance,
-              points: item.event.args.points,
-              era: item.event.args.era,
-              newState: item.event.args.newState,
-              root: createAccount(item.event.args.root, addresses),
-              stateToggler: createAccount(
-                item.event.args.stateToggler,
-                addresses
-              ),
-              nominator: createAccount(item.event.args.nominator, addresses),
-            })
-          );
-        } else if (item.event.name.startsWith("Staking.")) {
-          let name = item.event.name.split(".").pop() as string;
-          let mappedArgs = mapStakingArgsToObject(name, item.event.args);
-          stakingPallet.push(
-            new StakingPallet({
-              id: "staking-" + item.event.id,
-              event: event,
-              name: name,
-              eraIndex: mappedArgs.eraIndex,
-              validatorPayout: mappedArgs.validatorPayout,
-              remainder: mappedArgs.remainder,
-              stash: createAccount(mappedArgs.stash, addresses),
-              amount: mappedArgs.amount,
-              staker: createAccount(mappedArgs.staker, addresses),
-              validator: createAccount(mappedArgs.validator, addresses),
-              slashEra: mappedArgs.slashEra,
-              fraction: mappedArgs.fraction,
-              sessionIndex: mappedArgs.sessionIndex,
-              nominator: createAccount(mappedArgs.nominator, addresses),
-              validatorStash: createAccount(
-                mappedArgs.validatorStash,
-                addresses
-              ),
-              prefs: mappedArgs.prefs,
-              mode: mappedArgs.mode,
-            })
-          );
-        }
       } else if (item.kind === "call") {
         // ctx.log.info(item);
         let extrinsic = new Extrinsic({
