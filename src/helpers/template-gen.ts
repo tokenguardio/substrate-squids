@@ -94,8 +94,8 @@ const classesWithMoreThanTwoGetters = classInfoList.filter(
   (classInfo) => classInfo.numGetters > 2
 );
 
-console.log(classInfoList);
-console.log(classesWithMoreThanTwoGetters);
+// console.log(classInfoList);
+// console.log(classesWithMoreThanTwoGetters);
 
 console.log(`Number of all classes: ${classInfoList.length}`);
 console.log(
@@ -107,6 +107,8 @@ const template = `import {
       .map((c) => `  ${c.className},\n`)
       .join("")}} from "../types/events";
     import { ChainContext, Event } from "../types/support";
+    import { bufferToHex } from "../utils/utils";
+    import { UnknownVersionError } from "../utils/errors";
     
     export function normalizeEventArgs(ctx: ChainContext, event: Event) {
         let e;
@@ -123,7 +125,7 @@ const template = `import {
                 }`
                   )
                   .join(" else ")}${c.getters.length > 0 ? " else " : ""}{
-                    throw new UknownVersionError();
+                    throw new UnknownVersionError(event.name);
                 }
     `;
       })
@@ -132,21 +134,14 @@ const template = `import {
                 return event.args;
         }
     }
-    
-    function bufferToHex(buffer: Uint8Array) {
-      const hexString =
-        "0x" +
-        Array.from(buffer, (byte) => {
-          return ("0" + byte.toString(16)).slice(-2);
-        }).join("");
-      return hexString;
-    }
-    
-    class UknownVersionError extends Error {
-      constructor() {
-        super("Uknown version");
-      }
-    }
     `;
 
-console.log(template);
+// console.log(template);
+
+// Define the output file name and path
+const outputFilePath = path.resolve(__dirname, "./events.ts");
+
+// Write the generated template to the output file
+fs.writeFileSync(outputFilePath, template);
+
+console.log(`Template written to file: ${outputFilePath}`);

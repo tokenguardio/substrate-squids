@@ -1,173 +1,392 @@
 import {
-  EvmContractSelfdestructedEvent,
-  EvmCreatedEvent,
-  EvmCreatedFailedEvent,
-  EvmExecutedEvent,
-  EvmExecutedFailedEvent,
-  OffencesOffenceEvent,
-  TokensDustLostEvent,
+  ElectionsChangeValidatorsEvent,
+  MultisigMultisigExecutedEvent,
+  NominationPoolsUnbondedEvent,
+  NominationPoolsWithdrawnEvent,
+  SchedulerCanceledEvent,
+  SchedulerDispatchedEvent,
+  SchedulerScheduledEvent,
+  StakingBondedEvent,
+  StakingChilledEvent,
+  StakingEraPaidEvent,
+  StakingKickedEvent,
+  StakingOldSlashingReportDiscardedEvent,
+  StakingPayoutStartedEvent,
+  StakingRewardedEvent,
+  StakingSlashedEvent,
+  StakingUnbondedEvent,
+  StakingValidatorPrefsSetEvent,
+  StakingWithdrawnEvent,
+  SudoKeyChangedEvent,
+  SudoSudidEvent,
+  SudoSudoAsDoneEvent,
+  SystemExtrinsicFailedEvent,
+  SystemExtrinsicSuccessEvent,
+  SystemKilledAccountEvent,
+  SystemNewAccountEvent,
+  SystemRemarkedEvent,
+  TreasuryAwardedEvent,
+  TreasuryBurntEvent,
+  TreasuryDepositEvent,
+  TreasuryProposedEvent,
+  TreasuryRejectedEvent,
+  TreasuryRolloverEvent,
+  TreasurySpendingEvent,
+  UtilityBatchInterruptedEvent,
+  UtilityDispatchedAsEvent,
+  UtilityItemFailedEvent,
 } from "../types/events";
 import { ChainContext, Event } from "../types/support";
+import { bufferToHex } from "../utils/utils";
+import { UnknownVersionError } from "../utils/errors";
 
 export function normalizeEventArgs(ctx: ChainContext, event: Event) {
   let e;
   switch (event.name) {
-    case "EVM.ContractSelfdestructed":
-      e = new EvmContractSelfdestructedEvent(ctx, event);
-      if (e.isV5) {
-        return { contract: bufferToHex(e.asV5), caller: null };
-      } else if (e.isV10) {
-        let [caller, contract] = e.asV10;
-        return { contract: bufferToHex(contract), caller: bufferToHex(caller) };
+    case "Elections.ChangeValidators":
+      e = new ElectionsChangeValidatorsEvent(ctx, event);
+      if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV24) {
+        // YOUR CODE HERE
       } else {
-        throw new UknownVersionError();
+        throw new UnknownVersionError(event.name);
       }
-    case "EVM.Created":
-      e = new EvmCreatedEvent(ctx, event);
-      if (e.isV5) {
-        return {
-          maintainer: null,
-          contract: bufferToHex(e.asV5),
-          gasUsed: null,
-          storageUsed: null,
-        };
-      } else if (e.isV10) {
-        let [maintainer, contract, [gasUsed, storageUsed]] = e.asV10;
-        return {
-          maintainer: bufferToHex(maintainer),
-          contract: bufferToHex(contract),
-          gasUsed,
-          storageUsed,
-        };
+    case "Multisig.MultisigExecuted":
+      e = new MultisigMultisigExecutedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
       } else {
-        throw new UknownVersionError();
+        throw new UnknownVersionError(event.name);
       }
-    case "EVM.CreatedFailed":
-      e = new EvmCreatedFailedEvent(ctx, event);
-      if (e.isV5) {
-        let [contract, exitReason, output] = e.asV5;
-        return {
-          maintainer: null,
-          contract: bufferToHex(contract),
-          exitReason: exitReason,
-          output: bufferToHex(output),
-          gasUsed: null,
-          storageUsed: null,
-        };
-      } else if (e.isV10) {
-        let [maintainer, contract, exitReason, output, [gasUsed, storageUsed]] =
-          e.asV10;
-        return {
-          maintainer: bufferToHex(maintainer),
-          contract: bufferToHex(contract),
-          exitReason,
-          output: bufferToHex(output),
-          gasUsed,
-          storageUsed,
-        };
+    case "NominationPools.Unbonded":
+      e = new NominationPoolsUnbondedEvent(ctx, event);
+      if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV30) {
+        // YOUR CODE HERE
+      } else if (e.isV38) {
+        // YOUR CODE HERE
       } else {
-        throw new UknownVersionError();
+        throw new UnknownVersionError(event.name);
       }
-    case "EVM.Executed":
-      e = new EvmExecutedEvent(ctx, event);
-      if (e.isV5) {
-        return {
-          caller: null,
-          contract: bufferToHex(e.asV5),
-          gasUsed: null,
-          storageUsed: null,
-        };
-      } else if (e.isV10) {
-        let [caller, contract, [gasUsed, storageUsed]] = e.asV10;
-        return {
-          caller: bufferToHex(caller),
-          contract: bufferToHex(contract),
-          gasUsed,
-          storageUsed,
-        };
+    case "NominationPools.Withdrawn":
+      e = new NominationPoolsWithdrawnEvent(ctx, event);
+      if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV30) {
+        // YOUR CODE HERE
       } else {
-        throw new UknownVersionError();
+        throw new UnknownVersionError(event.name);
       }
-    case "EVM.ExecutedFailed":
-      e = new EvmExecutedFailedEvent(ctx, event);
-      if (e.isV5) {
-        let [contract, exitReason, output] = e.asV5;
-        return {
-          caller: null,
-          contract: bufferToHex(contract),
-          exitReason,
-          output: bufferToHex(output),
-          gasUsed: null,
-          storageUsed: null,
-        };
-      } else if (e.isV10) {
-        let [caller, contract, exitReason, output, [gasUsed, storageUsed]] =
-          e.asV10;
-        return {
-          caller: bufferToHex(caller),
-          contract: bufferToHex(contract),
-          exitReason,
-          output: bufferToHex(output),
-          gasUsed,
-          storageUsed,
-        };
+    case "Scheduler.Canceled":
+      e = new SchedulerCanceledEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
       } else {
-        throw new UknownVersionError();
+        throw new UnknownVersionError(event.name);
       }
-    case "Offences.Offence":
-      e = new OffencesOffenceEvent(ctx, event);
-      if (e.isV5) {
-        let [kind, timeslot, applied] = e.asV5;
-        return {
-          kind: bufferToHex(kind),
-          timeslot: bufferToHex(timeslot),
-          applied,
-        };
-      } else if (e.isV8) {
-        let [kind, timeslot] = e.asV8;
-        return {
-          kind: bufferToHex(kind),
-          timeslot: bufferToHex(timeslot),
-          applied: null,
-        };
+    case "Scheduler.Dispatched":
+      e = new SchedulerDispatchedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
       } else {
-        throw new UknownVersionError();
+        throw new UnknownVersionError(event.name);
       }
-    case "Tokens.DustLost":
-      e = new TokensDustLostEvent(ctx, event);
-      if (e.isV5) {
-        let [account, currencyId, amount] = e.asV5;
-        return {
-          account: bufferToHex(account),
-          currencyId,
-          balance: amount,
-        };
-      } else if (e.isV8) {
-        let [currencyId, account, balance] = e.asV8;
-        return {
-          account: bufferToHex(account),
-          currencyId,
-          balance,
-        };
+    case "Scheduler.Scheduled":
+      e = new SchedulerScheduledEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
       } else {
-        throw new UknownVersionError();
+        throw new UnknownVersionError(event.name);
       }
+    case "Staking.Bonded":
+      e = new StakingBondedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.Chilled":
+      e = new StakingChilledEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.EraPaid":
+      e = new StakingEraPaidEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.Kicked":
+      e = new StakingKickedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.OldSlashingReportDiscarded":
+      e = new StakingOldSlashingReportDiscardedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.PayoutStarted":
+      e = new StakingPayoutStartedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.Rewarded":
+      e = new StakingRewardedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.Slashed":
+      e = new StakingSlashedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.Unbonded":
+      e = new StakingUnbondedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.ValidatorPrefsSet":
+      e = new StakingValidatorPrefsSetEvent(ctx, event);
+      if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.Withdrawn":
+      e = new StakingWithdrawnEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Sudo.KeyChanged":
+      e = new SudoKeyChangedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Sudo.Sudid":
+      e = new SudoSudidEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Sudo.SudoAsDone":
+      e = new SudoSudoAsDoneEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "System.ExtrinsicFailed":
+      e = new SystemExtrinsicFailedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "System.ExtrinsicSuccess":
+      e = new SystemExtrinsicSuccessEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "System.KilledAccount":
+      e = new SystemKilledAccountEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "System.NewAccount":
+      e = new SystemNewAccountEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "System.Remarked":
+      e = new SystemRemarkedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Treasury.Awarded":
+      e = new TreasuryAwardedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Treasury.Burnt":
+      e = new TreasuryBurntEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Treasury.Deposit":
+      e = new TreasuryDepositEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Treasury.Proposed":
+      e = new TreasuryProposedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Treasury.Rejected":
+      e = new TreasuryRejectedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Treasury.Rollover":
+      e = new TreasuryRolloverEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Treasury.Spending":
+      e = new TreasurySpendingEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Utility.BatchInterrupted":
+      e = new UtilityBatchInterruptedEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Utility.DispatchedAs":
+      e = new UtilityDispatchedAsEvent(ctx, event);
+      if (e.isV12) {
+        // YOUR CODE HERE
+      } else if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Utility.ItemFailed":
+      e = new UtilityItemFailedEvent(ctx, event);
+      if (e.isV20) {
+        // YOUR CODE HERE
+      } else if (e.isV45) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+
     default:
       return event.args;
-  }
-}
-
-function bufferToHex(buffer: Uint8Array) {
-  const hexString =
-    "0x" +
-    Array.from(buffer, (byte) => {
-      return ("0" + byte.toString(16)).slice(-2);
-    }).join("");
-  return hexString;
-}
-
-class UknownVersionError extends Error {
-  constructor() {
-    super("Uknown version");
   }
 }
