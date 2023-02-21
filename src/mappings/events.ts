@@ -37,7 +37,7 @@ import {
   UtilityItemFailedEvent,
 } from "../types/events";
 import { ChainContext, Event } from "../types/support";
-import { bufferToHex } from "../utils/utils";
+import { bufferToHex, bufferArrToHexArr } from "../utils/utils";
 import { UnknownVersionError } from "../utils/errors";
 
 export function normalizeEventArgs(ctx: ChainContext, event: Event) {
@@ -46,9 +46,23 @@ export function normalizeEventArgs(ctx: ChainContext, event: Event) {
     case "Elections.ChangeValidators":
       e = new ElectionsChangeValidatorsEvent(ctx, event);
       if (e.isV20) {
-        // YOUR CODE HERE
+        // I'm not sure what number represents
+        let [reservedValidators, nonReservedValidators, number] = e.asV20;
+        return {
+          reservedValidators: bufferArrToHexArr(reservedValidators),
+          nonReservedValidators: bufferArrToHexArr(nonReservedValidators),
+          number,
+          committeeSeats: null,
+        };
       } else if (e.isV24) {
-        // YOUR CODE HERE
+        let [reservedValidators, nonReservedValidators, committeeSeats] =
+          e.asV24;
+        return {
+          reservedValidators: bufferArrToHexArr(reservedValidators),
+          nonReservedValidators: bufferArrToHexArr(nonReservedValidators),
+          number: null,
+          committeeSeats,
+        };
       } else {
         throw new UnknownVersionError(event.name);
       }
