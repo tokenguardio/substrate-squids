@@ -90,20 +90,32 @@ for (const cls of classes) {
 }
 
 // Filter classes with more than 2 getters and create a new array
-const classesWithMoreThanTwoGetters = classInfoList.filter(
-  (classInfo) => classInfo.numGetters > 2
-);
+// const classesWithMoreThanTwoGetters = classInfoList.filter(
+//   (classInfo) => classInfo.numGetters > 2
+// );
 
 // console.log(classInfoList);
 // console.log(classesWithMoreThanTwoGetters);
 
-console.log(`Number of all classes: ${classInfoList.length}`);
-console.log(
-  `Number of classes with more than two getters: ${classesWithMoreThanTwoGetters.length}`
-);
+const prefixes = ["Balances.", "Staking.", "System."];
 
-const template = `import {
-    ${classesWithMoreThanTwoGetters
+// Define the output folder path
+const outputFolderPath = path.resolve(__dirname, "../mappings");
+
+// Create the mappings folder if it doesn't exist
+if (!fs.existsSync(outputFolderPath)) {
+  fs.mkdirSync(outputFolderPath);
+  console.log(`Mappings folder created at: ${outputFolderPath}`);
+}
+
+// Iterate over prefixes and create output files
+for (const prefix of prefixes) {
+  const filteredClasses = classInfoList.filter((cls) =>
+    cls.eventName.startsWith(prefix)
+  );
+
+  const template = `import {
+    ${filteredClasses
       .map((c) => `  ${c.className},\n`)
       .join("")}} from "../types/events";
     import { ChainContext, Event } from "../types/support";
@@ -113,7 +125,7 @@ const template = `import {
     export function normalizeEventArgs(ctx: ChainContext, event: Event) {
         let e;
         switch (event.name) {
-    ${classesWithMoreThanTwoGetters
+    ${filteredClasses
       .map((c) => {
         return `        case "${c.eventName}":
                 e = new ${c.className}(ctx, event);
@@ -136,12 +148,12 @@ const template = `import {
     }
     `;
 
-// console.log(template);
+  const outFileName = `${prefix.toLocaleLowerCase()}ts`;
+  // Define the output file name and path
+  const outputFilePath = path.join(outputFolderPath, outFileName);
 
-// Define the output file name and path
-const outputFilePath = path.resolve(__dirname, "./events.ts");
+  // Write the generated template to the output file
+  fs.writeFileSync(outputFilePath, template);
 
-// Write the generated template to the output file
-fs.writeFileSync(outputFilePath, template);
-
-console.log(`Template written to file: ${outputFilePath}`);
+  console.log(`Template written to file: ${outputFilePath}`);
+}

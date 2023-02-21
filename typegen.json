@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://aleph-zero-testnet.archive.subsquid.io/graphql",
+  "specVersions": "https://reef.archive.subsquid.io/graphql",
   "events": true,
   "calls": [],
   "storage": []
