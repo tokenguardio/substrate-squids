@@ -6,6 +6,12 @@ export class UnknownBufferFormatError extends Error {
 
 export class UnknownVersionError extends Error {
   constructor(eventName: string) {
-    super(`Uknown version for ${eventName}`);
+    super(`Uknown version of ${eventName}`);
+  }
+}
+
+export class UnknownEventError extends Error {
+  constructor(eventName: string) {
+    super(`Uknown event: ${eventName}`);
   }
 }

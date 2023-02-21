@@ -120,9 +120,12 @@ for (const prefix of prefixes) {
       .join("")}} from "../types/events";
     import { ChainContext, Event } from "../types/support";
     import { bufferToHex } from "../utils/utils";
-    import { UnknownVersionError } from "../utils/errors";
+    import { UnknownVersionError, UnknownEventError} from "../utils/errors";
     
-    export function normalizeEventArgs(ctx: ChainContext, event: Event) {
+    export function normalize${prefix.slice(
+      0,
+      -1
+    )}Args(ctx: ChainContext, event: Event) {
         let e;
         switch (event.name) {
     ${filteredClasses
@@ -143,7 +146,7 @@ for (const prefix of prefixes) {
       })
       .join("")}
             default:
-                return event.args;
+                throw new UnknownEventError(event.name);
         }
     }
     `;

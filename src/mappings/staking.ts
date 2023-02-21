@@ -19,9 +19,9 @@ import {
 } from "../types/events";
 import { ChainContext, Event } from "../types/support";
 import { bufferToHex } from "../utils/utils";
-import { UnknownVersionError } from "../utils/errors";
+import { UnknownVersionError, UnknownEventError } from "../utils/errors";
 
-export function normalizeEventArgs(ctx: ChainContext, event: Event) {
+export function normalizeStakingArgs(ctx: ChainContext, event: Event) {
   let e;
   switch (event.name) {
     case "Staking.Bonded":
@@ -145,6 +145,6 @@ export function normalizeEventArgs(ctx: ChainContext, event: Event) {
       }
 
     default:
-      return event.args;
+      throw new UnknownEventError(event.name);
   }
 }
