@@ -15,3 +15,9 @@ export class UnknownEventError extends Error {
     super(`Uknown event: ${eventName}`);
   }
 }
+
+export class UnknownCallError extends Error {
+  constructor(callName: string) {
+    super(`Uknown call: ${callName}`);
+  }
+}

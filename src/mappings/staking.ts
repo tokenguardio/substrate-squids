@@ -21,7 +21,7 @@ import { ChainContext, Event } from "../types/support";
 import { bufferToHex } from "../utils/utils";
 import { UnknownVersionError, UnknownEventError } from "../utils/errors";
 
-export function normalizeStakingArgs(ctx: ChainContext, event: Event) {
+export function normalizeStakingEventArgs(ctx: ChainContext, event: Event) {
   let e;
   switch (event.name) {
     case "Staking.Bonded":
