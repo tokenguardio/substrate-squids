@@ -10,6 +10,11 @@ interface ClassInfo {
   getters: string[];
 }
 
+enum TransactionType {
+  Call = "call",
+  Event = "event",
+}
+
 class Mapper {
   private readonly classInfoList: ClassInfo[] = [];
   private readonly typeUpper: string;
@@ -166,9 +171,13 @@ let prefixes = ["Balances.", "Staking.", "System."];
 const eventMapper = new Mapper(
   "../types/events.ts",
   ["Balances.", "Staking.", "System."],
-  "event"
+  TransactionType.Event
 );
 eventMapper.generateMappings();
 
-const callMapper = new Mapper("../types/calls.ts", ["Contracts."], "call");
+const callMapper = new Mapper(
+  "../types/calls.ts",
+  ["Contracts."],
+  TransactionType.Call
+);
 callMapper.generateMappings();
