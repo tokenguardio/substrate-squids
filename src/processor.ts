@@ -59,6 +59,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         events.push(event);
       }
     }
-    await ctx.store.save(events);
   }
+  await ctx.store.save(events);
 });
