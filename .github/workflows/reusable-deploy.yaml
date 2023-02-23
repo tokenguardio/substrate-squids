@@ -4,9 +4,10 @@ on:
   workflow_call:
     inputs:
       branch:
-        description: 'The name of the branch to deploy'
+        description: "The name of the branch to deploy"
         required: true
-        default: 'main'
+        type: string
+        default: "main"
 
 env:
   AWS_REGION: eu-central-1
