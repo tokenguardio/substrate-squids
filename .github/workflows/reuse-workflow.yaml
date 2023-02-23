@@ -15,9 +15,6 @@ on:
 jobs:
   deploy:
     name: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to ECR
-        uses: ./.github/workflows/reusable-deploy.yaml@main
-        with:
-          branch: ${{ github.event.inputs.branch }}
+    uses: ./.github/workflows/reusable-deploy.yaml@main
+    with:
+      branch: ${{ github.event.inputs.branch }}
