@@ -15,7 +15,7 @@ enum TransactionType {
   Event = "event",
 }
 
-class Mapper {
+class TemplateGenerator {
   private readonly classInfoList: ClassInfo[] = [];
   private readonly typeUpper: string;
 
@@ -167,17 +167,17 @@ class Mapper {
     }
   }
 }
-let prefixes = ["Balances.", "Staking.", "System."];
-const eventMapper = new Mapper(
+
+const eventTemplateGenerator = new TemplateGenerator(
   "../types/events.ts",
   ["Balances.", "Staking.", "System."],
   TransactionType.Event
 );
-eventMapper.generateMappings();
+eventTemplateGenerator.generateMappings();
 
-const callMapper = new Mapper(
+const callTemplateGenerator = new TemplateGenerator(
   "../types/calls.ts",
   ["Contracts."],
   TransactionType.Call
 );
-callMapper.generateMappings();
+callTemplateGenerator.generateMappings();
