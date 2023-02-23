@@ -13,6 +13,14 @@ on:
         required: true
         type: string
         default: "main"
+      aws_access_key_id:
+        description: "AWS access key id"
+        type: string
+        default: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key:
+        description: "AWS secret access key"
+        type: string
+        default: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 env:
   AWS_REGION: eu-central-1
