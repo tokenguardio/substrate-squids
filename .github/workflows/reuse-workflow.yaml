@@ -1,6 +1,10 @@
 name: Deploy to ECR on Reef Mainnet
 
 on:
+  push:
+    branches: ["reef-mainnet"]
+  pull_request:
+    branches: ["reef-mainnet"]
   workflow_dispatch:
     inputs:
       branch:
