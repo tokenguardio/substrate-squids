@@ -15,6 +15,6 @@ on:
 jobs:
   deploy:
     name: Deploy
-    uses: ./.github/workflows/reusable-deploy.yaml
+    uses: tokenguardio/squid-substrate-azero-mainnet/.github/workflows/reusable-deploy.yaml@main
     with:
       branch: ${{ github.event.inputs.branch }}
