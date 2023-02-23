@@ -12,6 +12,6 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true
   },
-  "include": ["src", "src/tools", "src/tools/template-gen-class.ts"],
+  "include": ["src", "src/tools", "src/tools/mapping-template-gen.ts"],
   "exclude": ["node_modules"]
 }
