@@ -18,4 +18,5 @@ jobs:
     uses: tokenguardio/squid-substrate-azero-mainnet/.github/workflows/reusable-deploy.yaml@main
     with:
       branch: ${{ github.event.inputs.branch }}
-      # secrets: inherit
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
