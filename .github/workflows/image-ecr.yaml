@@ -61,3 +61,4 @@
 #         run: |
 #           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $DOCKERFILE .
 #           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#
