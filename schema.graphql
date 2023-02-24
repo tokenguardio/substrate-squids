@@ -4,4 +4,5 @@ type EventNorm @entity {
   timestamp: DateTime! @index
   name: String! @index
   args: JSON
+  extrinsicSuccess: Boolean
 }

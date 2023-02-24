@@ -34,6 +34,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           item.event.name.startsWith("System."))
       ) {
         // Normalize the event arguments based on the prefix
+
         let args;
         switch (true) {
           case item.event.name.startsWith("Balances."):
@@ -54,6 +55,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           timestamp: new Date(block.header.timestamp),
           name: item.event.name,
           args,
+          extrinsicSuccess: item.event.extrinsic?.success,
         });
         events.push(event);
       }

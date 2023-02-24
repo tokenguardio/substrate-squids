@@ -22,4 +22,7 @@ export class EventNorm {
 
     @Column_("jsonb", {nullable: true})
     args!: unknown | undefined | null
+
+    @Column_("bool", {nullable: true})
+    extrinsicSuccess!: boolean | undefined | null
 }
