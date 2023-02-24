@@ -22,9 +22,8 @@ const processor = new SubstrateBatchProcessor()
     },
   } as const);
 
-let events: EventNorm[] = [];
-
 processor.run(new TypeormDatabase(), async (ctx) => {
+  let events: EventNorm[] = [];
   for (let block of ctx.blocks) {
     for (let item of block.items) {
       // Check if the item is an event and if its name starts with one of the prefixes
