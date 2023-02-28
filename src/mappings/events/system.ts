@@ -16,28 +16,28 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
     case "System.CodeUpdated":
       e = new SystemCodeUpdatedEvent(ctx, event);
       if (e.isV1) {
-        // YOUR CODE HERE
+        return e.asV1;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.ExtrinsicFailed":
       e = new SystemExtrinsicFailedEvent(ctx, event);
       if (e.isV1) {
-        // YOUR CODE HERE
+        return e.asV1;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.ExtrinsicSuccess":
       e = new SystemExtrinsicSuccessEvent(ctx, event);
       if (e.isV1) {
-        // YOUR CODE HERE
+        return e.asV1;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.KilledAccount":
       e = new SystemKilledAccountEvent(ctx, event);
       if (e.isV1) {
-        // YOUR CODE HERE
+        //
       } else {
         throw new UnknownVersionError(event.name);
       }
