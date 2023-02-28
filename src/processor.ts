@@ -37,7 +37,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         )
       ) {
         // Normalize the event arguments based on the prefix
-
         let args;
         switch (true) {
           case item.event.name.startsWith("Balances."):
