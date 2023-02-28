@@ -1,4 +1,4 @@
-name: Deploy reef-mainnet to ECR
+name: Deploy pendulum to ECR
 
 on:
   push:
