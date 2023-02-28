@@ -6,3 +6,12 @@ type EventNorm @entity {
   args: JSON
   extrinsicSuccess: Boolean
 }
+
+type CallNorm @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  name: String! @index
+  args: JSON
+  extrinsicSuccess: Boolean
+}

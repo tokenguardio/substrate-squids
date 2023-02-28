@@ -1,1 +1,1 @@
-export * from "./eventNorm.model"
+export * from "./eventNorm.model";

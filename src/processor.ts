@@ -14,7 +14,7 @@ BigInt.prototype.toJSON = function () {
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
+    archive: `https://reef.archive.subsquid.io/graphql`,
   })
   .addEvent("*", {
     data: {
