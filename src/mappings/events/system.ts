@@ -5,12 +5,11 @@ import {
   SystemKilledAccountEvent,
   SystemNewAccountEvent,
   SystemRemarkedEvent,
-} from "@src/types/events";
-import { ChainContext, Event } from "@src/types/support";
-import { bufferToHex } from "@src/utils/utils";
-import { UnknownVersionError, UnknownEventError } from "@src/utils/errors";
+} from "../../types/events";
+import { ChainContext, Event } from "../../types/support";
+import { UnknownVersionError, UnknownEventError } from "../../utils/errors";
 
-//All of these events already return args in dictionaries so mapping is currently not needed
+// All of these events already return args in dictionaries so mapping is currently not needed
 export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
   let e;
   switch (event.name) {

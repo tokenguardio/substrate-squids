@@ -9,12 +9,11 @@ import {
   BalancesTransferEvent,
   BalancesUnreservedEvent,
   BalancesWithdrawEvent,
-} from "@src/types/events";
-import { ChainContext, Event } from "@src/types/support";
-import { bufferToHex, mapObjUint8ToHex } from "@src/utils/utils";
-import { UnknownVersionError, UnknownEventError } from "@src/utils/errors";
+} from "../../types/events";
+import { ChainContext, Event } from "../../types/support";
+import { UnknownVersionError, UnknownEventError } from "../../utils/errors";
 
-//All of these events already return args in dictionaries so mapping is currently not needed
+// All of these events already return args in dictionaries so mapping is currently not needed
 export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
   let e;
   switch (event.name) {

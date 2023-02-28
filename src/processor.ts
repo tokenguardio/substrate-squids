@@ -2,9 +2,8 @@ import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { EventNorm } from "./model";
 import {
-  normalizeBalancesEventArgs,
-  normalizeStakingEventArgs,
-  normalizeSystemEventArgs,
+  normalizeBalancesEventsArgs,
+  normalizeSystemEventsArgs,
 } from "./mappings";
 
 // Avoid type errors when serializing BigInts
@@ -14,7 +13,7 @@ import {
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `https://reef.archive.subsquid.io/graphql`,
+    archive: `https://pendulum.archive.subsquid.io/graphql`,
   })
   .addEvent("*", {
     data: {
@@ -30,7 +29,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       if (
         item.kind === "event" &&
         (item.event.name.startsWith("Balances.") ||
-          item.event.name.startsWith("Staking.") ||
           item.event.name.startsWith("System.")) &&
         !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
           item.event.name
@@ -40,13 +38,10 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         let args;
         switch (true) {
           case item.event.name.startsWith("Balances."):
-            args = normalizeBalancesEventArgs(ctx, item.event);
-            break;
-          case item.event.name.startsWith("Staking."):
-            args = normalizeStakingEventArgs(ctx, item.event);
+            args = normalizeBalancesEventsArgs(ctx, item.event);
             break;
           case item.event.name.startsWith("System."):
-            args = normalizeSystemEventArgs(ctx, item.event);
+            args = normalizeSystemEventsArgs(ctx, item.event);
             break;
         }
 
