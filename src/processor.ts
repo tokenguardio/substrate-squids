@@ -7,8 +7,8 @@ import {
   normalizeSystemEventArgs,
 } from "./mappings";
 
-//@ts-ignore
-BigInt.prototype.toJSON = function () {
+// Avoid type errors when serializing BigInts
+(BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
 
@@ -31,7 +31,10 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         item.kind === "event" &&
         (item.event.name.startsWith("Balances.") ||
           item.event.name.startsWith("Staking.") ||
-          item.event.name.startsWith("System."))
+          item.event.name.startsWith("System.")) &&
+        !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
+          item.event.name
+        )
       ) {
         // Normalize the event arguments based on the prefix
 
