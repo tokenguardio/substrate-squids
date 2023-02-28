@@ -37,21 +37,31 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
     case "System.KilledAccount":
       e = new SystemKilledAccountEvent(ctx, event);
       if (e.isV1) {
-        //
+        const args = e.asV1;
+        return {
+          account: bufferToHex(args.account),
+        };
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.NewAccount":
       e = new SystemNewAccountEvent(ctx, event);
       if (e.isV1) {
-        // YOUR CODE HERE
+        const args = e.asV1;
+        return {
+          account: bufferToHex(args.account),
+        };
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.Remarked":
       e = new SystemRemarkedEvent(ctx, event);
       if (e.isV1) {
-        // YOUR CODE HERE
+        const args = e.asV1;
+        return {
+          sender: bufferToHex(args.sender),
+          hash: bufferToHex(args.hash),
+        };
       } else {
         throw new UnknownVersionError(event.name);
       }
