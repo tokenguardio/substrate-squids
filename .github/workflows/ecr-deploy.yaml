@@ -2,9 +2,9 @@ name: Deploy reef-mainnet to ECR
 
 on:
   push:
-    branches: ["main", "reef-mainnet"]
+    branches: ["reef-mainnet"]
   pull_request:
-    branches: ["main", "reef-mainnet"]
+    branches: ["reef-mainnet"]
   workflow_dispatch:
 
 env:
