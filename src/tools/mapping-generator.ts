@@ -122,12 +122,12 @@ class MappingGenerator {
       const template = `import {
         ${filteredClasses
           .map((c) => `  ${c.className},\n`)
-          .join("")}} from "@src/types/${this.type}s";
-        import { ChainContext, ${this.typeUpper} } from "@src/types/support";
-        import { bufferToHex } from "@src/utils/utils";
+          .join("")}} from "../../types/${this.type}s";
+        import { ChainContext, ${this.typeUpper} } from "../../types/support";
+        import { bufferToHex } from "../../utils/utils";
         import { UnknownVersionError, Unknown${
           this.typeUpper
-        }Error} from "@src/utils/errors";
+        }Error} from "../../utils/errors";
         
         export function normalize${prefix.slice(0, -1)}${
         this.typeUpper
