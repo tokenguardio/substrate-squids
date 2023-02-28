@@ -10,7 +10,10 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
   },
   "include": ["src", "src/tools", "src/tools/mapping-template-gen.ts"],
   "exclude": ["node_modules"]

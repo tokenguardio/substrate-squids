@@ -107,7 +107,7 @@ class MappingGenerator {
 
   public generateMappings() {
     this.parseSourceFile();
-    const outputFolderPath = path.resolve(__dirname, "./");
+    const outputFolderPath = path.resolve(__dirname, `./${this.type}s`);
 
     if (!fs.existsSync(outputFolderPath)) {
       fs.mkdirSync(outputFolderPath);
@@ -122,12 +122,12 @@ class MappingGenerator {
       const template = `import {
         ${filteredClasses
           .map((c) => `  ${c.className},\n`)
-          .join("")}} from "../types/${this.type}s.ts";
-        import { ChainContext, ${this.typeUpper} } from "../types/support";
-        import { bufferToHex } from "../utils/utils";
+          .join("")}} from "@src/types/${this.type}s";
+        import { ChainContext, ${this.typeUpper} } from "@src/types/support";
+        import { bufferToHex } from "@src/utils/utils";
         import { UnknownVersionError, Unknown${
           this.typeUpper
-        }Error} from "../utils/errors";
+        }Error} from "@src/utils/errors";
         
         export function normalize${prefix.slice(0, -1)}${
         this.typeUpper
@@ -170,7 +170,7 @@ class MappingGenerator {
 
 const eventMappingGenerator = new MappingGenerator(
   "../types/events.ts",
-  ["Balances.", "Staking.", "System."],
+  ["Balances.", "Staking.", "System.", "Contracts."],
   TransactionType.Event
 );
 eventMappingGenerator.generateMappings();
