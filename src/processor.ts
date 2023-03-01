@@ -13,7 +13,7 @@ import {
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `http://127.0.0.1:8765/graphql`,
+    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
   })
   .addEvent("*", {
     data: {
