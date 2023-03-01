@@ -2,9 +2,9 @@ import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { EventNorm } from "./model";
 import {
-  normalizeBalancesEventArgs,
-  normalizeStakingEventArgs,
-  normalizeSystemEventArgs,
+  normalizeBalancesEventsArgs,
+  normalizeStakingEventsArgs,
+  normalizeSystemEventsArgs,
 } from "./mappings";
 
 // Avoid type errors when serializing BigInts
@@ -40,13 +40,13 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         let args;
         switch (true) {
           case item.event.name.startsWith("Balances."):
-            args = normalizeBalancesEventArgs(ctx, item.event);
+            args = normalizeBalancesEventsArgs(ctx, item.event);
             break;
           case item.event.name.startsWith("Staking."):
-            args = normalizeStakingEventArgs(ctx, item.event);
+            args = normalizeStakingEventsArgs(ctx, item.event);
             break;
           case item.event.name.startsWith("System."):
-            args = normalizeSystemEventArgs(ctx, item.event);
+            args = normalizeSystemEventsArgs(ctx, item.event);
             break;
         }
 
