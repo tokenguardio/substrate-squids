@@ -1,3 +1,2 @@
-export * from "./balances";
-export * from "./staking";
-export * from "./system";
+export * from "./events/system";
+export * from "./events/balances";
