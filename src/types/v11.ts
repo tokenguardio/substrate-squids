@@ -1,74 +1,6 @@
 import type {Result, Option} from './support'
 
-export type Type_32 = Type_32_Ok | Type_32_Err
-
-export interface Type_32_Ok {
-    __kind: 'Ok'
-}
-
-export interface Type_32_Err {
-    __kind: 'Err'
-    value: DispatchError
-}
-
-export interface Timepoint {
-    height: number
-    index: number
-}
-
-export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional
-
-export interface DispatchError_Other {
-    __kind: 'Other'
-}
-
-export interface DispatchError_CannotLookup {
-    __kind: 'CannotLookup'
-}
-
-export interface DispatchError_BadOrigin {
-    __kind: 'BadOrigin'
-}
-
-export interface DispatchError_Module {
-    __kind: 'Module'
-    value: ModuleError
-}
-
-export interface DispatchError_ConsumerRemaining {
-    __kind: 'ConsumerRemaining'
-}
-
-export interface DispatchError_NoProviders {
-    __kind: 'NoProviders'
-}
-
-export interface DispatchError_TooManyConsumers {
-    __kind: 'TooManyConsumers'
-}
-
-export interface DispatchError_Token {
-    __kind: 'Token'
-    value: TokenError
-}
-
-export interface DispatchError_Arithmetic {
-    __kind: 'Arithmetic'
-    value: ArithmeticError
-}
-
-export interface DispatchError_Transactional {
-    __kind: 'Transactional'
-    value: TransactionalError
-}
-
-export interface DispatchInfo {
-    weight: bigint
-    class: DispatchClass
-    paysFee: Pays
-}
-
-export type Call = Call_System | Call_Timestamp | Call_Balances | Call_Scheduler | Call_CompanyReserve | Call_InternationalReserve | Call_UsaReserve | Call_Vesting | Call_Mandate | Call_TechnicalCommittee | Call_TechnicalMembership | Call_Authorship | Call_ValidatorsSet | Call_Poa | Call_Session | Call_ParachainSystem | Call_ParachainInfo | Call_CumulusXcm | Call_Utility | Call_Multisig | Call_Uniques | Call_Preimage | Call_EmergencyShutdown | Call_Allocations | Call_AllocationsOracles
+export type Call = Call_System | Call_Timestamp | Call_Balances | Call_Scheduler | Call_CompanyReserve | Call_InternationalReserve | Call_UsaReserve | Call_Vesting | Call_Mandate | Call_TechnicalCommittee | Call_TechnicalMembership | Call_Authorship | Call_ValidatorsSet | Call_Poa | Call_Session | Call_ParachainSystem | Call_ParachainInfo | Call_CumulusXcm | Call_Utility | Call_Multisig | Call_Uniques | Call_Preimage | Call_Allocations | Call_AllocationsOracles
 
 export interface Call_System {
     __kind: 'System'
@@ -180,11 +112,6 @@ export interface Call_Preimage {
     value: PreimageCall
 }
 
-export interface Call_EmergencyShutdown {
-    __kind: 'EmergencyShutdown'
-    value: EmergencyShutdownCall
-}
-
 export interface Call_Allocations {
     __kind: 'Allocations'
     value: AllocationsCall
@@ -205,6 +132,28 @@ export interface MaybeHashed_Value {
 export interface MaybeHashed_Hash {
     __kind: 'Hash'
     value: Uint8Array
+}
+
+export type OriginCaller = OriginCaller_system | OriginCaller_TechnicalCommittee | OriginCaller_CumulusXcm | OriginCaller_Void
+
+export interface OriginCaller_system {
+    __kind: 'system'
+    value: RawOrigin
+}
+
+export interface OriginCaller_TechnicalCommittee {
+    __kind: 'TechnicalCommittee'
+    value: Type_153
+}
+
+export interface OriginCaller_CumulusXcm {
+    __kind: 'CumulusXcm'
+    value: Origin
+}
+
+export interface OriginCaller_Void {
+    __kind: 'Void'
+    value: Void
 }
 
 export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
@@ -232,117 +181,6 @@ export interface MultiAddress_Address32 {
 export interface MultiAddress_Address20 {
     __kind: 'Address20'
     value: Uint8Array
-}
-
-export interface DestroyWitness {
-    instances: number
-    instanceMetadatas: number
-    attributes: number
-}
-
-export type OriginCaller = OriginCaller_system | OriginCaller_TechnicalCommittee | OriginCaller_CumulusXcm | OriginCaller_Void
-
-export interface OriginCaller_system {
-    __kind: 'system'
-    value: RawOrigin
-}
-
-export interface OriginCaller_TechnicalCommittee {
-    __kind: 'TechnicalCommittee'
-    value: Type_156
-}
-
-export interface OriginCaller_CumulusXcm {
-    __kind: 'CumulusXcm'
-    value: Origin
-}
-
-export interface OriginCaller_Void {
-    __kind: 'Void'
-    value: Void
-}
-
-export interface ModuleError {
-    index: number
-    error: Uint8Array
-}
-
-export type TokenError = TokenError_NoFunds | TokenError_WouldDie | TokenError_BelowMinimum | TokenError_CannotCreate | TokenError_UnknownAsset | TokenError_Frozen | TokenError_Unsupported
-
-export interface TokenError_NoFunds {
-    __kind: 'NoFunds'
-}
-
-export interface TokenError_WouldDie {
-    __kind: 'WouldDie'
-}
-
-export interface TokenError_BelowMinimum {
-    __kind: 'BelowMinimum'
-}
-
-export interface TokenError_CannotCreate {
-    __kind: 'CannotCreate'
-}
-
-export interface TokenError_UnknownAsset {
-    __kind: 'UnknownAsset'
-}
-
-export interface TokenError_Frozen {
-    __kind: 'Frozen'
-}
-
-export interface TokenError_Unsupported {
-    __kind: 'Unsupported'
-}
-
-export type ArithmeticError = ArithmeticError_Underflow | ArithmeticError_Overflow | ArithmeticError_DivisionByZero
-
-export interface ArithmeticError_Underflow {
-    __kind: 'Underflow'
-}
-
-export interface ArithmeticError_Overflow {
-    __kind: 'Overflow'
-}
-
-export interface ArithmeticError_DivisionByZero {
-    __kind: 'DivisionByZero'
-}
-
-export type TransactionalError = TransactionalError_LimitReached | TransactionalError_NoLayer
-
-export interface TransactionalError_LimitReached {
-    __kind: 'LimitReached'
-}
-
-export interface TransactionalError_NoLayer {
-    __kind: 'NoLayer'
-}
-
-export type DispatchClass = DispatchClass_Normal | DispatchClass_Operational | DispatchClass_Mandatory
-
-export interface DispatchClass_Normal {
-    __kind: 'Normal'
-}
-
-export interface DispatchClass_Operational {
-    __kind: 'Operational'
-}
-
-export interface DispatchClass_Mandatory {
-    __kind: 'Mandatory'
-}
-
-export type Pays = Pays_Yes | Pays_No
-
-export interface Pays_Yes {
-    __kind: 'Yes'
-}
-
-export interface Pays_No {
-    __kind: 'No'
 }
 
 /**
@@ -766,7 +604,7 @@ export interface UsaReserveCall_apply_as {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type VestingCall = VestingCall_claim | VestingCall_add_vesting_schedule | VestingCall_cancel_all_vesting_schedules | VestingCall_overwrite_vesting_schedules
+export type VestingCall = VestingCall_claim | VestingCall_add_vesting_schedule | VestingCall_cancel_all_vesting_schedules
 
 /**
  * Claim funds that have been vested so far
@@ -794,17 +632,6 @@ export interface VestingCall_cancel_all_vesting_schedules {
     __kind: 'cancel_all_vesting_schedules'
     who: MultiAddress
     fundsCollector: MultiAddress
-    limitToFreeBalance: boolean
-}
-
-/**
- * Overwite all the vesting schedules for the given user. This will adjust
- * the amount of locked coins for the given user.
- */
-export interface VestingCall_overwrite_vesting_schedules {
-    __kind: 'overwrite_vesting_schedules'
-    who: MultiAddress
-    newSchedules: VestingSchedule[]
 }
 
 /**
@@ -2099,22 +1926,21 @@ export interface PreimageCall_unrequest_preimage {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type EmergencyShutdownCall = EmergencyShutdownCall_toggle
+export type AllocationsCall = AllocationsCall_batch | AllocationsCall_allocate
 
 /**
- * Toggle the shutdown state if authorized to do so.
+ * Optimized allocation call, which will batch allocations of various amounts
+ * and destinations and together. This allow us to be much more efficient and thus
+ * increase our chain's capacity in handling these transactions.
  */
-export interface EmergencyShutdownCall_toggle {
-    __kind: 'toggle'
+export interface AllocationsCall_batch {
+    __kind: 'batch'
+    batch: [Uint8Array, bigint][]
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
- */
-export type AllocationsCall = AllocationsCall_allocate
-
-/**
- * Can only be called by an oracle, trigger a coin creation and an event
+ * Can only be called by an oracle, trigger a token mint and dispatch to
+ * `amount`, minus protocol fees
  */
 export interface AllocationsCall_allocate {
     __kind: 'allocate'
@@ -2218,19 +2044,19 @@ export interface RawOrigin_None {
     __kind: 'None'
 }
 
-export type Type_156 = Type_156_Members | Type_156_Member | Type_156__Phantom
+export type Type_153 = Type_153_Members | Type_153_Member | Type_153__Phantom
 
-export interface Type_156_Members {
+export interface Type_153_Members {
     __kind: 'Members'
     value: [number, number]
 }
 
-export interface Type_156_Member {
+export interface Type_153_Member {
     __kind: 'Member'
     value: Uint8Array
 }
 
-export interface Type_156__Phantom {
+export interface Type_153__Phantom {
     __kind: '_Phantom'
 }
 
@@ -2271,6 +2097,17 @@ export interface ParachainInherentData {
     relayChainState: StorageProof
     downwardMessages: InboundDownwardMessage[]
     horizontalMessages: [number, InboundHrmpMessage[]][]
+}
+
+export interface Timepoint {
+    height: number
+    index: number
+}
+
+export interface DestroyWitness {
+    instances: number
+    instanceMetadatas: number
+    attributes: number
 }
 
 export interface Digest {

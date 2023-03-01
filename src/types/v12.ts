@@ -1,21 +1,5 @@
 import type {Result, Option} from './support'
 
-export type Type_32 = Type_32_Ok | Type_32_Err
-
-export interface Type_32_Ok {
-    __kind: 'Ok'
-}
-
-export interface Type_32_Err {
-    __kind: 'Err'
-    value: DispatchError
-}
-
-export interface Timepoint {
-    height: number
-    index: number
-}
-
 export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional
 
 export interface DispatchError_Other {
@@ -62,13 +46,7 @@ export interface DispatchError_Transactional {
     value: TransactionalError
 }
 
-export interface DispatchInfo {
-    weight: bigint
-    class: DispatchClass
-    paysFee: Pays
-}
-
-export type Call = Call_System | Call_Timestamp | Call_Balances | Call_Scheduler | Call_CompanyReserve | Call_InternationalReserve | Call_UsaReserve | Call_Vesting | Call_Mandate | Call_TechnicalCommittee | Call_TechnicalMembership | Call_Authorship | Call_ValidatorsSet | Call_Poa | Call_Session | Call_ParachainSystem | Call_ParachainInfo | Call_CumulusXcm | Call_Utility | Call_Multisig | Call_Uniques | Call_Preimage | Call_EmergencyShutdown | Call_Allocations | Call_AllocationsOracles
+export type Call = Call_System | Call_Timestamp | Call_Balances | Call_Scheduler | Call_CompanyReserve | Call_InternationalReserve | Call_UsaReserve | Call_Vesting | Call_Mandate | Call_TechnicalCommittee | Call_TechnicalMembership | Call_Authorship | Call_ValidatorsSet | Call_Poa | Call_Session | Call_ParachainSystem | Call_ParachainInfo | Call_CumulusXcm | Call_Utility | Call_Multisig | Call_Uniques | Call_Preimage | Call_Allocations | Call_AllocationsOracles
 
 export interface Call_System {
     __kind: 'System'
@@ -180,11 +158,6 @@ export interface Call_Preimage {
     value: PreimageCall
 }
 
-export interface Call_EmergencyShutdown {
-    __kind: 'EmergencyShutdown'
-    value: EmergencyShutdownCall
-}
-
 export interface Call_Allocations {
     __kind: 'Allocations'
     value: AllocationsCall
@@ -235,8 +208,8 @@ export interface MultiAddress_Address20 {
 }
 
 export interface DestroyWitness {
-    instances: number
-    instanceMetadatas: number
+    items: number
+    itemMetadatas: number
     attributes: number
 }
 
@@ -249,7 +222,7 @@ export interface OriginCaller_system {
 
 export interface OriginCaller_TechnicalCommittee {
     __kind: 'TechnicalCommittee'
-    value: Type_156
+    value: Type_152
 }
 
 export interface OriginCaller_CumulusXcm {
@@ -319,30 +292,6 @@ export interface TransactionalError_LimitReached {
 
 export interface TransactionalError_NoLayer {
     __kind: 'NoLayer'
-}
-
-export type DispatchClass = DispatchClass_Normal | DispatchClass_Operational | DispatchClass_Mandatory
-
-export interface DispatchClass_Normal {
-    __kind: 'Normal'
-}
-
-export interface DispatchClass_Operational {
-    __kind: 'Operational'
-}
-
-export interface DispatchClass_Mandatory {
-    __kind: 'Mandatory'
-}
-
-export type Pays = Pays_Yes | Pays_No
-
-export interface Pays_Yes {
-    __kind: 'Yes'
-}
-
-export interface Pays_No {
-    __kind: 'No'
 }
 
 /**
@@ -766,7 +715,7 @@ export interface UsaReserveCall_apply_as {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type VestingCall = VestingCall_claim | VestingCall_add_vesting_schedule | VestingCall_cancel_all_vesting_schedules | VestingCall_overwrite_vesting_schedules
+export type VestingCall = VestingCall_claim | VestingCall_add_vesting_schedule | VestingCall_cancel_all_vesting_schedules
 
 /**
  * Claim funds that have been vested so far
@@ -794,17 +743,6 @@ export interface VestingCall_cancel_all_vesting_schedules {
     __kind: 'cancel_all_vesting_schedules'
     who: MultiAddress
     fundsCollector: MultiAddress
-    limitToFreeBalance: boolean
-}
-
-/**
- * Overwite all the vesting schedules for the given user. This will adjust
- * the amount of locked coins for the given user.
- */
-export interface VestingCall_overwrite_vesting_schedules {
-    __kind: 'overwrite_vesting_schedules'
-    who: MultiAddress
-    newSchedules: VestingSchedule[]
 }
 
 /**
@@ -1284,7 +1222,7 @@ export type CumulusXcmCall = never
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative | UtilityCall_batch_all | UtilityCall_dispatch_as
+export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative | UtilityCall_batch_all | UtilityCall_dispatch_as | UtilityCall_force_batch
 
 /**
  * Send a batch of dispatch calls.
@@ -1370,6 +1308,27 @@ export interface UtilityCall_dispatch_as {
     __kind: 'dispatch_as'
     asOrigin: OriginCaller
     call: Call
+}
+
+/**
+ * Send a batch of dispatch calls.
+ * Unlike `batch`, it allows errors and won't interrupt.
+ * 
+ * May be called from any origin.
+ * 
+ * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+ *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+ * 
+ * If origin is root then call are dispatch without checking origin filter. (This includes
+ * bypassing `frame_system::Config::BaseCallFilter`).
+ * 
+ * # <weight>
+ * - Complexity: O(C) where C is the number of calls to be batched.
+ * # </weight>
+ */
+export interface UtilityCall_force_batch {
+    __kind: 'force_batch'
+    calls: Call[]
 }
 
 /**
@@ -1543,21 +1502,21 @@ export interface MultisigCall_cancel_as_multi {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type UniquesCall = UniquesCall_create | UniquesCall_force_create | UniquesCall_destroy | UniquesCall_mint | UniquesCall_burn | UniquesCall_transfer | UniquesCall_redeposit | UniquesCall_freeze | UniquesCall_thaw | UniquesCall_freeze_class | UniquesCall_thaw_class | UniquesCall_transfer_ownership | UniquesCall_set_team | UniquesCall_approve_transfer | UniquesCall_cancel_approval | UniquesCall_force_asset_status | UniquesCall_set_attribute | UniquesCall_clear_attribute | UniquesCall_set_metadata | UniquesCall_clear_metadata | UniquesCall_set_class_metadata | UniquesCall_clear_class_metadata | UniquesCall_set_accept_ownership
+export type UniquesCall = UniquesCall_create | UniquesCall_force_create | UniquesCall_destroy | UniquesCall_mint | UniquesCall_burn | UniquesCall_transfer | UniquesCall_redeposit | UniquesCall_freeze | UniquesCall_thaw | UniquesCall_freeze_collection | UniquesCall_thaw_collection | UniquesCall_transfer_ownership | UniquesCall_set_team | UniquesCall_approve_transfer | UniquesCall_cancel_approval | UniquesCall_force_item_status | UniquesCall_set_attribute | UniquesCall_clear_attribute | UniquesCall_set_metadata | UniquesCall_clear_metadata | UniquesCall_set_collection_metadata | UniquesCall_clear_collection_metadata | UniquesCall_set_accept_ownership | UniquesCall_set_collection_max_supply
 
 /**
- * Issue a new class of non-fungible assets from a public origin.
+ * Issue a new collection of non-fungible items from a public origin.
  * 
- * This new asset class has no assets initially and its owner is the origin.
+ * This new collection has no items initially and its owner is the origin.
  * 
  * The origin must be Signed and the sender must have sufficient funds free.
  * 
- * `AssetDeposit` funds of sender are reserved.
+ * `ItemDeposit` funds of sender are reserved.
  * 
  * Parameters:
- * - `class`: The identifier of the new asset class. This must not be currently in use.
- * - `admin`: The admin of this class of assets. The admin is the initial address of each
- * member of the asset class's admin team.
+ * - `collection`: The identifier of the new collection. This must not be currently in use.
+ * - `admin`: The admin of this collection. The admin is the initial address of each
+ * member of the collection's admin team.
  * 
  * Emits `Created` event when successful.
  * 
@@ -1565,22 +1524,23 @@ export type UniquesCall = UniquesCall_create | UniquesCall_force_create | Unique
  */
 export interface UniquesCall_create {
     __kind: 'create'
-    class: number
+    collection: number
     admin: MultiAddress
 }
 
 /**
- * Issue a new class of non-fungible assets from a privileged origin.
+ * Issue a new collection of non-fungible items from a privileged origin.
  * 
- * This new asset class has no assets initially.
+ * This new collection has no items initially.
  * 
  * The origin must conform to `ForceOrigin`.
  * 
  * Unlike `create`, no funds are reserved.
  * 
- * - `class`: The identifier of the new asset. This must not be currently in use.
- * - `owner`: The owner of this class of assets. The owner has full superuser permissions
- * over this asset, but may later change and configure the permissions using
+ * - `collection`: The identifier of the new item. This must not be currently in use.
+ * - `owner`: The owner of this collection of items. The owner has full superuser
+ *   permissions
+ * over this item, but may later change and configure the permissions using
  * `transfer_ownership` and `set_team`.
  * 
  * Emits `ForceCreated` event when successful.
@@ -1589,42 +1549,42 @@ export interface UniquesCall_create {
  */
 export interface UniquesCall_force_create {
     __kind: 'force_create'
-    class: number
+    collection: number
     owner: MultiAddress
     freeHolding: boolean
 }
 
 /**
- * Destroy a class of fungible assets.
+ * Destroy a collection of fungible items.
  * 
  * The origin must conform to `ForceOrigin` or must be `Signed` and the sender must be the
- * owner of the asset `class`.
+ * owner of the `collection`.
  * 
- * - `class`: The identifier of the asset class to be destroyed.
- * - `witness`: Information on the instances minted in the asset class. This must be
+ * - `collection`: The identifier of the collection to be destroyed.
+ * - `witness`: Information on the items minted in the collection. This must be
  * correct.
  * 
  * Emits `Destroyed` event when successful.
  * 
  * Weight: `O(n + m)` where:
- * - `n = witness.instances`
- * - `m = witness.instance_metadatas`
+ * - `n = witness.items`
+ * - `m = witness.item_metadatas`
  * - `a = witness.attributes`
  */
 export interface UniquesCall_destroy {
     __kind: 'destroy'
-    class: number
+    collection: number
     witness: DestroyWitness
 }
 
 /**
- * Mint an asset instance of a particular class.
+ * Mint an item of a particular collection.
  * 
- * The origin must be Signed and the sender must be the Issuer of the asset `class`.
+ * The origin must be Signed and the sender must be the Issuer of the `collection`.
  * 
- * - `class`: The class of the asset to be minted.
- * - `instance`: The instance value of the asset to be minted.
- * - `beneficiary`: The initial owner of the minted asset.
+ * - `collection`: The collection of the item to be minted.
+ * - `item`: The item value of the item to be minted.
+ * - `beneficiary`: The initial owner of the minted item.
  * 
  * Emits `Issued` event when successful.
  * 
@@ -1632,20 +1592,20 @@ export interface UniquesCall_destroy {
  */
 export interface UniquesCall_mint {
     __kind: 'mint'
-    class: number
-    instance: number
+    collection: number
+    item: number
     owner: MultiAddress
 }
 
 /**
- * Destroy a single asset instance.
+ * Destroy a single item.
  * 
- * Origin must be Signed and the sender should be the Admin of the asset `class`.
+ * Origin must be Signed and the sender should be the Admin of the `collection`.
  * 
- * - `class`: The class of the asset to be burned.
- * - `instance`: The instance of the asset to be burned.
+ * - `collection`: The collection of the item to be burned.
+ * - `item`: The item of the item to be burned.
  * - `check_owner`: If `Some` then the operation will fail with `WrongOwner` unless the
- *   asset is owned by this value.
+ *   item is owned by this value.
  * 
  * Emits `Burned` with the actual amount burned.
  * 
@@ -1654,23 +1614,23 @@ export interface UniquesCall_mint {
  */
 export interface UniquesCall_burn {
     __kind: 'burn'
-    class: number
-    instance: number
+    collection: number
+    item: number
     checkOwner: (MultiAddress | undefined)
 }
 
 /**
- * Move an asset from the sender account to another.
+ * Move an item from the sender account to another.
  * 
  * Origin must be Signed and the signing account must be either:
- * - the Admin of the asset `class`;
- * - the Owner of the asset `instance`;
- * - the approved delegate for the asset `instance` (in this case, the approval is reset).
+ * - the Admin of the `collection`;
+ * - the Owner of the `item`;
+ * - the approved delegate for the `item` (in this case, the approval is reset).
  * 
  * Arguments:
- * - `class`: The class of the asset to be transferred.
- * - `instance`: The instance of the asset to be transferred.
- * - `dest`: The account to receive ownership of the asset.
+ * - `collection`: The collection of the item to be transferred.
+ * - `item`: The item of the item to be transferred.
+ * - `dest`: The account to receive ownership of the item.
  * 
  * Emits `Transferred`.
  * 
@@ -1678,43 +1638,43 @@ export interface UniquesCall_burn {
  */
 export interface UniquesCall_transfer {
     __kind: 'transfer'
-    class: number
-    instance: number
+    collection: number
+    item: number
     dest: MultiAddress
 }
 
 /**
- * Reevaluate the deposits on some assets.
+ * Reevaluate the deposits on some items.
  * 
- * Origin must be Signed and the sender should be the Owner of the asset `class`.
+ * Origin must be Signed and the sender should be the Owner of the `collection`.
  * 
- * - `class`: The class of the asset to be frozen.
- * - `instances`: The instances of the asset class whose deposits will be reevaluated.
+ * - `collection`: The collection to be frozen.
+ * - `items`: The items of the collection whose deposits will be reevaluated.
  * 
- * NOTE: This exists as a best-effort function. Any asset instances which are unknown or
+ * NOTE: This exists as a best-effort function. Any items which are unknown or
  * in the case that the owner account does not have reservable funds to pay for a
- * deposit increase are ignored. Generally the owner isn't going to call this on instances
+ * deposit increase are ignored. Generally the owner isn't going to call this on items
  * whose existing deposit is less than the refreshed deposit as it would only cost them,
  * so it's of little consequence.
  * 
- * It will still return an error in the case that the class is unknown of the signer is
- * not permitted to call it.
+ * It will still return an error in the case that the collection is unknown of the signer
+ * is not permitted to call it.
  * 
- * Weight: `O(instances.len())`
+ * Weight: `O(items.len())`
  */
 export interface UniquesCall_redeposit {
     __kind: 'redeposit'
-    class: number
-    instances: number[]
+    collection: number
+    items: number[]
 }
 
 /**
- * Disallow further unprivileged transfer of an asset instance.
+ * Disallow further unprivileged transfer of an item.
  * 
- * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+ * Origin must be Signed and the sender should be the Freezer of the `collection`.
  * 
- * - `class`: The class of the asset to be frozen.
- * - `instance`: The instance of the asset to be frozen.
+ * - `collection`: The collection of the item to be frozen.
+ * - `item`: The item of the item to be frozen.
  * 
  * Emits `Frozen`.
  * 
@@ -1722,17 +1682,17 @@ export interface UniquesCall_redeposit {
  */
 export interface UniquesCall_freeze {
     __kind: 'freeze'
-    class: number
-    instance: number
+    collection: number
+    item: number
 }
 
 /**
- * Re-allow unprivileged transfer of an asset instance.
+ * Re-allow unprivileged transfer of an item.
  * 
- * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+ * Origin must be Signed and the sender should be the Freezer of the `collection`.
  * 
- * - `class`: The class of the asset to be thawed.
- * - `instance`: The instance of the asset to be thawed.
+ * - `collection`: The collection of the item to be thawed.
+ * - `item`: The item of the item to be thawed.
  * 
  * Emits `Thawed`.
  * 
@@ -1740,50 +1700,50 @@ export interface UniquesCall_freeze {
  */
 export interface UniquesCall_thaw {
     __kind: 'thaw'
-    class: number
-    instance: number
+    collection: number
+    item: number
 }
 
 /**
- * Disallow further unprivileged transfers for a whole asset class.
+ * Disallow further unprivileged transfers for a whole collection.
  * 
- * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+ * Origin must be Signed and the sender should be the Freezer of the `collection`.
  * 
- * - `class`: The asset class to be frozen.
+ * - `collection`: The collection to be frozen.
  * 
- * Emits `ClassFrozen`.
+ * Emits `CollectionFrozen`.
  * 
  * Weight: `O(1)`
  */
-export interface UniquesCall_freeze_class {
-    __kind: 'freeze_class'
-    class: number
+export interface UniquesCall_freeze_collection {
+    __kind: 'freeze_collection'
+    collection: number
 }
 
 /**
- * Re-allow unprivileged transfers for a whole asset class.
+ * Re-allow unprivileged transfers for a whole collection.
  * 
- * Origin must be Signed and the sender should be the Admin of the asset `class`.
+ * Origin must be Signed and the sender should be the Admin of the `collection`.
  * 
- * - `class`: The class to be thawed.
+ * - `collection`: The collection to be thawed.
  * 
- * Emits `ClassThawed`.
+ * Emits `CollectionThawed`.
  * 
  * Weight: `O(1)`
  */
-export interface UniquesCall_thaw_class {
-    __kind: 'thaw_class'
-    class: number
+export interface UniquesCall_thaw_collection {
+    __kind: 'thaw_collection'
+    collection: number
 }
 
 /**
- * Change the Owner of an asset class.
+ * Change the Owner of a collection.
  * 
- * Origin must be Signed and the sender should be the Owner of the asset `class`.
+ * Origin must be Signed and the sender should be the Owner of the `collection`.
  * 
- * - `class`: The asset class whose owner should be changed.
- * - `owner`: The new Owner of this asset class. They must have called
- *   `set_accept_ownership` with `class` in order for this operation to succeed.
+ * - `collection`: The collection whose owner should be changed.
+ * - `owner`: The new Owner of this collection. They must have called
+ *   `set_accept_ownership` with `collection` in order for this operation to succeed.
  * 
  * Emits `OwnerChanged`.
  * 
@@ -1791,19 +1751,19 @@ export interface UniquesCall_thaw_class {
  */
 export interface UniquesCall_transfer_ownership {
     __kind: 'transfer_ownership'
-    class: number
+    collection: number
     owner: MultiAddress
 }
 
 /**
- * Change the Issuer, Admin and Freezer of an asset class.
+ * Change the Issuer, Admin and Freezer of a collection.
  * 
- * Origin must be Signed and the sender should be the Owner of the asset `class`.
+ * Origin must be Signed and the sender should be the Owner of the `collection`.
  * 
- * - `class`: The asset class whose team should be changed.
- * - `issuer`: The new Issuer of this asset class.
- * - `admin`: The new Admin of this asset class.
- * - `freezer`: The new Freezer of this asset class.
+ * - `collection`: The collection whose team should be changed.
+ * - `issuer`: The new Issuer of this collection.
+ * - `admin`: The new Admin of this collection.
+ * - `freezer`: The new Freezer of this collection.
  * 
  * Emits `TeamChanged`.
  * 
@@ -1811,20 +1771,20 @@ export interface UniquesCall_transfer_ownership {
  */
 export interface UniquesCall_set_team {
     __kind: 'set_team'
-    class: number
+    collection: number
     issuer: MultiAddress
     admin: MultiAddress
     freezer: MultiAddress
 }
 
 /**
- * Approve an instance to be transferred by a delegated third-party account.
+ * Approve an item to be transferred by a delegated third-party account.
  * 
- * Origin must be Signed and must be the owner of the asset `instance`.
+ * Origin must be Signed and must be the owner of the `item`.
  * 
- * - `class`: The class of the asset to be approved for delegated transfer.
- * - `instance`: The instance of the asset to be approved for delegated transfer.
- * - `delegate`: The account to delegate permission to transfer the asset.
+ * - `collection`: The collection of the item to be approved for delegated transfer.
+ * - `item`: The item of the item to be approved for delegated transfer.
+ * - `delegate`: The account to delegate permission to transfer the item.
  * 
  * Emits `ApprovedTransfer` on success.
  * 
@@ -1832,22 +1792,22 @@ export interface UniquesCall_set_team {
  */
 export interface UniquesCall_approve_transfer {
     __kind: 'approve_transfer'
-    class: number
-    instance: number
+    collection: number
+    item: number
     delegate: MultiAddress
 }
 
 /**
- * Cancel the prior approval for the transfer of an asset by a delegate.
+ * Cancel the prior approval for the transfer of an item by a delegate.
  * 
  * Origin must be either:
  * - the `Force` origin;
- * - `Signed` with the signer being the Admin of the asset `class`;
- * - `Signed` with the signer being the Owner of the asset `instance`;
+ * - `Signed` with the signer being the Admin of the `collection`;
+ * - `Signed` with the signer being the Owner of the `item`;
  * 
  * Arguments:
- * - `class`: The class of the asset of whose approval will be cancelled.
- * - `instance`: The instance of the asset of whose approval will be cancelled.
+ * - `collection`: The collection of the item of whose approval will be cancelled.
+ * - `item`: The item of the item of whose approval will be cancelled.
  * - `maybe_check_delegate`: If `Some` will ensure that the given account is the one to
  *   which permission of transfer is delegated.
  * 
@@ -1857,33 +1817,32 @@ export interface UniquesCall_approve_transfer {
  */
 export interface UniquesCall_cancel_approval {
     __kind: 'cancel_approval'
-    class: number
-    instance: number
+    collection: number
+    item: number
     maybeCheckDelegate: (MultiAddress | undefined)
 }
 
 /**
- * Alter the attributes of a given asset.
+ * Alter the attributes of a given item.
  * 
  * Origin must be `ForceOrigin`.
  * 
- * - `class`: The identifier of the asset.
- * - `owner`: The new Owner of this asset.
- * - `issuer`: The new Issuer of this asset.
- * - `admin`: The new Admin of this asset.
- * - `freezer`: The new Freezer of this asset.
- * - `free_holding`: Whether a deposit is taken for holding an instance of this asset
- *   class.
- * - `is_frozen`: Whether this asset class is frozen except for permissioned/admin
+ * - `collection`: The identifier of the item.
+ * - `owner`: The new Owner of this item.
+ * - `issuer`: The new Issuer of this item.
+ * - `admin`: The new Admin of this item.
+ * - `freezer`: The new Freezer of this item.
+ * - `free_holding`: Whether a deposit is taken for holding an item of this collection.
+ * - `is_frozen`: Whether this collection is frozen except for permissioned/admin
  * instructions.
  * 
- * Emits `AssetStatusChanged` with the identity of the asset.
+ * Emits `ItemStatusChanged` with the identity of the item.
  * 
  * Weight: `O(1)`
  */
-export interface UniquesCall_force_asset_status {
-    __kind: 'force_asset_status'
-    class: number
+export interface UniquesCall_force_item_status {
+    __kind: 'force_item_status'
+    collection: number
     owner: MultiAddress
     issuer: MultiAddress
     admin: MultiAddress
@@ -1893,17 +1852,17 @@ export interface UniquesCall_force_asset_status {
 }
 
 /**
- * Set an attribute for an asset class or instance.
+ * Set an attribute for a collection or item.
  * 
  * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `class`.
+ * `collection`.
  * 
  * If the origin is Signed, then funds of signer are reserved according to the formula:
  * `MetadataDepositBase + DepositPerByte * (key.len + value.len)` taking into
  * account any already reserved funds.
  * 
- * - `class`: The identifier of the asset class whose instance's metadata to set.
- * - `maybe_instance`: The identifier of the asset instance whose metadata to set.
+ * - `collection`: The identifier of the collection whose item's metadata to set.
+ * - `maybe_item`: The identifier of the item whose metadata to set.
  * - `key`: The key of the attribute.
  * - `value`: The value to which to set the attribute.
  * 
@@ -1913,22 +1872,22 @@ export interface UniquesCall_force_asset_status {
  */
 export interface UniquesCall_set_attribute {
     __kind: 'set_attribute'
-    class: number
-    maybeInstance: (number | undefined)
+    collection: number
+    maybeItem: (number | undefined)
     key: Uint8Array
     value: Uint8Array
 }
 
 /**
- * Clear an attribute for an asset class or instance.
+ * Clear an attribute for a collection or item.
  * 
  * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `class`.
+ * `collection`.
  * 
- * Any deposit is freed for the asset class owner.
+ * Any deposit is freed for the collection's owner.
  * 
- * - `class`: The identifier of the asset class whose instance's metadata to clear.
- * - `maybe_instance`: The identifier of the asset instance whose metadata to clear.
+ * - `collection`: The identifier of the collection whose item's metadata to clear.
+ * - `maybe_item`: The identifier of the item whose metadata to clear.
  * - `key`: The key of the attribute.
  * 
  * Emits `AttributeCleared`.
@@ -1937,24 +1896,24 @@ export interface UniquesCall_set_attribute {
  */
 export interface UniquesCall_clear_attribute {
     __kind: 'clear_attribute'
-    class: number
-    maybeInstance: (number | undefined)
+    collection: number
+    maybeItem: (number | undefined)
     key: Uint8Array
 }
 
 /**
- * Set the metadata for an asset instance.
+ * Set the metadata for an item.
  * 
  * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `class`.
+ * `collection`.
  * 
  * If the origin is Signed, then funds of signer are reserved according to the formula:
  * `MetadataDepositBase + DepositPerByte * data.len` taking into
  * account any already reserved funds.
  * 
- * - `class`: The identifier of the asset class whose instance's metadata to set.
- * - `instance`: The identifier of the asset instance whose metadata to set.
- * - `data`: The general information of this asset. Limited in length by `StringLimit`.
+ * - `collection`: The identifier of the collection whose item's metadata to set.
+ * - `item`: The identifier of the item whose metadata to set.
+ * - `data`: The general information of this item. Limited in length by `StringLimit`.
  * - `is_frozen`: Whether the metadata should be frozen against further changes.
  * 
  * Emits `MetadataSet`.
@@ -1963,22 +1922,22 @@ export interface UniquesCall_clear_attribute {
  */
 export interface UniquesCall_set_metadata {
     __kind: 'set_metadata'
-    class: number
-    instance: number
+    collection: number
+    item: number
     data: Uint8Array
     isFrozen: boolean
 }
 
 /**
- * Clear the metadata for an asset instance.
+ * Clear the metadata for an item.
  * 
  * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `instance`.
+ * `item`.
  * 
- * Any deposit is freed for the asset class owner.
+ * Any deposit is freed for the collection's owner.
  * 
- * - `class`: The identifier of the asset class whose instance's metadata to clear.
- * - `instance`: The identifier of the asset instance whose metadata to clear.
+ * - `collection`: The identifier of the collection whose item's metadata to clear.
+ * - `item`: The identifier of the item whose metadata to clear.
  * 
  * Emits `MetadataCleared`.
  * 
@@ -1986,69 +1945,88 @@ export interface UniquesCall_set_metadata {
  */
 export interface UniquesCall_clear_metadata {
     __kind: 'clear_metadata'
-    class: number
-    instance: number
+    collection: number
+    item: number
 }
 
 /**
- * Set the metadata for an asset class.
+ * Set the metadata for a collection.
  * 
  * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
- * the asset `class`.
+ * the `collection`.
  * 
  * If the origin is `Signed`, then funds of signer are reserved according to the formula:
  * `MetadataDepositBase + DepositPerByte * data.len` taking into
  * account any already reserved funds.
  * 
- * - `class`: The identifier of the asset whose metadata to update.
- * - `data`: The general information of this asset. Limited in length by `StringLimit`.
+ * - `collection`: The identifier of the item whose metadata to update.
+ * - `data`: The general information of this item. Limited in length by `StringLimit`.
  * - `is_frozen`: Whether the metadata should be frozen against further changes.
  * 
- * Emits `ClassMetadataSet`.
+ * Emits `CollectionMetadataSet`.
  * 
  * Weight: `O(1)`
  */
-export interface UniquesCall_set_class_metadata {
-    __kind: 'set_class_metadata'
-    class: number
+export interface UniquesCall_set_collection_metadata {
+    __kind: 'set_collection_metadata'
+    collection: number
     data: Uint8Array
     isFrozen: boolean
 }
 
 /**
- * Clear the metadata for an asset class.
+ * Clear the metadata for a collection.
  * 
  * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
- * the asset `class`.
+ * the `collection`.
  * 
- * Any deposit is freed for the asset class owner.
+ * Any deposit is freed for the collection's owner.
  * 
- * - `class`: The identifier of the asset class whose metadata to clear.
+ * - `collection`: The identifier of the collection whose metadata to clear.
  * 
- * Emits `ClassMetadataCleared`.
+ * Emits `CollectionMetadataCleared`.
  * 
  * Weight: `O(1)`
  */
-export interface UniquesCall_clear_class_metadata {
-    __kind: 'clear_class_metadata'
-    class: number
+export interface UniquesCall_clear_collection_metadata {
+    __kind: 'clear_collection_metadata'
+    collection: number
 }
 
 /**
  * Set (or reset) the acceptance of ownership for a particular account.
  * 
- * Origin must be `Signed` and if `maybe_class` is `Some`, then the signer must have a
+ * Origin must be `Signed` and if `maybe_collection` is `Some`, then the signer must have a
  * provider reference.
  * 
- * - `maybe_class`: The identifier of the asset class whose ownership the signer is willing
- *   to accept, or if `None`, an indication that the signer is willing to accept no
+ * - `maybe_collection`: The identifier of the collection whose ownership the signer is
+ *   willing to accept, or if `None`, an indication that the signer is willing to accept no
  *   ownership transferal.
  * 
  * Emits `OwnershipAcceptanceChanged`.
  */
 export interface UniquesCall_set_accept_ownership {
     __kind: 'set_accept_ownership'
-    maybeClass: (number | undefined)
+    maybeCollection: (number | undefined)
+}
+
+/**
+ * Set the maximum amount of items a collection could have.
+ * 
+ * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+ * the `collection`.
+ * 
+ * Note: This function can only succeed once per collection.
+ * 
+ * - `collection`: The identifier of the collection to change.
+ * - `max_supply`: The maximum amount of items a collection could have.
+ * 
+ * Emits `CollectionMaxSupplySet` event when successful.
+ */
+export interface UniquesCall_set_collection_max_supply {
+    __kind: 'set_collection_max_supply'
+    collection: number
+    maxSupply: number
 }
 
 /**
@@ -2099,28 +2077,16 @@ export interface PreimageCall_unrequest_preimage {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type EmergencyShutdownCall = EmergencyShutdownCall_toggle
+export type AllocationsCall = AllocationsCall_batch
 
 /**
- * Toggle the shutdown state if authorized to do so.
+ * Optimized allocation call, which will batch allocations of various amounts
+ * and destinations and together. This allow us to be much more efficient and thus
+ * increase our chain's capacity in handling these transactions.
  */
-export interface EmergencyShutdownCall_toggle {
-    __kind: 'toggle'
-}
-
-/**
- * Contains one variant per dispatchable that can be called by an extrinsic.
- */
-export type AllocationsCall = AllocationsCall_allocate
-
-/**
- * Can only be called by an oracle, trigger a coin creation and an event
- */
-export interface AllocationsCall_allocate {
-    __kind: 'allocate'
-    to: Uint8Array
-    amount: bigint
-    proof: Uint8Array
+export interface AllocationsCall_batch {
+    __kind: 'batch'
+    batch: [Uint8Array, bigint][]
 }
 
 /**
@@ -2218,19 +2184,19 @@ export interface RawOrigin_None {
     __kind: 'None'
 }
 
-export type Type_156 = Type_156_Members | Type_156_Member | Type_156__Phantom
+export type Type_152 = Type_152_Members | Type_152_Member | Type_152__Phantom
 
-export interface Type_156_Members {
+export interface Type_152_Members {
     __kind: 'Members'
     value: [number, number]
 }
 
-export interface Type_156_Member {
+export interface Type_152_Member {
     __kind: 'Member'
     value: Uint8Array
 }
 
-export interface Type_156__Phantom {
+export interface Type_152__Phantom {
     __kind: '_Phantom'
 }
 
@@ -2271,6 +2237,11 @@ export interface ParachainInherentData {
     relayChainState: StorageProof
     downwardMessages: InboundDownwardMessage[]
     horizontalMessages: [number, InboundHrmpMessage[]][]
+}
+
+export interface Timepoint {
+    height: number
+    index: number
 }
 
 export interface Digest {

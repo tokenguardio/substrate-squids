@@ -1,10 +1,12 @@
 import assert from 'assert'
 import {Chain, ChainContext, CallContext, Call, Result, Option} from './support'
-import * as v5 from './v5'
-import * as v8 from './v8'
+import * as v1 from './v1'
+import * as v6 from './v6'
 import * as v10 from './v10'
+import * as v11 from './v11'
+import * as v12 from './v12'
 
-export class AuthorityAuthorizeCallCall {
+export class AllocationsAllocateCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -12,31 +14,28 @@ export class AuthorityAuthorizeCallCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.authorize_call')
+        assert(call.name === 'Allocations.allocate')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV8(): boolean {
-        return this._chain.getCallHash('Authority.authorize_call') === '185b17b2ae7001047bd6c5effc02340d24e6f4faa6cbf8438a97277a7dfa3cfe'
+    /**
+     * Can only be called by an oracle, trigger a coin creation and an event
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Allocations.allocate') === '50b5b5d128d91e8957a174ed7cf24cfd580ee5a260e7857bff38b47cf622839c'
     }
 
-    get asV8(): {call: v8.CallOf, caller: (Uint8Array | undefined)} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    get isV10(): boolean {
-        return this._chain.getCallHash('Authority.authorize_call') === 'c06aff1eec2bb8d250feb0380556287dc713e26c595f6fd29faf7b9d69b08efd'
-    }
-
-    get asV10(): {call: v10.CallOf, caller: (Uint8Array | undefined)} {
-        assert(this.isV10)
+    /**
+     * Can only be called by an oracle, trigger a coin creation and an event
+     */
+    get asV1(): {to: Uint8Array, amount: bigint, proof: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class AuthorityCancelScheduledDispatchCall {
+export class AllocationsBatchCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -44,28 +43,32 @@ export class AuthorityCancelScheduledDispatchCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.cancel_scheduled_dispatch')
+        assert(call.name === 'Allocations.batch')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Cancel a scheduled dispatchable.
+     * Optimized allocation call, which will batch allocations of various amounts
+     * and destinations and together. This allow us to be much more efficient and thus
+     * increase our chain's capacity in handling these transactions.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Authority.cancel_scheduled_dispatch') === '3df0f1ec93bc2c3ab28f1d219ed04af70dd154aeca26e1e70b98db7223180011'
+    get isV11(): boolean {
+        return this._chain.getCallHash('Allocations.batch') === '51acb25ddffc4b489fa9011bcfb1b450fcf67e683ebd5543748ed3cb0e8d2306'
     }
 
     /**
-     *  Cancel a scheduled dispatchable.
+     * Optimized allocation call, which will batch allocations of various amounts
+     * and destinations and together. This allow us to be much more efficient and thus
+     * increase our chain's capacity in handling these transactions.
      */
-    get asV5(): {initialOrigin: v5.PalletsOrigin, taskId: number} {
-        assert(this.isV5)
+    get asV11(): {batch: [Uint8Array, bigint][]} {
+        assert(this.isV11)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class AuthorityDelayScheduledDispatchCall {
+export class AllocationsOraclesAddMemberCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -73,28 +76,32 @@ export class AuthorityDelayScheduledDispatchCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.delay_scheduled_dispatch')
+        assert(call.name === 'AllocationsOracles.add_member')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Delay a scheduled dispatchable.
+     * Add a member `who` to the set.
+     * 
+     * May only be called from `T::AddOrigin`.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Authority.delay_scheduled_dispatch') === '8c0a3ab08183be1819fd53554db42006002e2db9a333b42aede7779aeded0093'
+    get isV1(): boolean {
+        return this._chain.getCallHash('AllocationsOracles.add_member') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
     }
 
     /**
-     *  Delay a scheduled dispatchable.
+     * Add a member `who` to the set.
+     * 
+     * May only be called from `T::AddOrigin`.
      */
-    get asV5(): {initialOrigin: v5.PalletsOrigin, taskId: number, additionalDelay: number} {
-        assert(this.isV5)
+    get asV1(): {who: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class AuthorityDispatchAsCall {
+export class AllocationsOraclesChangeKeyCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -102,58 +109,36 @@ export class AuthorityDispatchAsCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.dispatch_as')
+        assert(call.name === 'AllocationsOracles.change_key')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Dispatch a dispatchable on behalf of other origin
+     * Swap out the sending member for some other key `new`.
+     * 
+     * May only be called from `Signed` origin of a current member.
+     * 
+     * Prime membership is passed from the origin account to `new`, if extant.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Authority.dispatch_as') === '4a0aff3c081765124ad318844d6d08e6a0efc1fb83f2d9a38f3fb5bc80eb25fb'
+    get isV1(): boolean {
+        return this._chain.getCallHash('AllocationsOracles.change_key') === 'f866dcb3e8857987a2d21e57c13216c10bb21546a718b81d5e2c0989d6e95df7'
     }
 
     /**
-     *  Dispatch a dispatchable on behalf of other origin
+     * Swap out the sending member for some other key `new`.
+     * 
+     * May only be called from `Signed` origin of a current member.
+     * 
+     * Prime membership is passed from the origin account to `new`, if extant.
      */
-    get asV5(): {asOrigin: v5.AsOriginId, call: v5.CallOf} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Dispatch a dispatchable on behalf of other origin
-     */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Authority.dispatch_as') === '47d51609c417b3dddaa6beefc9395436bd23f2e3b2b6551a2bed80751f81428a'
-    }
-
-    /**
-     *  Dispatch a dispatchable on behalf of other origin
-     */
-    get asV8(): {asOrigin: v8.AsOriginId, call: v8.CallOf} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Dispatch a dispatchable on behalf of other origin
-     */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Authority.dispatch_as') === 'd97ec14bf977e0d88b1238d827b4711369e274d93cd8c19cfe07d59eaec22ae5'
-    }
-
-    /**
-     *  Dispatch a dispatchable on behalf of other origin
-     */
-    get asV10(): {asOrigin: v10.AsOriginId, call: v10.CallOf} {
-        assert(this.isV10)
+    get asV1(): {new: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class AuthorityFastTrackScheduledDispatchCall {
+export class AllocationsOraclesClearPrimeCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -161,28 +146,32 @@ export class AuthorityFastTrackScheduledDispatchCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.fast_track_scheduled_dispatch')
+        assert(call.name === 'AllocationsOracles.clear_prime')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Fast track a scheduled dispatchable.
+     * Remove the prime member if it exists.
+     * 
+     * May only be called from `T::PrimeOrigin`.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Authority.fast_track_scheduled_dispatch') === '0eca1092c678bead1f2420be8886c2145d0923f02dc5f694e677cd57ecc66fa4'
+    get isV1(): boolean {
+        return this._chain.getCallHash('AllocationsOracles.clear_prime') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
-     *  Fast track a scheduled dispatchable.
+     * Remove the prime member if it exists.
+     * 
+     * May only be called from `T::PrimeOrigin`.
      */
-    get asV5(): {initialOrigin: v5.PalletsOrigin, taskId: number, when: v5.DispatchTime} {
-        assert(this.isV5)
+    get asV1(): null {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class AuthorityRemoveAuthorizedCallCall {
+export class AllocationsOraclesRemoveMemberCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -190,22 +179,32 @@ export class AuthorityRemoveAuthorizedCallCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.remove_authorized_call')
+        assert(call.name === 'AllocationsOracles.remove_member')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV8(): boolean {
-        return this._chain.getCallHash('Authority.remove_authorized_call') === '19b8576fc9fe9553b0b5ad154324ccae0d0d43fdccbdffddf2bb6066a9b37b5c'
+    /**
+     * Remove a member `who` from the set.
+     * 
+     * May only be called from `T::RemoveOrigin`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('AllocationsOracles.remove_member') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
     }
 
-    get asV8(): {hash: Uint8Array} {
-        assert(this.isV8)
+    /**
+     * Remove a member `who` from the set.
+     * 
+     * May only be called from `T::RemoveOrigin`.
+     */
+    get asV1(): {who: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class AuthorityScheduleDispatchCall {
+export class AllocationsOraclesResetMembersCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -213,64 +212,34 @@ export class AuthorityScheduleDispatchCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.schedule_dispatch')
+        assert(call.name === 'AllocationsOracles.reset_members')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Schedule a dispatchable to be dispatched at later block.
-     *  This is the only way to dispatch a call with `DelayedOrigin`.
+     * Change the membership to a new set, disregarding the existing membership. Be nice and
+     * pass `members` pre-sorted.
+     * 
+     * May only be called from `T::ResetOrigin`.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Authority.schedule_dispatch') === '837cc7495552fd419e914481078656c250bd908aefd08c4b7572c28647c4b0ce'
+    get isV1(): boolean {
+        return this._chain.getCallHash('AllocationsOracles.reset_members') === 'd8adca14f9b9cadeaf2b2e6dd47991d05cb423ce3a00dccbb9efa35e36f5a65a'
     }
 
     /**
-     *  Schedule a dispatchable to be dispatched at later block.
-     *  This is the only way to dispatch a call with `DelayedOrigin`.
+     * Change the membership to a new set, disregarding the existing membership. Be nice and
+     * pass `members` pre-sorted.
+     * 
+     * May only be called from `T::ResetOrigin`.
      */
-    get asV5(): {when: v5.DispatchTime, priority: number, withDelayedOrigin: boolean, call: v5.CallOf} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Schedule a dispatchable to be dispatched at later block.
-     *  This is the only way to dispatch a call with `DelayedOrigin`.
-     */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Authority.schedule_dispatch') === '1ce0f8b0b5d6032c279509f45bd2c8cf5c2d54a5dd78ba111f67c630ee6303e9'
-    }
-
-    /**
-     *  Schedule a dispatchable to be dispatched at later block.
-     *  This is the only way to dispatch a call with `DelayedOrigin`.
-     */
-    get asV8(): {when: v8.DispatchTime, priority: number, withDelayedOrigin: boolean, call: v8.CallOf} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Schedule a dispatchable to be dispatched at later block.
-     *  This is the only way to dispatch a call with `DelayedOrigin`.
-     */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Authority.schedule_dispatch') === 'ea7d8c29f959124f2dde66e9a32bbc6064927b99fea6f0107e009bdcc382e832'
-    }
-
-    /**
-     *  Schedule a dispatchable to be dispatched at later block.
-     *  This is the only way to dispatch a call with `DelayedOrigin`.
-     */
-    get asV10(): {when: v10.DispatchTime, priority: number, withDelayedOrigin: boolean, call: v10.CallOf} {
-        assert(this.isV10)
+    get asV1(): {members: Uint8Array[]} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class AuthorityTriggerCallCall {
+export class AllocationsOraclesSetPrimeCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -278,17 +247,64 @@ export class AuthorityTriggerCallCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Authority.trigger_call')
+        assert(call.name === 'AllocationsOracles.set_prime')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV8(): boolean {
-        return this._chain.getCallHash('Authority.trigger_call') === 'fb4fcc58a3fe75ec19ef1d66270883a4e67f6a449abc80e3ea98b0fe044eeb73'
+    /**
+     * Set the prime member. Must be a current member.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('AllocationsOracles.set_prime') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
     }
 
-    get asV8(): {hash: Uint8Array, callWeightBound: bigint} {
-        assert(this.isV8)
+    /**
+     * Set the prime member. Must be a current member.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get asV1(): {who: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class AllocationsOraclesSwapMemberCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'AllocationsOracles.swap_member')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Swap out one member `remove` for another `add`.
+     * 
+     * May only be called from `T::SwapOrigin`.
+     * 
+     * Prime membership is *not* passed from `remove` to `add`, if extant.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('AllocationsOracles.swap_member') === 'f9cf5ef851567c52b54f359126b80e6fa967b49f082dd77310b8461819cd13df'
+    }
+
+    /**
+     * Swap out one member `remove` for another `add`.
+     * 
+     * May only be called from `T::SwapOrigin`.
+     * 
+     * Prime membership is *not* passed from `remove` to `add`, if extant.
+     */
+    get asV1(): {remove: Uint8Array, add: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -307,130 +323,32 @@ export class AuthorshipSetUnclesCall {
     }
 
     /**
-     *  Provide a set of uncles.
+     * Provide a set of uncles.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Authorship.set_uncles') === 'efd6e78708f873b5d0804d67dee4f6351287add79134d8ee5b59dcfa2a5e21af'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Authorship.set_uncles') === '491502deec691ea043fa56fc39b50b58deab8a6411c511016c06289ee5867611'
     }
 
     /**
-     *  Provide a set of uncles.
+     * Provide a set of uncles.
      */
-    get asV5(): {newUncles: v5.Header[]} {
-        assert(this.isV5)
+    get asV1(): {newUncles: v1.Header[]} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
-}
 
-export class BabePlanConfigChangeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Babe.plan_config_change')
-        this._chain = ctx._chain
-        this.call = call
+    /**
+     * Provide a set of uncles.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('Authorship.set_uncles') === 'cf2d7dac8c8babfdda54dfcca36fda32336dc937b0f1767c6b2332a9b718e0b5'
     }
 
     /**
-     *  Plan an epoch config change. The epoch config change is recorded and will be enacted on
-     *  the next call to `enact_epoch_change`. The config will be activated one epoch after.
-     *  Multiple calls to this method will replace any existing planned config change that had
-     *  not been enacted yet.
+     * Provide a set of uncles.
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Babe.plan_config_change') === '946c3b7711f3b1f220d667d61c273d578be27f354f9dba32bbaa932d9f688173'
-    }
-
-    /**
-     *  Plan an epoch config change. The epoch config change is recorded and will be enacted on
-     *  the next call to `enact_epoch_change`. The config will be activated one epoch after.
-     *  Multiple calls to this method will replace any existing planned config change that had
-     *  not been enacted yet.
-     */
-    get asV8(): {config: v8.NextConfigDescriptor} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class BabeReportEquivocationCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Babe.report_equivocation')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Report authority equivocation/misbehavior. This method will verify
-     *  the equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence will
-     *  be reported.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Babe.report_equivocation') === 'fcf96782e661e8bdc1e552a10118353083fddfff1d09bd4252866b71177bb5da'
-    }
-
-    /**
-     *  Report authority equivocation/misbehavior. This method will verify
-     *  the equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence will
-     *  be reported.
-     */
-    get asV5(): {equivocationProof: v5.BabeEquivocationProof, keyOwnerProof: v5.KeyOwnerProof} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class BabeReportEquivocationUnsignedCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Babe.report_equivocation_unsigned')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Report authority equivocation/misbehavior. This method will verify
-     *  the equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence will
-     *  be reported.
-     *  This extrinsic must be called unsigned and it is expected that only
-     *  block authors will call it (validated in `ValidateUnsigned`), as such
-     *  if the block author is defined it will be defined as the equivocation
-     *  reporter.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Babe.report_equivocation_unsigned') === 'fcf96782e661e8bdc1e552a10118353083fddfff1d09bd4252866b71177bb5da'
-    }
-
-    /**
-     *  Report authority equivocation/misbehavior. This method will verify
-     *  the equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence will
-     *  be reported.
-     *  This extrinsic must be called unsigned and it is expected that only
-     *  block authors will call it (validated in `ValidateUnsigned`), as such
-     *  if the block author is defined it will be defined as the equivocation
-     *  reporter.
-     */
-    get asV5(): {equivocationProof: v5.BabeEquivocationProof, keyOwnerProof: v5.KeyOwnerProof} {
-        assert(this.isV5)
+    get asV6(): {newUncles: v6.Header[]} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -449,27 +367,60 @@ export class BalancesForceTransferCall {
     }
 
     /**
-     *  Exactly as `transfer`, except the origin must be root and the source account may be
-     *  specified.
-     *  # <weight>
-     *  - Same as transfer, but additional read and write because the source account is
-     *    not assumed to be in the overlay.
-     *  # </weight>
+     * Exactly as `transfer`, except the origin must be root and the source account may be
+     * specified.
+     * # <weight>
+     * - Same as transfer, but additional read and write because the source account is not
+     *   assumed to be in the overlay.
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Balances.force_transfer') === '906df11f4f65ebd03a2b87ba248e1fba11c3a0bca42c892bee828bac3ec80348'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Balances.force_transfer') === 'e5944fbe8224a17fe49f9c1d1d01efaf87fb1778fd39618512af54c9ba6f9dff'
     }
 
     /**
-     *  Exactly as `transfer`, except the origin must be root and the source account may be
-     *  specified.
-     *  # <weight>
-     *  - Same as transfer, but additional read and write because the source account is
-     *    not assumed to be in the overlay.
-     *  # </weight>
+     * Exactly as `transfer`, except the origin must be root and the source account may be
+     * specified.
+     * # <weight>
+     * - Same as transfer, but additional read and write because the source account is not
+     *   assumed to be in the overlay.
+     * # </weight>
      */
-    get asV5(): {source: v5.LookupSource, dest: v5.LookupSource, value: bigint} {
-        assert(this.isV5)
+    get asV1(): {source: v1.MultiAddress, dest: v1.MultiAddress, value: bigint} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BalancesForceUnreserveCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.force_unreserve')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Unreserve some balance from a user by force.
+     * 
+     * Can only be called by ROOT.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Balances.force_unreserve') === '30bc48977e2a7ad3fc8ac014948ded50fc54886bad9a1f65b02bb64f27d8a6be'
+    }
+
+    /**
+     * Unreserve some balance from a user by force.
+     * 
+     * Can only be called by ROOT.
+     */
+    get asV1(): {who: v1.MultiAddress, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -488,51 +439,51 @@ export class BalancesSetBalanceCall {
     }
 
     /**
-     *  Set the balances of a given account.
+     * Set the balances of a given account.
      * 
-     *  This will alter `FreeBalance` and `ReservedBalance` in storage. it will
-     *  also decrease the total issuance of the system (`TotalIssuance`).
-     *  If the new free or reserved balance is below the existential deposit,
-     *  it will reset the account nonce (`frame_system::AccountNonce`).
+     * This will alter `FreeBalance` and `ReservedBalance` in storage. it will
+     * also decrease the total issuance of the system (`TotalIssuance`).
+     * If the new free or reserved balance is below the existential deposit,
+     * it will reset the account nonce (`frame_system::AccountNonce`).
      * 
-     *  The dispatch origin for this call is `root`.
+     * The dispatch origin for this call is `root`.
      * 
-     *  # <weight>
-     *  - Independent of the arguments.
-     *  - Contains a limited number of reads and writes.
-     *  ---------------------
-     *  - Base Weight:
-     *      - Creating: 27.56 µs
-     *      - Killing: 35.11 µs
-     *  - DB Weight: 1 Read, 1 Write to `who`
-     *  # </weight>
+     * # <weight>
+     * - Independent of the arguments.
+     * - Contains a limited number of reads and writes.
+     * ---------------------
+     * - Base Weight:
+     *     - Creating: 27.56 µs
+     *     - Killing: 35.11 µs
+     * - DB Weight: 1 Read, 1 Write to `who`
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Balances.set_balance') === '94e2a75e6cd4bfc2ec9211ae3a29870014cac2dd2f37c1f9634b6e4bbef0442f'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Balances.set_balance') === 'beb82909d38c015bc075ff8b107e47a02f8772bf5cf681d6cd84ef685e448a8f'
     }
 
     /**
-     *  Set the balances of a given account.
+     * Set the balances of a given account.
      * 
-     *  This will alter `FreeBalance` and `ReservedBalance` in storage. it will
-     *  also decrease the total issuance of the system (`TotalIssuance`).
-     *  If the new free or reserved balance is below the existential deposit,
-     *  it will reset the account nonce (`frame_system::AccountNonce`).
+     * This will alter `FreeBalance` and `ReservedBalance` in storage. it will
+     * also decrease the total issuance of the system (`TotalIssuance`).
+     * If the new free or reserved balance is below the existential deposit,
+     * it will reset the account nonce (`frame_system::AccountNonce`).
      * 
-     *  The dispatch origin for this call is `root`.
+     * The dispatch origin for this call is `root`.
      * 
-     *  # <weight>
-     *  - Independent of the arguments.
-     *  - Contains a limited number of reads and writes.
-     *  ---------------------
-     *  - Base Weight:
-     *      - Creating: 27.56 µs
-     *      - Killing: 35.11 µs
-     *  - DB Weight: 1 Read, 1 Write to `who`
-     *  # </weight>
+     * # <weight>
+     * - Independent of the arguments.
+     * - Contains a limited number of reads and writes.
+     * ---------------------
+     * - Base Weight:
+     *     - Creating: 27.56 µs
+     *     - Killing: 35.11 µs
+     * - DB Weight: 1 Read, 1 Write to `who`
+     * # </weight>
      */
-    get asV5(): {who: v5.LookupSource, newFree: bigint, newReserved: bigint} {
-        assert(this.isV5)
+    get asV1(): {who: v1.MultiAddress, newFree: bigint, newReserved: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -551,69 +502,71 @@ export class BalancesTransferCall {
     }
 
     /**
-     *  Transfer some liquid free balance to another account.
+     * Transfer some liquid free balance to another account.
      * 
-     *  `transfer` will set the `FreeBalance` of the sender and receiver.
-     *  It will decrease the total issuance of the system by the `TransferFee`.
-     *  If the sender's account is below the existential deposit as a result
-     *  of the transfer, the account will be reaped.
+     * `transfer` will set the `FreeBalance` of the sender and receiver.
+     * It will decrease the total issuance of the system by the `TransferFee`.
+     * If the sender's account is below the existential deposit as a result
+     * of the transfer, the account will be reaped.
      * 
-     *  The dispatch origin for this call must be `Signed` by the transactor.
+     * The dispatch origin for this call must be `Signed` by the transactor.
      * 
-     *  # <weight>
-     *  - Dependent on arguments but not critical, given proper implementations for
-     *    input config types. See related functions below.
-     *  - It contains a limited number of reads and writes internally and no complex computation.
+     * # <weight>
+     * - Dependent on arguments but not critical, given proper implementations for input config
+     *   types. See related functions below.
+     * - It contains a limited number of reads and writes internally and no complex
+     *   computation.
      * 
-     *  Related functions:
+     * Related functions:
      * 
-     *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-     *    - Transferring balances to accounts that did not exist before will cause
-     *       `T::OnNewAccount::on_new_account` to be called.
-     *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-     *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
-     *      check that the transfer will not kill the origin account.
-     *  ---------------------------------
-     *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-     *  - DB Weight: 1 Read and 1 Write to destination account
-     *  - Origin account is already in memory, so no DB operations for them.
-     *  # </weight>
+     *   - `ensure_can_withdraw` is always called internally but has a bounded complexity.
+     *   - Transferring balances to accounts that did not exist before will cause
+     *     `T::OnNewAccount::on_new_account` to be called.
+     *   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
+     *   - `transfer_keep_alive` works the same way as `transfer`, but has an additional check
+     *     that the transfer will not kill the origin account.
+     * ---------------------------------
+     * - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
+     * - DB Weight: 1 Read and 1 Write to destination account
+     * - Origin account is already in memory, so no DB operations for them.
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Balances.transfer') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Balances.transfer') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
     }
 
     /**
-     *  Transfer some liquid free balance to another account.
+     * Transfer some liquid free balance to another account.
      * 
-     *  `transfer` will set the `FreeBalance` of the sender and receiver.
-     *  It will decrease the total issuance of the system by the `TransferFee`.
-     *  If the sender's account is below the existential deposit as a result
-     *  of the transfer, the account will be reaped.
+     * `transfer` will set the `FreeBalance` of the sender and receiver.
+     * It will decrease the total issuance of the system by the `TransferFee`.
+     * If the sender's account is below the existential deposit as a result
+     * of the transfer, the account will be reaped.
      * 
-     *  The dispatch origin for this call must be `Signed` by the transactor.
+     * The dispatch origin for this call must be `Signed` by the transactor.
      * 
-     *  # <weight>
-     *  - Dependent on arguments but not critical, given proper implementations for
-     *    input config types. See related functions below.
-     *  - It contains a limited number of reads and writes internally and no complex computation.
+     * # <weight>
+     * - Dependent on arguments but not critical, given proper implementations for input config
+     *   types. See related functions below.
+     * - It contains a limited number of reads and writes internally and no complex
+     *   computation.
      * 
-     *  Related functions:
+     * Related functions:
      * 
-     *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-     *    - Transferring balances to accounts that did not exist before will cause
-     *       `T::OnNewAccount::on_new_account` to be called.
-     *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-     *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
-     *      check that the transfer will not kill the origin account.
-     *  ---------------------------------
-     *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-     *  - DB Weight: 1 Read and 1 Write to destination account
-     *  - Origin account is already in memory, so no DB operations for them.
-     *  # </weight>
+     *   - `ensure_can_withdraw` is always called internally but has a bounded complexity.
+     *   - Transferring balances to accounts that did not exist before will cause
+     *     `T::OnNewAccount::on_new_account` to be called.
+     *   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
+     *   - `transfer_keep_alive` works the same way as `transfer`, but has an additional check
+     *     that the transfer will not kill the origin account.
+     * ---------------------------------
+     * - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
+     * - DB Weight: 1 Read and 1 Write to destination account
+     * - Origin account is already in memory, so no DB operations for them.
+     * # </weight>
      */
-    get asV5(): {dest: v5.LookupSource, value: bigint} {
-        assert(this.isV5)
+    get asV1(): {dest: v1.MultiAddress, value: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -632,51 +585,49 @@ export class BalancesTransferAllCall {
     }
 
     /**
-     *  Transfer the entire transferable balance from the caller account.
+     * Transfer the entire transferable balance from the caller account.
      * 
-     *  NOTE: This function only attempts to transfer _transferable_ balances. This means that
-     *  any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
-     *  transferred by this function. To ensure that this function results in a killed account,
-     *  you might need to prepare the account by removing any reference counters, storage
-     *  deposits, etc...
+     * NOTE: This function only attempts to transfer _transferable_ balances. This means that
+     * any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
+     * transferred by this function. To ensure that this function results in a killed account,
+     * you might need to prepare the account by removing any reference counters, storage
+     * deposits, etc...
      * 
-     *  The dispatch origin of this call must be Signed.
+     * The dispatch origin of this call must be Signed.
      * 
-     *  - `dest`: The recipient of the transfer.
-     *  - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
-     *    of the funds the account has, causing the sender account to be killed (false), or
-     *    transfer everything except at least the existential deposit, which will guarantee to
-     *    keep the sender account alive (true).
-     *    # <weight>
-     *  - O(1). Just like transfer, but reading the user's transferable balance first.
-     *    #</weight>
+     * - `dest`: The recipient of the transfer.
+     * - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
+     *   of the funds the account has, causing the sender account to be killed (false), or
+     *   transfer everything except at least the existential deposit, which will guarantee to
+     *   keep the sender account alive (true). # <weight>
+     * - O(1). Just like transfer, but reading the user's transferable balance first.
+     *   #</weight>
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Balances.transfer_all') === '56952003e07947f758a9928d8462037abffea6a7fa991c0d3451f5c47d45f254'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Balances.transfer_all') === '9c94c2ca9979f6551af6e123fb6b6ba14d026f862f9a023706f8f88c556b355f'
     }
 
     /**
-     *  Transfer the entire transferable balance from the caller account.
+     * Transfer the entire transferable balance from the caller account.
      * 
-     *  NOTE: This function only attempts to transfer _transferable_ balances. This means that
-     *  any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
-     *  transferred by this function. To ensure that this function results in a killed account,
-     *  you might need to prepare the account by removing any reference counters, storage
-     *  deposits, etc...
+     * NOTE: This function only attempts to transfer _transferable_ balances. This means that
+     * any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
+     * transferred by this function. To ensure that this function results in a killed account,
+     * you might need to prepare the account by removing any reference counters, storage
+     * deposits, etc...
      * 
-     *  The dispatch origin of this call must be Signed.
+     * The dispatch origin of this call must be Signed.
      * 
-     *  - `dest`: The recipient of the transfer.
-     *  - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
-     *    of the funds the account has, causing the sender account to be killed (false), or
-     *    transfer everything except at least the existential deposit, which will guarantee to
-     *    keep the sender account alive (true).
-     *    # <weight>
-     *  - O(1). Just like transfer, but reading the user's transferable balance first.
-     *    #</weight>
+     * - `dest`: The recipient of the transfer.
+     * - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
+     *   of the funds the account has, causing the sender account to be killed (false), or
+     *   transfer everything except at least the existential deposit, which will guarantee to
+     *   keep the sender account alive (true). # <weight>
+     * - O(1). Just like transfer, but reading the user's transferable balance first.
+     *   #</weight>
      */
-    get asV8(): {dest: v8.LookupSource, keepAlive: boolean} {
-        assert(this.isV8)
+    get asV1(): {dest: v1.MultiAddress, keepAlive: boolean} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -695,42 +646,42 @@ export class BalancesTransferKeepAliveCall {
     }
 
     /**
-     *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
-     *  origin account.
+     * Same as the [`transfer`] call, but with a check that the transfer will not kill the
+     * origin account.
      * 
-     *  99% of the time you want [`transfer`] instead.
+     * 99% of the time you want [`transfer`] instead.
      * 
-     *  [`transfer`]: struct.Pallet.html#method.transfer
-     *  # <weight>
-     *  - Cheaper than transfer because account cannot be killed.
-     *  - Base Weight: 51.4 µs
-     *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-     *  #</weight>
+     * [`transfer`]: struct.Pallet.html#method.transfer
+     * # <weight>
+     * - Cheaper than transfer because account cannot be killed.
+     * - Base Weight: 51.4 µs
+     * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
+     * #</weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Balances.transfer_keep_alive') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Balances.transfer_keep_alive') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
     }
 
     /**
-     *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
-     *  origin account.
+     * Same as the [`transfer`] call, but with a check that the transfer will not kill the
+     * origin account.
      * 
-     *  99% of the time you want [`transfer`] instead.
+     * 99% of the time you want [`transfer`] instead.
      * 
-     *  [`transfer`]: struct.Pallet.html#method.transfer
-     *  # <weight>
-     *  - Cheaper than transfer because account cannot be killed.
-     *  - Base Weight: 51.4 µs
-     *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-     *  #</weight>
+     * [`transfer`]: struct.Pallet.html#method.transfer
+     * # <weight>
+     * - Cheaper than transfer because account cannot be killed.
+     * - Base Weight: 51.4 µs
+     * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
+     * #</weight>
      */
-    get asV5(): {dest: v5.LookupSource, value: bigint} {
-        assert(this.isV5)
+    get asV1(): {dest: v1.MultiAddress, value: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class CurrenciesTransferCall {
+export class CompanyReserveApplyAsCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -738,34 +689,88 @@ export class CurrenciesTransferCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Currencies.transfer')
+        assert(call.name === 'CompanyReserve.apply_as')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Transfer some balance to another account under `currency_id`.
-     * 
-     *  The dispatch origin for this call must be `Signed` by the
-     *  transactor.
+     * Dispatch a call as coming from the reserve account
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Currencies.transfer') === 'ebf0782f427386441c7dfbb3ce5ef46de972cded173aca8b4b1fdd38ba59cd5a'
+    get isV1(): boolean {
+        return this._chain.getCallHash('CompanyReserve.apply_as') === 'a9f8193d926f29d30c08628627d09ed5cfe97477b731305d75d66cb40bd90928'
     }
 
     /**
-     *  Transfer some balance to another account under `currency_id`.
-     * 
-     *  The dispatch origin for this call must be `Signed` by the
-     *  transactor.
+     * Dispatch a call as coming from the reserve account
      */
-    get asV5(): {dest: v5.LookupSource, currencyId: v5.CurrencyIdOf, amount: bigint} {
-        assert(this.isV5)
+    get asV1(): {call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('CompanyReserve.apply_as') === 'f6e87384622ff2e90452fe1c1797fa93bb42d18d55bfe95a12300d42aa80f59e'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV6(): {call: v6.Call} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('CompanyReserve.apply_as') === '8b575d0ea3a5b73d94dc363acb6c16e597774c84f529f46c0c00f7a99134742d'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV10(): {call: v10.Call} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('CompanyReserve.apply_as') === 'c8eec9af2675f5ca66565f970cea87e963ad6358500975016e9b9975bcb4ce67'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV11(): {call: v11.Call} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('CompanyReserve.apply_as') === '5db6e491de8791381401d22e268e8f349dff9de2e028b82d83a8ad0e14aedf4c'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV12(): {call: v12.Call} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class CurrenciesTransferNativeCurrencyCall {
+export class CompanyReserveSpendCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -773,34 +778,28 @@ export class CurrenciesTransferNativeCurrencyCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Currencies.transfer_native_currency')
+        assert(call.name === 'CompanyReserve.spend')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Transfer some native currency to another account.
-     * 
-     *  The dispatch origin for this call must be `Signed` by the
-     *  transactor.
+     * Spend `amount` funds from the reserve account to `to`.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Currencies.transfer_native_currency') === '99123a58f21a27e3615c09aa5e891295609109fa77378a29bc61ee98ab991b92'
+    get isV1(): boolean {
+        return this._chain.getCallHash('CompanyReserve.spend') === 'ff235a8cc8e39172d7506c342732c7a5dbd72259d5c5b9cdfa576e00efcf67f8'
     }
 
     /**
-     *  Transfer some native currency to another account.
-     * 
-     *  The dispatch origin for this call must be `Signed` by the
-     *  transactor.
+     * Spend `amount` funds from the reserve account to `to`.
      */
-    get asV5(): {dest: v5.LookupSource, amount: bigint} {
-        assert(this.isV5)
+    get asV1(): {to: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class CurrenciesUpdateBalanceCall {
+export class CompanyReserveTipCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -808,32 +807,28 @@ export class CurrenciesUpdateBalanceCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Currencies.update_balance')
+        assert(call.name === 'CompanyReserve.tip')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  update amount of account `who` under `currency_id`.
-     * 
-     *  The dispatch origin of this call must be _Root_.
+     * Deposit `amount` tokens in the treasure account
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Currencies.update_balance') === '08ebc5bb7f47587c70c1135aa5d2538edcde38bf92c9183a7c3b4f546266e01d'
+    get isV1(): boolean {
+        return this._chain.getCallHash('CompanyReserve.tip') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
     }
 
     /**
-     *  update amount of account `who` under `currency_id`.
-     * 
-     *  The dispatch origin of this call must be _Root_.
+     * Deposit `amount` tokens in the treasure account
      */
-    get asV5(): {who: v5.LookupSource, currencyId: v5.CurrencyIdOf, amount: bigint} {
-        assert(this.isV5)
+    get asV1(): {amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class EvmCallCall {
+export class EmergencyShutdownToggleCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -841,30 +836,28 @@ export class EvmCallCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'EVM.call')
+        assert(call.name === 'EmergencyShutdown.toggle')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Issue an EVM call operation. This is similar to a message call
-     *  transaction in Ethereum.
+     * Toggle the shutdown state if authorized to do so.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.call') === '6584664eef68f6fd09cf4efe9c61fd9e50d821881de71bdd8062d1342f52423d'
+    get isV1(): boolean {
+        return this._chain.getCallHash('EmergencyShutdown.toggle') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
-     *  Issue an EVM call operation. This is similar to a message call
-     *  transaction in Ethereum.
+     * Toggle the shutdown state if authorized to do so.
      */
-    get asV5(): {target: Uint8Array, input: Uint8Array, value: bigint, gasLimit: bigint, storageLimit: number} {
-        assert(this.isV5)
+    get asV1(): null {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class EvmCreateCall {
+export class InternationalReserveApplyAsCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -872,30 +865,88 @@ export class EvmCreateCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'EVM.create')
+        assert(call.name === 'InternationalReserve.apply_as')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Issue an EVM create operation. This is similar to a contract
-     *  creation transaction in Ethereum.
+     * Dispatch a call as coming from the reserve account
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.create') === '5b89297e6b37551240192596104c32e9335fc9d0755e6aff323525f563b4ebd9'
+    get isV1(): boolean {
+        return this._chain.getCallHash('InternationalReserve.apply_as') === 'a9f8193d926f29d30c08628627d09ed5cfe97477b731305d75d66cb40bd90928'
     }
 
     /**
-     *  Issue an EVM create operation. This is similar to a contract
-     *  creation transaction in Ethereum.
+     * Dispatch a call as coming from the reserve account
      */
-    get asV5(): {init: Uint8Array, value: bigint, gasLimit: bigint, storageLimit: number} {
-        assert(this.isV5)
+    get asV1(): {call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('InternationalReserve.apply_as') === 'f6e87384622ff2e90452fe1c1797fa93bb42d18d55bfe95a12300d42aa80f59e'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV6(): {call: v6.Call} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('InternationalReserve.apply_as') === '8b575d0ea3a5b73d94dc363acb6c16e597774c84f529f46c0c00f7a99134742d'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV10(): {call: v10.Call} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('InternationalReserve.apply_as') === 'c8eec9af2675f5ca66565f970cea87e963ad6358500975016e9b9975bcb4ce67'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV11(): {call: v11.Call} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('InternationalReserve.apply_as') === '5db6e491de8791381401d22e268e8f349dff9de2e028b82d83a8ad0e14aedf4c'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV12(): {call: v12.Call} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class EvmCreate2Call {
+export class InternationalReserveSpendCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -903,28 +954,28 @@ export class EvmCreate2Call {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'EVM.create2')
+        assert(call.name === 'InternationalReserve.spend')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Issue an EVM create2 operation.
+     * Spend `amount` funds from the reserve account to `to`.
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.create2') === '3c549873475c64e2006cd1e3b49ff09225c02ae7588e29511e9e4df54dcfa8da'
+    get isV1(): boolean {
+        return this._chain.getCallHash('InternationalReserve.spend') === 'ff235a8cc8e39172d7506c342732c7a5dbd72259d5c5b9cdfa576e00efcf67f8'
     }
 
     /**
-     *  Issue an EVM create2 operation.
+     * Spend `amount` funds from the reserve account to `to`.
      */
-    get asV5(): {init: Uint8Array, salt: Uint8Array, value: bigint, gasLimit: bigint, storageLimit: number} {
-        assert(this.isV5)
+    get asV1(): {to: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class EvmCreateNetworkContractCall {
+export class InternationalReserveTipCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -932,30 +983,28 @@ export class EvmCreateNetworkContractCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'EVM.create_network_contract')
+        assert(call.name === 'InternationalReserve.tip')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Issue an EVM create operation. The next available system contract
-     *  address will be used as created contract address.
+     * Deposit `amount` tokens in the treasure account
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.create_network_contract') === '5b89297e6b37551240192596104c32e9335fc9d0755e6aff323525f563b4ebd9'
+    get isV1(): boolean {
+        return this._chain.getCallHash('InternationalReserve.tip') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
     }
 
     /**
-     *  Issue an EVM create operation. The next available system contract
-     *  address will be used as created contract address.
+     * Deposit `amount` tokens in the treasure account
      */
-    get asV5(): {init: Uint8Array, value: bigint, gasLimit: bigint, storageLimit: number} {
-        assert(this.isV5)
+    get asV1(): {amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class EvmDeployCall {
+export class MandateApplyCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -963,1558 +1012,68 @@ export class EvmDeployCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'EVM.deploy')
+        assert(call.name === 'Mandate.apply')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.deploy') === 'aa92c395b5b60088d8bc4d5a065d2ba907c616eb089d21d051e1c0c9c6ca3ee8'
+    /**
+     * Let the configured origin dispatch a call as root
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('Mandate.apply') === 'f6e87384622ff2e90452fe1c1797fa93bb42d18d55bfe95a12300d42aa80f59e'
     }
 
-    get asV5(): {contract: Uint8Array} {
-        assert(this.isV5)
+    /**
+     * Let the configured origin dispatch a call as root
+     */
+    get asV6(): {call: v6.Call} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
-}
 
-export class EvmDeployFreeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EVM.deploy_free')
-        this._chain = ctx._chain
-        this.call = call
+    /**
+     * Let the configured origin dispatch a call as root
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Mandate.apply') === '8b575d0ea3a5b73d94dc363acb6c16e597774c84f529f46c0c00f7a99134742d'
     }
 
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.deploy_free') === 'aa92c395b5b60088d8bc4d5a065d2ba907c616eb089d21d051e1c0c9c6ca3ee8'
-    }
-
-    get asV5(): {contract: Uint8Array} {
-        assert(this.isV5)
+    /**
+     * Let the configured origin dispatch a call as root
+     */
+    get asV10(): {call: v10.Call} {
+        assert(this.isV10)
         return this._chain.decodeCall(this.call)
     }
-}
 
-export class EvmDisableContractDevelopmentCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EVM.disable_contract_development')
-        this._chain = ctx._chain
-        this.call = call
+    /**
+     * Let the configured origin dispatch a call as root
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Mandate.apply') === 'c8eec9af2675f5ca66565f970cea87e963ad6358500975016e9b9975bcb4ce67'
     }
 
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.disable_contract_development') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    get asV5(): null {
-        assert(this.isV5)
+    /**
+     * Let the configured origin dispatch a call as root
+     */
+    get asV11(): {call: v11.Call} {
+        assert(this.isV11)
         return this._chain.decodeCall(this.call)
     }
-}
 
-export class EvmEnableContractDevelopmentCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EVM.enable_contract_development')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.enable_contract_development') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class EvmScheduledCallCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EVM.scheduled_call')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.scheduled_call') === '576d08b81b702e5ee1e7a580eedb1e1be1f1f791cdb2bd97aa18640de8f5fde8'
-    }
-
-    get asV5(): {from: Uint8Array, target: Uint8Array, input: Uint8Array, value: bigint, gasLimit: bigint, storageLimit: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class EvmSelfdestructCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EVM.selfdestruct')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.selfdestruct') === 'aa92c395b5b60088d8bc4d5a065d2ba907c616eb089d21d051e1c0c9c6ca3ee8'
-    }
-
-    get asV5(): {contract: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class EvmSetCodeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EVM.set_code')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.set_code') === 'b785b91e072f4030ebaffd8bbf05a81538efe20649e5b0c1c5fbb9e964373abf'
-    }
-
-    get asV5(): {contract: Uint8Array, code: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class EvmTransferMaintainerCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EVM.transfer_maintainer')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('EVM.transfer_maintainer') === '7bae9f7200b2fa3536d4c19d4c688df2a59be80ed615257c9d5ef5bf75d8a550'
-    }
-
-    get asV5(): {contract: Uint8Array, newMaintainer: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class EvmAccountsClaimAccountCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EvmAccounts.claim_account')
-        this._chain = ctx._chain
-        this.call = call
+    /**
+     * Let the configured origin dispatch a call as root
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Mandate.apply') === '5db6e491de8791381401d22e268e8f349dff9de2e028b82d83a8ad0e14aedf4c'
     }
 
     /**
-     *  Claim account mapping between Substrate accounts and EVM accounts.
-     *  Ensure eth_address has not been mapped.
+     * Let the configured origin dispatch a call as root
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('EvmAccounts.claim_account') === '6b4b8c10495f26dbfdf518b55244487380af51675be587eb64599f5ccb3862a0'
-    }
-
-    /**
-     *  Claim account mapping between Substrate accounts and EVM accounts.
-     *  Ensure eth_address has not been mapped.
-     */
-    get asV5(): {ethAddress: Uint8Array, ethSignature: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class EvmAccountsClaimDefaultAccountCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'EvmAccounts.claim_default_account')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('EvmAccounts.claim_default_account') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class GrandpaNoteStalledCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Grandpa.note_stalled')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Note that the current authority set of the GRANDPA finality gadget has
-     *  stalled. This will trigger a forced authority set change at the beginning
-     *  of the next session, to be enacted `delay` blocks after that. The delay
-     *  should be high enough to safely assume that the block signalling the
-     *  forced change will not be re-orged (e.g. 1000 blocks). The GRANDPA voters
-     *  will start the new authority set using the given finalized block as base.
-     *  Only callable by root.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Grandpa.note_stalled') === '6bb454c2ae9db6ee64dc7f433f0fd3b839727f70c6c835943383346896272c40'
-    }
-
-    /**
-     *  Note that the current authority set of the GRANDPA finality gadget has
-     *  stalled. This will trigger a forced authority set change at the beginning
-     *  of the next session, to be enacted `delay` blocks after that. The delay
-     *  should be high enough to safely assume that the block signalling the
-     *  forced change will not be re-orged (e.g. 1000 blocks). The GRANDPA voters
-     *  will start the new authority set using the given finalized block as base.
-     *  Only callable by root.
-     */
-    get asV5(): {delay: number, bestFinalizedBlockNumber: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class GrandpaReportEquivocationCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Grandpa.report_equivocation')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Report voter equivocation/misbehavior. This method will verify the
-     *  equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence
-     *  will be reported.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Grandpa.report_equivocation') === '2c17e0cc8689d3a9ff22e793f8bfe646fd06a870bc9abcba005b8b772edc8677'
-    }
-
-    /**
-     *  Report voter equivocation/misbehavior. This method will verify the
-     *  equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence
-     *  will be reported.
-     */
-    get asV5(): {equivocationProof: v5.GrandpaEquivocationProof, keyOwnerProof: v5.KeyOwnerProof} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class GrandpaReportEquivocationUnsignedCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Grandpa.report_equivocation_unsigned')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Report voter equivocation/misbehavior. This method will verify the
-     *  equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence
-     *  will be reported.
-     * 
-     *  This extrinsic must be called unsigned and it is expected that only
-     *  block authors will call it (validated in `ValidateUnsigned`), as such
-     *  if the block author is defined it will be defined as the equivocation
-     *  reporter.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Grandpa.report_equivocation_unsigned') === '2c17e0cc8689d3a9ff22e793f8bfe646fd06a870bc9abcba005b8b772edc8677'
-    }
-
-    /**
-     *  Report voter equivocation/misbehavior. This method will verify the
-     *  equivocation proof and validate the given key ownership proof
-     *  against the extracted offender. If both are valid, the offence
-     *  will be reported.
-     * 
-     *  This extrinsic must be called unsigned and it is expected that only
-     *  block authors will call it (validated in `ValidateUnsigned`), as such
-     *  if the block author is defined it will be defined as the equivocation
-     *  reporter.
-     */
-    get asV5(): {equivocationProof: v5.GrandpaEquivocationProof, keyOwnerProof: v5.KeyOwnerProof} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityAddRegistrarCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.add_registrar')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Add a registrar to the system.
-     * 
-     *  The dispatch origin for this call must be `T::RegistrarOrigin`.
-     * 
-     *  - `account`: the account of the registrar.
-     * 
-     *  Emits `RegistrarAdded` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R)` where `R` registrar-count (governance-bounded and code-bounded).
-     *  - One storage mutation (codec `O(R)`).
-     *  - One event.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.add_registrar') === '7fb7672b764b0a4f0c4910fddefec0709628843df7ad0073a97eede13c53ca92'
-    }
-
-    /**
-     *  Add a registrar to the system.
-     * 
-     *  The dispatch origin for this call must be `T::RegistrarOrigin`.
-     * 
-     *  - `account`: the account of the registrar.
-     * 
-     *  Emits `RegistrarAdded` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R)` where `R` registrar-count (governance-bounded and code-bounded).
-     *  - One storage mutation (codec `O(R)`).
-     *  - One event.
-     *  # </weight>
-     */
-    get asV5(): {account: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityAddSubCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.add_sub')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Add the given account to the sender's subs.
-     * 
-     *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
-     *  to the sender.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  sub identity of `sub`.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.add_sub') === 'ef8fb13f5dc864a3db268a8f01b166d2deee87052a98309538fe8961be9020a9'
-    }
-
-    /**
-     *  Add the given account to the sender's subs.
-     * 
-     *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
-     *  to the sender.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  sub identity of `sub`.
-     */
-    get asV5(): {sub: v5.LookupSource, data: v5.Data} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityCancelRequestCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.cancel_request')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Cancel a previous request.
-     * 
-     *  Payment: A previously reserved deposit is returned on success.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a
-     *  registered identity.
-     * 
-     *  - `reg_index`: The index of the registrar whose judgement is no longer requested.
-     * 
-     *  Emits `JudgementUnrequested` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + X)`.
-     *  - One balance-reserve operation.
-     *  - One storage mutation `O(R + X)`.
-     *  - One event
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.cancel_request') === '89d659d6a17ba36d0dfc7c90a7f043581d7fe980043895169d7dda1416ff7e5b'
-    }
-
-    /**
-     *  Cancel a previous request.
-     * 
-     *  Payment: A previously reserved deposit is returned on success.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a
-     *  registered identity.
-     * 
-     *  - `reg_index`: The index of the registrar whose judgement is no longer requested.
-     * 
-     *  Emits `JudgementUnrequested` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + X)`.
-     *  - One balance-reserve operation.
-     *  - One storage mutation `O(R + X)`.
-     *  - One event
-     *  # </weight>
-     */
-    get asV5(): {regIndex: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityClearIdentityCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.clear_identity')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Clear an account's identity info and all sub-accounts and return all deposits.
-     * 
-     *  Payment: All reserved balances on the account are returned.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  identity.
-     * 
-     *  Emits `IdentityCleared` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + S + X)`
-     *    - where `R` registrar-count (governance-bounded).
-     *    - where `S` subs-count (hard- and deposit-bounded).
-     *    - where `X` additional-field-count (deposit-bounded and code-bounded).
-     *  - One balance-unreserve operation.
-     *  - `2` storage reads and `S + 2` storage deletions.
-     *  - One event.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.clear_identity') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Clear an account's identity info and all sub-accounts and return all deposits.
-     * 
-     *  Payment: All reserved balances on the account are returned.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  identity.
-     * 
-     *  Emits `IdentityCleared` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + S + X)`
-     *    - where `R` registrar-count (governance-bounded).
-     *    - where `S` subs-count (hard- and deposit-bounded).
-     *    - where `X` additional-field-count (deposit-bounded and code-bounded).
-     *  - One balance-unreserve operation.
-     *  - `2` storage reads and `S + 2` storage deletions.
-     *  - One event.
-     *  # </weight>
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityKillIdentityCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.kill_identity')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Remove an account's identity and sub-account information and slash the deposits.
-     * 
-     *  Payment: Reserved balances from `set_subs` and `set_identity` are slashed and handled by
-     *  `Slash`. Verification request deposits are not returned; they should be cancelled
-     *  manually using `cancel_request`.
-     * 
-     *  The dispatch origin for this call must match `T::ForceOrigin`.
-     * 
-     *  - `target`: the account whose identity the judgement is upon. This must be an account
-     *    with a registered identity.
-     * 
-     *  Emits `IdentityKilled` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + S + X)`.
-     *  - One balance-reserve operation.
-     *  - `S + 2` storage mutations.
-     *  - One event.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.kill_identity') === 'b473bcbba83335e310f2f681307dcf6b16b8d79ec99a4fb2202c34bed7de3b65'
-    }
-
-    /**
-     *  Remove an account's identity and sub-account information and slash the deposits.
-     * 
-     *  Payment: Reserved balances from `set_subs` and `set_identity` are slashed and handled by
-     *  `Slash`. Verification request deposits are not returned; they should be cancelled
-     *  manually using `cancel_request`.
-     * 
-     *  The dispatch origin for this call must match `T::ForceOrigin`.
-     * 
-     *  - `target`: the account whose identity the judgement is upon. This must be an account
-     *    with a registered identity.
-     * 
-     *  Emits `IdentityKilled` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + S + X)`.
-     *  - One balance-reserve operation.
-     *  - `S + 2` storage mutations.
-     *  - One event.
-     *  # </weight>
-     */
-    get asV5(): {target: v5.LookupSource} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityProvideJudgementCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.provide_judgement')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Provide a judgement for an account's identity.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `reg_index`.
-     * 
-     *  - `reg_index`: the index of the registrar whose judgement is being made.
-     *  - `target`: the account whose identity the judgement is upon. This must be an account
-     *    with a registered identity.
-     *  - `judgement`: the judgement of the registrar of index `reg_index` about `target`.
-     * 
-     *  Emits `JudgementGiven` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + X)`.
-     *  - One balance-transfer operation.
-     *  - Up to one account-lookup operation.
-     *  - Storage: 1 read `O(R)`, 1 mutate `O(R + X)`.
-     *  - One event.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.provide_judgement') === 'abdb42b954610658025900cff996632ccf91d9ab5409152108d45ed12cca332b'
-    }
-
-    /**
-     *  Provide a judgement for an account's identity.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `reg_index`.
-     * 
-     *  - `reg_index`: the index of the registrar whose judgement is being made.
-     *  - `target`: the account whose identity the judgement is upon. This must be an account
-     *    with a registered identity.
-     *  - `judgement`: the judgement of the registrar of index `reg_index` about `target`.
-     * 
-     *  Emits `JudgementGiven` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + X)`.
-     *  - One balance-transfer operation.
-     *  - Up to one account-lookup operation.
-     *  - Storage: 1 read `O(R)`, 1 mutate `O(R + X)`.
-     *  - One event.
-     *  # </weight>
-     */
-    get asV5(): {regIndex: number, target: v5.LookupSource, judgement: v5.IdentityJudgement} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityQuitSubCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.quit_sub')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Remove the sender as a sub-account.
-     * 
-     *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
-     *  to the sender (*not* the original depositor).
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  super-identity.
-     * 
-     *  NOTE: This should not normally be used, but is provided in the case that the non-
-     *  controller of an account is maliciously registered as a sub-account.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.quit_sub') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Remove the sender as a sub-account.
-     * 
-     *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
-     *  to the sender (*not* the original depositor).
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  super-identity.
-     * 
-     *  NOTE: This should not normally be used, but is provided in the case that the non-
-     *  controller of an account is maliciously registered as a sub-account.
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityRemoveSubCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.remove_sub')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Remove the given account from the sender's subs.
-     * 
-     *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
-     *  to the sender.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  sub identity of `sub`.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.remove_sub') === 'da8ee0ac4ebb51ed9fe85fbeb08186e79fab7cd448e7811d7ec80b60406fcee5'
-    }
-
-    /**
-     *  Remove the given account from the sender's subs.
-     * 
-     *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
-     *  to the sender.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  sub identity of `sub`.
-     */
-    get asV5(): {sub: v5.LookupSource} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityRenameSubCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.rename_sub')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Alter the associated name of the given sub-account.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  sub identity of `sub`.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.rename_sub') === 'ef8fb13f5dc864a3db268a8f01b166d2deee87052a98309538fe8961be9020a9'
-    }
-
-    /**
-     *  Alter the associated name of the given sub-account.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  sub identity of `sub`.
-     */
-    get asV5(): {sub: v5.LookupSource, data: v5.Data} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentityRequestJudgementCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.request_judgement')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Request a judgement from a registrar.
-     * 
-     *  Payment: At most `max_fee` will be reserved for payment to the registrar if judgement
-     *  given.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a
-     *  registered identity.
-     * 
-     *  - `reg_index`: The index of the registrar whose judgement is requested.
-     *  - `max_fee`: The maximum fee that may be paid. This should just be auto-populated as:
-     * 
-     *  ```nocompile
-     *  Self::registrars().get(reg_index).unwrap().fee
-     *  ```
-     * 
-     *  Emits `JudgementRequested` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + X)`.
-     *  - One balance-reserve operation.
-     *  - Storage: 1 read `O(R)`, 1 mutate `O(X + R)`.
-     *  - One event.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.request_judgement') === 'c6336282cbe5b8ccf3769cc13c92f532be2499335e3d52ebf566a888e92b5b7c'
-    }
-
-    /**
-     *  Request a judgement from a registrar.
-     * 
-     *  Payment: At most `max_fee` will be reserved for payment to the registrar if judgement
-     *  given.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a
-     *  registered identity.
-     * 
-     *  - `reg_index`: The index of the registrar whose judgement is requested.
-     *  - `max_fee`: The maximum fee that may be paid. This should just be auto-populated as:
-     * 
-     *  ```nocompile
-     *  Self::registrars().get(reg_index).unwrap().fee
-     *  ```
-     * 
-     *  Emits `JudgementRequested` if successful.
-     * 
-     *  # <weight>
-     *  - `O(R + X)`.
-     *  - One balance-reserve operation.
-     *  - Storage: 1 read `O(R)`, 1 mutate `O(X + R)`.
-     *  - One event.
-     *  # </weight>
-     */
-    get asV5(): {regIndex: number, maxFee: bigint} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentitySetAccountIdCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.set_account_id')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Change the account associated with a registrar.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `index`.
-     * 
-     *  - `index`: the index of the registrar whose fee is to be set.
-     *  - `new`: the new account ID.
-     * 
-     *  # <weight>
-     *  - `O(R)`.
-     *  - One storage mutation `O(R)`.
-     *  - Benchmark: 8.823 + R * 0.32 µs (min squares analysis)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.set_account_id') === 'a333bb3ce3e314d48fcf93f14155097760db6249022181f1eb923c1343af6813'
-    }
-
-    /**
-     *  Change the account associated with a registrar.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `index`.
-     * 
-     *  - `index`: the index of the registrar whose fee is to be set.
-     *  - `new`: the new account ID.
-     * 
-     *  # <weight>
-     *  - `O(R)`.
-     *  - One storage mutation `O(R)`.
-     *  - Benchmark: 8.823 + R * 0.32 µs (min squares analysis)
-     *  # </weight>
-     */
-    get asV5(): {index: number, new: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentitySetFeeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.set_fee')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Set the fee required for a judgement to be requested from a registrar.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `index`.
-     * 
-     *  - `index`: the index of the registrar whose fee is to be set.
-     *  - `fee`: the new fee.
-     * 
-     *  # <weight>
-     *  - `O(R)`.
-     *  - One storage mutation `O(R)`.
-     *  - Benchmark: 7.315 + R * 0.329 µs (min squares analysis)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.set_fee') === '6418458414c3cef3d5c80c88232d781e76733c675303b2937b9cd30ae58d0fe4'
-    }
-
-    /**
-     *  Set the fee required for a judgement to be requested from a registrar.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `index`.
-     * 
-     *  - `index`: the index of the registrar whose fee is to be set.
-     *  - `fee`: the new fee.
-     * 
-     *  # <weight>
-     *  - `O(R)`.
-     *  - One storage mutation `O(R)`.
-     *  - Benchmark: 7.315 + R * 0.329 µs (min squares analysis)
-     *  # </weight>
-     */
-    get asV5(): {index: number, fee: bigint} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentitySetFieldsCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.set_fields')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Set the field information for a registrar.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `index`.
-     * 
-     *  - `index`: the index of the registrar whose fee is to be set.
-     *  - `fields`: the fields that the registrar concerns themselves with.
-     * 
-     *  # <weight>
-     *  - `O(R)`.
-     *  - One storage mutation `O(R)`.
-     *  - Benchmark: 7.464 + R * 0.325 µs (min squares analysis)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.set_fields') === 'b2c8998acd304e28e4f4a78e6a07f5bf7caf587532734dbd94b85c01a31c3e13'
-    }
-
-    /**
-     *  Set the field information for a registrar.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must be the account
-     *  of the registrar whose index is `index`.
-     * 
-     *  - `index`: the index of the registrar whose fee is to be set.
-     *  - `fields`: the fields that the registrar concerns themselves with.
-     * 
-     *  # <weight>
-     *  - `O(R)`.
-     *  - One storage mutation `O(R)`.
-     *  - Benchmark: 7.464 + R * 0.325 µs (min squares analysis)
-     *  # </weight>
-     */
-    get asV5(): {index: number, fields: bigint} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentitySetIdentityCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.set_identity')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Set an account's identity information and reserve the appropriate deposit.
-     * 
-     *  If the account already has identity information, the deposit is taken as part payment
-     *  for the new deposit.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  - `info`: The identity information.
-     * 
-     *  Emits `IdentitySet` if successful.
-     * 
-     *  # <weight>
-     *  - `O(X + X' + R)`
-     *    - where `X` additional-field-count (deposit-bounded and code-bounded)
-     *    - where `R` judgements-count (registrar-count-bounded)
-     *  - One balance reserve operation.
-     *  - One storage mutation (codec-read `O(X' + R)`, codec-write `O(X + R)`).
-     *  - One event.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.set_identity') === 'ab457704fd8cda5fee32e84ab7782778f4117cd54400c364cf7597eee5bc60ca'
-    }
-
-    /**
-     *  Set an account's identity information and reserve the appropriate deposit.
-     * 
-     *  If the account already has identity information, the deposit is taken as part payment
-     *  for the new deposit.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  - `info`: The identity information.
-     * 
-     *  Emits `IdentitySet` if successful.
-     * 
-     *  # <weight>
-     *  - `O(X + X' + R)`
-     *    - where `X` additional-field-count (deposit-bounded and code-bounded)
-     *    - where `R` judgements-count (registrar-count-bounded)
-     *  - One balance reserve operation.
-     *  - One storage mutation (codec-read `O(X' + R)`, codec-write `O(X + R)`).
-     *  - One event.
-     *  # </weight>
-     */
-    get asV5(): {info: v5.IdentityInfo} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IdentitySetSubsCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Identity.set_subs')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Set the sub-accounts of the sender.
-     * 
-     *  Payment: Any aggregate balance reserved by previous `set_subs` calls will be returned
-     *  and an amount `SubAccountDeposit` will be reserved for each item in `subs`.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  identity.
-     * 
-     *  - `subs`: The identity's (new) sub-accounts.
-     * 
-     *  # <weight>
-     *  - `O(P + S)`
-     *    - where `P` old-subs-count (hard- and deposit-bounded).
-     *    - where `S` subs-count (hard- and deposit-bounded).
-     *  - At most one balance operations.
-     *  - DB:
-     *    - `P + S` storage mutations (codec complexity `O(1)`)
-     *    - One storage read (codec complexity `O(P)`).
-     *    - One storage write (codec complexity `O(S)`).
-     *    - One storage-exists (`IdentityOf::contains_key`).
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Identity.set_subs') === 'f156a100857e71b9e1eab839801795e8569b63b49f6c30333c5bf12811cbbe73'
-    }
-
-    /**
-     *  Set the sub-accounts of the sender.
-     * 
-     *  Payment: Any aggregate balance reserved by previous `set_subs` calls will be returned
-     *  and an amount `SubAccountDeposit` will be reserved for each item in `subs`.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
-     *  identity.
-     * 
-     *  - `subs`: The identity's (new) sub-accounts.
-     * 
-     *  # <weight>
-     *  - `O(P + S)`
-     *    - where `P` old-subs-count (hard- and deposit-bounded).
-     *    - where `S` subs-count (hard- and deposit-bounded).
-     *  - At most one balance operations.
-     *  - DB:
-     *    - `P + S` storage mutations (codec complexity `O(1)`)
-     *    - One storage read (codec complexity `O(P)`).
-     *    - One storage write (codec complexity `O(S)`).
-     *    - One storage-exists (`IdentityOf::contains_key`).
-     *  # </weight>
-     */
-    get asV5(): {subs: [Uint8Array, v5.Data][]} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class ImOnlineHeartbeatCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'ImOnline.heartbeat')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  # <weight>
-     *  - Complexity: `O(K + E)` where K is length of `Keys` (heartbeat.validators_len)
-     *    and E is length of `heartbeat.network_state.external_address`
-     *    - `O(K)`: decoding of length `K`
-     *    - `O(E)`: decoding/encoding of length `E`
-     *  - DbReads: pallet_session `Validators`, pallet_session `CurrentIndex`, `Keys`,
-     *    `ReceivedHeartbeats`
-     *  - DbWrites: `ReceivedHeartbeats`
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('ImOnline.heartbeat') === 'ceb066f24cc1efdb862584018e591b1046da22acdc1c7daf8270a6f6f31baffe'
-    }
-
-    /**
-     *  # <weight>
-     *  - Complexity: `O(K + E)` where K is length of `Keys` (heartbeat.validators_len)
-     *    and E is length of `heartbeat.network_state.external_address`
-     *    - `O(K)`: decoding of length `K`
-     *    - `O(E)`: decoding/encoding of length `E`
-     *  - DbReads: pallet_session `Validators`, pallet_session `CurrentIndex`, `Keys`,
-     *    `ReceivedHeartbeats`
-     *  - DbWrites: `ReceivedHeartbeats`
-     *  # </weight>
-     */
-    get asV5(): {heartbeat: v5.Heartbeat, signature: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IndicesClaimCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Indices.claim')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Assign an previously unassigned index.
-     * 
-     *  Payment: `Deposit` is reserved from the sender account.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  - `index`: the index to be claimed. This must not be in use.
-     * 
-     *  Emits `IndexAssigned` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - One reserve operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight: 1 Read/Write (Accounts)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Indices.claim') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
-    }
-
-    /**
-     *  Assign an previously unassigned index.
-     * 
-     *  Payment: `Deposit` is reserved from the sender account.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  - `index`: the index to be claimed. This must not be in use.
-     * 
-     *  Emits `IndexAssigned` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - One reserve operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight: 1 Read/Write (Accounts)
-     *  # </weight>
-     */
-    get asV5(): {index: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IndicesForceTransferCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Indices.force_transfer')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Force an index to an account. This doesn't require a deposit. If the index is already
-     *  held, then any deposit is reimbursed to its current owner.
-     * 
-     *  The dispatch origin for this call must be _Root_.
-     * 
-     *  - `index`: the index to be (re-)assigned.
-     *  - `new`: the new owner of the index. This function is a no-op if it is equal to sender.
-     *  - `freeze`: if set to `true`, will freeze the index so it cannot be transferred.
-     * 
-     *  Emits `IndexAssigned` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - Up to one reserve operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight:
-     *     - Reads: Indices Accounts, System Account (original owner)
-     *     - Writes: Indices Accounts, System Account (original owner)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Indices.force_transfer') === 'c512e4f612c8bf235b4e49fd86b93323981d8379e84e47bd23e3718caf3df8b7'
-    }
-
-    /**
-     *  Force an index to an account. This doesn't require a deposit. If the index is already
-     *  held, then any deposit is reimbursed to its current owner.
-     * 
-     *  The dispatch origin for this call must be _Root_.
-     * 
-     *  - `index`: the index to be (re-)assigned.
-     *  - `new`: the new owner of the index. This function is a no-op if it is equal to sender.
-     *  - `freeze`: if set to `true`, will freeze the index so it cannot be transferred.
-     * 
-     *  Emits `IndexAssigned` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - Up to one reserve operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight:
-     *     - Reads: Indices Accounts, System Account (original owner)
-     *     - Writes: Indices Accounts, System Account (original owner)
-     *  # </weight>
-     */
-    get asV5(): {new: Uint8Array, index: number, freeze: boolean} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IndicesFreeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Indices.free')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Free up an index owned by the sender.
-     * 
-     *  Payment: Any previous deposit placed for the index is unreserved in the sender account.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must own the index.
-     * 
-     *  - `index`: the index to be freed. This must be owned by the sender.
-     * 
-     *  Emits `IndexFreed` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - One reserve operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight: 1 Read/Write (Accounts)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Indices.free') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
-    }
-
-    /**
-     *  Free up an index owned by the sender.
-     * 
-     *  Payment: Any previous deposit placed for the index is unreserved in the sender account.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the sender must own the index.
-     * 
-     *  - `index`: the index to be freed. This must be owned by the sender.
-     * 
-     *  Emits `IndexFreed` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - One reserve operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight: 1 Read/Write (Accounts)
-     *  # </weight>
-     */
-    get asV5(): {index: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IndicesFreezeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Indices.freeze')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Freeze an index so it will always point to the sender account. This consumes the deposit.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the signing account must have a
-     *  non-frozen account `index`.
-     * 
-     *  - `index`: the index to be frozen in place.
-     * 
-     *  Emits `IndexFrozen` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - Up to one slash operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight: 1 Read/Write (Accounts)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Indices.freeze') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
-    }
-
-    /**
-     *  Freeze an index so it will always point to the sender account. This consumes the deposit.
-     * 
-     *  The dispatch origin for this call must be _Signed_ and the signing account must have a
-     *  non-frozen account `index`.
-     * 
-     *  - `index`: the index to be frozen in place.
-     * 
-     *  Emits `IndexFrozen` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - Up to one slash operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight: 1 Read/Write (Accounts)
-     *  # </weight>
-     */
-    get asV5(): {index: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class IndicesTransferCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Indices.transfer')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Assign an index already owned by the sender to another account. The balance reservation
-     *  is effectively transferred to the new account.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  - `index`: the index to be re-assigned. This must be owned by the sender.
-     *  - `new`: the new owner of the index. This function is a no-op if it is equal to sender.
-     * 
-     *  Emits `IndexAssigned` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - One transfer operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight:
-     *     - Reads: Indices Accounts, System Account (recipient)
-     *     - Writes: Indices Accounts, System Account (recipient)
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Indices.transfer') === 'fb7b2e881b4e1febd039cce6ff2d158ae42a8e4ab080ad01ff5d71477b8a690a'
-    }
-
-    /**
-     *  Assign an index already owned by the sender to another account. The balance reservation
-     *  is effectively transferred to the new account.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  - `index`: the index to be re-assigned. This must be owned by the sender.
-     *  - `new`: the new owner of the index. This function is a no-op if it is equal to sender.
-     * 
-     *  Emits `IndexAssigned` if successful.
-     * 
-     *  # <weight>
-     *  - `O(1)`.
-     *  - One storage mutation (codec `O(1)`).
-     *  - One transfer operation.
-     *  - One event.
-     *  -------------------
-     *  - DB Weight:
-     *     - Reads: Indices Accounts, System Account (recipient)
-     *     - Writes: Indices Accounts, System Account (recipient)
-     *  # </weight>
-     */
-    get asV5(): {new: Uint8Array, index: number} {
-        assert(this.isV5)
+    get asV12(): {call: v12.Call} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2533,87 +1092,85 @@ export class MultisigApproveAsMultiCall {
     }
 
     /**
-     *  Register approval for a dispatch to be made from a deterministic composite account if
-     *  approved by a total of `threshold - 1` of `other_signatories`.
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
      * 
-     *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-     *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-     *  is cancelled.
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-     *  - `other_signatories`: The accounts (other than the sender) who can approve this
-     *  dispatch. May not be empty.
-     *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-     *  not the first approval, then it must be `Some`, with the timepoint (block number and
-     *  transaction index) of the first approval transaction.
-     *  - `call_hash`: The hash of the call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call_hash`: The hash of the call to be executed.
      * 
-     *  NOTE: If this is the final approval, you will want to use `as_multi` instead.
+     * NOTE: If this is the final approval, you will want to use `as_multi` instead.
      * 
-     *  # <weight>
-     *  - `O(S)`.
-     *  - Up to one balance-reserve or unreserve operation.
-     *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *  - One encode & hash, both of complexity `O(S)`.
-     *  - Up to one binary search and insert (`O(logS + S)`).
-     *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-     *  - One event.
-     *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-     *    deposit taken for its lifetime of
-     *    `DepositBase + threshold * DepositFactor`.
-     *  ----------------------------------
-     *  - DB Weight:
-     *      - Read: Multisig Storage, [Caller Account]
-     *      - Write: Multisig Storage, [Caller Account]
-     *  # </weight>
+     * # <weight>
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * ----------------------------------
+     * - DB Weight:
+     *     - Read: Multisig Storage, [Caller Account]
+     *     - Write: Multisig Storage, [Caller Account]
+     * # </weight>
      */
-    get isV10(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('Multisig.approve_as_multi') === '615a5baaaa889f9e30839c70485b8c752e5eb050a85a23102b2f9f4c301be63a'
     }
 
     /**
-     *  Register approval for a dispatch to be made from a deterministic composite account if
-     *  approved by a total of `threshold - 1` of `other_signatories`.
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
      * 
-     *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-     *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-     *  is cancelled.
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-     *  - `other_signatories`: The accounts (other than the sender) who can approve this
-     *  dispatch. May not be empty.
-     *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-     *  not the first approval, then it must be `Some`, with the timepoint (block number and
-     *  transaction index) of the first approval transaction.
-     *  - `call_hash`: The hash of the call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call_hash`: The hash of the call to be executed.
      * 
-     *  NOTE: If this is the final approval, you will want to use `as_multi` instead.
+     * NOTE: If this is the final approval, you will want to use `as_multi` instead.
      * 
-     *  # <weight>
-     *  - `O(S)`.
-     *  - Up to one balance-reserve or unreserve operation.
-     *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *  - One encode & hash, both of complexity `O(S)`.
-     *  - Up to one binary search and insert (`O(logS + S)`).
-     *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-     *  - One event.
-     *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-     *    deposit taken for its lifetime of
-     *    `DepositBase + threshold * DepositFactor`.
-     *  ----------------------------------
-     *  - DB Weight:
-     *      - Read: Multisig Storage, [Caller Account]
-     *      - Write: Multisig Storage, [Caller Account]
-     *  # </weight>
+     * # <weight>
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * ----------------------------------
+     * - DB Weight:
+     *     - Read: Multisig Storage, [Caller Account]
+     *     - Write: Multisig Storage, [Caller Account]
+     * # </weight>
      */
-    get asV10(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v10.Timepoint | undefined), callHash: Uint8Array, maxWeight: bigint} {
-        assert(this.isV10)
+    get asV1(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v1.Timepoint | undefined), callHash: Uint8Array, maxWeight: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2632,107 +1189,105 @@ export class MultisigAsMultiCall {
     }
 
     /**
-     *  Register approval for a dispatch to be made from a deterministic composite account if
-     *  approved by a total of `threshold - 1` of `other_signatories`.
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
      * 
-     *  If there are enough, then dispatch the call.
+     * If there are enough, then dispatch the call.
      * 
-     *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-     *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-     *  is cancelled.
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-     *  - `other_signatories`: The accounts (other than the sender) who can approve this
-     *  dispatch. May not be empty.
-     *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-     *  not the first approval, then it must be `Some`, with the timepoint (block number and
-     *  transaction index) of the first approval transaction.
-     *  - `call`: The call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
      * 
-     *  NOTE: Unless this is the final approval, you will generally want to use
-     *  `approve_as_multi` instead, since it only requires a hash of the call.
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
      * 
-     *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-     *  on success, result is `Ok` and the result from the interior call, if it was executed,
-     *  may be found in the deposited `MultisigExecuted` event.
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
      * 
-     *  # <weight>
-     *  - `O(S + Z + Call)`.
-     *  - Up to one balance-reserve or unreserve operation.
-     *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-     *  - One encode & hash, both of complexity `O(S)`.
-     *  - Up to one binary search and insert (`O(logS + S)`).
-     *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-     *  - One event.
-     *  - The weight of the `call`.
-     *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-     *    deposit taken for its lifetime of
-     *    `DepositBase + threshold * DepositFactor`.
-     *  -------------------------------
-     *  - DB Weight:
-     *      - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
-     *      - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
-     *  - Plus Call Weight
-     *  # </weight>
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+     *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+     * - Plus Call Weight
+     * # </weight>
      */
-    get isV10(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('Multisig.as_multi') === '548dea53ff79fe99438cf591950a533c93f9772d03a3995ec72a80376fcae222'
     }
 
     /**
-     *  Register approval for a dispatch to be made from a deterministic composite account if
-     *  approved by a total of `threshold - 1` of `other_signatories`.
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
      * 
-     *  If there are enough, then dispatch the call.
+     * If there are enough, then dispatch the call.
      * 
-     *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-     *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-     *  is cancelled.
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-     *  - `other_signatories`: The accounts (other than the sender) who can approve this
-     *  dispatch. May not be empty.
-     *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-     *  not the first approval, then it must be `Some`, with the timepoint (block number and
-     *  transaction index) of the first approval transaction.
-     *  - `call`: The call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
      * 
-     *  NOTE: Unless this is the final approval, you will generally want to use
-     *  `approve_as_multi` instead, since it only requires a hash of the call.
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
      * 
-     *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-     *  on success, result is `Ok` and the result from the interior call, if it was executed,
-     *  may be found in the deposited `MultisigExecuted` event.
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
      * 
-     *  # <weight>
-     *  - `O(S + Z + Call)`.
-     *  - Up to one balance-reserve or unreserve operation.
-     *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-     *  - One encode & hash, both of complexity `O(S)`.
-     *  - Up to one binary search and insert (`O(logS + S)`).
-     *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-     *  - One event.
-     *  - The weight of the `call`.
-     *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-     *    deposit taken for its lifetime of
-     *    `DepositBase + threshold * DepositFactor`.
-     *  -------------------------------
-     *  - DB Weight:
-     *      - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
-     *      - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
-     *  - Plus Call Weight
-     *  # </weight>
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+     *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+     * - Plus Call Weight
+     * # </weight>
      */
-    get asV10(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v10.Timepoint | undefined), call: Uint8Array, storeCall: boolean, maxWeight: bigint} {
-        assert(this.isV10)
+    get asV1(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v1.Timepoint | undefined), call: Uint8Array, storeCall: boolean, maxWeight: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2751,47 +1306,227 @@ export class MultisigAsMultiThreshold1Call {
     }
 
     /**
-     *  Immediately dispatch a multi-signature call using a single approval from the caller.
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `other_signatories`: The accounts (other than the sender) who are part of the
-     *  multi-signature, but do not participate in the approval process.
-     *  - `call`: The call to be executed.
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
      * 
-     *  Result is equivalent to the dispatched result.
+     * Result is equivalent to the dispatched result.
      * 
-     *  # <weight>
-     *  O(Z + C) where Z is the length of the call and C its execution weight.
-     *  -------------------------------
-     *  - DB Weight: None
-     *  - Plus Call Weight
-     *  # </weight>
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
      */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'e9d2dd3b29c2d98cdb589e37bac04d91a5d5c3e63ce1803ca220c619a0b55054'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'bf6e8689486a913a4e16e0ab71b911f5e6f104620546a1b754d0b0a486e685d5'
     }
 
     /**
-     *  Immediately dispatch a multi-signature call using a single approval from the caller.
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `other_signatories`: The accounts (other than the sender) who are part of the
-     *  multi-signature, but do not participate in the approval process.
-     *  - `call`: The call to be executed.
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
      * 
-     *  Result is equivalent to the dispatched result.
+     * Result is equivalent to the dispatched result.
      * 
-     *  # <weight>
-     *  O(Z + C) where Z is the length of the call and C its execution weight.
-     *  -------------------------------
-     *  - DB Weight: None
-     *  - Plus Call Weight
-     *  # </weight>
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
      */
-    get asV10(): {otherSignatories: Uint8Array[], call: v10.Type_50} {
+    get asV1(): {otherSignatories: Uint8Array[], call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'd18d248f22ad80ef671f9ef5bf5b1dfa2f69ab48d7d32f689fe9ac824f0d88a2'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV6(): {otherSignatories: Uint8Array[], call: v6.Call} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '8aae5bc35c38a8c63d7781cc52d1080ce699302c2531c986125405258d758cf2'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV10(): {otherSignatories: Uint8Array[], call: v10.Call} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '56a22488fa4e77960560e7199fb060482c9af4e5d3ef6a1c529e12f22dc16dd6'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV11(): {otherSignatories: Uint8Array[], call: v11.Call} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '29abda65642450b6c53c5403f2c796ece37f93a208455bf1501cf016d2e8fac9'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV12(): {otherSignatories: Uint8Array[], call: v12.Call} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2810,72 +1545,221 @@ export class MultisigCancelAsMultiCall {
     }
 
     /**
-     *  Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
-     *  for this operation will be unreserved on success.
+     * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
+     * for this operation will be unreserved on success.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-     *  - `other_signatories`: The accounts (other than the sender) who can approve this
-     *  dispatch. May not be empty.
-     *  - `timepoint`: The timepoint (block number and transaction index) of the first approval
-     *  transaction for this dispatch.
-     *  - `call_hash`: The hash of the call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `timepoint`: The timepoint (block number and transaction index) of the first approval
+     * transaction for this dispatch.
+     * - `call_hash`: The hash of the call to be executed.
      * 
-     *  # <weight>
-     *  - `O(S)`.
-     *  - Up to one balance-reserve or unreserve operation.
-     *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *  - One encode & hash, both of complexity `O(S)`.
-     *  - One event.
-     *  - I/O: 1 read `O(S)`, one remove.
-     *  - Storage: removes one item.
-     *  ----------------------------------
-     *  - DB Weight:
-     *      - Read: Multisig Storage, [Caller Account], Refund Account, Calls
-     *      - Write: Multisig Storage, [Caller Account], Refund Account, Calls
-     *  # </weight>
+     * # <weight>
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - One event.
+     * - I/O: 1 read `O(S)`, one remove.
+     * - Storage: removes one item.
+     * ----------------------------------
+     * - DB Weight:
+     *     - Read: Multisig Storage, [Caller Account], Refund Account, Calls
+     *     - Write: Multisig Storage, [Caller Account], Refund Account, Calls
+     * # </weight>
      */
-    get isV10(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('Multisig.cancel_as_multi') === '4ccc75a4f739c659f177e3df98fba2ea59ddade74c4ebccd51b2fc4c52e923af'
     }
 
     /**
-     *  Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
-     *  for this operation will be unreserved on success.
+     * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
+     * for this operation will be unreserved on success.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-     *  - `other_signatories`: The accounts (other than the sender) who can approve this
-     *  dispatch. May not be empty.
-     *  - `timepoint`: The timepoint (block number and transaction index) of the first approval
-     *  transaction for this dispatch.
-     *  - `call_hash`: The hash of the call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `timepoint`: The timepoint (block number and transaction index) of the first approval
+     * transaction for this dispatch.
+     * - `call_hash`: The hash of the call to be executed.
      * 
-     *  # <weight>
-     *  - `O(S)`.
-     *  - Up to one balance-reserve or unreserve operation.
-     *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *  - One encode & hash, both of complexity `O(S)`.
-     *  - One event.
-     *  - I/O: 1 read `O(S)`, one remove.
-     *  - Storage: removes one item.
-     *  ----------------------------------
-     *  - DB Weight:
-     *      - Read: Multisig Storage, [Caller Account], Refund Account, Calls
-     *      - Write: Multisig Storage, [Caller Account], Refund Account, Calls
-     *  # </weight>
+     * # <weight>
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - One event.
+     * - I/O: 1 read `O(S)`, one remove.
+     * - Storage: removes one item.
+     * ----------------------------------
+     * - DB Weight:
+     *     - Read: Multisig Storage, [Caller Account], Refund Account, Calls
+     *     - Write: Multisig Storage, [Caller Account], Refund Account, Calls
+     * # </weight>
      */
-    get asV10(): {threshold: number, otherSignatories: Uint8Array[], timepoint: v10.Timepoint, callHash: Uint8Array} {
+    get asV1(): {threshold: number, otherSignatories: Uint8Array[], timepoint: v1.Timepoint, callHash: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ParachainSystemAuthorizeUpgradeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ParachainSystem.authorize_upgrade')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV1(): boolean {
+        return this._chain.getCallHash('ParachainSystem.authorize_upgrade') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    get asV1(): {codeHash: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ParachainSystemEnactAuthorizedUpgradeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ParachainSystem.enact_authorized_upgrade')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV1(): boolean {
+        return this._chain.getCallHash('ParachainSystem.enact_authorized_upgrade') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
+    }
+
+    get asV1(): {code: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ParachainSystemSetValidationDataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ParachainSystem.set_validation_data')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the current validation data.
+     * 
+     * This should be invoked exactly once per block. It will panic at the finalization
+     * phase if the call was not invoked.
+     * 
+     * The dispatch origin for this call must be `Inherent`
+     * 
+     * As a side effect, this function upgrades the current validation function
+     * if the appropriate time has come.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ParachainSystem.set_validation_data') === 'df843f97e4c625e033541d5f205c5889f3131bdb4549570310e924d96769c1cd'
+    }
+
+    /**
+     * Set the current validation data.
+     * 
+     * This should be invoked exactly once per block. It will panic at the finalization
+     * phase if the call was not invoked.
+     * 
+     * The dispatch origin for this call must be `Inherent`
+     * 
+     * As a side effect, this function upgrades the current validation function
+     * if the appropriate time has come.
+     */
+    get asV1(): {data: v1.ParachainInherentData} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ParachainSystemSudoSendUpwardMessageCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ParachainSystem.sudo_send_upward_message')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV1(): boolean {
+        return this._chain.getCallHash('ParachainSystem.sudo_send_upward_message') === '34457b6daded32ddc4ec3a5a21e34b9af8dcd7d190a5a7833fa8a7ed53b31206'
+    }
+
+    get asV1(): {message: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class PreimageNotePreimageCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Preimage.note_preimage')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Register a preimage on-chain.
+     * 
+     * If the preimage was previously requested, no fees or deposits are taken for providing
+     * the preimage. Otherwise, a deposit is taken proportional to the size of the preimage.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Preimage.note_preimage') === 'fb6f9f7fd683160ab20dcde42ca8f757bc13845dc544f497e534fcf19c270a46'
+    }
+
+    /**
+     * Register a preimage on-chain.
+     * 
+     * If the preimage was previously requested, no fees or deposits are taken for providing
+     * the preimage. Otherwise, a deposit is taken proportional to the size of the preimage.
+     */
+    get asV10(): {bytes: Uint8Array} {
         assert(this.isV10)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class PocAddFundsCall {
+export class PreimageRequestPreimageCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -2883,22 +1767,34 @@ export class PocAddFundsCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Poc.add_funds')
+        assert(call.name === 'Preimage.request_preimage')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV5(): boolean {
-        return this._chain.getCallHash('Poc.add_funds') === 'cb35b858b85c01f9ef5d7452beae3c3ca00714b5a37136bf969c6aa966f6b740'
+    /**
+     * Request a preimage be uploaded to the chain without paying any fees or deposits.
+     * 
+     * If the preimage requests has already been provided on-chain, we unreserve any deposit
+     * a user may have paid, and take the control of the preimage out of their hands.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Preimage.request_preimage') === '19b8576fc9fe9553b0b5ad154324ccae0d0d43fdccbdffddf2bb6066a9b37b5c'
     }
 
-    get asV5(): {amount: bigint} {
-        assert(this.isV5)
+    /**
+     * Request a preimage be uploaded to the chain without paying any fees or deposits.
+     * 
+     * If the preimage requests has already been provided on-chain, we unreserve any deposit
+     * a user may have paid, and take the control of the preimage out of their hands.
+     */
+    get asV10(): {hash: Uint8Array} {
+        assert(this.isV10)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class PocCommitCall {
+export class PreimageUnnotePreimageCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -2906,22 +1802,28 @@ export class PocCommitCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Poc.commit')
+        assert(call.name === 'Preimage.unnote_preimage')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV5(): boolean {
-        return this._chain.getCallHash('Poc.commit') === '139eda0cf5b25bfde1df87337a8ac9aced6b9bf952b8215d601ad7b756cd1866'
+    /**
+     * Clear an unrequested preimage from the runtime storage.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Preimage.unnote_preimage') === '19b8576fc9fe9553b0b5ad154324ccae0d0d43fdccbdffddf2bb6066a9b37b5c'
     }
 
-    get asV5(): {amount: bigint, duration: v5.LockDuration, candidate: Uint8Array} {
-        assert(this.isV5)
+    /**
+     * Clear an unrequested preimage from the runtime storage.
+     */
+    get asV10(): {hash: Uint8Array} {
+        assert(this.isV10)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class PocStartCandidacyCall {
+export class PreimageUnrequestPreimageCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -2929,109 +1831,27 @@ export class PocStartCandidacyCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Poc.start_candidacy')
+        assert(call.name === 'Preimage.unrequest_preimage')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV5(): boolean {
-        return this._chain.getCallHash('Poc.start_candidacy') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    /**
+     * Clear a previously made request for a preimage.
+     * 
+     * NOTE: THIS MUST NOT BE CALLED ON `hash` MORE TIMES THAN `request_preimage`.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Preimage.unrequest_preimage') === '19b8576fc9fe9553b0b5ad154324ccae0d0d43fdccbdffddf2bb6066a9b37b5c'
     }
 
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class PocStopCandidacyCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Poc.stop_candidacy')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('Poc.stop_candidacy') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class PocUnbondCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Poc.unbond')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('Poc.unbond') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class PocVoteCandidateCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Poc.vote_candidate')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('Poc.vote_candidate') === '3628b3aba77dce2d54e6db67e810eccf17921a84b907aea8b90a342fd5ad6c01'
-    }
-
-    get asV5(): {candidate: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class PocWithdrawCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Poc.withdraw')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    get isV5(): boolean {
-        return this._chain.getCallHash('Poc.withdraw') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    get asV5(): null {
-        assert(this.isV5)
+    /**
+     * Clear a previously made request for a preimage.
+     * 
+     * NOTE: THIS MUST NOT BE CALLED ON `hash` MORE TIMES THAN `request_preimage`.
+     */
+    get asV10(): {hash: Uint8Array} {
+        assert(this.isV10)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3050,35 +1870,35 @@ export class SchedulerCancelCall {
     }
 
     /**
-     *  Cancel an anonymously scheduled task.
+     * Cancel an anonymously scheduled task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.15 + 2.869 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 100 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 22.15 + 2.869 * S µs
+     * - DB Weight:
+     *     - Read: Agenda
+     *     - Write: Agenda, Lookup
+     * - Will use base weight of 100 which should be good for up to 30 scheduled calls
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('Scheduler.cancel') === '4186e24556a58b04e04d6d697a530eedf78f255da1ba9d84df6511dd6d6465f7'
     }
 
     /**
-     *  Cancel an anonymously scheduled task.
+     * Cancel an anonymously scheduled task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.15 + 2.869 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 100 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 22.15 + 2.869 * S µs
+     * - DB Weight:
+     *     - Read: Agenda
+     *     - Write: Agenda, Lookup
+     * - Will use base weight of 100 which should be good for up to 30 scheduled calls
+     * # </weight>
      */
-    get asV5(): {when: number, index: number} {
-        assert(this.isV5)
+    get asV1(): {when: number, index: number} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3097,35 +1917,35 @@ export class SchedulerCancelNamedCall {
     }
 
     /**
-     *  Cancel a named scheduled task.
+     * Cancel a named scheduled task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 24.91 + 2.907 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 100 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 24.91 + 2.907 * S µs
+     * - DB Weight:
+     *     - Read: Agenda, Lookup
+     *     - Write: Agenda, Lookup
+     * - Will use base weight of 100 which should be good for up to 30 scheduled calls
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('Scheduler.cancel_named') === 'a0b847240e1232c10a62578340a2af6708e760669b06344b70c15e6370b514cf'
     }
 
     /**
-     *  Cancel a named scheduled task.
+     * Cancel a named scheduled task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 24.91 + 2.907 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 100 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 24.91 + 2.907 * S µs
+     * - DB Weight:
+     *     - Read: Agenda, Lookup
+     *     - Write: Agenda, Lookup
+     * - Will use base weight of 100 which should be good for up to 30 scheduled calls
+     * # </weight>
      */
-    get asV5(): {id: Uint8Array} {
-        assert(this.isV5)
+    get asV1(): {id: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3144,101 +1964,95 @@ export class SchedulerScheduleCall {
     }
 
     /**
-     *  Anonymously schedule a task.
+     * Anonymously schedule a task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.29 + .126 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda
-     *  - Will use base weight of 25 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 22.29 + .126 * S µs
+     * - DB Weight:
+     *     - Read: Agenda
+     *     - Write: Agenda
+     * - Will use base weight of 25 which should be good for up to 30 scheduled calls
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule') === '19b7b8877654c21404c78276f201e938671c03b8acf1d0febf38edf66e53e440'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === '36495e964b24bbd3ff564c7dce2e41c615b043a02ed436280c45a25474de015a'
     }
 
     /**
-     *  Anonymously schedule a task.
+     * Anonymously schedule a task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.29 + .126 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda
-     *  - Will use base weight of 25 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 22.29 + .126 * S µs
+     * - DB Weight:
+     *     - Read: Agenda
+     *     - Write: Agenda
+     * - Will use base weight of 25 which should be good for up to 30 scheduled calls
+     * # </weight>
      */
-    get asV5(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v5.Type_51} {
-        assert(this.isV5)
+    get asV1(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1.Call} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Anonymously schedule a task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.29 + .126 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda
-     *  - Will use base weight of 25 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * Anonymously schedule a task.
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule') === 'df83c65146ffd04d9731454549e7cf58a8577ef484a8a44788cbec1d971a3349'
+    get isV6(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === '2f917490ee8e8f6538461c2360787e2227aff6b9b528723d5cde772ce958ac5d'
     }
 
     /**
-     *  Anonymously schedule a task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.29 + .126 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda
-     *  - Will use base weight of 25 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * Anonymously schedule a task.
      */
-    get asV8(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v8.Type_50} {
-        assert(this.isV8)
+    get asV6(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v6.MaybeHashed} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Anonymously schedule a task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.29 + .126 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda
-     *  - Will use base weight of 25 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * Anonymously schedule a task.
      */
     get isV10(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule') === '0bf8d95b547d4048e5eee6abe0f38f933d2248121b09769edb24588cd1bc5f53'
+        return this._chain.getCallHash('Scheduler.schedule') === '8d4712934a7d6f477bd17d510aced5289296d714c3a07e848961337fd28ab6e4'
     }
 
     /**
-     *  Anonymously schedule a task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 22.29 + .126 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda
-     *      - Write: Agenda
-     *  - Will use base weight of 25 which should be good for up to 30 scheduled calls
-     *  # </weight>
+     * Anonymously schedule a task.
      */
-    get asV10(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.Type_50} {
+    get asV10(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.MaybeHashed} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === '97d0896bc718c5072f5e879e466c52c7f9793319fe2c4689e768d2f603b273a9'
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get asV11(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v11.MaybeHashed} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === 'a66d37f4ced5d1e2c39e71864a7d6c1582202c2c15513f58b787c6b65fd97238'
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get asV12(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v12.MaybeHashed} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3257,71 +2071,117 @@ export class SchedulerScheduleAfterCall {
     }
 
     /**
-     *  Anonymously schedule a task after a delay.
+     * Anonymously schedule a task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_after') === '1ba6d1246e1269d2a73f61e22ad080e0c6af296d51779c1f37a052ef40c05e8e'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '6e068d0d1fa3ba502b5934c700429157f174ee46d767bc8bca5497b99406aa06'
     }
 
     /**
-     *  Anonymously schedule a task after a delay.
+     * Anonymously schedule a task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
      */
-    get asV5(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v5.Type_51} {
-        assert(this.isV5)
+    get asV1(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1.Call} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Anonymously schedule a task after a delay.
+     * Anonymously schedule a task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_after') === '45aafeddf88e4d99f4d7067ea8f7d1c0e20ed8d0b33c57767b96e13db7b1c4cd'
+    get isV6(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '7bdda5865aabcfe02776b5b653fced45afaaad9a7e17281da2941156a147467f'
     }
 
     /**
-     *  Anonymously schedule a task after a delay.
+     * Anonymously schedule a task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
      */
-    get asV8(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v8.Type_50} {
-        assert(this.isV8)
+    get asV6(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v6.MaybeHashed} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Anonymously schedule a task after a delay.
+     * Anonymously schedule a task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
      */
     get isV10(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_after') === '22afb31a3cc6aa413be19072bc50d1f170fd12c81fae011b4032521c6497edae'
+        return this._chain.getCallHash('Scheduler.schedule_after') === '4d21bfd75b7334da6a05287ca7068a7e1ee19c35ea15e228350791c0f3dad827'
     }
 
     /**
-     *  Anonymously schedule a task after a delay.
+     * Anonymously schedule a task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
      */
-    get asV10(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.Type_50} {
+    get asV10(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.MaybeHashed} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '333dd105fe169ae64584d30ab651d067b99b4b897075eb45e28e51727a2d750a'
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get asV11(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v11.MaybeHashed} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '7c2b72bade084ae3783a9a97cc20e747ff0343c9d8731890ba3ba83b0cf126e5'
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get asV12(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v12.MaybeHashed} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3340,101 +2200,95 @@ export class SchedulerScheduleNamedCall {
     }
 
     /**
-     *  Schedule a named task.
+     * Schedule a named task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 29.6 + .159 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 35 which should be good for more than 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 29.6 + .159 * S µs
+     * - DB Weight:
+     *     - Read: Agenda, Lookup
+     *     - Write: Agenda, Lookup
+     * - Will use base weight of 35 which should be good for more than 30 scheduled calls
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_named') === 'a7746c02cb027fa0c88337afe2528838aefa72ca7c559535c3d12a944befe66c'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '4d5859ae965660a811be662e5cb40bc50a68cd034a43bb3a1c4339f0600feaec'
     }
 
     /**
-     *  Schedule a named task.
+     * Schedule a named task.
      * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 29.6 + .159 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 35 which should be good for more than 30 scheduled calls
-     *  # </weight>
+     * # <weight>
+     * - S = Number of already scheduled calls
+     * - Base Weight: 29.6 + .159 * S µs
+     * - DB Weight:
+     *     - Read: Agenda, Lookup
+     *     - Write: Agenda, Lookup
+     * - Will use base weight of 35 which should be good for more than 30 scheduled calls
+     * # </weight>
      */
-    get asV5(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v5.Type_51} {
-        assert(this.isV5)
+    get asV1(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1.Call} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Schedule a named task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 29.6 + .159 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 35 which should be good for more than 30 scheduled calls
-     *  # </weight>
+     * Schedule a named task.
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_named') === 'dd312367de81e3e40b9adf95ad0fafc4b7222c6546470facf82296ea1c469ed5'
+    get isV6(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '6e7198a3387ae7f800bc2dc311dbb868df4abcce24c0ccbb715f75fb4c4de05a'
     }
 
     /**
-     *  Schedule a named task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 29.6 + .159 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 35 which should be good for more than 30 scheduled calls
-     *  # </weight>
+     * Schedule a named task.
      */
-    get asV8(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v8.Type_50} {
-        assert(this.isV8)
+    get asV6(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v6.MaybeHashed} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Schedule a named task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 29.6 + .159 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 35 which should be good for more than 30 scheduled calls
-     *  # </weight>
+     * Schedule a named task.
      */
     get isV10(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_named') === '4a483fa7293fd5d5034afbeeac6c0f678189a95df6a4a224465d74037f668121'
+        return this._chain.getCallHash('Scheduler.schedule_named') === '6c84e119e8ffe1e50dc932fed67524cc857c948ddbbbcba5e35cbd0ef7273eff'
     }
 
     /**
-     *  Schedule a named task.
-     * 
-     *  # <weight>
-     *  - S = Number of already scheduled calls
-     *  - Base Weight: 29.6 + .159 * S µs
-     *  - DB Weight:
-     *      - Read: Agenda, Lookup
-     *      - Write: Agenda, Lookup
-     *  - Will use base weight of 35 which should be good for more than 30 scheduled calls
-     *  # </weight>
+     * Schedule a named task.
      */
-    get asV10(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.Type_50} {
+    get asV10(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.MaybeHashed} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '32667417a331ab09397d862dea8010689ffb32b781450d27805a9ab4b94fdf69'
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get asV11(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v11.MaybeHashed} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === 'dc4c64683d481387fd9586f6e3f1a475b749c10736c366163b105ec4959b270c'
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get asV12(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v12.MaybeHashed} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3453,71 +2307,117 @@ export class SchedulerScheduleNamedAfterCall {
     }
 
     /**
-     *  Schedule a named task after a delay.
+     * Schedule a named task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule_named`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_named_after') === '5c042c563724719cd1509e371323756a15db201c5daa5ca69561af147d8c6a85'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === '16937033236d521128abdd25e66035c164354c9c54a870bcde370b1fada2824b'
     }
 
     /**
-     *  Schedule a named task after a delay.
+     * Schedule a named task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule_named`].
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
      */
-    get asV5(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v5.Type_51} {
-        assert(this.isV5)
+    get asV1(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1.Call} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Schedule a named task after a delay.
+     * Schedule a named task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule_named`](Self::schedule_named).
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_named_after') === '3ee6cd11f0d8f88efe4a249b0feec832d08ecd74b43fa55d589ecccd0372fe89'
+    get isV6(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === 'c4acb0c5f044a89d3ae4ea28dbb6ebd185d53e7da14657edb3086c4024605f7a'
     }
 
     /**
-     *  Schedule a named task after a delay.
+     * Schedule a named task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule_named`](Self::schedule_named).
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
      */
-    get asV8(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v8.Type_50} {
-        assert(this.isV8)
+    get asV6(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v6.MaybeHashed} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Schedule a named task after a delay.
+     * Schedule a named task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule_named`](Self::schedule_named).
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
      */
     get isV10(): boolean {
-        return this._chain.getCallHash('Scheduler.schedule_named_after') === '746eebb03db69c92330bf964aa68561897339085326e805d2562fba640d95d20'
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === 'a0689bcae3e17c9d7d04d95d59cc8f9d2c5333c660e6921b05b15a32726e12e2'
     }
 
     /**
-     *  Schedule a named task after a delay.
+     * Schedule a named task after a delay.
      * 
-     *  # <weight>
-     *  Same as [`schedule_named`](Self::schedule_named).
-     *  # </weight>
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
      */
-    get asV10(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.Type_50} {
+    get asV10(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v10.MaybeHashed} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === '433589dd890f6295acb28d1862f62a15ea1eed851490ad41756353646fd637f7'
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get asV11(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v11.MaybeHashed} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === 'd0e91ba9da33b761433493b0e5f83141a604bdb0c1b82007dbd2406e80deaaa7'
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get asV12(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v12.MaybeHashed} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3536,39 +2436,47 @@ export class SessionPurgeKeysCall {
     }
 
     /**
-     *  Removes any session key(s) of the function caller.
-     *  This doesn't take effect until the next session.
+     * Removes any session key(s) of the function caller.
      * 
-     *  The dispatch origin of this function must be signed.
+     * This doesn't take effect until the next session.
      * 
-     *  # <weight>
-     *  - Complexity: `O(1)` in number of key types.
-     *    Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
-     *  - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
-     *  - DbWrites: `NextKeys`, `origin account`
-     *  - DbWrites per key id: `KeyOwnder`
-     *  # </weight>
+     * The dispatch origin of this function must be Signed and the account must be either be
+     * convertible to a validator ID using the chain's typical addressing system (this usually
+     * means being a controller account) or directly convertible into a validator ID (which
+     * usually means being a stash account).
+     * 
+     * # <weight>
+     * - Complexity: `O(1)` in number of key types. Actual cost depends on the number of length
+     *   of `T::Keys::key_ids()` which is fixed.
+     * - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
+     * - DbWrites: `NextKeys`, `origin account`
+     * - DbWrites per key id: `KeyOwner`
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('Session.purge_keys') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
-     *  Removes any session key(s) of the function caller.
-     *  This doesn't take effect until the next session.
+     * Removes any session key(s) of the function caller.
      * 
-     *  The dispatch origin of this function must be signed.
+     * This doesn't take effect until the next session.
      * 
-     *  # <weight>
-     *  - Complexity: `O(1)` in number of key types.
-     *    Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
-     *  - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
-     *  - DbWrites: `NextKeys`, `origin account`
-     *  - DbWrites per key id: `KeyOwnder`
-     *  # </weight>
+     * The dispatch origin of this function must be Signed and the account must be either be
+     * convertible to a validator ID using the chain's typical addressing system (this usually
+     * means being a controller account) or directly convertible into a validator ID (which
+     * usually means being a stash account).
+     * 
+     * # <weight>
+     * - Complexity: `O(1)` in number of key types. Actual cost depends on the number of length
+     *   of `T::Keys::key_ids()` which is fixed.
+     * - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
+     * - DbWrites: `NextKeys`, `origin account`
+     * - DbWrites per key id: `KeyOwner`
+     * # </weight>
      */
-    get asV5(): null {
-        assert(this.isV5)
+    get asV1(): null {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3587,1680 +2495,43 @@ export class SessionSetKeysCall {
     }
 
     /**
-     *  Sets the session key(s) of the function caller to `keys`.
-     *  Allows an account to set its session key prior to becoming a validator.
-     *  This doesn't take effect until the next session.
+     * Sets the session key(s) of the function caller to `keys`.
+     * Allows an account to set its session key prior to becoming a validator.
+     * This doesn't take effect until the next session.
      * 
-     *  The dispatch origin of this function must be signed.
+     * The dispatch origin of this function must be signed.
      * 
-     *  # <weight>
-     *  - Complexity: `O(1)`
-     *    Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
-     *  - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
-     *  - DbWrites: `origin account`, `NextKeys`
-     *  - DbReads per key id: `KeyOwner`
-     *  - DbWrites per key id: `KeyOwner`
-     *  # </weight>
+     * # <weight>
+     * - Complexity: `O(1)`. Actual cost depends on the number of length of
+     *   `T::Keys::key_ids()` which is fixed.
+     * - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
+     * - DbWrites: `origin account`, `NextKeys`
+     * - DbReads per key id: `KeyOwner`
+     * - DbWrites per key id: `KeyOwner`
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Session.set_keys') === 'c7b330a679f9bd903c6c1f11c1663dda10320887744436efcf21d3d2bbf3b85f'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Session.set_keys') === 'c0b44bc08ddc0ad90c1bd05300acef09fd979fcb434b3b92b011e7817fd56c2f'
     }
 
     /**
-     *  Sets the session key(s) of the function caller to `keys`.
-     *  Allows an account to set its session key prior to becoming a validator.
-     *  This doesn't take effect until the next session.
+     * Sets the session key(s) of the function caller to `keys`.
+     * Allows an account to set its session key prior to becoming a validator.
+     * This doesn't take effect until the next session.
      * 
-     *  The dispatch origin of this function must be signed.
+     * The dispatch origin of this function must be signed.
      * 
-     *  # <weight>
-     *  - Complexity: `O(1)`
-     *    Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
-     *  - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
-     *  - DbWrites: `origin account`, `NextKeys`
-     *  - DbReads per key id: `KeyOwner`
-     *  - DbWrites per key id: `KeyOwner`
-     *  # </weight>
+     * # <weight>
+     * - Complexity: `O(1)`. Actual cost depends on the number of length of
+     *   `T::Keys::key_ids()` which is fixed.
+     * - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
+     * - DbWrites: `origin account`, `NextKeys`
+     * - DbReads per key id: `KeyOwner`
+     * - DbWrites per key id: `KeyOwner`
+     * # </weight>
      */
-    get asV5(): {keys: [Uint8Array, Uint8Array, Uint8Array, Uint8Array], proof: Uint8Array} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingBondCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.bond')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
-     *  be the account that controls it.
-     * 
-     *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the stash account.
-     * 
-     *  Emits `Bonded`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Moderate complexity.
-     *  - O(1).
-     *  - Three extra DB entries.
-     * 
-     *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
-     *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
-     *  ------------------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
-     *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.bond') === '336aace4bca839311d4cecb842a12241ffdc1cb7c84e81b2b6ab6a2b818777f0'
-    }
-
-    /**
-     *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
-     *  be the account that controls it.
-     * 
-     *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the stash account.
-     * 
-     *  Emits `Bonded`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Moderate complexity.
-     *  - O(1).
-     *  - Three extra DB entries.
-     * 
-     *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
-     *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
-     *  ------------------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
-     *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
-     *  # </weight>
-     */
-    get asV5(): {controller: v5.LookupSource, value: bigint, payee: v5.RewardDestination} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingBondExtraCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.bond_extra')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Add some extra amount that have appeared in the stash `free_balance` into the balance up
-     *  for staking.
-     * 
-     *  Use this if there are additional funds in your stash account that you wish to bond.
-     *  Unlike [`bond`] or [`unbond`] this function does not impose any limitation on the amount
-     *  that can be added.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the stash, not the controller and
-     *  it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  Emits `Bonded`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - O(1).
-     *  - One DB entry.
-     *  ------------
-     *  DB Weight:
-     *  - Read: Era Election Status, Bonded, Ledger, [Origin Account], Locks
-     *  - Write: [Origin Account], Locks, Ledger
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.bond_extra') === 'f92c56c980d6a55c468653fc3149548edcf2481e5da53835a201cafa7dc02fd8'
-    }
-
-    /**
-     *  Add some extra amount that have appeared in the stash `free_balance` into the balance up
-     *  for staking.
-     * 
-     *  Use this if there are additional funds in your stash account that you wish to bond.
-     *  Unlike [`bond`] or [`unbond`] this function does not impose any limitation on the amount
-     *  that can be added.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the stash, not the controller and
-     *  it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  Emits `Bonded`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - O(1).
-     *  - One DB entry.
-     *  ------------
-     *  DB Weight:
-     *  - Read: Era Election Status, Bonded, Ledger, [Origin Account], Locks
-     *  - Write: [Origin Account], Locks, Ledger
-     *  # </weight>
-     */
-    get asV5(): {maxAdditional: bigint} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingCancelDeferredSlashCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.cancel_deferred_slash')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Cancel enactment of a deferred slash.
-     * 
-     *  Can be called by the `T::SlashCancelOrigin`.
-     * 
-     *  Parameters: era and indices of the slashes for that era to kill.
-     * 
-     *  # <weight>
-     *  Complexity: O(U + S)
-     *  with U unapplied slashes weighted with U=1000
-     *  and S is the number of slash indices to be canceled.
-     *  - Read: Unapplied Slashes
-     *  - Write: Unapplied Slashes
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.cancel_deferred_slash') === 'fab176436ff709189f441a9c591b1e715361b4db2636055c0154e452e116feb0'
-    }
-
-    /**
-     *  Cancel enactment of a deferred slash.
-     * 
-     *  Can be called by the `T::SlashCancelOrigin`.
-     * 
-     *  Parameters: era and indices of the slashes for that era to kill.
-     * 
-     *  # <weight>
-     *  Complexity: O(U + S)
-     *  with U unapplied slashes weighted with U=1000
-     *  and S is the number of slash indices to be canceled.
-     *  - Read: Unapplied Slashes
-     *  - Write: Unapplied Slashes
-     *  # </weight>
-     */
-    get asV5(): {era: number, slashIndices: number[]} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingChillCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.chill')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Declare no desire to either validate or nominate.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains one read.
-     *  - Writes are limited to the `origin` account key.
-     *  --------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: EraElectionStatus, Ledger
-     *  - Write: Validators, Nominators
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.chill') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Declare no desire to either validate or nominate.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains one read.
-     *  - Writes are limited to the `origin` account key.
-     *  --------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: EraElectionStatus, Ledger
-     *  - Write: Validators, Nominators
-     *  # </weight>
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingChillOtherCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.chill_other')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Declare a `controller` to stop participating as either a validator or nominator.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_, but can be called by anyone.
-     * 
-     *  If the caller is the same as the controller being targeted, then no further checks are
-     *  enforced, and this function behaves just like `chill`.
-     * 
-     *  If the caller is different than the controller being targeted, the following conditions
-     *  must be met:
-     *  * A `ChillThreshold` must be set and checked which defines how close to the max
-     *    nominators or validators we must reach before users can start chilling one-another.
-     *  * A `MaxNominatorCount` and `MaxValidatorCount` must be set which is used to determine
-     *    how close we are to the threshold.
-     *  * A `MinNominatorBond` and `MinValidatorBond` must be set and checked, which determines
-     *    if this is a person that should be chilled because they have not met the threshold
-     *    bond required.
-     * 
-     *  This can be helpful if bond requirements are updated, and we need to remove old users
-     *  who do not satisfy these requirements.
-     */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Staking.chill_other') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
-    }
-
-    /**
-     *  Declare a `controller` to stop participating as either a validator or nominator.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_, but can be called by anyone.
-     * 
-     *  If the caller is the same as the controller being targeted, then no further checks are
-     *  enforced, and this function behaves just like `chill`.
-     * 
-     *  If the caller is different than the controller being targeted, the following conditions
-     *  must be met:
-     *  * A `ChillThreshold` must be set and checked which defines how close to the max
-     *    nominators or validators we must reach before users can start chilling one-another.
-     *  * A `MaxNominatorCount` and `MaxValidatorCount` must be set which is used to determine
-     *    how close we are to the threshold.
-     *  * A `MinNominatorBond` and `MinValidatorBond` must be set and checked, which determines
-     *    if this is a person that should be chilled because they have not met the threshold
-     *    bond required.
-     * 
-     *  This can be helpful if bond requirements are updated, and we need to remove old users
-     *  who do not satisfy these requirements.
-     */
-    get asV8(): {controller: Uint8Array} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingForceNewEraCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.force_new_era')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Force there to be a new era at the end of the next session. After this, it will be
-     *  reset to normal (non-forced) behaviour.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - No arguments.
-     *  - Weight: O(1)
-     *  - Write ForceEra
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.force_new_era') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Force there to be a new era at the end of the next session. After this, it will be
-     *  reset to normal (non-forced) behaviour.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - No arguments.
-     *  - Weight: O(1)
-     *  - Write ForceEra
-     *  # </weight>
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingForceNewEraAlwaysCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.force_new_era_always')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Force there to be a new era at the end of sessions indefinitely.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - Weight: O(1)
-     *  - Write: ForceEra
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.force_new_era_always') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Force there to be a new era at the end of sessions indefinitely.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - Weight: O(1)
-     *  - Write: ForceEra
-     *  # </weight>
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingForceNoErasCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.force_no_eras')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Force there to be no new eras indefinitely.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - No arguments.
-     *  - Weight: O(1)
-     *  - Write: ForceEra
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.force_no_eras') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Force there to be no new eras indefinitely.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - No arguments.
-     *  - Weight: O(1)
-     *  - Write: ForceEra
-     *  # </weight>
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingForceUnstakeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.force_unstake')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Force a current staker to become completely unstaked, immediately.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  O(S) where S is the number of slashing spans to be removed
-     *  Reads: Bonded, Slashing Spans, Account, Locks
-     *  Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators, Account, Locks
-     *  Writes Each: SpanSlash * S
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.force_unstake') === '9d6e1257b3e6113f6cc99a4193f2fef8c6513a3d2a99ee686af751b5931f583b'
-    }
-
-    /**
-     *  Force a current staker to become completely unstaked, immediately.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  O(S) where S is the number of slashing spans to be removed
-     *  Reads: Bonded, Slashing Spans, Account, Locks
-     *  Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators, Account, Locks
-     *  Writes Each: SpanSlash * S
-     *  # </weight>
-     */
-    get asV5(): {stash: Uint8Array, numSlashingSpans: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingIncreaseValidatorCountCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.increase_validator_count')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Increments the ideal number of validators.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  Same as [`set_validator_count`].
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.increase_validator_count') === '1b5e15eec25101f7a4e4a63e4c35b1120c3147dac0ca34ddcab4e7e3bb6ef150'
-    }
-
-    /**
-     *  Increments the ideal number of validators.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  Same as [`set_validator_count`].
-     *  # </weight>
-     */
-    get asV5(): {additional: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingKickCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.kick')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Remove the given nominations from the calling validator.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`. The controller
-     *  account should represent a validator.
-     * 
-     *  - `who`: A list of nominator stash accounts who are nominating this validator which
-     *    should no longer be nominating this validator.
-     * 
-     *  Note: Making this call only makes sense if you first set the validator preferences to
-     *  block any further nominations.
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.kick') === '760f2d470d3cb5efbef130b8d79a202238d983a6680d5e2d4eee31ad48834e9f'
-    }
-
-    /**
-     *  Remove the given nominations from the calling validator.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`. The controller
-     *  account should represent a validator.
-     * 
-     *  - `who`: A list of nominator stash accounts who are nominating this validator which
-     *    should no longer be nominating this validator.
-     * 
-     *  Note: Making this call only makes sense if you first set the validator preferences to
-     *  block any further nominations.
-     */
-    get asV5(): {who: v5.LookupSource[]} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingNominateCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.nominate')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Declare the desire to nominate `targets` for the origin controller.
-     * 
-     *  Effects will be felt at the beginning of the next era. This can only be called when
-     *  [`EraElectionStatus`] is `Closed`.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - The transaction's complexity is proportional to the size of `targets` (N)
-     *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
-     *  - Both the reads and writes follow a similar pattern.
-     *  ---------
-     *  Weight: O(N)
-     *  where N is the number of targets
-     *  DB Weight:
-     *  - Reads: Era Election Status, Ledger, Current Era
-     *  - Writes: Validators, Nominators
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.nominate') === 'a653cde167810e73479047a5ef0738fdd0dc4e9afa5b310a19c8335e4378f706'
-    }
-
-    /**
-     *  Declare the desire to nominate `targets` for the origin controller.
-     * 
-     *  Effects will be felt at the beginning of the next era. This can only be called when
-     *  [`EraElectionStatus`] is `Closed`.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - The transaction's complexity is proportional to the size of `targets` (N)
-     *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
-     *  - Both the reads and writes follow a similar pattern.
-     *  ---------
-     *  Weight: O(N)
-     *  where N is the number of targets
-     *  DB Weight:
-     *  - Reads: Era Election Status, Ledger, Current Era
-     *  - Writes: Validators, Nominators
-     *  # </weight>
-     */
-    get asV5(): {targets: v5.LookupSource[]} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingPayoutStakersCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.payout_stakers')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Pay out all the stakers behind a single validator for a single era.
-     * 
-     *  - `validator_stash` is the stash account of the validator. Their nominators, up to
-     *    `T::MaxNominatorRewardedPerValidator`, will also receive their rewards.
-     *  - `era` may be any era between `[current_era - history_depth; current_era]`.
-     * 
-     *  The origin of this call must be _Signed_. Any account can call this function, even if
-     *  it is not one of the stakers.
-     * 
-     *  This can only be called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Time complexity: at most O(MaxNominatorRewardedPerValidator).
-     *  - Contains a limited number of reads and writes.
-     *  -----------
-     *  N is the Number of payouts for the validator (including the validator)
-     *  Weight:
-     *  - Reward Destination Staked: O(N)
-     *  - Reward Destination Controller (Creating): O(N)
-     *  DB Weight:
-     *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, ErasValidatorReward,
-     *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
-     *  - Read Each: Bonded, Ledger, Payee, Locks, System Account (5 items)
-     *  - Write Each: System Account, Locks, Ledger (3 items)
-     * 
-     *    NOTE: weights are assuming that payouts are made to alive stash account (Staked).
-     *    Paying even a dead controller is cheaper weight-wise. We don't do any refunds here.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.payout_stakers') === '1a09dc413ed4b8ce5cbcdc282b798636ca24268cca001e43fc92d892de3b6a5f'
-    }
-
-    /**
-     *  Pay out all the stakers behind a single validator for a single era.
-     * 
-     *  - `validator_stash` is the stash account of the validator. Their nominators, up to
-     *    `T::MaxNominatorRewardedPerValidator`, will also receive their rewards.
-     *  - `era` may be any era between `[current_era - history_depth; current_era]`.
-     * 
-     *  The origin of this call must be _Signed_. Any account can call this function, even if
-     *  it is not one of the stakers.
-     * 
-     *  This can only be called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Time complexity: at most O(MaxNominatorRewardedPerValidator).
-     *  - Contains a limited number of reads and writes.
-     *  -----------
-     *  N is the Number of payouts for the validator (including the validator)
-     *  Weight:
-     *  - Reward Destination Staked: O(N)
-     *  - Reward Destination Controller (Creating): O(N)
-     *  DB Weight:
-     *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, ErasValidatorReward,
-     *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
-     *  - Read Each: Bonded, Ledger, Payee, Locks, System Account (5 items)
-     *  - Write Each: System Account, Locks, Ledger (3 items)
-     * 
-     *    NOTE: weights are assuming that payouts are made to alive stash account (Staked).
-     *    Paying even a dead controller is cheaper weight-wise. We don't do any refunds here.
-     *  # </weight>
-     */
-    get asV5(): {validatorStash: Uint8Array, era: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingReapStashCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.reap_stash')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Remove all data structure concerning a staker/stash once its balance is at the minimum.
-     *  This is essentially equivalent to `withdraw_unbonded` except it can be called by anyone
-     *  and the target `stash` must have no funds left beyond the ED.
-     * 
-     *  This can be called from any origin.
-     * 
-     *  - `stash`: The stash account to reap. Its balance must be zero.
-     * 
-     *  # <weight>
-     *  Complexity: O(S) where S is the number of slashing spans on the account.
-     *  DB Weight:
-     *  - Reads: Stash Account, Bonded, Slashing Spans, Locks
-     *  - Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators, Stash Account, Locks
-     *  - Writes Each: SpanSlash * S
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.reap_stash') === '9d6e1257b3e6113f6cc99a4193f2fef8c6513a3d2a99ee686af751b5931f583b'
-    }
-
-    /**
-     *  Remove all data structure concerning a staker/stash once its balance is at the minimum.
-     *  This is essentially equivalent to `withdraw_unbonded` except it can be called by anyone
-     *  and the target `stash` must have no funds left beyond the ED.
-     * 
-     *  This can be called from any origin.
-     * 
-     *  - `stash`: The stash account to reap. Its balance must be zero.
-     * 
-     *  # <weight>
-     *  Complexity: O(S) where S is the number of slashing spans on the account.
-     *  DB Weight:
-     *  - Reads: Stash Account, Bonded, Slashing Spans, Locks
-     *  - Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators, Stash Account, Locks
-     *  - Writes Each: SpanSlash * S
-     *  # </weight>
-     */
-    get asV5(): {stash: Uint8Array, numSlashingSpans: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingRebondCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.rebond')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Rebond a portion of the stash scheduled to be unlocked.
-     * 
-     *  The dispatch origin must be signed by the controller, and it can be only called when
-     *  [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Time complexity: O(L), where L is unlocking chunks
-     *  - Bounded by `MAX_UNLOCKING_CHUNKS`.
-     *  - Storage changes: Can't increase storage, only decrease it.
-     *  ---------------
-     *  - DB Weight:
-     *      - Reads: EraElectionStatus, Ledger, Locks, [Origin Account]
-     *      - Writes: [Origin Account], Locks, Ledger
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.rebond') === 'd13cb91c3f61510beece366e7f7c2d0705f01d70f9bc28721d2437cd210a3372'
-    }
-
-    /**
-     *  Rebond a portion of the stash scheduled to be unlocked.
-     * 
-     *  The dispatch origin must be signed by the controller, and it can be only called when
-     *  [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Time complexity: O(L), where L is unlocking chunks
-     *  - Bounded by `MAX_UNLOCKING_CHUNKS`.
-     *  - Storage changes: Can't increase storage, only decrease it.
-     *  ---------------
-     *  - DB Weight:
-     *      - Reads: EraElectionStatus, Ledger, Locks, [Origin Account]
-     *      - Writes: [Origin Account], Locks, Ledger
-     *  # </weight>
-     */
-    get asV5(): {value: bigint} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingScaleValidatorCountCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.scale_validator_count')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Scale up the ideal number of validators by a factor.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  Same as [`set_validator_count`].
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.scale_validator_count') === 'd5f5b0d2128c7dec0e2681f604f51d1657af9bf5eb7c704432075cb4655e0065'
-    }
-
-    /**
-     *  Scale up the ideal number of validators by a factor.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  Same as [`set_validator_count`].
-     *  # </weight>
-     */
-    get asV5(): {factor: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSetControllerCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.set_controller')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  (Re-)set the controller of a stash.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains a limited number of reads.
-     *  - Writes are limited to the `origin` account key.
-     *  ----------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
-     *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.set_controller') === '61b4041aa7366e679d366d2062deb643451b64015c330746395765e6865e5af2'
-    }
-
-    /**
-     *  (Re-)set the controller of a stash.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains a limited number of reads.
-     *  - Writes are limited to the `origin` account key.
-     *  ----------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
-     *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
-     *  # </weight>
-     */
-    get asV5(): {controller: v5.LookupSource} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSetHistoryDepthCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.set_history_depth')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Set `HistoryDepth` value. This function will delete any history information
-     *  when `HistoryDepth` is reduced.
-     * 
-     *  Parameters:
-     *  - `new_history_depth`: The new history depth you would like to set.
-     *  - `era_items_deleted`: The number of items that will be deleted by this dispatch.
-     *     This should report all the storage items that will be deleted by clearing old
-     *     era history. Needed to report an accurate weight for the dispatch. Trusted by
-     *     `Root` to report an accurate number.
-     * 
-     *  Origin must be root.
-     * 
-     *  # <weight>
-     *  - E: Number of history depths removed, i.e. 10 -> 7 = 3
-     *  - Weight: O(E)
-     *  - DB Weight:
-     *      - Reads: Current Era, History Depth
-     *      - Writes: History Depth
-     *      - Clear Prefix Each: Era Stakers, EraStakersClipped, ErasValidatorPrefs
-     *      - Writes Each: ErasValidatorReward, ErasRewardPoints, ErasTotalStake, ErasStartSessionIndex
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.set_history_depth') === 'aff387362bca2e77192ffecea0e2882e4c2722db15c54e48ddded4e0dafe3446'
-    }
-
-    /**
-     *  Set `HistoryDepth` value. This function will delete any history information
-     *  when `HistoryDepth` is reduced.
-     * 
-     *  Parameters:
-     *  - `new_history_depth`: The new history depth you would like to set.
-     *  - `era_items_deleted`: The number of items that will be deleted by this dispatch.
-     *     This should report all the storage items that will be deleted by clearing old
-     *     era history. Needed to report an accurate weight for the dispatch. Trusted by
-     *     `Root` to report an accurate number.
-     * 
-     *  Origin must be root.
-     * 
-     *  # <weight>
-     *  - E: Number of history depths removed, i.e. 10 -> 7 = 3
-     *  - Weight: O(E)
-     *  - DB Weight:
-     *      - Reads: Current Era, History Depth
-     *      - Writes: History Depth
-     *      - Clear Prefix Each: Era Stakers, EraStakersClipped, ErasValidatorPrefs
-     *      - Writes Each: ErasValidatorReward, ErasRewardPoints, ErasTotalStake, ErasStartSessionIndex
-     *  # </weight>
-     */
-    get asV5(): {newHistoryDepth: number, eraItemsDeleted: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSetInvulnerablesCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.set_invulnerables')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Set the validators who cannot be slashed (if any).
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - O(V)
-     *  - Write: Invulnerables
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.set_invulnerables') === '994c18897efc6a5b0e11aeb337b6c718ad03cb0eb182a442fc74b9c80dd56313'
-    }
-
-    /**
-     *  Set the validators who cannot be slashed (if any).
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  - O(V)
-     *  - Write: Invulnerables
-     *  # </weight>
-     */
-    get asV5(): {invulnerables: Uint8Array[]} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSetPayeeCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.set_payee')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  (Re-)set the payment target for a controller.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains a limited number of reads.
-     *  - Writes are limited to the `origin` account key.
-     *  ---------
-     *  - Weight: O(1)
-     *  - DB Weight:
-     *      - Read: Ledger
-     *      - Write: Payee
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
-    }
-
-    /**
-     *  (Re-)set the payment target for a controller.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains a limited number of reads.
-     *  - Writes are limited to the `origin` account key.
-     *  ---------
-     *  - Weight: O(1)
-     *  - DB Weight:
-     *      - Read: Ledger
-     *      - Write: Payee
-     *  # </weight>
-     */
-    get asV5(): {payee: v5.RewardDestination} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSetStakingLimitsCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.set_staking_limits')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Update the various staking limits this pallet.
-     * 
-     *  * `min_nominator_bond`: The minimum active bond needed to be a nominator.
-     *  * `min_validator_bond`: The minimum active bond needed to be a validator.
-     *  * `max_nominator_count`: The max number of users who can be a nominator at once.
-     *    When set to `None`, no limit is enforced.
-     *  * `max_validator_count`: The max number of users who can be a validator at once.
-     *    When set to `None`, no limit is enforced.
-     * 
-     *  Origin must be Root to call this function.
-     * 
-     *  NOTE: Existing nominators and validators will not be affected by this update.
-     *  to kick people under the new limits, `chill_other` should be called.
-     */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Staking.set_staking_limits') === 'a02f000e828a17cbd3d1b2a16e57d8f64445b5bc9f029b636cd5bfef98e0ebdd'
-    }
-
-    /**
-     *  Update the various staking limits this pallet.
-     * 
-     *  * `min_nominator_bond`: The minimum active bond needed to be a nominator.
-     *  * `min_validator_bond`: The minimum active bond needed to be a validator.
-     *  * `max_nominator_count`: The max number of users who can be a nominator at once.
-     *    When set to `None`, no limit is enforced.
-     *  * `max_validator_count`: The max number of users who can be a validator at once.
-     *    When set to `None`, no limit is enforced.
-     * 
-     *  Origin must be Root to call this function.
-     * 
-     *  NOTE: Existing nominators and validators will not be affected by this update.
-     *  to kick people under the new limits, `chill_other` should be called.
-     */
-    get asV8(): {minNominatorBond: bigint, minValidatorBond: bigint, maxNominatorCount: (number | undefined), maxValidatorCount: (number | undefined), threshold: (number | undefined)} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSetValidatorCountCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.set_validator_count')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Sets the ideal number of validators.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  Weight: O(1)
-     *  Write: Validator Count
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.set_validator_count') === 'e648274eb741b1a8ab74c4583589c621e8391cd9122c0f7063e1e18c4af71912'
-    }
-
-    /**
-     *  Sets the ideal number of validators.
-     * 
-     *  The dispatch origin must be Root.
-     * 
-     *  # <weight>
-     *  Weight: O(1)
-     *  Write: Validator Count
-     *  # </weight>
-     */
-    get asV5(): {new: number} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSubmitElectionSolutionCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.submit_election_solution')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Submit an election result to the chain. If the solution:
-     * 
-     *  1. is valid.
-     *  2. has a better score than a potentially existing solution on chain.
-     * 
-     *  then, it will be _put_ on chain.
-     * 
-     *  A solution consists of two pieces of data:
-     * 
-     *  1. `winners`: a flat vector of all the winners of the round.
-     *  2. `assignments`: the compact version of an assignment vector that encodes the edge
-     *     weights.
-     * 
-     *  Both of which may be computed using _phragmen_, or any other algorithm.
-     * 
-     *  Additionally, the submitter must provide:
-     * 
-     *  - The `score` that they claim their solution has.
-     * 
-     *  Both validators and nominators will be represented by indices in the solution. The
-     *  indices should respect the corresponding types ([`ValidatorIndex`] and
-     *  [`NominatorIndex`]). Moreover, they should be valid when used to index into
-     *  [`SnapshotValidators`] and [`SnapshotNominators`]. Any invalid index will cause the
-     *  solution to be rejected. These two storage items are set during the election window and
-     *  may be used to determine the indices.
-     * 
-     *  A solution is valid if:
-     * 
-     *  0. It is submitted when [`EraElectionStatus`] is `Open`.
-     *  1. Its claimed score is equal to the score computed on-chain.
-     *  2. Presents the correct number of winners.
-     *  3. All indexes must be value according to the snapshot vectors. All edge values must
-     *     also be correct and should not overflow the granularity of the ratio type (i.e. 256
-     *     or billion).
-     *  4. For each edge, all targets are actually nominated by the voter.
-     *  5. Has correct self-votes.
-     * 
-     *  A solutions score is consisted of 3 parameters:
-     * 
-     *  1. `min { support.total }` for each support of a winner. This value should be maximized.
-     *  2. `sum { support.total }` for each support of a winner. This value should be minimized.
-     *  3. `sum { support.total^2 }` for each support of a winner. This value should be
-     *     minimized (to ensure less variance)
-     * 
-     *  # <weight>
-     *  The transaction is assumed to be the longest path, a better solution.
-     *    - Initial solution is almost the same.
-     *    - Worse solution is retraced in pre-dispatch-checks which sets its own weight.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.submit_election_solution') === '7bb9cd5dd08bc49e4a101b60cee9cd8847a9d04c218e0e179244a55b2485fd62'
-    }
-
-    /**
-     *  Submit an election result to the chain. If the solution:
-     * 
-     *  1. is valid.
-     *  2. has a better score than a potentially existing solution on chain.
-     * 
-     *  then, it will be _put_ on chain.
-     * 
-     *  A solution consists of two pieces of data:
-     * 
-     *  1. `winners`: a flat vector of all the winners of the round.
-     *  2. `assignments`: the compact version of an assignment vector that encodes the edge
-     *     weights.
-     * 
-     *  Both of which may be computed using _phragmen_, or any other algorithm.
-     * 
-     *  Additionally, the submitter must provide:
-     * 
-     *  - The `score` that they claim their solution has.
-     * 
-     *  Both validators and nominators will be represented by indices in the solution. The
-     *  indices should respect the corresponding types ([`ValidatorIndex`] and
-     *  [`NominatorIndex`]). Moreover, they should be valid when used to index into
-     *  [`SnapshotValidators`] and [`SnapshotNominators`]. Any invalid index will cause the
-     *  solution to be rejected. These two storage items are set during the election window and
-     *  may be used to determine the indices.
-     * 
-     *  A solution is valid if:
-     * 
-     *  0. It is submitted when [`EraElectionStatus`] is `Open`.
-     *  1. Its claimed score is equal to the score computed on-chain.
-     *  2. Presents the correct number of winners.
-     *  3. All indexes must be value according to the snapshot vectors. All edge values must
-     *     also be correct and should not overflow the granularity of the ratio type (i.e. 256
-     *     or billion).
-     *  4. For each edge, all targets are actually nominated by the voter.
-     *  5. Has correct self-votes.
-     * 
-     *  A solutions score is consisted of 3 parameters:
-     * 
-     *  1. `min { support.total }` for each support of a winner. This value should be maximized.
-     *  2. `sum { support.total }` for each support of a winner. This value should be minimized.
-     *  3. `sum { support.total^2 }` for each support of a winner. This value should be
-     *     minimized (to ensure less variance)
-     * 
-     *  # <weight>
-     *  The transaction is assumed to be the longest path, a better solution.
-     *    - Initial solution is almost the same.
-     *    - Worse solution is retraced in pre-dispatch-checks which sets its own weight.
-     *  # </weight>
-     */
-    get asV5(): {winners: number[], compact: v5.CompactAssignments, score: bigint[], era: number, size: v5.ElectionSize} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingSubmitElectionSolutionUnsignedCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.submit_election_solution_unsigned')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Unsigned version of `submit_election_solution`.
-     * 
-     *  Note that this must pass the [`ValidateUnsigned`] check which only allows transactions
-     *  from the local node to be included. In other words, only the block author can include a
-     *  transaction in the block.
-     * 
-     *  # <weight>
-     *  See [`submit_election_solution`].
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.submit_election_solution_unsigned') === '7bb9cd5dd08bc49e4a101b60cee9cd8847a9d04c218e0e179244a55b2485fd62'
-    }
-
-    /**
-     *  Unsigned version of `submit_election_solution`.
-     * 
-     *  Note that this must pass the [`ValidateUnsigned`] check which only allows transactions
-     *  from the local node to be included. In other words, only the block author can include a
-     *  transaction in the block.
-     * 
-     *  # <weight>
-     *  See [`submit_election_solution`].
-     *  # </weight>
-     */
-    get asV5(): {winners: number[], compact: v5.CompactAssignments, score: bigint[], era: number, size: v5.ElectionSize} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingUnbondCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.unbond')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Schedule a portion of the stash to be unlocked ready for transfer out after the bond
-     *  period ends. If this leaves an amount actively bonded less than
-     *  T::Currency::minimum_balance(), then it is increased to the full amount.
-     * 
-     *  Once the unlock period is done, you can call `withdraw_unbonded` to actually move
-     *  the funds out of management ready for transfer.
-     * 
-     *  No more than a limited number of unlocking chunks (see `MAX_UNLOCKING_CHUNKS`)
-     *  can co-exists at the same time. In that case, [`Call::withdraw_unbonded`] need
-     *  to be called first to remove some of the chunks (if possible).
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  Emits `Unbonded`.
-     * 
-     *  See also [`Call::withdraw_unbonded`].
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Limited but potentially exploitable complexity.
-     *  - Contains a limited number of reads.
-     *  - Each call (requires the remainder of the bonded balance to be above `minimum_balance`)
-     *    will cause a new entry to be inserted into a vector (`Ledger.unlocking`) kept in storage.
-     *    The only way to clean the aforementioned storage item is also user-controlled via
-     *    `withdraw_unbonded`.
-     *  - One DB entry.
-     *  ----------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: EraElectionStatus, Ledger, CurrentEra, Locks, BalanceOf Stash,
-     *  - Write: Locks, Ledger, BalanceOf Stash,
-     *  </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.unbond') === 'd13cb91c3f61510beece366e7f7c2d0705f01d70f9bc28721d2437cd210a3372'
-    }
-
-    /**
-     *  Schedule a portion of the stash to be unlocked ready for transfer out after the bond
-     *  period ends. If this leaves an amount actively bonded less than
-     *  T::Currency::minimum_balance(), then it is increased to the full amount.
-     * 
-     *  Once the unlock period is done, you can call `withdraw_unbonded` to actually move
-     *  the funds out of management ready for transfer.
-     * 
-     *  No more than a limited number of unlocking chunks (see `MAX_UNLOCKING_CHUNKS`)
-     *  can co-exists at the same time. In that case, [`Call::withdraw_unbonded`] need
-     *  to be called first to remove some of the chunks (if possible).
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  Emits `Unbonded`.
-     * 
-     *  See also [`Call::withdraw_unbonded`].
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Limited but potentially exploitable complexity.
-     *  - Contains a limited number of reads.
-     *  - Each call (requires the remainder of the bonded balance to be above `minimum_balance`)
-     *    will cause a new entry to be inserted into a vector (`Ledger.unlocking`) kept in storage.
-     *    The only way to clean the aforementioned storage item is also user-controlled via
-     *    `withdraw_unbonded`.
-     *  - One DB entry.
-     *  ----------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: EraElectionStatus, Ledger, CurrentEra, Locks, BalanceOf Stash,
-     *  - Write: Locks, Ledger, BalanceOf Stash,
-     *  </weight>
-     */
-    get asV5(): {value: bigint} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingValidateCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.validate')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Declare the desire to validate for the origin controller.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains a limited number of reads.
-     *  - Writes are limited to the `origin` account key.
-     *  -----------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: Era Election Status, Ledger
-     *  - Write: Nominators, Validators
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
-    }
-
-    /**
-     *  Declare the desire to validate for the origin controller.
-     * 
-     *  Effects will be felt at the beginning of the next era.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  # <weight>
-     *  - Independent of the arguments. Insignificant complexity.
-     *  - Contains a limited number of reads.
-     *  - Writes are limited to the `origin` account key.
-     *  -----------
-     *  Weight: O(1)
-     *  DB Weight:
-     *  - Read: Era Election Status, Ledger
-     *  - Write: Nominators, Validators
-     *  # </weight>
-     */
-    get asV5(): {prefs: v5.ValidatorPrefs} {
-        assert(this.isV5)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class StakingWithdrawUnbondedCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Staking.withdraw_unbonded')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     *  Remove any unlocked chunks from the `unlocking` queue from our management.
-     * 
-     *  This essentially frees up that balance to be used by the stash account to do
-     *  whatever it wants.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  Emits `Withdrawn`.
-     * 
-     *  See also [`Call::unbond`].
-     * 
-     *  # <weight>
-     *  - Could be dependent on the `origin` argument and how much `unlocking` chunks exist.
-     *   It implies `consolidate_unlocked` which loops over `Ledger.unlocking`, which is
-     *   indirectly user-controlled. See [`unbond`] for more detail.
-     *  - Contains a limited number of reads, yet the size of which could be large based on `ledger`.
-     *  - Writes are limited to the `origin` account key.
-     *  ---------------
-     *  Complexity O(S) where S is the number of slashing spans to remove
-     *  Update:
-     *  - Reads: EraElectionStatus, Ledger, Current Era, Locks, [Origin Account]
-     *  - Writes: [Origin Account], Locks, Ledger
-     *  Kill:
-     *  - Reads: EraElectionStatus, Ledger, Current Era, Bonded, Slashing Spans, [Origin
-     *    Account], Locks, BalanceOf stash
-     *  - Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators,
-     *    [Origin Account], Locks, BalanceOf stash.
-     *  - Writes Each: SpanSlash * S
-     *  NOTE: Weight annotation is the kill scenario, we refund otherwise.
-     *  # </weight>
-     */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Staking.withdraw_unbonded') === '6a7f80eeb74b237a907212a84c7fbc3bbfc8155b3decc30afb4c65c3bcb3f317'
-    }
-
-    /**
-     *  Remove any unlocked chunks from the `unlocking` queue from our management.
-     * 
-     *  This essentially frees up that balance to be used by the stash account to do
-     *  whatever it wants.
-     * 
-     *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-     *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-     * 
-     *  Emits `Withdrawn`.
-     * 
-     *  See also [`Call::unbond`].
-     * 
-     *  # <weight>
-     *  - Could be dependent on the `origin` argument and how much `unlocking` chunks exist.
-     *   It implies `consolidate_unlocked` which loops over `Ledger.unlocking`, which is
-     *   indirectly user-controlled. See [`unbond`] for more detail.
-     *  - Contains a limited number of reads, yet the size of which could be large based on `ledger`.
-     *  - Writes are limited to the `origin` account key.
-     *  ---------------
-     *  Complexity O(S) where S is the number of slashing spans to remove
-     *  Update:
-     *  - Reads: EraElectionStatus, Ledger, Current Era, Locks, [Origin Account]
-     *  - Writes: [Origin Account], Locks, Ledger
-     *  Kill:
-     *  - Reads: EraElectionStatus, Ledger, Current Era, Bonded, Slashing Spans, [Origin
-     *    Account], Locks, BalanceOf stash
-     *  - Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators,
-     *    [Origin Account], Locks, BalanceOf stash.
-     *  - Writes Each: SpanSlash * S
-     *  NOTE: Weight annotation is the kill scenario, we refund otherwise.
-     *  # </weight>
-     */
-    get asV5(): {numSlashingSpans: number} {
-        assert(this.isV5)
+    get asV1(): {keys: v1.SessionKeys, proof: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5279,33 +2550,35 @@ export class SudoSetKeyCall {
     }
 
     /**
-     *  Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo key.
+     * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
+     * key.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB change.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB change.
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Sudo.set_key') === 'd0eb457ece644571cebe79cbdd64ef1453c382048ffec79f9c403f7bc8f90020'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Sudo.set_key') === 'e634aac3331d47a56ff572c52ad90a648769dfbf2c00d7bd44498b4ee41f6ac7'
     }
 
     /**
-     *  Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo key.
+     * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
+     * key.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB change.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB change.
+     * # </weight>
      */
-    get asV5(): {new: v5.LookupSource} {
-        assert(this.isV5)
+    get asV1(): {new: v1.MultiAddress} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5324,101 +2597,68 @@ export class SudoSudoCall {
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === '43724a3f6f9b452ad260d8719f337c1d62311b709cdc08960ab203ed9adca30a'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === 'a9f8193d926f29d30c08628627d09ed5cfe97477b731305d75d66cb40bd90928'
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get asV5(): {call: v5.Type_51} {
-        assert(this.isV5)
+    get asV1(): {call: v1.Call} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === '75ceb79fb5f0f2da682b2e2d7f233abd3b1abf721bd3cfb16dc052f2ff6e8a69'
+    get isV6(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === 'f6e87384622ff2e90452fe1c1797fa93bb42d18d55bfe95a12300d42aa80f59e'
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get asV8(): {call: v8.Type_50} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
-     */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === '338d41ecbdc6d6793c98362a571d1b5158e1af9274c228100a6352d2ecb5bd97'
-    }
-
-    /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
-     */
-    get asV10(): {call: v10.Type_50} {
-        assert(this.isV10)
+    get asV6(): {call: v6.Call} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5437,107 +2677,72 @@ export class SudoSudoAsCall {
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Signed` origin from
-     *  a given account.
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === 'ef889c5259a47ac3f567141d08dd9225006e95c20e514fee0d5f172021cfe613'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '1b9e15ca94752e9b734e9a0db38053a947dc4a968e7eab4ab7139a371988a0db'
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Signed` origin from
-     *  a given account.
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get asV5(): {who: v5.LookupSource, call: v5.Type_51} {
-        assert(this.isV5)
+    get asV1(): {who: v1.MultiAddress, call: v1.Call} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Signed` origin from
-     *  a given account.
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === 'b089d0d1cdaa2ca903a72f3d35b22b165805761dfbdd879ec020433a63e160d7'
+    get isV6(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '6b7cbccbd6e9d56dc7bf3266b0008169f6c609d79b009be50f0a8ca9b9c7e997'
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Signed` origin from
-     *  a given account.
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
      */
-    get asV8(): {who: v8.LookupSource, call: v8.Type_50} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Authenticates the sudo key and dispatches a function call with `Signed` origin from
-     *  a given account.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
-     */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === '451f21a08f5b879cbd733b87e1be3c2b83f224ea166ce5a0dad4150d1e0e6027'
-    }
-
-    /**
-     *  Authenticates the sudo key and dispatches a function call with `Signed` origin from
-     *  a given account.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  # <weight>
-     *  - O(1).
-     *  - Limited storage reads.
-     *  - One DB write (event).
-     *  - Weight of derivative `call` execution + 10,000.
-     *  # </weight>
-     */
-    get asV10(): {who: v10.LookupSource, call: v10.Type_50} {
-        assert(this.isV10)
+    get asV6(): {who: v6.MultiAddress, call: v6.Call} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5556,101 +2761,68 @@ export class SudoSudoUncheckedWeightCall {
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     *  This function does not check the weight of the call, and instead allows the
-     *  Sudo user to specify the weight of the call.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - The weight of this call is defined by the caller.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'c73ea9999954b16067a667b6e5f358db5f9c9d29abaa467e0bcf426e0d2c6b9f'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'fa8b1684373025bf84dbbe96de26b604bd28daea3c1f37c3e75ee21eb7f4fe7b'
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     *  This function does not check the weight of the call, and instead allows the
-     *  Sudo user to specify the weight of the call.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - The weight of this call is defined by the caller.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
      */
-    get asV5(): {call: v5.Type_51, weight: bigint} {
-        assert(this.isV5)
+    get asV1(): {call: v1.Call, weight: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     *  This function does not check the weight of the call, and instead allows the
-     *  Sudo user to specify the weight of the call.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - The weight of this call is defined by the caller.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
      */
-    get isV8(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '9ad03234d841b79dec2bf8bcc39dec9264c24a3a0c9a6a9a74a1e3d1a97b91c7'
+    get isV6(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '634b6a7bd70860e367987f141a330a4139d870ea3905e4df470781b3dcaf2c4e'
     }
 
     /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     *  This function does not check the weight of the call, and instead allows the
-     *  Sudo user to specify the weight of the call.
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      * 
-     *  # <weight>
-     *  - O(1).
-     *  - The weight of this call is defined by the caller.
-     *  # </weight>
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
      */
-    get asV8(): {call: v8.Type_50, weight: bigint} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     *  This function does not check the weight of the call, and instead allows the
-     *  Sudo user to specify the weight of the call.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  # <weight>
-     *  - O(1).
-     *  - The weight of this call is defined by the caller.
-     *  # </weight>
-     */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'a6acef2f4744c2de2eb0b15ea0447007759c3554f8683b4484b2a5ebef78ab40'
-    }
-
-    /**
-     *  Authenticates the sudo key and dispatches a function call with `Root` origin.
-     *  This function does not check the weight of the call, and instead allows the
-     *  Sudo user to specify the weight of the call.
-     * 
-     *  The dispatch origin for this call must be _Signed_.
-     * 
-     *  # <weight>
-     *  - O(1).
-     *  - The weight of this call is defined by the caller.
-     *  # </weight>
-     */
-    get asV10(): {call: v10.Type_50, weight: bigint} {
-        assert(this.isV10)
+    get asV6(): {call: v6.Call, weight: bigint} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5669,17 +2841,17 @@ export class SystemFillBlockCall {
     }
 
     /**
-     *  A dispatch that will fill the block weight up to the given ratio.
+     * A dispatch that will fill the block weight up to the given ratio.
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.fill_block') === '41c1841312db092642508be699e4a3f54d52efe2dcaa8101ca9518398fb70c49'
     }
 
     /**
-     *  A dispatch that will fill the block weight up to the given ratio.
+     * A dispatch that will fill the block weight up to the given ratio.
      */
-    get asV5(): {ratio: number} {
-        assert(this.isV5)
+    get asV1(): {ratio: number} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5698,37 +2870,37 @@ export class SystemKillPrefixCall {
     }
 
     /**
-     *  Kill all storage items with a key that starts with the given prefix.
+     * Kill all storage items with a key that starts with the given prefix.
      * 
-     *  **NOTE:** We rely on the Root origin to provide us the number of subkeys under
-     *  the prefix we are removing to accurately calculate the weight of this function.
+     * **NOTE:** We rely on the Root origin to provide us the number of subkeys under
+     * the prefix we are removing to accurately calculate the weight of this function.
      * 
-     *  # <weight>
-     *  - `O(P)` where `P` amount of keys with prefix `prefix`
-     *  - `P` storage deletions.
-     *  - Base Weight: 0.834 * P µs
-     *  - Writes: Number of subkeys + 1
-     *  # </weight>
+     * # <weight>
+     * - `O(P)` where `P` amount of keys with prefix `prefix`
+     * - `P` storage deletions.
+     * - Base Weight: 0.834 * P µs
+     * - Writes: Number of subkeys + 1
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.kill_prefix') === 'dfbadd42bee8b18fc81cf78683511061181cffbf7a8ebfd3e5719c389b373d93'
     }
 
     /**
-     *  Kill all storage items with a key that starts with the given prefix.
+     * Kill all storage items with a key that starts with the given prefix.
      * 
-     *  **NOTE:** We rely on the Root origin to provide us the number of subkeys under
-     *  the prefix we are removing to accurately calculate the weight of this function.
+     * **NOTE:** We rely on the Root origin to provide us the number of subkeys under
+     * the prefix we are removing to accurately calculate the weight of this function.
      * 
-     *  # <weight>
-     *  - `O(P)` where `P` amount of keys with prefix `prefix`
-     *  - `P` storage deletions.
-     *  - Base Weight: 0.834 * P µs
-     *  - Writes: Number of subkeys + 1
-     *  # </weight>
+     * # <weight>
+     * - `O(P)` where `P` amount of keys with prefix `prefix`
+     * - `P` storage deletions.
+     * - Base Weight: 0.834 * P µs
+     * - Writes: Number of subkeys + 1
+     * # </weight>
      */
-    get asV5(): {prefix: Uint8Array, subkeys: number} {
-        assert(this.isV5)
+    get asV1(): {prefix: Uint8Array, subkeys: number} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5747,31 +2919,31 @@ export class SystemKillStorageCall {
     }
 
     /**
-     *  Kill some items from storage.
+     * Kill some items from storage.
      * 
-     *  # <weight>
-     *  - `O(IK)` where `I` length of `keys` and `K` length of one key
-     *  - `I` storage deletions.
-     *  - Base Weight: .378 * i µs
-     *  - Writes: Number of items
-     *  # </weight>
+     * # <weight>
+     * - `O(IK)` where `I` length of `keys` and `K` length of one key
+     * - `I` storage deletions.
+     * - Base Weight: .378 * i µs
+     * - Writes: Number of items
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.kill_storage') === 'eac21dc14e927c003d9c634fb019d04128f71f8529d2914b10a56b85289c2c11'
     }
 
     /**
-     *  Kill some items from storage.
+     * Kill some items from storage.
      * 
-     *  # <weight>
-     *  - `O(IK)` where `I` length of `keys` and `K` length of one key
-     *  - `I` storage deletions.
-     *  - Base Weight: .378 * i µs
-     *  - Writes: Number of items
-     *  # </weight>
+     * # <weight>
+     * - `O(IK)` where `I` length of `keys` and `K` length of one key
+     * - `I` storage deletions.
+     * - Base Weight: .378 * i µs
+     * - Writes: Number of items
+     * # </weight>
      */
-    get asV5(): {keys: Uint8Array[]} {
-        assert(this.isV5)
+    get asV1(): {keys: Uint8Array[]} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5790,29 +2962,25 @@ export class SystemRemarkCall {
     }
 
     /**
-     *  Make some on-chain remark.
+     * Make some on-chain remark.
      * 
-     *  # <weight>
-     *  - `O(1)`
-     *  - Base Weight: 0.665 µs, independent of remark length.
-     *  - No DB operations.
-     *  # </weight>
+     * # <weight>
+     * - `O(1)`
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.remark') === 'f4e9b5b7572eeae92978087ece9b4f57cb5cab4f16baf5625bb9ec4a432bad63'
     }
 
     /**
-     *  Make some on-chain remark.
+     * Make some on-chain remark.
      * 
-     *  # <weight>
-     *  - `O(1)`
-     *  - Base Weight: 0.665 µs, independent of remark length.
-     *  - No DB operations.
-     *  # </weight>
+     * # <weight>
+     * - `O(1)`
+     * # </weight>
      */
-    get asV5(): {remark: Uint8Array} {
-        assert(this.isV5)
+    get asV1(): {remark: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5831,27 +2999,27 @@ export class SystemRemarkWithEventCall {
     }
 
     /**
-     *  Make some on-chain remark and emit event.
+     * Make some on-chain remark and emit event.
      * 
-     *  # <weight>
-     *  - `O(b)` where b is the length of the remark.
-     *  - 1 event.
-     *  # </weight>
+     * # <weight>
+     * - `O(b)` where b is the length of the remark.
+     * - 1 event.
+     * # </weight>
      */
-    get isV8(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.remark_with_event') === 'f4e9b5b7572eeae92978087ece9b4f57cb5cab4f16baf5625bb9ec4a432bad63'
     }
 
     /**
-     *  Make some on-chain remark and emit event.
+     * Make some on-chain remark and emit event.
      * 
-     *  # <weight>
-     *  - `O(b)` where b is the length of the remark.
-     *  - 1 event.
-     *  # </weight>
+     * # <weight>
+     * - `O(b)` where b is the length of the remark.
+     * - 1 event.
+     * # </weight>
      */
-    get asV8(): {remark: Uint8Array} {
-        assert(this.isV8)
+    get asV1(): {remark: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5870,35 +3038,35 @@ export class SystemSetChangesTrieConfigCall {
     }
 
     /**
-     *  Set the new changes trie configuration.
+     * Set the new changes trie configuration.
      * 
-     *  # <weight>
-     *  - `O(1)`
-     *  - 1 storage write or delete (codec `O(1)`).
-     *  - 1 call to `deposit_log`: Uses `append` API, so O(1)
-     *  - Base Weight: 7.218 µs
-     *  - DB Weight:
-     *      - Writes: Changes Trie, System Digest
-     *  # </weight>
+     * # <weight>
+     * - `O(1)`
+     * - 1 storage write or delete (codec `O(1)`).
+     * - 1 call to `deposit_log`: Uses `append` API, so O(1)
+     * - Base Weight: 7.218 µs
+     * - DB Weight:
+     *     - Writes: Changes Trie, System Digest
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.set_changes_trie_config') === 'ced137e2f8792ce87e1f2b20f97e1de9a31001f9c44069dc6e73b9e4c061c311'
     }
 
     /**
-     *  Set the new changes trie configuration.
+     * Set the new changes trie configuration.
      * 
-     *  # <weight>
-     *  - `O(1)`
-     *  - 1 storage write or delete (codec `O(1)`).
-     *  - 1 call to `deposit_log`: Uses `append` API, so O(1)
-     *  - Base Weight: 7.218 µs
-     *  - DB Weight:
-     *      - Writes: Changes Trie, System Digest
-     *  # </weight>
+     * # <weight>
+     * - `O(1)`
+     * - 1 storage write or delete (codec `O(1)`).
+     * - 1 call to `deposit_log`: Uses `append` API, so O(1)
+     * - Base Weight: 7.218 µs
+     * - DB Weight:
+     *     - Writes: Changes Trie, System Digest
+     * # </weight>
      */
-    get asV5(): {changesTrieConfig: (v5.ChangesTrieConfiguration | undefined)} {
-        assert(this.isV5)
+    get asV1(): {changesTrieConfig: (v1.ChangesTrieConfiguration | undefined)} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5917,35 +3085,39 @@ export class SystemSetCodeCall {
     }
 
     /**
-     *  Set the new runtime code.
+     * Set the new runtime code.
      * 
-     *  # <weight>
-     *  - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`
-     *  - 1 storage write (codec `O(C)`).
-     *  - 1 call to `can_set_code`: `O(S)` (calls `sp_io::misc::runtime_version` which is expensive).
-     *  - 1 event.
-     *  The weight of this function is dependent on the runtime, but generally this is very expensive.
-     *  We will treat this as a full block.
-     *  # </weight>
+     * # <weight>
+     * - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`
+     * - 1 call to `can_set_code`: `O(S)` (calls `sp_io::misc::runtime_version` which is
+     *   expensive).
+     * - 1 storage write (codec `O(C)`).
+     * - 1 digest item.
+     * - 1 event.
+     * The weight of this function is dependent on the runtime, but generally this is very
+     * expensive. We will treat this as a full block.
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.set_code') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
     }
 
     /**
-     *  Set the new runtime code.
+     * Set the new runtime code.
      * 
-     *  # <weight>
-     *  - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`
-     *  - 1 storage write (codec `O(C)`).
-     *  - 1 call to `can_set_code`: `O(S)` (calls `sp_io::misc::runtime_version` which is expensive).
-     *  - 1 event.
-     *  The weight of this function is dependent on the runtime, but generally this is very expensive.
-     *  We will treat this as a full block.
-     *  # </weight>
+     * # <weight>
+     * - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`
+     * - 1 call to `can_set_code`: `O(S)` (calls `sp_io::misc::runtime_version` which is
+     *   expensive).
+     * - 1 storage write (codec `O(C)`).
+     * - 1 digest item.
+     * - 1 event.
+     * The weight of this function is dependent on the runtime, but generally this is very
+     * expensive. We will treat this as a full block.
+     * # </weight>
      */
-    get asV5(): {code: Uint8Array} {
-        assert(this.isV5)
+    get asV1(): {code: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5964,31 +3136,33 @@ export class SystemSetCodeWithoutChecksCall {
     }
 
     /**
-     *  Set the new runtime code without doing any checks of the given `code`.
+     * Set the new runtime code without doing any checks of the given `code`.
      * 
-     *  # <weight>
-     *  - `O(C)` where `C` length of `code`
-     *  - 1 storage write (codec `O(C)`).
-     *  - 1 event.
-     *  The weight of this function is dependent on the runtime. We will treat this as a full block.
-     *  # </weight>
+     * # <weight>
+     * - `O(C)` where `C` length of `code`
+     * - 1 storage write (codec `O(C)`).
+     * - 1 digest item.
+     * - 1 event.
+     * The weight of this function is dependent on the runtime. We will treat this as a full
+     * block. # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.set_code_without_checks') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
     }
 
     /**
-     *  Set the new runtime code without doing any checks of the given `code`.
+     * Set the new runtime code without doing any checks of the given `code`.
      * 
-     *  # <weight>
-     *  - `O(C)` where `C` length of `code`
-     *  - 1 storage write (codec `O(C)`).
-     *  - 1 event.
-     *  The weight of this function is dependent on the runtime. We will treat this as a full block.
-     *  # </weight>
+     * # <weight>
+     * - `O(C)` where `C` length of `code`
+     * - 1 storage write (codec `O(C)`).
+     * - 1 digest item.
+     * - 1 event.
+     * The weight of this function is dependent on the runtime. We will treat this as a full
+     * block. # </weight>
      */
-    get asV5(): {code: Uint8Array} {
-        assert(this.isV5)
+    get asV1(): {code: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6007,31 +3181,33 @@ export class SystemSetHeapPagesCall {
     }
 
     /**
-     *  Set the number of pages in the WebAssembly environment's heap.
+     * Set the number of pages in the WebAssembly environment's heap.
      * 
-     *  # <weight>
-     *  - `O(1)`
-     *  - 1 storage write.
-     *  - Base Weight: 1.405 µs
-     *  - 1 write to HEAP_PAGES
-     *  # </weight>
+     * # <weight>
+     * - `O(1)`
+     * - 1 storage write.
+     * - Base Weight: 1.405 µs
+     * - 1 write to HEAP_PAGES
+     * - 1 digest item
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.set_heap_pages') === '130172e47c5e517627712b4d084768b98489d920284223ea8ef9c462339b5808'
     }
 
     /**
-     *  Set the number of pages in the WebAssembly environment's heap.
+     * Set the number of pages in the WebAssembly environment's heap.
      * 
-     *  # <weight>
-     *  - `O(1)`
-     *  - 1 storage write.
-     *  - Base Weight: 1.405 µs
-     *  - 1 write to HEAP_PAGES
-     *  # </weight>
+     * # <weight>
+     * - `O(1)`
+     * - 1 storage write.
+     * - Base Weight: 1.405 µs
+     * - 1 write to HEAP_PAGES
+     * - 1 digest item
+     * # </weight>
      */
-    get asV5(): {pages: bigint} {
-        assert(this.isV5)
+    get asV1(): {pages: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6050,36 +3226,36 @@ export class SystemSetStorageCall {
     }
 
     /**
-     *  Set some items of storage.
+     * Set some items of storage.
      * 
-     *  # <weight>
-     *  - `O(I)` where `I` length of `items`
-     *  - `I` storage writes (`O(1)`).
-     *  - Base Weight: 0.568 * i µs
-     *  - Writes: Number of items
-     *  # </weight>
+     * # <weight>
+     * - `O(I)` where `I` length of `items`
+     * - `I` storage writes (`O(1)`).
+     * - Base Weight: 0.568 * i µs
+     * - Writes: Number of items
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('System.set_storage') === 'a4fb507615d69849afb1b2ee654006f9be48bb6e960a4674624d6e46e4382083'
     }
 
     /**
-     *  Set some items of storage.
+     * Set some items of storage.
      * 
-     *  # <weight>
-     *  - `O(I)` where `I` length of `items`
-     *  - `I` storage writes (`O(1)`).
-     *  - Base Weight: 0.568 * i µs
-     *  - Writes: Number of items
-     *  # </weight>
+     * # <weight>
+     * - `O(I)` where `I` length of `items`
+     * - `I` storage writes (`O(1)`).
+     * - Base Weight: 0.568 * i µs
+     * - Writes: Number of items
+     * # </weight>
      */
-    get asV5(): {items: [Uint8Array, Uint8Array][]} {
-        assert(this.isV5)
+    get asV1(): {items: [Uint8Array, Uint8Array][]} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class TechCouncilCloseCall {
+export class TechnicalCommitteeCloseCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -6087,86 +3263,90 @@ export class TechCouncilCloseCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'TechCouncil.close')
+        assert(call.name === 'TechnicalCommittee.close')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Close a vote that is either approved, disapproved or whose voting period has ended.
+     * Close a vote that is either approved, disapproved or whose voting period has ended.
      * 
-     *  May be called by any signed account in order to finish voting and close the proposal.
+     * May be called by any signed account in order to finish voting and close the proposal.
      * 
-     *  If called before the end of the voting period it will only close the vote if it is
-     *  has enough votes to be approved or disapproved.
+     * If called before the end of the voting period it will only close the vote if it is
+     * has enough votes to be approved or disapproved.
      * 
-     *  If called after the end of the voting period abstentions are counted as rejections
-     *  unless there is a prime member set and the prime member cast an approval.
+     * If called after the end of the voting period abstentions are counted as rejections
+     * unless there is a prime member set and the prime member cast an approval.
      * 
-     *  If the close operation completes successfully with disapproval, the transaction fee will
-     *  be waived. Otherwise execution of the approved operation will be charged to the caller.
+     * If the close operation completes successfully with disapproval, the transaction fee will
+     * be waived. Otherwise execution of the approved operation will be charged to the caller.
      * 
-     *  + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed proposal.
-     *  + `length_bound`: The upper bound for the length of the proposal in storage. Checked via
-     *                    `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.
+     * + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed
+     * proposal.
+     * + `length_bound`: The upper bound for the length of the proposal in storage. Checked via
+     * `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1 + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - `P1` is the complexity of `proposal` preimage.
-     *    - `P2` is proposal-count (code-bounded)
-     *  - DB:
-     *   - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)
-     *   - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec `O(P2)`)
-     *   - any mutations done while executing `proposal` (`P1`)
-     *  - up to 3 events
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1 + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - `P1` is the complexity of `proposal` preimage.
+     *   - `P2` is proposal-count (code-bounded)
+     * - DB:
+     *  - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)
+     *  - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec
+     *    `O(P2)`)
+     *  - any mutations done while executing `proposal` (`P1`)
+     * - up to 3 events
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('TechCouncil.close') === '45a5978a11ceb5a8b2c51f7152abaa939cd8bd4bcdc5e1162029cedba4b598ea'
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.close') === '45a5978a11ceb5a8b2c51f7152abaa939cd8bd4bcdc5e1162029cedba4b598ea'
     }
 
     /**
-     *  Close a vote that is either approved, disapproved or whose voting period has ended.
+     * Close a vote that is either approved, disapproved or whose voting period has ended.
      * 
-     *  May be called by any signed account in order to finish voting and close the proposal.
+     * May be called by any signed account in order to finish voting and close the proposal.
      * 
-     *  If called before the end of the voting period it will only close the vote if it is
-     *  has enough votes to be approved or disapproved.
+     * If called before the end of the voting period it will only close the vote if it is
+     * has enough votes to be approved or disapproved.
      * 
-     *  If called after the end of the voting period abstentions are counted as rejections
-     *  unless there is a prime member set and the prime member cast an approval.
+     * If called after the end of the voting period abstentions are counted as rejections
+     * unless there is a prime member set and the prime member cast an approval.
      * 
-     *  If the close operation completes successfully with disapproval, the transaction fee will
-     *  be waived. Otherwise execution of the approved operation will be charged to the caller.
+     * If the close operation completes successfully with disapproval, the transaction fee will
+     * be waived. Otherwise execution of the approved operation will be charged to the caller.
      * 
-     *  + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed proposal.
-     *  + `length_bound`: The upper bound for the length of the proposal in storage. Checked via
-     *                    `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.
+     * + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed
+     * proposal.
+     * + `length_bound`: The upper bound for the length of the proposal in storage. Checked via
+     * `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1 + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - `P1` is the complexity of `proposal` preimage.
-     *    - `P2` is proposal-count (code-bounded)
-     *  - DB:
-     *   - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)
-     *   - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec `O(P2)`)
-     *   - any mutations done while executing `proposal` (`P1`)
-     *  - up to 3 events
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1 + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - `P1` is the complexity of `proposal` preimage.
+     *   - `P2` is proposal-count (code-bounded)
+     * - DB:
+     *  - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)
+     *  - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec
+     *    `O(P2)`)
+     *  - any mutations done while executing `proposal` (`P1`)
+     * - up to 3 events
+     * # </weight>
      */
-    get asV5(): {proposalHash: Uint8Array, index: number, proposalWeightBound: bigint, lengthBound: number} {
-        assert(this.isV5)
+    get asV6(): {proposalHash: Uint8Array, index: number, proposalWeightBound: bigint, lengthBound: number} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class TechCouncilDisapproveProposalCall {
+export class TechnicalCommitteeDisapproveProposalCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -6174,52 +3354,54 @@ export class TechCouncilDisapproveProposalCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'TechCouncil.disapprove_proposal')
+        assert(call.name === 'TechnicalCommittee.disapprove_proposal')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Disapprove a proposal, close, and remove it from the system, regardless of its current state.
+     * Disapprove a proposal, close, and remove it from the system, regardless of its current
+     * state.
      * 
-     *  Must be called by the Root origin.
+     * Must be called by the Root origin.
      * 
-     *  Parameters:
-     *  * `proposal_hash`: The hash of the proposal that should be disapproved.
+     * Parameters:
+     * * `proposal_hash`: The hash of the proposal that should be disapproved.
      * 
-     *  # <weight>
-     *  Complexity: O(P) where P is the number of max proposals
-     *  DB Weight:
-     *  * Reads: Proposals
-     *  * Writes: Voting, Proposals, ProposalOf
-     *  # </weight>
+     * # <weight>
+     * Complexity: O(P) where P is the number of max proposals
+     * DB Weight:
+     * * Reads: Proposals
+     * * Writes: Voting, Proposals, ProposalOf
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('TechCouncil.disapprove_proposal') === 'b8668610145a6851ad2d5b7dd4bfc15e29402d9a8558401ab955896007f866a5'
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.disapprove_proposal') === 'b8668610145a6851ad2d5b7dd4bfc15e29402d9a8558401ab955896007f866a5'
     }
 
     /**
-     *  Disapprove a proposal, close, and remove it from the system, regardless of its current state.
+     * Disapprove a proposal, close, and remove it from the system, regardless of its current
+     * state.
      * 
-     *  Must be called by the Root origin.
+     * Must be called by the Root origin.
      * 
-     *  Parameters:
-     *  * `proposal_hash`: The hash of the proposal that should be disapproved.
+     * Parameters:
+     * * `proposal_hash`: The hash of the proposal that should be disapproved.
      * 
-     *  # <weight>
-     *  Complexity: O(P) where P is the number of max proposals
-     *  DB Weight:
-     *  * Reads: Proposals
-     *  * Writes: Voting, Proposals, ProposalOf
-     *  # </weight>
+     * # <weight>
+     * Complexity: O(P) where P is the number of max proposals
+     * DB Weight:
+     * * Reads: Proposals
+     * * Writes: Voting, Proposals, ProposalOf
+     * # </weight>
      */
-    get asV5(): {proposalHash: Uint8Array} {
-        assert(this.isV5)
+    get asV6(): {proposalHash: Uint8Array} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class TechCouncilExecuteCall {
+export class TechnicalCommitteeExecuteCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -6227,112 +3409,153 @@ export class TechCouncilExecuteCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'TechCouncil.execute')
+        assert(call.name === 'TechnicalCommittee.execute')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Dispatch a proposal from a member using the `Member` origin.
+     * Dispatch a proposal from a member using the `Member` origin.
      * 
-     *  Origin must be a member of the collective.
+     * Origin must be a member of the collective.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
-     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
-     *  - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('TechCouncil.execute') === '50f02c44b28e890628cd5a7ed939c8ca4f3c9a15627e54dd2af02254b05bd898'
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.execute') === '3c3133749fdb00907688ef83e5da819faadb2c8872a1446ad2b8f4febb82edfc'
     }
 
     /**
-     *  Dispatch a proposal from a member using the `Member` origin.
+     * Dispatch a proposal from a member using the `Member` origin.
      * 
-     *  Origin must be a member of the collective.
+     * Origin must be a member of the collective.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
-     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
-     *  - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
      */
-    get asV5(): {proposal: v5.Proposal, lengthBound: number} {
-        assert(this.isV5)
+    get asV6(): {proposal: v6.Call, lengthBound: number} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Dispatch a proposal from a member using the `Member` origin.
+     * Dispatch a proposal from a member using the `Member` origin.
      * 
-     *  Origin must be a member of the collective.
+     * Origin must be a member of the collective.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
-     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
-     *  - 1 event
-     *  # </weight>
-     */
-    get isV8(): boolean {
-        return this._chain.getCallHash('TechCouncil.execute') === '85c14b78e2541f22f6380efcc2ef32bce0217ba0728ba2961261c2ebf501ae3e'
-    }
-
-    /**
-     *  Dispatch a proposal from a member using the `Member` origin.
-     * 
-     *  Origin must be a member of the collective.
-     * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
-     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
-     *  - 1 event
-     *  # </weight>
-     */
-    get asV8(): {proposal: v8.Proposal, lengthBound: number} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Dispatch a proposal from a member using the `Member` origin.
-     * 
-     *  Origin must be a member of the collective.
-     * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
-     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
-     *  - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
      */
     get isV10(): boolean {
-        return this._chain.getCallHash('TechCouncil.execute') === '2114c241df69505422ae53e220638cd6f690b236caeb58c68994fd54d531cb7d'
+        return this._chain.getCallHash('TechnicalCommittee.execute') === 'b05730088eb316411c6c975ca4a32b3788ec0dec5b5a1302c0b3d3662906280f'
     }
 
     /**
-     *  Dispatch a proposal from a member using the `Member` origin.
+     * Dispatch a proposal from a member using the `Member` origin.
      * 
-     *  Origin must be a member of the collective.
+     * Origin must be a member of the collective.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
-     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
-     *  - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
      */
-    get asV10(): {proposal: v10.Proposal, lengthBound: number} {
+    get asV10(): {proposal: v10.Call, lengthBound: number} {
         assert(this.isV10)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.execute') === 'a6394c4fffaf455c8b8cd92bc5d34c86ac9c9c3caa43f54850ca91203e2cff07'
+    }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get asV11(): {proposal: v11.Call, lengthBound: number} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.execute') === '21f3ee9582e8d611fcd7b19f0cbb661bbaa6b748b1577fc00b51b05700e05462'
+    }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get asV12(): {proposal: v12.Call, lengthBound: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
-export class TechCouncilProposeCall {
+export class TechnicalCommitteeProposeCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -6340,289 +3563,281 @@ export class TechCouncilProposeCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'TechCouncil.propose')
+        assert(call.name === 'TechnicalCommittee.propose')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Add a new proposal to either be voted on or executed directly.
+     * Add a new proposal to either be voted on or executed directly.
      * 
-     *  Requires the sender to be member.
+     * Requires the sender to be member.
      * 
-     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
-     *  or put up for voting.
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - branching is influenced by `threshold` where:
-     *      - `P1` is proposal execution complexity (`threshold < 2`)
-     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
-     *  - DB:
-     *    - 1 storage read `is_member` (codec `O(M)`)
-     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
-     *    - DB accesses influenced by `threshold`:
-     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
-     *      - OR proposal insertion (`threshold <= 2`)
-     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
-     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
-     *        - 1 storage write `ProposalOf` (codec `O(B)`)
-     *        - 1 storage write `Voting` (codec `O(M)`)
-     *    - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('TechCouncil.propose') === 'b170f3f00829cf41e146fabdf1f36c5d6734b90e076bcaa463d714d11290c995'
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.propose') === 'fb29c442fd0ba29419ebf4e96fe0896084da0016efe8f282f1b49c736758c4b9'
     }
 
     /**
-     *  Add a new proposal to either be voted on or executed directly.
+     * Add a new proposal to either be voted on or executed directly.
      * 
-     *  Requires the sender to be member.
+     * Requires the sender to be member.
      * 
-     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
-     *  or put up for voting.
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - branching is influenced by `threshold` where:
-     *      - `P1` is proposal execution complexity (`threshold < 2`)
-     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
-     *  - DB:
-     *    - 1 storage read `is_member` (codec `O(M)`)
-     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
-     *    - DB accesses influenced by `threshold`:
-     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
-     *      - OR proposal insertion (`threshold <= 2`)
-     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
-     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
-     *        - 1 storage write `ProposalOf` (codec `O(B)`)
-     *        - 1 storage write `Voting` (codec `O(M)`)
-     *    - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    get asV5(): {threshold: number, proposal: v5.Proposal, lengthBound: number} {
-        assert(this.isV5)
+    get asV6(): {threshold: number, proposal: v6.Call, lengthBound: number} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Add a new proposal to either be voted on or executed directly.
+     * Add a new proposal to either be voted on or executed directly.
      * 
-     *  Requires the sender to be member.
+     * Requires the sender to be member.
      * 
-     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
-     *  or put up for voting.
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - branching is influenced by `threshold` where:
-     *      - `P1` is proposal execution complexity (`threshold < 2`)
-     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
-     *  - DB:
-     *    - 1 storage read `is_member` (codec `O(M)`)
-     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
-     *    - DB accesses influenced by `threshold`:
-     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
-     *      - OR proposal insertion (`threshold <= 2`)
-     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
-     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
-     *        - 1 storage write `ProposalOf` (codec `O(B)`)
-     *        - 1 storage write `Voting` (codec `O(M)`)
-     *    - 1 event
-     *  # </weight>
-     */
-    get isV8(): boolean {
-        return this._chain.getCallHash('TechCouncil.propose') === 'e4e70d77688c03d17b69277e7f3cfc7923850d1aec4ac1187931dea0d44db5ca'
-    }
-
-    /**
-     *  Add a new proposal to either be voted on or executed directly.
-     * 
-     *  Requires the sender to be member.
-     * 
-     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
-     *  or put up for voting.
-     * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - branching is influenced by `threshold` where:
-     *      - `P1` is proposal execution complexity (`threshold < 2`)
-     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
-     *  - DB:
-     *    - 1 storage read `is_member` (codec `O(M)`)
-     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
-     *    - DB accesses influenced by `threshold`:
-     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
-     *      - OR proposal insertion (`threshold <= 2`)
-     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
-     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
-     *        - 1 storage write `ProposalOf` (codec `O(B)`)
-     *        - 1 storage write `Voting` (codec `O(M)`)
-     *    - 1 event
-     *  # </weight>
-     */
-    get asV8(): {threshold: number, proposal: v8.Proposal, lengthBound: number} {
-        assert(this.isV8)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     *  Add a new proposal to either be voted on or executed directly.
-     * 
-     *  Requires the sender to be member.
-     * 
-     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
-     *  or put up for voting.
-     * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - branching is influenced by `threshold` where:
-     *      - `P1` is proposal execution complexity (`threshold < 2`)
-     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
-     *  - DB:
-     *    - 1 storage read `is_member` (codec `O(M)`)
-     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
-     *    - DB accesses influenced by `threshold`:
-     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
-     *      - OR proposal insertion (`threshold <= 2`)
-     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
-     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
-     *        - 1 storage write `ProposalOf` (codec `O(B)`)
-     *        - 1 storage write `Voting` (codec `O(M)`)
-     *    - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
     get isV10(): boolean {
-        return this._chain.getCallHash('TechCouncil.propose') === '1c665dec211cefb13308d7c23f24c395383ce01f6bd0a003b1dfe5835bf86eff'
+        return this._chain.getCallHash('TechnicalCommittee.propose') === '6470c75b05b25c0af631ef3279ebb9e68c4a1663927669d0b3a5dace9c7db167'
     }
 
     /**
-     *  Add a new proposal to either be voted on or executed directly.
+     * Add a new proposal to either be voted on or executed directly.
      * 
-     *  Requires the sender to be member.
+     * Requires the sender to be member.
      * 
-     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
-     *  or put up for voting.
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
      * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
-     *    - `B` is `proposal` size in bytes (length-fee-bounded)
-     *    - `M` is members-count (code- and governance-bounded)
-     *    - branching is influenced by `threshold` where:
-     *      - `P1` is proposal execution complexity (`threshold < 2`)
-     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
-     *  - DB:
-     *    - 1 storage read `is_member` (codec `O(M)`)
-     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
-     *    - DB accesses influenced by `threshold`:
-     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
-     *      - OR proposal insertion (`threshold <= 2`)
-     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
-     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
-     *        - 1 storage write `ProposalOf` (codec `O(B)`)
-     *        - 1 storage write `Voting` (codec `O(M)`)
-     *    - 1 event
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    get asV10(): {threshold: number, proposal: v10.Proposal, lengthBound: number} {
+    get asV10(): {threshold: number, proposal: v10.Call, lengthBound: number} {
         assert(this.isV10)
         return this._chain.decodeCall(this.call)
     }
-}
 
-export class TechCouncilSetMembersCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'TechCouncil.set_members')
-        this._chain = ctx._chain
-        this.call = call
+    /**
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.propose') === '268d6b55cd164854c42209480302ed0c5cc25a4903b27f7c642b1e32fc801169'
     }
 
     /**
-     *  Set the collective's membership.
+     * Add a new proposal to either be voted on or executed directly.
      * 
-     *  - `new_members`: The new member list. Be nice to the chain and provide it sorted.
-     *  - `prime`: The prime member whose vote sets the default.
-     *  - `old_count`: The upper bound for the previous number of members in storage.
-     *                 Used for weight estimation.
+     * Requires the sender to be member.
      * 
-     *  Requires root origin.
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
      * 
-     *  NOTE: Does not enforce the expected `MaxMembers` limit on the amount of members, but
-     *        the weight estimations rely on it to estimate dispatchable weight.
-     * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(MP + N)` where:
-     *    - `M` old-members-count (code- and governance-bounded)
-     *    - `N` new-members-count (code- and governance-bounded)
-     *    - `P` proposals-count (code-bounded)
-     *  - DB:
-     *    - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the members
-     *    - 1 storage read (codec `O(P)`) for reading the proposals
-     *    - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal
-     *    - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('TechCouncil.set_members') === '71b7fcb1d8a62eff96a9ef006517578ce9189e6d931948a256a04ca75ff68d4a'
+    get asV11(): {threshold: number, proposal: v11.Call, lengthBound: number} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
     }
 
     /**
-     *  Set the collective's membership.
+     * Add a new proposal to either be voted on or executed directly.
      * 
-     *  - `new_members`: The new member list. Be nice to the chain and provide it sorted.
-     *  - `prime`: The prime member whose vote sets the default.
-     *  - `old_count`: The upper bound for the previous number of members in storage.
-     *                 Used for weight estimation.
+     * Requires the sender to be member.
      * 
-     *  Requires root origin.
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
      * 
-     *  NOTE: Does not enforce the expected `MaxMembers` limit on the amount of members, but
-     *        the weight estimations rely on it to estimate dispatchable weight.
-     * 
-     *  # <weight>
-     *  ## Weight
-     *  - `O(MP + N)` where:
-     *    - `M` old-members-count (code- and governance-bounded)
-     *    - `N` new-members-count (code- and governance-bounded)
-     *    - `P` proposals-count (code-bounded)
-     *  - DB:
-     *    - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the members
-     *    - 1 storage read (codec `O(P)`) for reading the proposals
-     *    - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal
-     *    - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one
-     *  # </weight>
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    get asV5(): {newMembers: Uint8Array[], prime: (Uint8Array | undefined), oldCount: number} {
-        assert(this.isV5)
+    get isV12(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.propose') === 'f950038a40fb6fd66db03ace291a685b65926e5584ec79d793c22f317c65ee0f'
+    }
+
+    /**
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
+     */
+    get asV12(): {threshold: number, proposal: v12.Call, lengthBound: number} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class TechCouncilVoteCall {
+export class TechnicalCommitteeSetMembersCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -6630,49 +3845,383 @@ export class TechCouncilVoteCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'TechCouncil.vote')
+        assert(call.name === 'TechnicalCommittee.set_members')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Add an aye or nay vote for the sender to the given proposal.
+     * Set the collective's membership.
      * 
-     *  Requires the sender to be a member.
+     * - `new_members`: The new member list. Be nice to the chain and provide it sorted.
+     * - `prime`: The prime member whose vote sets the default.
+     * - `old_count`: The upper bound for the previous number of members in storage. Used for
+     *   weight estimation.
      * 
-     *  Transaction fees will be waived if the member is voting on any particular proposal
-     *  for the first time and the call is successful. Subsequent vote changes will charge a fee.
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M)` where `M` is members-count (code- and governance-bounded)
-     *  - DB:
-     *    - 1 storage read `Members` (codec `O(M)`)
-     *    - 1 storage mutation `Voting` (codec `O(M)`)
-     *  - 1 event
-     *  # </weight>
+     * Requires root origin.
+     * 
+     * NOTE: Does not enforce the expected `MaxMembers` limit on the amount of members, but
+     *       the weight estimations rely on it to estimate dispatchable weight.
+     * 
+     * # WARNING:
+     * 
+     * The `pallet-collective` can also be managed by logic outside of the pallet through the
+     * implementation of the trait [`ChangeMembers`].
+     * Any call to `set_members` must be careful that the member set doesn't get out of sync
+     * with other logic managing the member set.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(MP + N)` where:
+     *   - `M` old-members-count (code- and governance-bounded)
+     *   - `N` new-members-count (code- and governance-bounded)
+     *   - `P` proposals-count (code-bounded)
+     * - DB:
+     *   - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the
+     *     members
+     *   - 1 storage read (codec `O(P)`) for reading the proposals
+     *   - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal
+     *   - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one
+     * # </weight>
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('TechCouncil.vote') === 'f8a1069a57f7b721f47c086d08b6838ae1a0c08f58caddb82428ba5f1407540f'
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.set_members') === '71b7fcb1d8a62eff96a9ef006517578ce9189e6d931948a256a04ca75ff68d4a'
     }
 
     /**
-     *  Add an aye or nay vote for the sender to the given proposal.
+     * Set the collective's membership.
      * 
-     *  Requires the sender to be a member.
+     * - `new_members`: The new member list. Be nice to the chain and provide it sorted.
+     * - `prime`: The prime member whose vote sets the default.
+     * - `old_count`: The upper bound for the previous number of members in storage. Used for
+     *   weight estimation.
      * 
-     *  Transaction fees will be waived if the member is voting on any particular proposal
-     *  for the first time and the call is successful. Subsequent vote changes will charge a fee.
-     *  # <weight>
-     *  ## Weight
-     *  - `O(M)` where `M` is members-count (code- and governance-bounded)
-     *  - DB:
-     *    - 1 storage read `Members` (codec `O(M)`)
-     *    - 1 storage mutation `Voting` (codec `O(M)`)
-     *  - 1 event
-     *  # </weight>
+     * Requires root origin.
+     * 
+     * NOTE: Does not enforce the expected `MaxMembers` limit on the amount of members, but
+     *       the weight estimations rely on it to estimate dispatchable weight.
+     * 
+     * # WARNING:
+     * 
+     * The `pallet-collective` can also be managed by logic outside of the pallet through the
+     * implementation of the trait [`ChangeMembers`].
+     * Any call to `set_members` must be careful that the member set doesn't get out of sync
+     * with other logic managing the member set.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(MP + N)` where:
+     *   - `M` old-members-count (code- and governance-bounded)
+     *   - `N` new-members-count (code- and governance-bounded)
+     *   - `P` proposals-count (code-bounded)
+     * - DB:
+     *   - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the
+     *     members
+     *   - 1 storage read (codec `O(P)`) for reading the proposals
+     *   - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal
+     *   - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one
+     * # </weight>
      */
-    get asV5(): {proposal: Uint8Array, index: number, approve: boolean} {
-        assert(this.isV5)
+    get asV6(): {newMembers: Uint8Array[], prime: (Uint8Array | undefined), oldCount: number} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalCommitteeVoteCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalCommittee.vote')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Add an aye or nay vote for the sender to the given proposal.
+     * 
+     * Requires the sender to be a member.
+     * 
+     * Transaction fees will be waived if the member is voting on any particular proposal
+     * for the first time and the call is successful. Subsequent vote changes will charge a
+     * fee.
+     * # <weight>
+     * ## Weight
+     * - `O(M)` where `M` is members-count (code- and governance-bounded)
+     * - DB:
+     *   - 1 storage read `Members` (codec `O(M)`)
+     *   - 1 storage mutation `Voting` (codec `O(M)`)
+     * - 1 event
+     * # </weight>
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.vote') === 'f8a1069a57f7b721f47c086d08b6838ae1a0c08f58caddb82428ba5f1407540f'
+    }
+
+    /**
+     * Add an aye or nay vote for the sender to the given proposal.
+     * 
+     * Requires the sender to be a member.
+     * 
+     * Transaction fees will be waived if the member is voting on any particular proposal
+     * for the first time and the call is successful. Subsequent vote changes will charge a
+     * fee.
+     * # <weight>
+     * ## Weight
+     * - `O(M)` where `M` is members-count (code- and governance-bounded)
+     * - DB:
+     *   - 1 storage read `Members` (codec `O(M)`)
+     *   - 1 storage mutation `Voting` (codec `O(M)`)
+     * - 1 event
+     * # </weight>
+     */
+    get asV6(): {proposal: Uint8Array, index: number, approve: boolean} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalMembershipAddMemberCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalMembership.add_member')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Add a member `who` to the set.
+     * 
+     * May only be called from `T::AddOrigin`.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalMembership.add_member') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * Add a member `who` to the set.
+     * 
+     * May only be called from `T::AddOrigin`.
+     */
+    get asV6(): {who: Uint8Array} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalMembershipChangeKeyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalMembership.change_key')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Swap out the sending member for some other key `new`.
+     * 
+     * May only be called from `Signed` origin of a current member.
+     * 
+     * Prime membership is passed from the origin account to `new`, if extant.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalMembership.change_key') === 'f866dcb3e8857987a2d21e57c13216c10bb21546a718b81d5e2c0989d6e95df7'
+    }
+
+    /**
+     * Swap out the sending member for some other key `new`.
+     * 
+     * May only be called from `Signed` origin of a current member.
+     * 
+     * Prime membership is passed from the origin account to `new`, if extant.
+     */
+    get asV6(): {new: Uint8Array} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalMembershipClearPrimeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalMembership.clear_prime')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove the prime member if it exists.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalMembership.clear_prime') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Remove the prime member if it exists.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get asV6(): null {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalMembershipRemoveMemberCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalMembership.remove_member')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove a member `who` from the set.
+     * 
+     * May only be called from `T::RemoveOrigin`.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalMembership.remove_member') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * Remove a member `who` from the set.
+     * 
+     * May only be called from `T::RemoveOrigin`.
+     */
+    get asV6(): {who: Uint8Array} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalMembershipResetMembersCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalMembership.reset_members')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Change the membership to a new set, disregarding the existing membership. Be nice and
+     * pass `members` pre-sorted.
+     * 
+     * May only be called from `T::ResetOrigin`.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalMembership.reset_members') === 'd8adca14f9b9cadeaf2b2e6dd47991d05cb423ce3a00dccbb9efa35e36f5a65a'
+    }
+
+    /**
+     * Change the membership to a new set, disregarding the existing membership. Be nice and
+     * pass `members` pre-sorted.
+     * 
+     * May only be called from `T::ResetOrigin`.
+     */
+    get asV6(): {members: Uint8Array[]} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalMembershipSetPrimeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalMembership.set_prime')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the prime member. Must be a current member.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalMembership.set_prime') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * Set the prime member. Must be a current member.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get asV6(): {who: Uint8Array} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TechnicalMembershipSwapMemberCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'TechnicalMembership.swap_member')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Swap out one member `remove` for another `add`.
+     * 
+     * May only be called from `T::SwapOrigin`.
+     * 
+     * Prime membership is *not* passed from `remove` to `add`, if extant.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('TechnicalMembership.swap_member') === 'f9cf5ef851567c52b54f359126b80e6fa967b49f082dd77310b8461819cd13df'
+    }
+
+    /**
+     * Swap out one member `remove` for another `add`.
+     * 
+     * May only be called from `T::SwapOrigin`.
+     * 
+     * Prime membership is *not* passed from `remove` to `add`, if extant.
+     */
+    get asV6(): {remove: Uint8Array, add: Uint8Array} {
+        assert(this.isV6)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6691,50 +4240,52 @@ export class TimestampSetCall {
     }
 
     /**
-     *  Set the current time.
+     * Set the current time.
      * 
-     *  This call should be invoked exactly once per block. It will panic at the finalization
-     *  phase, if this call hasn't been invoked by that time.
+     * This call should be invoked exactly once per block. It will panic at the finalization
+     * phase, if this call hasn't been invoked by that time.
      * 
-     *  The timestamp should be greater than the previous one by the amount specified by
-     *  `MinimumPeriod`.
+     * The timestamp should be greater than the previous one by the amount specified by
+     * `MinimumPeriod`.
      * 
-     *  The dispatch origin for this call must be `Inherent`.
+     * The dispatch origin for this call must be `Inherent`.
      * 
-     *  # <weight>
-     *  - `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
-     *  - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in `on_finalize`)
-     *  - 1 event handler `on_timestamp_set`. Must be `O(1)`.
-     *  # </weight>
+     * # <weight>
+     * - `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
+     * - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in
+     *   `on_finalize`)
+     * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
+     * # </weight>
      */
-    get isV5(): boolean {
+    get isV1(): boolean {
         return this._chain.getCallHash('Timestamp.set') === '6a8b8ba2be107f0853b674eec0026cc440b314db44d0e2c59b36e353355aed14'
     }
 
     /**
-     *  Set the current time.
+     * Set the current time.
      * 
-     *  This call should be invoked exactly once per block. It will panic at the finalization
-     *  phase, if this call hasn't been invoked by that time.
+     * This call should be invoked exactly once per block. It will panic at the finalization
+     * phase, if this call hasn't been invoked by that time.
      * 
-     *  The timestamp should be greater than the previous one by the amount specified by
-     *  `MinimumPeriod`.
+     * The timestamp should be greater than the previous one by the amount specified by
+     * `MinimumPeriod`.
      * 
-     *  The dispatch origin for this call must be `Inherent`.
+     * The dispatch origin for this call must be `Inherent`.
      * 
-     *  # <weight>
-     *  - `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
-     *  - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in `on_finalize`)
-     *  - 1 event handler `on_timestamp_set`. Must be `O(1)`.
-     *  # </weight>
+     * # <weight>
+     * - `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
+     * - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in
+     *   `on_finalize`)
+     * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
+     * # </weight>
      */
-    get asV5(): {now: bigint} {
-        assert(this.isV5)
+    get asV1(): {now: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class TransactionPaymentSetDefaultFeeTokenCall {
+export class UniquesApproveTransferCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -6742,23 +4293,2408 @@ export class TransactionPaymentSetDefaultFeeTokenCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'TransactionPayment.set_default_fee_token')
+        assert(call.name === 'Uniques.approve_transfer')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     *  Set default fee token
+     * Approve an instance to be transferred by a delegated third-party account.
+     * 
+     * Origin must be Signed and must be the owner of the asset `instance`.
+     * 
+     * - `class`: The class of the asset to be approved for delegated transfer.
+     * - `instance`: The instance of the asset to be approved for delegated transfer.
+     * - `delegate`: The account to delegate permission to transfer the asset.
+     * 
+     * Emits `ApprovedTransfer` on success.
+     * 
+     * Weight: `O(1)`
      */
-    get isV5(): boolean {
-        return this._chain.getCallHash('TransactionPayment.set_default_fee_token') === 'fa4eafa26b402c9c1313e60292dfbcf8429229b20dfa6d165fb4b4992ce486c1'
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.approve_transfer') === '566c3fb303903751a17145e9b381e1c42538f2245dbaa4d7e65b62a7e61f1804'
     }
 
     /**
-     *  Set default fee token
+     * Approve an instance to be transferred by a delegated third-party account.
+     * 
+     * Origin must be Signed and must be the owner of the asset `instance`.
+     * 
+     * - `class`: The class of the asset to be approved for delegated transfer.
+     * - `instance`: The instance of the asset to be approved for delegated transfer.
+     * - `delegate`: The account to delegate permission to transfer the asset.
+     * 
+     * Emits `ApprovedTransfer` on success.
+     * 
+     * Weight: `O(1)`
      */
-    get asV5(): {feeToken: (v5.CurrencyId | undefined)} {
-        assert(this.isV5)
+    get asV10(): {class: number, instance: number, delegate: v10.MultiAddress} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Approve an item to be transferred by a delegated third-party account.
+     * 
+     * Origin must be Signed and must be the owner of the `item`.
+     * 
+     * - `collection`: The collection of the item to be approved for delegated transfer.
+     * - `item`: The item of the item to be approved for delegated transfer.
+     * - `delegate`: The account to delegate permission to transfer the item.
+     * 
+     * Emits `ApprovedTransfer` on success.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.approve_transfer') === 'c9c15bb9795deae48e796908cd20184ae0a966a4908cef7546649878ce0896ef'
+    }
+
+    /**
+     * Approve an item to be transferred by a delegated third-party account.
+     * 
+     * Origin must be Signed and must be the owner of the `item`.
+     * 
+     * - `collection`: The collection of the item to be approved for delegated transfer.
+     * - `item`: The item of the item to be approved for delegated transfer.
+     * - `delegate`: The account to delegate permission to transfer the item.
+     * 
+     * Emits `ApprovedTransfer` on success.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number, delegate: v12.MultiAddress} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesBurnCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.burn')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Destroy a single asset instance.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be burned.
+     * - `instance`: The instance of the asset to be burned.
+     * - `check_owner`: If `Some` then the operation will fail with `WrongOwner` unless the
+     *   asset is owned by this value.
+     * 
+     * Emits `Burned` with the actual amount burned.
+     * 
+     * Weight: `O(1)`
+     * Modes: `check_owner.is_some()`.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.burn') === '40a643c4be1b4befcc1310fbc31cc206b69e6d4bc06ea7c25482987b49f01c15'
+    }
+
+    /**
+     * Destroy a single asset instance.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be burned.
+     * - `instance`: The instance of the asset to be burned.
+     * - `check_owner`: If `Some` then the operation will fail with `WrongOwner` unless the
+     *   asset is owned by this value.
+     * 
+     * Emits `Burned` with the actual amount burned.
+     * 
+     * Weight: `O(1)`
+     * Modes: `check_owner.is_some()`.
+     */
+    get asV10(): {class: number, instance: number, checkOwner: (v10.MultiAddress | undefined)} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Destroy a single item.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be burned.
+     * - `item`: The item of the item to be burned.
+     * - `check_owner`: If `Some` then the operation will fail with `WrongOwner` unless the
+     *   item is owned by this value.
+     * 
+     * Emits `Burned` with the actual amount burned.
+     * 
+     * Weight: `O(1)`
+     * Modes: `check_owner.is_some()`.
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.burn') === '11e7151e96cf5dad3b6b9103e02c52ffeb365031d443092145450e9185587f9b'
+    }
+
+    /**
+     * Destroy a single item.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be burned.
+     * - `item`: The item of the item to be burned.
+     * - `check_owner`: If `Some` then the operation will fail with `WrongOwner` unless the
+     *   item is owned by this value.
+     * 
+     * Emits `Burned` with the actual amount burned.
+     * 
+     * Weight: `O(1)`
+     * Modes: `check_owner.is_some()`.
+     */
+    get asV12(): {collection: number, item: number, checkOwner: (v12.MultiAddress | undefined)} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesCancelApprovalCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.cancel_approval')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Cancel the prior approval for the transfer of an asset by a delegate.
+     * 
+     * Origin must be either:
+     * - the `Force` origin;
+     * - `Signed` with the signer being the Admin of the asset `class`;
+     * - `Signed` with the signer being the Owner of the asset `instance`;
+     * 
+     * Arguments:
+     * - `class`: The class of the asset of whose approval will be cancelled.
+     * - `instance`: The instance of the asset of whose approval will be cancelled.
+     * - `maybe_check_delegate`: If `Some` will ensure that the given account is the one to
+     *   which permission of transfer is delegated.
+     * 
+     * Emits `ApprovalCancelled` on success.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.cancel_approval') === 'aed4105b20befb0051d26b7fe8523fc94357d7dd3c7d78285cf72f3277144fe4'
+    }
+
+    /**
+     * Cancel the prior approval for the transfer of an asset by a delegate.
+     * 
+     * Origin must be either:
+     * - the `Force` origin;
+     * - `Signed` with the signer being the Admin of the asset `class`;
+     * - `Signed` with the signer being the Owner of the asset `instance`;
+     * 
+     * Arguments:
+     * - `class`: The class of the asset of whose approval will be cancelled.
+     * - `instance`: The instance of the asset of whose approval will be cancelled.
+     * - `maybe_check_delegate`: If `Some` will ensure that the given account is the one to
+     *   which permission of transfer is delegated.
+     * 
+     * Emits `ApprovalCancelled` on success.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, instance: number, maybeCheckDelegate: (v10.MultiAddress | undefined)} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Cancel the prior approval for the transfer of an item by a delegate.
+     * 
+     * Origin must be either:
+     * - the `Force` origin;
+     * - `Signed` with the signer being the Admin of the `collection`;
+     * - `Signed` with the signer being the Owner of the `item`;
+     * 
+     * Arguments:
+     * - `collection`: The collection of the item of whose approval will be cancelled.
+     * - `item`: The item of the item of whose approval will be cancelled.
+     * - `maybe_check_delegate`: If `Some` will ensure that the given account is the one to
+     *   which permission of transfer is delegated.
+     * 
+     * Emits `ApprovalCancelled` on success.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.cancel_approval') === '59043baad44e648229d345b25524d313bc1ebdc9a08933d56586e322f36f08b5'
+    }
+
+    /**
+     * Cancel the prior approval for the transfer of an item by a delegate.
+     * 
+     * Origin must be either:
+     * - the `Force` origin;
+     * - `Signed` with the signer being the Admin of the `collection`;
+     * - `Signed` with the signer being the Owner of the `item`;
+     * 
+     * Arguments:
+     * - `collection`: The collection of the item of whose approval will be cancelled.
+     * - `item`: The item of the item of whose approval will be cancelled.
+     * - `maybe_check_delegate`: If `Some` will ensure that the given account is the one to
+     *   which permission of transfer is delegated.
+     * 
+     * Emits `ApprovalCancelled` on success.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number, maybeCheckDelegate: (v12.MultiAddress | undefined)} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesClearAttributeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.clear_attribute')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Clear an attribute for an asset class or instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `class`.
+     * 
+     * Any deposit is freed for the asset class owner.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to clear.
+     * - `maybe_instance`: The identifier of the asset instance whose metadata to clear.
+     * - `key`: The key of the attribute.
+     * 
+     * Emits `AttributeCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.clear_attribute') === '91aa106b700026eb59ef1d86cbd22766539a996d1d1d5cb5dbbdc18439ff1283'
+    }
+
+    /**
+     * Clear an attribute for an asset class or instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `class`.
+     * 
+     * Any deposit is freed for the asset class owner.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to clear.
+     * - `maybe_instance`: The identifier of the asset instance whose metadata to clear.
+     * - `key`: The key of the attribute.
+     * 
+     * Emits `AttributeCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, maybeInstance: (number | undefined), key: Uint8Array} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Clear an attribute for a collection or item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `collection`.
+     * 
+     * Any deposit is freed for the collection's owner.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to clear.
+     * - `maybe_item`: The identifier of the item whose metadata to clear.
+     * - `key`: The key of the attribute.
+     * 
+     * Emits `AttributeCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.clear_attribute') === 'c330ddd00fb87b92c796bc29cff6edf2ce546dd8eb98420ac23c5cbe7b0e11d1'
+    }
+
+    /**
+     * Clear an attribute for a collection or item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `collection`.
+     * 
+     * Any deposit is freed for the collection's owner.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to clear.
+     * - `maybe_item`: The identifier of the item whose metadata to clear.
+     * - `key`: The key of the attribute.
+     * 
+     * Emits `AttributeCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, maybeItem: (number | undefined), key: Uint8Array} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesClearClassMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.clear_class_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Clear the metadata for an asset class.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the asset `class`.
+     * 
+     * Any deposit is freed for the asset class owner.
+     * 
+     * - `class`: The identifier of the asset class whose metadata to clear.
+     * 
+     * Emits `ClassMetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.clear_class_metadata') === '4f045c4df2d4b9045175427f6f6aa548cd3ad56207f700b68254d3b77d944310'
+    }
+
+    /**
+     * Clear the metadata for an asset class.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the asset `class`.
+     * 
+     * Any deposit is freed for the asset class owner.
+     * 
+     * - `class`: The identifier of the asset class whose metadata to clear.
+     * 
+     * Emits `ClassMetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesClearCollectionMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.clear_collection_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Clear the metadata for a collection.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the `collection`.
+     * 
+     * Any deposit is freed for the collection's owner.
+     * 
+     * - `collection`: The identifier of the collection whose metadata to clear.
+     * 
+     * Emits `CollectionMetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.clear_collection_metadata') === 'a84ae2f0e555d689a7b5b0ee2914bd693902b07afc4f268377240f6ac92495cb'
+    }
+
+    /**
+     * Clear the metadata for a collection.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the `collection`.
+     * 
+     * Any deposit is freed for the collection's owner.
+     * 
+     * - `collection`: The identifier of the collection whose metadata to clear.
+     * 
+     * Emits `CollectionMetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesClearMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.clear_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Clear the metadata for an asset instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `instance`.
+     * 
+     * Any deposit is freed for the asset class owner.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to clear.
+     * - `instance`: The identifier of the asset instance whose metadata to clear.
+     * 
+     * Emits `MetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.clear_metadata') === '4aec04ec96e3cd667bd16926634d063c18da9922e4d645f33692574e196c20dc'
+    }
+
+    /**
+     * Clear the metadata for an asset instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `instance`.
+     * 
+     * Any deposit is freed for the asset class owner.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to clear.
+     * - `instance`: The identifier of the asset instance whose metadata to clear.
+     * 
+     * Emits `MetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, instance: number} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Clear the metadata for an item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `item`.
+     * 
+     * Any deposit is freed for the collection's owner.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to clear.
+     * - `item`: The identifier of the item whose metadata to clear.
+     * 
+     * Emits `MetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.clear_metadata') === 'ac39ace3905de6db862660444374575fb7ed5f403845b475c7f2addc21c71f91'
+    }
+
+    /**
+     * Clear the metadata for an item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `item`.
+     * 
+     * Any deposit is freed for the collection's owner.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to clear.
+     * - `item`: The identifier of the item whose metadata to clear.
+     * 
+     * Emits `MetadataCleared`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesCreateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.create')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Issue a new class of non-fungible assets from a public origin.
+     * 
+     * This new asset class has no assets initially and its owner is the origin.
+     * 
+     * The origin must be Signed and the sender must have sufficient funds free.
+     * 
+     * `AssetDeposit` funds of sender are reserved.
+     * 
+     * Parameters:
+     * - `class`: The identifier of the new asset class. This must not be currently in use.
+     * - `admin`: The admin of this class of assets. The admin is the initial address of each
+     * member of the asset class's admin team.
+     * 
+     * Emits `Created` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.create') === '67741a2e31f7f0a4079d2a56efe7b7f1219225e21dad4370994e9d12eedd9c95'
+    }
+
+    /**
+     * Issue a new class of non-fungible assets from a public origin.
+     * 
+     * This new asset class has no assets initially and its owner is the origin.
+     * 
+     * The origin must be Signed and the sender must have sufficient funds free.
+     * 
+     * `AssetDeposit` funds of sender are reserved.
+     * 
+     * Parameters:
+     * - `class`: The identifier of the new asset class. This must not be currently in use.
+     * - `admin`: The admin of this class of assets. The admin is the initial address of each
+     * member of the asset class's admin team.
+     * 
+     * Emits `Created` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, admin: v10.MultiAddress} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Issue a new collection of non-fungible items from a public origin.
+     * 
+     * This new collection has no items initially and its owner is the origin.
+     * 
+     * The origin must be Signed and the sender must have sufficient funds free.
+     * 
+     * `ItemDeposit` funds of sender are reserved.
+     * 
+     * Parameters:
+     * - `collection`: The identifier of the new collection. This must not be currently in use.
+     * - `admin`: The admin of this collection. The admin is the initial address of each
+     * member of the collection's admin team.
+     * 
+     * Emits `Created` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.create') === '2d683011a822f0c0643bcbd8540fb1ade68f203c54330e62d2b1e58cb954cb9b'
+    }
+
+    /**
+     * Issue a new collection of non-fungible items from a public origin.
+     * 
+     * This new collection has no items initially and its owner is the origin.
+     * 
+     * The origin must be Signed and the sender must have sufficient funds free.
+     * 
+     * `ItemDeposit` funds of sender are reserved.
+     * 
+     * Parameters:
+     * - `collection`: The identifier of the new collection. This must not be currently in use.
+     * - `admin`: The admin of this collection. The admin is the initial address of each
+     * member of the collection's admin team.
+     * 
+     * Emits `Created` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, admin: v12.MultiAddress} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesDestroyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.destroy')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Destroy a class of fungible assets.
+     * 
+     * The origin must conform to `ForceOrigin` or must be `Signed` and the sender must be the
+     * owner of the asset `class`.
+     * 
+     * - `class`: The identifier of the asset class to be destroyed.
+     * - `witness`: Information on the instances minted in the asset class. This must be
+     * correct.
+     * 
+     * Emits `Destroyed` event when successful.
+     * 
+     * Weight: `O(n + m)` where:
+     * - `n = witness.instances`
+     * - `m = witness.instance_metadatas`
+     * - `a = witness.attributes`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.destroy') === '3ad3a035b7b78785680f60a4eec3ee97bfc547385c499e09d09c5a59ca7c0f5c'
+    }
+
+    /**
+     * Destroy a class of fungible assets.
+     * 
+     * The origin must conform to `ForceOrigin` or must be `Signed` and the sender must be the
+     * owner of the asset `class`.
+     * 
+     * - `class`: The identifier of the asset class to be destroyed.
+     * - `witness`: Information on the instances minted in the asset class. This must be
+     * correct.
+     * 
+     * Emits `Destroyed` event when successful.
+     * 
+     * Weight: `O(n + m)` where:
+     * - `n = witness.instances`
+     * - `m = witness.instance_metadatas`
+     * - `a = witness.attributes`
+     */
+    get asV10(): {class: number, witness: v10.DestroyWitness} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Destroy a collection of fungible items.
+     * 
+     * The origin must conform to `ForceOrigin` or must be `Signed` and the sender must be the
+     * owner of the `collection`.
+     * 
+     * - `collection`: The identifier of the collection to be destroyed.
+     * - `witness`: Information on the items minted in the collection. This must be
+     * correct.
+     * 
+     * Emits `Destroyed` event when successful.
+     * 
+     * Weight: `O(n + m)` where:
+     * - `n = witness.items`
+     * - `m = witness.item_metadatas`
+     * - `a = witness.attributes`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.destroy') === '637af5918a690295ecab5c7c2838e3833cdf72db988885b3b2ff4ca91fb4c675'
+    }
+
+    /**
+     * Destroy a collection of fungible items.
+     * 
+     * The origin must conform to `ForceOrigin` or must be `Signed` and the sender must be the
+     * owner of the `collection`.
+     * 
+     * - `collection`: The identifier of the collection to be destroyed.
+     * - `witness`: Information on the items minted in the collection. This must be
+     * correct.
+     * 
+     * Emits `Destroyed` event when successful.
+     * 
+     * Weight: `O(n + m)` where:
+     * - `n = witness.items`
+     * - `m = witness.item_metadatas`
+     * - `a = witness.attributes`
+     */
+    get asV12(): {collection: number, witness: v12.DestroyWitness} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesForceAssetStatusCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.force_asset_status')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Alter the attributes of a given asset.
+     * 
+     * Origin must be `ForceOrigin`.
+     * 
+     * - `class`: The identifier of the asset.
+     * - `owner`: The new Owner of this asset.
+     * - `issuer`: The new Issuer of this asset.
+     * - `admin`: The new Admin of this asset.
+     * - `freezer`: The new Freezer of this asset.
+     * - `free_holding`: Whether a deposit is taken for holding an instance of this asset
+     *   class.
+     * - `is_frozen`: Whether this asset class is frozen except for permissioned/admin
+     * instructions.
+     * 
+     * Emits `AssetStatusChanged` with the identity of the asset.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.force_asset_status') === '65369b0dfdf41fac696e176a2ccad990e7b7cc9a3e222363c381ac4f0633a2bc'
+    }
+
+    /**
+     * Alter the attributes of a given asset.
+     * 
+     * Origin must be `ForceOrigin`.
+     * 
+     * - `class`: The identifier of the asset.
+     * - `owner`: The new Owner of this asset.
+     * - `issuer`: The new Issuer of this asset.
+     * - `admin`: The new Admin of this asset.
+     * - `freezer`: The new Freezer of this asset.
+     * - `free_holding`: Whether a deposit is taken for holding an instance of this asset
+     *   class.
+     * - `is_frozen`: Whether this asset class is frozen except for permissioned/admin
+     * instructions.
+     * 
+     * Emits `AssetStatusChanged` with the identity of the asset.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, owner: v10.MultiAddress, issuer: v10.MultiAddress, admin: v10.MultiAddress, freezer: v10.MultiAddress, freeHolding: boolean, isFrozen: boolean} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesForceCreateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.force_create')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Issue a new class of non-fungible assets from a privileged origin.
+     * 
+     * This new asset class has no assets initially.
+     * 
+     * The origin must conform to `ForceOrigin`.
+     * 
+     * Unlike `create`, no funds are reserved.
+     * 
+     * - `class`: The identifier of the new asset. This must not be currently in use.
+     * - `owner`: The owner of this class of assets. The owner has full superuser permissions
+     * over this asset, but may later change and configure the permissions using
+     * `transfer_ownership` and `set_team`.
+     * 
+     * Emits `ForceCreated` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.force_create') === 'bde9fe324168b5622e7301795d32e252c625b51ff7ee05dccf2322afb6c8ab72'
+    }
+
+    /**
+     * Issue a new class of non-fungible assets from a privileged origin.
+     * 
+     * This new asset class has no assets initially.
+     * 
+     * The origin must conform to `ForceOrigin`.
+     * 
+     * Unlike `create`, no funds are reserved.
+     * 
+     * - `class`: The identifier of the new asset. This must not be currently in use.
+     * - `owner`: The owner of this class of assets. The owner has full superuser permissions
+     * over this asset, but may later change and configure the permissions using
+     * `transfer_ownership` and `set_team`.
+     * 
+     * Emits `ForceCreated` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, owner: v10.MultiAddress, freeHolding: boolean} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Issue a new collection of non-fungible items from a privileged origin.
+     * 
+     * This new collection has no items initially.
+     * 
+     * The origin must conform to `ForceOrigin`.
+     * 
+     * Unlike `create`, no funds are reserved.
+     * 
+     * - `collection`: The identifier of the new item. This must not be currently in use.
+     * - `owner`: The owner of this collection of items. The owner has full superuser
+     *   permissions
+     * over this item, but may later change and configure the permissions using
+     * `transfer_ownership` and `set_team`.
+     * 
+     * Emits `ForceCreated` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.force_create') === '4dbe2f48e9f422c11306293afabfcd72534d58a5b4c40ef08ad82875323c5581'
+    }
+
+    /**
+     * Issue a new collection of non-fungible items from a privileged origin.
+     * 
+     * This new collection has no items initially.
+     * 
+     * The origin must conform to `ForceOrigin`.
+     * 
+     * Unlike `create`, no funds are reserved.
+     * 
+     * - `collection`: The identifier of the new item. This must not be currently in use.
+     * - `owner`: The owner of this collection of items. The owner has full superuser
+     *   permissions
+     * over this item, but may later change and configure the permissions using
+     * `transfer_ownership` and `set_team`.
+     * 
+     * Emits `ForceCreated` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, owner: v12.MultiAddress, freeHolding: boolean} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesForceItemStatusCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.force_item_status')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Alter the attributes of a given item.
+     * 
+     * Origin must be `ForceOrigin`.
+     * 
+     * - `collection`: The identifier of the item.
+     * - `owner`: The new Owner of this item.
+     * - `issuer`: The new Issuer of this item.
+     * - `admin`: The new Admin of this item.
+     * - `freezer`: The new Freezer of this item.
+     * - `free_holding`: Whether a deposit is taken for holding an item of this collection.
+     * - `is_frozen`: Whether this collection is frozen except for permissioned/admin
+     * instructions.
+     * 
+     * Emits `ItemStatusChanged` with the identity of the item.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.force_item_status') === '44d2eee0021fb462c2f19a7234e27ec38694854727172d96e9f136dba2a46438'
+    }
+
+    /**
+     * Alter the attributes of a given item.
+     * 
+     * Origin must be `ForceOrigin`.
+     * 
+     * - `collection`: The identifier of the item.
+     * - `owner`: The new Owner of this item.
+     * - `issuer`: The new Issuer of this item.
+     * - `admin`: The new Admin of this item.
+     * - `freezer`: The new Freezer of this item.
+     * - `free_holding`: Whether a deposit is taken for holding an item of this collection.
+     * - `is_frozen`: Whether this collection is frozen except for permissioned/admin
+     * instructions.
+     * 
+     * Emits `ItemStatusChanged` with the identity of the item.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, owner: v12.MultiAddress, issuer: v12.MultiAddress, admin: v12.MultiAddress, freezer: v12.MultiAddress, freeHolding: boolean, isFrozen: boolean} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesFreezeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.freeze')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Disallow further unprivileged transfer of an asset instance.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be frozen.
+     * - `instance`: The instance of the asset to be frozen.
+     * 
+     * Emits `Frozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.freeze') === '4aec04ec96e3cd667bd16926634d063c18da9922e4d645f33692574e196c20dc'
+    }
+
+    /**
+     * Disallow further unprivileged transfer of an asset instance.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be frozen.
+     * - `instance`: The instance of the asset to be frozen.
+     * 
+     * Emits `Frozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, instance: number} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Disallow further unprivileged transfer of an item.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be frozen.
+     * - `item`: The item of the item to be frozen.
+     * 
+     * Emits `Frozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.freeze') === 'ac39ace3905de6db862660444374575fb7ed5f403845b475c7f2addc21c71f91'
+    }
+
+    /**
+     * Disallow further unprivileged transfer of an item.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be frozen.
+     * - `item`: The item of the item to be frozen.
+     * 
+     * Emits `Frozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesFreezeClassCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.freeze_class')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Disallow further unprivileged transfers for a whole asset class.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+     * 
+     * - `class`: The asset class to be frozen.
+     * 
+     * Emits `ClassFrozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.freeze_class') === '4f045c4df2d4b9045175427f6f6aa548cd3ad56207f700b68254d3b77d944310'
+    }
+
+    /**
+     * Disallow further unprivileged transfers for a whole asset class.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+     * 
+     * - `class`: The asset class to be frozen.
+     * 
+     * Emits `ClassFrozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesFreezeCollectionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.freeze_collection')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Disallow further unprivileged transfers for a whole collection.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the `collection`.
+     * 
+     * - `collection`: The collection to be frozen.
+     * 
+     * Emits `CollectionFrozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.freeze_collection') === 'a84ae2f0e555d689a7b5b0ee2914bd693902b07afc4f268377240f6ac92495cb'
+    }
+
+    /**
+     * Disallow further unprivileged transfers for a whole collection.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the `collection`.
+     * 
+     * - `collection`: The collection to be frozen.
+     * 
+     * Emits `CollectionFrozen`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesMintCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.mint')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Mint an asset instance of a particular class.
+     * 
+     * The origin must be Signed and the sender must be the Issuer of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be minted.
+     * - `instance`: The instance value of the asset to be minted.
+     * - `beneficiary`: The initial owner of the minted asset.
+     * 
+     * Emits `Issued` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.mint') === 'b96f6405657e4e5fbf73bead3369bd9d6906e631c805a2953bdd6d34a6dd1566'
+    }
+
+    /**
+     * Mint an asset instance of a particular class.
+     * 
+     * The origin must be Signed and the sender must be the Issuer of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be minted.
+     * - `instance`: The instance value of the asset to be minted.
+     * - `beneficiary`: The initial owner of the minted asset.
+     * 
+     * Emits `Issued` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, instance: number, owner: v10.MultiAddress} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Mint an item of a particular collection.
+     * 
+     * The origin must be Signed and the sender must be the Issuer of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be minted.
+     * - `item`: The item value of the item to be minted.
+     * - `beneficiary`: The initial owner of the minted item.
+     * 
+     * Emits `Issued` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.mint') === '3b90c947d430c35d36c44446d6e63fe4965dab30d6df0082f8faf9e9f12b418d'
+    }
+
+    /**
+     * Mint an item of a particular collection.
+     * 
+     * The origin must be Signed and the sender must be the Issuer of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be minted.
+     * - `item`: The item value of the item to be minted.
+     * - `beneficiary`: The initial owner of the minted item.
+     * 
+     * Emits `Issued` event when successful.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number, owner: v12.MultiAddress} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesRedepositCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.redeposit')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Reevaluate the deposits on some assets.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be frozen.
+     * - `instances`: The instances of the asset class whose deposits will be reevaluated.
+     * 
+     * NOTE: This exists as a best-effort function. Any asset instances which are unknown or
+     * in the case that the owner account does not have reservable funds to pay for a
+     * deposit increase are ignored. Generally the owner isn't going to call this on instances
+     * whose existing deposit is less than the refreshed deposit as it would only cost them,
+     * so it's of little consequence.
+     * 
+     * It will still return an error in the case that the class is unknown of the signer is
+     * not permitted to call it.
+     * 
+     * Weight: `O(instances.len())`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.redeposit') === '5b16d486c17e476c07662e495a500985bdd9daa75e7784b265924e8bf641fc1b'
+    }
+
+    /**
+     * Reevaluate the deposits on some assets.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be frozen.
+     * - `instances`: The instances of the asset class whose deposits will be reevaluated.
+     * 
+     * NOTE: This exists as a best-effort function. Any asset instances which are unknown or
+     * in the case that the owner account does not have reservable funds to pay for a
+     * deposit increase are ignored. Generally the owner isn't going to call this on instances
+     * whose existing deposit is less than the refreshed deposit as it would only cost them,
+     * so it's of little consequence.
+     * 
+     * It will still return an error in the case that the class is unknown of the signer is
+     * not permitted to call it.
+     * 
+     * Weight: `O(instances.len())`
+     */
+    get asV10(): {class: number, instances: number[]} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Reevaluate the deposits on some items.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the `collection`.
+     * 
+     * - `collection`: The collection to be frozen.
+     * - `items`: The items of the collection whose deposits will be reevaluated.
+     * 
+     * NOTE: This exists as a best-effort function. Any items which are unknown or
+     * in the case that the owner account does not have reservable funds to pay for a
+     * deposit increase are ignored. Generally the owner isn't going to call this on items
+     * whose existing deposit is less than the refreshed deposit as it would only cost them,
+     * so it's of little consequence.
+     * 
+     * It will still return an error in the case that the collection is unknown of the signer
+     * is not permitted to call it.
+     * 
+     * Weight: `O(items.len())`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.redeposit') === 'b264456f69ddfea6e6a452c628e0cf023dfd7112ff74570232b8a9cec78aedec'
+    }
+
+    /**
+     * Reevaluate the deposits on some items.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the `collection`.
+     * 
+     * - `collection`: The collection to be frozen.
+     * - `items`: The items of the collection whose deposits will be reevaluated.
+     * 
+     * NOTE: This exists as a best-effort function. Any items which are unknown or
+     * in the case that the owner account does not have reservable funds to pay for a
+     * deposit increase are ignored. Generally the owner isn't going to call this on items
+     * whose existing deposit is less than the refreshed deposit as it would only cost them,
+     * so it's of little consequence.
+     * 
+     * It will still return an error in the case that the collection is unknown of the signer
+     * is not permitted to call it.
+     * 
+     * Weight: `O(items.len())`
+     */
+    get asV12(): {collection: number, items: number[]} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesSetAcceptOwnershipCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.set_accept_ownership')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set (or reset) the acceptance of ownership for a particular account.
+     * 
+     * Origin must be `Signed` and if `maybe_class` is `Some`, then the signer must have a
+     * provider reference.
+     * 
+     * - `maybe_class`: The identifier of the asset class whose ownership the signer is willing
+     *   to accept, or if `None`, an indication that the signer is willing to accept no
+     *   ownership transferal.
+     * 
+     * Emits `OwnershipAcceptanceChanged`.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.set_accept_ownership') === '0da8fca288d046764d4b0b725fe14fb47b7bad910017da00c532ec21b684da3e'
+    }
+
+    /**
+     * Set (or reset) the acceptance of ownership for a particular account.
+     * 
+     * Origin must be `Signed` and if `maybe_class` is `Some`, then the signer must have a
+     * provider reference.
+     * 
+     * - `maybe_class`: The identifier of the asset class whose ownership the signer is willing
+     *   to accept, or if `None`, an indication that the signer is willing to accept no
+     *   ownership transferal.
+     * 
+     * Emits `OwnershipAcceptanceChanged`.
+     */
+    get asV10(): {maybeClass: (number | undefined)} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Set (or reset) the acceptance of ownership for a particular account.
+     * 
+     * Origin must be `Signed` and if `maybe_collection` is `Some`, then the signer must have a
+     * provider reference.
+     * 
+     * - `maybe_collection`: The identifier of the collection whose ownership the signer is
+     *   willing to accept, or if `None`, an indication that the signer is willing to accept no
+     *   ownership transferal.
+     * 
+     * Emits `OwnershipAcceptanceChanged`.
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.set_accept_ownership') === '9b01ca5e28333457a555e928e6ec0826c82405d96736d1b81047fb598a8a14a6'
+    }
+
+    /**
+     * Set (or reset) the acceptance of ownership for a particular account.
+     * 
+     * Origin must be `Signed` and if `maybe_collection` is `Some`, then the signer must have a
+     * provider reference.
+     * 
+     * - `maybe_collection`: The identifier of the collection whose ownership the signer is
+     *   willing to accept, or if `None`, an indication that the signer is willing to accept no
+     *   ownership transferal.
+     * 
+     * Emits `OwnershipAcceptanceChanged`.
+     */
+    get asV12(): {maybeCollection: (number | undefined)} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesSetAttributeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.set_attribute')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set an attribute for an asset class or instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `class`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * (key.len + value.len)` taking into
+     * account any already reserved funds.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to set.
+     * - `maybe_instance`: The identifier of the asset instance whose metadata to set.
+     * - `key`: The key of the attribute.
+     * - `value`: The value to which to set the attribute.
+     * 
+     * Emits `AttributeSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.set_attribute') === '6ae49a979267c094bc35bda051f5467e62472724b598a2f5ee5720a5111b8623'
+    }
+
+    /**
+     * Set an attribute for an asset class or instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `class`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * (key.len + value.len)` taking into
+     * account any already reserved funds.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to set.
+     * - `maybe_instance`: The identifier of the asset instance whose metadata to set.
+     * - `key`: The key of the attribute.
+     * - `value`: The value to which to set the attribute.
+     * 
+     * Emits `AttributeSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, maybeInstance: (number | undefined), key: Uint8Array, value: Uint8Array} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Set an attribute for a collection or item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `collection`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * (key.len + value.len)` taking into
+     * account any already reserved funds.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to set.
+     * - `maybe_item`: The identifier of the item whose metadata to set.
+     * - `key`: The key of the attribute.
+     * - `value`: The value to which to set the attribute.
+     * 
+     * Emits `AttributeSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.set_attribute') === 'b7e65dbf62f10e9415ffa560bff4954ffeb28994c9cf350ecd59fe98850d8783'
+    }
+
+    /**
+     * Set an attribute for a collection or item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `collection`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * (key.len + value.len)` taking into
+     * account any already reserved funds.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to set.
+     * - `maybe_item`: The identifier of the item whose metadata to set.
+     * - `key`: The key of the attribute.
+     * - `value`: The value to which to set the attribute.
+     * 
+     * Emits `AttributeSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, maybeItem: (number | undefined), key: Uint8Array, value: Uint8Array} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesSetClassMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.set_class_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the metadata for an asset class.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the asset `class`.
+     * 
+     * If the origin is `Signed`, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `class`: The identifier of the asset whose metadata to update.
+     * - `data`: The general information of this asset. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `ClassMetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.set_class_metadata') === '151c432def6b2dc27880b815773b729a1ceb58295a326de4c16e57901c2a9476'
+    }
+
+    /**
+     * Set the metadata for an asset class.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the asset `class`.
+     * 
+     * If the origin is `Signed`, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `class`: The identifier of the asset whose metadata to update.
+     * - `data`: The general information of this asset. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `ClassMetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, data: Uint8Array, isFrozen: boolean} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesSetCollectionMaxSupplyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.set_collection_max_supply')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the maximum amount of items a collection could have.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the `collection`.
+     * 
+     * Note: This function can only succeed once per collection.
+     * 
+     * - `collection`: The identifier of the collection to change.
+     * - `max_supply`: The maximum amount of items a collection could have.
+     * 
+     * Emits `CollectionMaxSupplySet` event when successful.
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.set_collection_max_supply') === '165991456bc3c6a81994ce513fdf36c2303f5220829f5e8caafbf821233135b4'
+    }
+
+    /**
+     * Set the maximum amount of items a collection could have.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the `collection`.
+     * 
+     * Note: This function can only succeed once per collection.
+     * 
+     * - `collection`: The identifier of the collection to change.
+     * - `max_supply`: The maximum amount of items a collection could have.
+     * 
+     * Emits `CollectionMaxSupplySet` event when successful.
+     */
+    get asV12(): {collection: number, maxSupply: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesSetCollectionMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.set_collection_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the metadata for a collection.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the `collection`.
+     * 
+     * If the origin is `Signed`, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `collection`: The identifier of the item whose metadata to update.
+     * - `data`: The general information of this item. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `CollectionMetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.set_collection_metadata') === '63ef75086da73b45ed287cac6640abbebd40222433fb8fae9e4fa1bfa173afc2'
+    }
+
+    /**
+     * Set the metadata for a collection.
+     * 
+     * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
+     * the `collection`.
+     * 
+     * If the origin is `Signed`, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `collection`: The identifier of the item whose metadata to update.
+     * - `data`: The general information of this item. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `CollectionMetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, data: Uint8Array, isFrozen: boolean} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesSetMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.set_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the metadata for an asset instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `class`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to set.
+     * - `instance`: The identifier of the asset instance whose metadata to set.
+     * - `data`: The general information of this asset. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `MetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.set_metadata') === '8d2f67e787668073bdb66a4b7bbba97ea22da0860f46bce7884b446fd055419a'
+    }
+
+    /**
+     * Set the metadata for an asset instance.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * asset `class`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `class`: The identifier of the asset class whose instance's metadata to set.
+     * - `instance`: The identifier of the asset instance whose metadata to set.
+     * - `data`: The general information of this asset. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `MetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, instance: number, data: Uint8Array, isFrozen: boolean} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Set the metadata for an item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `collection`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to set.
+     * - `item`: The identifier of the item whose metadata to set.
+     * - `data`: The general information of this item. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `MetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.set_metadata') === 'dc2370253c17fe69445af313af0113a31f244cc51324e5a3b4b0b98804f91a6f'
+    }
+
+    /**
+     * Set the metadata for an item.
+     * 
+     * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
+     * `collection`.
+     * 
+     * If the origin is Signed, then funds of signer are reserved according to the formula:
+     * `MetadataDepositBase + DepositPerByte * data.len` taking into
+     * account any already reserved funds.
+     * 
+     * - `collection`: The identifier of the collection whose item's metadata to set.
+     * - `item`: The identifier of the item whose metadata to set.
+     * - `data`: The general information of this item. Limited in length by `StringLimit`.
+     * - `is_frozen`: Whether the metadata should be frozen against further changes.
+     * 
+     * Emits `MetadataSet`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number, data: Uint8Array, isFrozen: boolean} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesSetTeamCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.set_team')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Change the Issuer, Admin and Freezer of an asset class.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the asset `class`.
+     * 
+     * - `class`: The asset class whose team should be changed.
+     * - `issuer`: The new Issuer of this asset class.
+     * - `admin`: The new Admin of this asset class.
+     * - `freezer`: The new Freezer of this asset class.
+     * 
+     * Emits `TeamChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.set_team') === '7790ee73da2f65c72e96dca74fe0ce9478c84fd598d78a8ef3fb45c7713c1247'
+    }
+
+    /**
+     * Change the Issuer, Admin and Freezer of an asset class.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the asset `class`.
+     * 
+     * - `class`: The asset class whose team should be changed.
+     * - `issuer`: The new Issuer of this asset class.
+     * - `admin`: The new Admin of this asset class.
+     * - `freezer`: The new Freezer of this asset class.
+     * 
+     * Emits `TeamChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, issuer: v10.MultiAddress, admin: v10.MultiAddress, freezer: v10.MultiAddress} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Change the Issuer, Admin and Freezer of a collection.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the `collection`.
+     * 
+     * - `collection`: The collection whose team should be changed.
+     * - `issuer`: The new Issuer of this collection.
+     * - `admin`: The new Admin of this collection.
+     * - `freezer`: The new Freezer of this collection.
+     * 
+     * Emits `TeamChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.set_team') === '4189de9684988d93dafc3f65fe19ef1b463b184719321e76bdb0fedda9095901'
+    }
+
+    /**
+     * Change the Issuer, Admin and Freezer of a collection.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the `collection`.
+     * 
+     * - `collection`: The collection whose team should be changed.
+     * - `issuer`: The new Issuer of this collection.
+     * - `admin`: The new Admin of this collection.
+     * - `freezer`: The new Freezer of this collection.
+     * 
+     * Emits `TeamChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, issuer: v12.MultiAddress, admin: v12.MultiAddress, freezer: v12.MultiAddress} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesThawCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.thaw')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Re-allow unprivileged transfer of an asset instance.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be thawed.
+     * - `instance`: The instance of the asset to be thawed.
+     * 
+     * Emits `Thawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.thaw') === '4aec04ec96e3cd667bd16926634d063c18da9922e4d645f33692574e196c20dc'
+    }
+
+    /**
+     * Re-allow unprivileged transfer of an asset instance.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the asset `class`.
+     * 
+     * - `class`: The class of the asset to be thawed.
+     * - `instance`: The instance of the asset to be thawed.
+     * 
+     * Emits `Thawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, instance: number} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Re-allow unprivileged transfer of an item.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be thawed.
+     * - `item`: The item of the item to be thawed.
+     * 
+     * Emits `Thawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.thaw') === 'ac39ace3905de6db862660444374575fb7ed5f403845b475c7f2addc21c71f91'
+    }
+
+    /**
+     * Re-allow unprivileged transfer of an item.
+     * 
+     * Origin must be Signed and the sender should be the Freezer of the `collection`.
+     * 
+     * - `collection`: The collection of the item to be thawed.
+     * - `item`: The item of the item to be thawed.
+     * 
+     * Emits `Thawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesThawClassCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.thaw_class')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Re-allow unprivileged transfers for a whole asset class.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the asset `class`.
+     * 
+     * - `class`: The class to be thawed.
+     * 
+     * Emits `ClassThawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.thaw_class') === '4f045c4df2d4b9045175427f6f6aa548cd3ad56207f700b68254d3b77d944310'
+    }
+
+    /**
+     * Re-allow unprivileged transfers for a whole asset class.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the asset `class`.
+     * 
+     * - `class`: The class to be thawed.
+     * 
+     * Emits `ClassThawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesThawCollectionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.thaw_collection')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Re-allow unprivileged transfers for a whole collection.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the `collection`.
+     * 
+     * - `collection`: The collection to be thawed.
+     * 
+     * Emits `CollectionThawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.thaw_collection') === 'a84ae2f0e555d689a7b5b0ee2914bd693902b07afc4f268377240f6ac92495cb'
+    }
+
+    /**
+     * Re-allow unprivileged transfers for a whole collection.
+     * 
+     * Origin must be Signed and the sender should be the Admin of the `collection`.
+     * 
+     * - `collection`: The collection to be thawed.
+     * 
+     * Emits `CollectionThawed`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesTransferCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.transfer')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Move an asset from the sender account to another.
+     * 
+     * Origin must be Signed and the signing account must be either:
+     * - the Admin of the asset `class`;
+     * - the Owner of the asset `instance`;
+     * - the approved delegate for the asset `instance` (in this case, the approval is reset).
+     * 
+     * Arguments:
+     * - `class`: The class of the asset to be transferred.
+     * - `instance`: The instance of the asset to be transferred.
+     * - `dest`: The account to receive ownership of the asset.
+     * 
+     * Emits `Transferred`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.transfer') === 'a66c5691fc66dd3ea9d84d0fb89c0e274a537f3a24d17c5fbdb402cc658dbbbd'
+    }
+
+    /**
+     * Move an asset from the sender account to another.
+     * 
+     * Origin must be Signed and the signing account must be either:
+     * - the Admin of the asset `class`;
+     * - the Owner of the asset `instance`;
+     * - the approved delegate for the asset `instance` (in this case, the approval is reset).
+     * 
+     * Arguments:
+     * - `class`: The class of the asset to be transferred.
+     * - `instance`: The instance of the asset to be transferred.
+     * - `dest`: The account to receive ownership of the asset.
+     * 
+     * Emits `Transferred`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, instance: number, dest: v10.MultiAddress} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Move an item from the sender account to another.
+     * 
+     * Origin must be Signed and the signing account must be either:
+     * - the Admin of the `collection`;
+     * - the Owner of the `item`;
+     * - the approved delegate for the `item` (in this case, the approval is reset).
+     * 
+     * Arguments:
+     * - `collection`: The collection of the item to be transferred.
+     * - `item`: The item of the item to be transferred.
+     * - `dest`: The account to receive ownership of the item.
+     * 
+     * Emits `Transferred`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.transfer') === '1cd093927c16b1ba980b5eb06d082070727771a74d5ea88c182842b0ca45b590'
+    }
+
+    /**
+     * Move an item from the sender account to another.
+     * 
+     * Origin must be Signed and the signing account must be either:
+     * - the Admin of the `collection`;
+     * - the Owner of the `item`;
+     * - the approved delegate for the `item` (in this case, the approval is reset).
+     * 
+     * Arguments:
+     * - `collection`: The collection of the item to be transferred.
+     * - `item`: The item of the item to be transferred.
+     * - `dest`: The account to receive ownership of the item.
+     * 
+     * Emits `Transferred`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, item: number, dest: v12.MultiAddress} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UniquesTransferOwnershipCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Uniques.transfer_ownership')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Change the Owner of an asset class.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the asset `class`.
+     * 
+     * - `class`: The asset class whose owner should be changed.
+     * - `owner`: The new Owner of this asset class. They must have called
+     *   `set_accept_ownership` with `class` in order for this operation to succeed.
+     * 
+     * Emits `OwnerChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Uniques.transfer_ownership') === 'efe5c50fffbe294b06ddbeb5b524bae8076327029f50307f98ac5dbbd8598a4f'
+    }
+
+    /**
+     * Change the Owner of an asset class.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the asset `class`.
+     * 
+     * - `class`: The asset class whose owner should be changed.
+     * - `owner`: The new Owner of this asset class. They must have called
+     *   `set_accept_ownership` with `class` in order for this operation to succeed.
+     * 
+     * Emits `OwnerChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV10(): {class: number, owner: v10.MultiAddress} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Change the Owner of a collection.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the `collection`.
+     * 
+     * - `collection`: The collection whose owner should be changed.
+     * - `owner`: The new Owner of this collection. They must have called
+     *   `set_accept_ownership` with `collection` in order for this operation to succeed.
+     * 
+     * Emits `OwnerChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Uniques.transfer_ownership') === 'ce5a9af5f98b2be2178c77cf6d9fb5ee95d6d35a8dcec13d0573127fb6093467'
+    }
+
+    /**
+     * Change the Owner of a collection.
+     * 
+     * Origin must be Signed and the sender should be the Owner of the `collection`.
+     * 
+     * - `collection`: The collection whose owner should be changed.
+     * - `owner`: The new Owner of this collection. They must have called
+     *   `set_accept_ownership` with `collection` in order for this operation to succeed.
+     * 
+     * Emits `OwnerChanged`.
+     * 
+     * Weight: `O(1)`
+     */
+    get asV12(): {collection: number, owner: v12.MultiAddress} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UsaReserveApplyAsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'UsaReserve.apply_as')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('UsaReserve.apply_as') === 'a9f8193d926f29d30c08628627d09ed5cfe97477b731305d75d66cb40bd90928'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV1(): {call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('UsaReserve.apply_as') === 'f6e87384622ff2e90452fe1c1797fa93bb42d18d55bfe95a12300d42aa80f59e'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV6(): {call: v6.Call} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('UsaReserve.apply_as') === '8b575d0ea3a5b73d94dc363acb6c16e597774c84f529f46c0c00f7a99134742d'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV10(): {call: v10.Call} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('UsaReserve.apply_as') === 'c8eec9af2675f5ca66565f970cea87e963ad6358500975016e9b9975bcb4ce67'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV11(): {call: v11.Call} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('UsaReserve.apply_as') === '5db6e491de8791381401d22e268e8f349dff9de2e028b82d83a8ad0e14aedf4c'
+    }
+
+    /**
+     * Dispatch a call as coming from the reserve account
+     */
+    get asV12(): {call: v12.Call} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UsaReserveSpendCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'UsaReserve.spend')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Spend `amount` funds from the reserve account to `to`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('UsaReserve.spend') === 'ff235a8cc8e39172d7506c342732c7a5dbd72259d5c5b9cdfa576e00efcf67f8'
+    }
+
+    /**
+     * Spend `amount` funds from the reserve account to `to`.
+     */
+    get asV1(): {to: Uint8Array, amount: bigint} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UsaReserveTipCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'UsaReserve.tip')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Deposit `amount` tokens in the treasure account
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('UsaReserve.tip') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
+    }
+
+    /**
+     * Deposit `amount` tokens in the treasure account
+     */
+    get asV1(): {amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6777,41 +6713,197 @@ export class UtilityAsDerivativeCall {
     }
 
     /**
-     *  Send a call through an indexed pseudonym of the sender.
+     * Send a call through an indexed pseudonym of the sender.
      * 
-     *  Filter from origin are passed along. The call will be dispatched with an origin which
-     *  use the same filter as the origin of this call.
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
      * 
-     *  NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
-     *  because you expect `proxy` to have been used prior in the call stack and you do not want
-     *  the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
-     *  in the Multisig pallet instead.
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
      * 
-     *  NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Utility.as_derivative') === '7996e05ae739153facd66e7795ade63895f8556e58819d903e0b270a2d885721'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'c9cd7d0165b1cda1cd58ad5be04255ff09fe563d891d5556ec07db0facd36baf'
     }
 
     /**
-     *  Send a call through an indexed pseudonym of the sender.
+     * Send a call through an indexed pseudonym of the sender.
      * 
-     *  Filter from origin are passed along. The call will be dispatched with an origin which
-     *  use the same filter as the origin of this call.
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
      * 
-     *  NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
-     *  because you expect `proxy` to have been used prior in the call stack and you do not want
-     *  the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
-     *  in the Multisig pallet instead.
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
      * 
-     *  NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
      * 
-     *  The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      */
-    get asV10(): {index: number, call: v10.Type_50} {
+    get asV1(): {index: number, call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === '16d2e2a2b01f1fc29c73883bec0c9e51c1d6c7bf0f1e8f23a552c6d7f0c8e4d9'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV6(): {index: number, call: v6.Call} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'bd103e18cedd374ef423c00ff0f0e5ebfe34d2037351028f0c23bf2e03762e6a'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV10(): {index: number, call: v10.Call} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'f57d14e8db3ab71716c18eec55ad5b6cf312c9a59d3ece6a89c04c0f7817f040'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV11(): {index: number, call: v11.Call} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === '9f03f5526560b54421ff99ac4dec66f0df3dd7e75bfa03c2b0716d6185695c36'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV12(): {index: number, call: v12.Call} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6830,53 +6922,257 @@ export class UtilityBatchCall {
     }
 
     /**
-     *  Send a batch of dispatch calls.
+     * Send a batch of dispatch calls.
      * 
-     *  May be called from any origin.
+     * May be called from any origin.
      * 
-     *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
-     *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     *  If origin is root then call are dispatch without checking origin filter. (This includes
-     *  bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
-     *  # <weight>
-     *  - Complexity: O(C) where C is the number of calls to be batched.
-     *  # </weight>
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
      * 
-     *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-     *  event is deposited. If a call failed and the batch was interrupted, then the
-     *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-     *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-     *  event is deposited.
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
      */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Utility.batch') === '214b19149cfa2a5ce83021c007ae07eb47ac36438ea2c325ece00458fa5c6645'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '763f6bd3528e5487f9a27aed75fc999a0a31205c39640db9943addc6e4e0759a'
     }
 
     /**
-     *  Send a batch of dispatch calls.
+     * Send a batch of dispatch calls.
      * 
-     *  May be called from any origin.
+     * May be called from any origin.
      * 
-     *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
-     *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     *  If origin is root then call are dispatch without checking origin filter. (This includes
-     *  bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
-     *  # <weight>
-     *  - Complexity: O(C) where C is the number of calls to be batched.
-     *  # </weight>
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
      * 
-     *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-     *  event is deposited. If a call failed and the batch was interrupted, then the
-     *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-     *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-     *  event is deposited.
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
      */
-    get asV10(): {calls: v10.Type_50[]} {
+    get asV1(): {calls: v1.Call[]} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'a4567d41b553799d577b09898bfadb961d7d4fea2d703af65ac78254e9609e7c'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV6(): {calls: v6.Call[]} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '47a03d188360f34974b4c182d140f8309ef26c76efec556ec341975999199997'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV10(): {calls: v10.Call[]} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '9a3da1485bfe6db5901970b5208c10e0da3fedad5bd91449748ea8a45cd59fd0'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV11(): {calls: v11.Call[]} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '639469b8358f3c3b2ced30b78ca5dd3c8be1eefff88cb2dfacca618738ae9d40'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV12(): {calls: v12.Call[]} {
+        assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6895,43 +7191,794 @@ export class UtilityBatchAllCall {
     }
 
     /**
-     *  Send a batch of dispatch calls and atomically execute them.
-     *  The whole transaction will rollback and fail if any of the calls failed.
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
      * 
-     *  May be called from any origin.
+     * May be called from any origin.
      * 
-     *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
-     *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     *  If origin is root then call are dispatch without checking origin filter. (This includes
-     *  bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
-     *  # <weight>
-     *  - Complexity: O(C) where C is the number of calls to be batched.
-     *  # </weight>
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
      */
-    get isV10(): boolean {
-        return this._chain.getCallHash('Utility.batch_all') === '214b19149cfa2a5ce83021c007ae07eb47ac36438ea2c325ece00458fa5c6645'
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '763f6bd3528e5487f9a27aed75fc999a0a31205c39640db9943addc6e4e0759a'
     }
 
     /**
-     *  Send a batch of dispatch calls and atomically execute them.
-     *  The whole transaction will rollback and fail if any of the calls failed.
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
      * 
-     *  May be called from any origin.
+     * May be called from any origin.
      * 
-     *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
-     *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     *  If origin is root then call are dispatch without checking origin filter. (This includes
-     *  bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
-     *  # <weight>
-     *  - Complexity: O(C) where C is the number of calls to be batched.
-     *  # </weight>
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
      */
-    get asV10(): {calls: v10.Type_50[]} {
+    get asV1(): {calls: v1.Call[]} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'a4567d41b553799d577b09898bfadb961d7d4fea2d703af65ac78254e9609e7c'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV6(): {calls: v6.Call[]} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '47a03d188360f34974b4c182d140f8309ef26c76efec556ec341975999199997'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV10(): {calls: v10.Call[]} {
         assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '9a3da1485bfe6db5901970b5208c10e0da3fedad5bd91449748ea8a45cd59fd0'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV11(): {calls: v11.Call[]} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '639469b8358f3c3b2ced30b78ca5dd3c8be1eefff88cb2dfacca618738ae9d40'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV12(): {calls: v12.Call[]} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UtilityDispatchAsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Utility.dispatch_as')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV6(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '6881ce87c87d024a0b375643c21215696c0775d8db827201994dad3e467d9831'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV6(): {asOrigin: v6.OriginCaller, call: v6.Call} {
+        assert(this.isV6)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV10(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '2d27725dc03cec209ebec8f967f810c0e765f81192703fa6a43cf89711563144'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV10(): {asOrigin: v10.OriginCaller, call: v10.Call} {
+        assert(this.isV10)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === 'd5f431a763762056ddbe273a855e5b9d6a54e421b8bb1571da72d23d2d5a66f1'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV11(): {asOrigin: v11.OriginCaller, call: v11.Call} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '74690aff9872d5a1c3d34d09c5dee5ec4c383248a2a9f26163b6e5a7a82da1a7'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV12(): {asOrigin: v12.OriginCaller, call: v12.Call} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UtilityForceBatchCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Utility.force_batch')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV12(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '639469b8358f3c3b2ced30b78ca5dd3c8be1eefff88cb2dfacca618738ae9d40'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV12(): {calls: v12.Call[]} {
+        assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ValidatorsSetAddMemberCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ValidatorsSet.add_member')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Add a member `who` to the set.
+     * 
+     * May only be called from `T::AddOrigin`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ValidatorsSet.add_member') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * Add a member `who` to the set.
+     * 
+     * May only be called from `T::AddOrigin`.
+     */
+    get asV1(): {who: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ValidatorsSetChangeKeyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ValidatorsSet.change_key')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Swap out the sending member for some other key `new`.
+     * 
+     * May only be called from `Signed` origin of a current member.
+     * 
+     * Prime membership is passed from the origin account to `new`, if extant.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ValidatorsSet.change_key') === 'f866dcb3e8857987a2d21e57c13216c10bb21546a718b81d5e2c0989d6e95df7'
+    }
+
+    /**
+     * Swap out the sending member for some other key `new`.
+     * 
+     * May only be called from `Signed` origin of a current member.
+     * 
+     * Prime membership is passed from the origin account to `new`, if extant.
+     */
+    get asV1(): {new: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ValidatorsSetClearPrimeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ValidatorsSet.clear_prime')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove the prime member if it exists.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ValidatorsSet.clear_prime') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Remove the prime member if it exists.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get asV1(): null {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ValidatorsSetRemoveMemberCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ValidatorsSet.remove_member')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove a member `who` from the set.
+     * 
+     * May only be called from `T::RemoveOrigin`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ValidatorsSet.remove_member') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * Remove a member `who` from the set.
+     * 
+     * May only be called from `T::RemoveOrigin`.
+     */
+    get asV1(): {who: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ValidatorsSetResetMembersCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ValidatorsSet.reset_members')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Change the membership to a new set, disregarding the existing membership. Be nice and
+     * pass `members` pre-sorted.
+     * 
+     * May only be called from `T::ResetOrigin`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ValidatorsSet.reset_members') === 'd8adca14f9b9cadeaf2b2e6dd47991d05cb423ce3a00dccbb9efa35e36f5a65a'
+    }
+
+    /**
+     * Change the membership to a new set, disregarding the existing membership. Be nice and
+     * pass `members` pre-sorted.
+     * 
+     * May only be called from `T::ResetOrigin`.
+     */
+    get asV1(): {members: Uint8Array[]} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ValidatorsSetSetPrimeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ValidatorsSet.set_prime')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the prime member. Must be a current member.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ValidatorsSet.set_prime') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * Set the prime member. Must be a current member.
+     * 
+     * May only be called from `T::PrimeOrigin`.
+     */
+    get asV1(): {who: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ValidatorsSetSwapMemberCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ValidatorsSet.swap_member')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Swap out one member `remove` for another `add`.
+     * 
+     * May only be called from `T::SwapOrigin`.
+     * 
+     * Prime membership is *not* passed from `remove` to `add`, if extant.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('ValidatorsSet.swap_member') === 'f9cf5ef851567c52b54f359126b80e6fa967b49f082dd77310b8461819cd13df'
+    }
+
+    /**
+     * Swap out one member `remove` for another `add`.
+     * 
+     * May only be called from `T::SwapOrigin`.
+     * 
+     * Prime membership is *not* passed from `remove` to `add`, if extant.
+     */
+    get asV1(): {remove: Uint8Array, add: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class VestingAddVestingScheduleCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Vesting.add_vesting_schedule')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Wire funds to be vested by the receiver
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Vesting.add_vesting_schedule') === 'a38026110a8febabd6cca0c506679bfe612a9c7590dc9b4fa4fe0b8380e373f6'
+    }
+
+    /**
+     * Wire funds to be vested by the receiver
+     */
+    get asV1(): {dest: v1.MultiAddress, schedule: v1.VestingSchedule} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class VestingCancelAllVestingSchedulesCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Vesting.cancel_all_vesting_schedules')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Cancel all vested schedules for the given user. If there are coins to be
+     * claimed they will be auto claimed for the given user. If `limit_to_free_balance`
+     * is set to true we will not error if the free balance of `who` has less coins
+     * than what was granted and is being revoked (useful if the state was corrupted).
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Vesting.cancel_all_vesting_schedules') === '618335bd3114d4f7a7d1788841ab5cdac12ca6a12822bbb570d27379f94f40d6'
+    }
+
+    /**
+     * Cancel all vested schedules for the given user. If there are coins to be
+     * claimed they will be auto claimed for the given user. If `limit_to_free_balance`
+     * is set to true we will not error if the free balance of `who` has less coins
+     * than what was granted and is being revoked (useful if the state was corrupted).
+     */
+    get asV1(): {who: v1.MultiAddress, fundsCollector: v1.MultiAddress, limitToFreeBalance: boolean} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Cancel all vested schedules for the given user. If there are coins to be
+     * claimed they will be auto claimed for the given user. If `limit_to_free_balance`
+     * is set to true we will not error if the free balance of `who` has less coins
+     * than what was granted and is being revoked (useful if the state was corrupted).
+     */
+    get isV11(): boolean {
+        return this._chain.getCallHash('Vesting.cancel_all_vesting_schedules') === '7ea9026d0c06373962fa6a252d2f0b344a8f91a2f25d39289f76437a2129bf31'
+    }
+
+    /**
+     * Cancel all vested schedules for the given user. If there are coins to be
+     * claimed they will be auto claimed for the given user. If `limit_to_free_balance`
+     * is set to true we will not error if the free balance of `who` has less coins
+     * than what was granted and is being revoked (useful if the state was corrupted).
+     */
+    get asV11(): {who: v11.MultiAddress, fundsCollector: v11.MultiAddress} {
+        assert(this.isV11)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class VestingClaimCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Vesting.claim')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Claim funds that have been vested so far
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Vesting.claim') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Claim funds that have been vested so far
+     */
+    get asV1(): null {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class VestingOverwriteVestingSchedulesCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Vesting.overwrite_vesting_schedules')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Overwite all the vesting schedules for the given user. This will adjust
+     * the amount of locked coins for the given user.
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Vesting.overwrite_vesting_schedules') === '70a965832aab519c539dbb43b99a0d11c947c33b74f319fac9139a03ded030d3'
+    }
+
+    /**
+     * Overwite all the vesting schedules for the given user. This will adjust
+     * the amount of locked coins for the given user.
+     */
+    get asV1(): {who: v1.MultiAddress, newSchedules: v1.VestingSchedule[]} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }

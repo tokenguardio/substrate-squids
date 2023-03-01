@@ -1,14 +1,41 @@
 import type {Result, Option} from './support'
 
-export type Type_32 = Type_32_Ok | Type_32_Err
+export type BalanceStatus = BalanceStatus_Free | BalanceStatus_Reserved
 
-export interface Type_32_Ok {
+export interface BalanceStatus_Free {
+    __kind: 'Free'
+}
+
+export interface BalanceStatus_Reserved {
+    __kind: 'Reserved'
+}
+
+export type Type_31 = Type_31_Ok | Type_31_Err
+
+export interface Type_31_Ok {
     __kind: 'Ok'
 }
 
-export interface Type_32_Err {
+export interface Type_31_Err {
     __kind: 'Err'
     value: DispatchError
+}
+
+export type V2Outcome = V2Outcome_Complete | V2Outcome_Incomplete | V2Outcome_Error
+
+export interface V2Outcome_Complete {
+    __kind: 'Complete'
+    value: bigint
+}
+
+export interface V2Outcome_Incomplete {
+    __kind: 'Incomplete'
+    value: [bigint, V2Error]
+}
+
+export interface V2Outcome_Error {
+    __kind: 'Error'
+    value: V2Error
 }
 
 export interface Timepoint {
@@ -16,7 +43,17 @@ export interface Timepoint {
     index: number
 }
 
-export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional
+export type LookupError = LookupError_Unknown | LookupError_BadFormat
+
+export interface LookupError_Unknown {
+    __kind: 'Unknown'
+}
+
+export interface LookupError_BadFormat {
+    __kind: 'BadFormat'
+}
+
+export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic
 
 export interface DispatchError_Other {
     __kind: 'Other'
@@ -57,18 +94,21 @@ export interface DispatchError_Arithmetic {
     value: ArithmeticError
 }
 
-export interface DispatchError_Transactional {
-    __kind: 'Transactional'
-    value: TransactionalError
-}
-
 export interface DispatchInfo {
     weight: bigint
     class: DispatchClass
     paysFee: Pays
 }
 
-export type Call = Call_System | Call_Timestamp | Call_Balances | Call_Scheduler | Call_CompanyReserve | Call_InternationalReserve | Call_UsaReserve | Call_Vesting | Call_Mandate | Call_TechnicalCommittee | Call_TechnicalMembership | Call_Authorship | Call_ValidatorsSet | Call_Poa | Call_Session | Call_ParachainSystem | Call_ParachainInfo | Call_CumulusXcm | Call_Utility | Call_Multisig | Call_Uniques | Call_Preimage | Call_EmergencyShutdown | Call_Allocations | Call_AllocationsOracles
+export interface Header {
+    parentHash: Uint8Array
+    number: number
+    stateRoot: Uint8Array
+    extrinsicsRoot: Uint8Array
+    digest: Digest
+}
+
+export type Call = Call_System | Call_Timestamp | Call_Balances | Call_Scheduler | Call_CompanyReserve | Call_InternationalReserve | Call_UsaReserve | Call_Vesting | Call_Mandate | Call_TechnicalCommittee | Call_TechnicalMembership | Call_Authorship | Call_ValidatorsSet | Call_Session | Call_ParachainSystem | Call_CumulusXcm | Call_Utility | Call_Multisig | Call_EmergencyShutdown | Call_Allocations | Call_AllocationsOracles | Call_Sudo
 
 export interface Call_System {
     __kind: 'System'
@@ -135,11 +175,6 @@ export interface Call_ValidatorsSet {
     value: ValidatorsSetCall
 }
 
-export interface Call_Poa {
-    __kind: 'Poa'
-    value: PoaCall
-}
-
 export interface Call_Session {
     __kind: 'Session'
     value: SessionCall
@@ -148,11 +183,6 @@ export interface Call_Session {
 export interface Call_ParachainSystem {
     __kind: 'ParachainSystem'
     value: ParachainSystemCall
-}
-
-export interface Call_ParachainInfo {
-    __kind: 'ParachainInfo'
-    value: ParachainInfoCall
 }
 
 export interface Call_CumulusXcm {
@@ -170,16 +200,6 @@ export interface Call_Multisig {
     value: MultisigCall
 }
 
-export interface Call_Uniques {
-    __kind: 'Uniques'
-    value: UniquesCall
-}
-
-export interface Call_Preimage {
-    __kind: 'Preimage'
-    value: PreimageCall
-}
-
 export interface Call_EmergencyShutdown {
     __kind: 'EmergencyShutdown'
     value: EmergencyShutdownCall
@@ -193,6 +213,11 @@ export interface Call_Allocations {
 export interface Call_AllocationsOracles {
     __kind: 'AllocationsOracles'
     value: AllocationsOraclesCall
+}
+
+export interface Call_Sudo {
+    __kind: 'Sudo'
+    value: SudoCall
 }
 
 export type MaybeHashed = MaybeHashed_Value | MaybeHashed_Hash
@@ -234,12 +259,6 @@ export interface MultiAddress_Address20 {
     value: Uint8Array
 }
 
-export interface DestroyWitness {
-    instances: number
-    instanceMetadatas: number
-    attributes: number
-}
-
 export type OriginCaller = OriginCaller_system | OriginCaller_TechnicalCommittee | OriginCaller_CumulusXcm | OriginCaller_Void
 
 export interface OriginCaller_system {
@@ -249,7 +268,7 @@ export interface OriginCaller_system {
 
 export interface OriginCaller_TechnicalCommittee {
     __kind: 'TechnicalCommittee'
-    value: Type_156
+    value: Type_146
 }
 
 export interface OriginCaller_CumulusXcm {
@@ -262,9 +281,117 @@ export interface OriginCaller_Void {
     value: Void
 }
 
+export type V2Error = V2Error_Overflow | V2Error_Unimplemented | V2Error_UntrustedReserveLocation | V2Error_UntrustedTeleportLocation | V2Error_MultiLocationFull | V2Error_MultiLocationNotInvertible | V2Error_BadOrigin | V2Error_InvalidLocation | V2Error_AssetNotFound | V2Error_FailedToTransactAsset | V2Error_NotWithdrawable | V2Error_LocationCannotHold | V2Error_ExceedsMaxMessageSize | V2Error_DestinationUnsupported | V2Error_Transport | V2Error_Unroutable | V2Error_UnknownClaim | V2Error_FailedToDecode | V2Error_MaxWeightInvalid | V2Error_NotHoldingFees | V2Error_TooExpensive | V2Error_Trap | V2Error_UnhandledXcmVersion | V2Error_WeightLimitReached | V2Error_Barrier | V2Error_WeightNotComputable
+
+export interface V2Error_Overflow {
+    __kind: 'Overflow'
+}
+
+export interface V2Error_Unimplemented {
+    __kind: 'Unimplemented'
+}
+
+export interface V2Error_UntrustedReserveLocation {
+    __kind: 'UntrustedReserveLocation'
+}
+
+export interface V2Error_UntrustedTeleportLocation {
+    __kind: 'UntrustedTeleportLocation'
+}
+
+export interface V2Error_MultiLocationFull {
+    __kind: 'MultiLocationFull'
+}
+
+export interface V2Error_MultiLocationNotInvertible {
+    __kind: 'MultiLocationNotInvertible'
+}
+
+export interface V2Error_BadOrigin {
+    __kind: 'BadOrigin'
+}
+
+export interface V2Error_InvalidLocation {
+    __kind: 'InvalidLocation'
+}
+
+export interface V2Error_AssetNotFound {
+    __kind: 'AssetNotFound'
+}
+
+export interface V2Error_FailedToTransactAsset {
+    __kind: 'FailedToTransactAsset'
+}
+
+export interface V2Error_NotWithdrawable {
+    __kind: 'NotWithdrawable'
+}
+
+export interface V2Error_LocationCannotHold {
+    __kind: 'LocationCannotHold'
+}
+
+export interface V2Error_ExceedsMaxMessageSize {
+    __kind: 'ExceedsMaxMessageSize'
+}
+
+export interface V2Error_DestinationUnsupported {
+    __kind: 'DestinationUnsupported'
+}
+
+export interface V2Error_Transport {
+    __kind: 'Transport'
+}
+
+export interface V2Error_Unroutable {
+    __kind: 'Unroutable'
+}
+
+export interface V2Error_UnknownClaim {
+    __kind: 'UnknownClaim'
+}
+
+export interface V2Error_FailedToDecode {
+    __kind: 'FailedToDecode'
+}
+
+export interface V2Error_MaxWeightInvalid {
+    __kind: 'MaxWeightInvalid'
+}
+
+export interface V2Error_NotHoldingFees {
+    __kind: 'NotHoldingFees'
+}
+
+export interface V2Error_TooExpensive {
+    __kind: 'TooExpensive'
+}
+
+export interface V2Error_Trap {
+    __kind: 'Trap'
+    value: bigint
+}
+
+export interface V2Error_UnhandledXcmVersion {
+    __kind: 'UnhandledXcmVersion'
+}
+
+export interface V2Error_WeightLimitReached {
+    __kind: 'WeightLimitReached'
+    value: bigint
+}
+
+export interface V2Error_Barrier {
+    __kind: 'Barrier'
+}
+
+export interface V2Error_WeightNotComputable {
+    __kind: 'WeightNotComputable'
+}
+
 export interface ModuleError {
     index: number
-    error: Uint8Array
+    error: number
 }
 
 export type TokenError = TokenError_NoFunds | TokenError_WouldDie | TokenError_BelowMinimum | TokenError_CannotCreate | TokenError_UnknownAsset | TokenError_Frozen | TokenError_Unsupported
@@ -311,16 +438,6 @@ export interface ArithmeticError_DivisionByZero {
     __kind: 'DivisionByZero'
 }
 
-export type TransactionalError = TransactionalError_LimitReached | TransactionalError_NoLayer
-
-export interface TransactionalError_LimitReached {
-    __kind: 'LimitReached'
-}
-
-export interface TransactionalError_NoLayer {
-    __kind: 'NoLayer'
-}
-
 export type DispatchClass = DispatchClass_Normal | DispatchClass_Operational | DispatchClass_Mandatory
 
 export interface DispatchClass_Normal {
@@ -343,6 +460,10 @@ export interface Pays_Yes {
 
 export interface Pays_No {
     __kind: 'No'
+}
+
+export interface Digest {
+    logs: DigestItem[]
 }
 
 /**
@@ -1184,11 +1305,6 @@ export interface ValidatorsSetCall_clear_prime {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type PoaCall = never
-
-/**
- * Contains one variant per dispatchable that can be called by an extrinsic.
- */
 export type SessionCall = SessionCall_set_keys | SessionCall_purge_keys
 
 /**
@@ -1270,11 +1386,6 @@ export interface ParachainSystemCall_enact_authorized_upgrade {
     __kind: 'enact_authorized_upgrade'
     code: Uint8Array
 }
-
-/**
- * Contains one variant per dispatchable that can be called by an extrinsic.
- */
-export type ParachainInfoCall = never
 
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
@@ -1543,562 +1654,6 @@ export interface MultisigCall_cancel_as_multi {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type UniquesCall = UniquesCall_create | UniquesCall_force_create | UniquesCall_destroy | UniquesCall_mint | UniquesCall_burn | UniquesCall_transfer | UniquesCall_redeposit | UniquesCall_freeze | UniquesCall_thaw | UniquesCall_freeze_class | UniquesCall_thaw_class | UniquesCall_transfer_ownership | UniquesCall_set_team | UniquesCall_approve_transfer | UniquesCall_cancel_approval | UniquesCall_force_asset_status | UniquesCall_set_attribute | UniquesCall_clear_attribute | UniquesCall_set_metadata | UniquesCall_clear_metadata | UniquesCall_set_class_metadata | UniquesCall_clear_class_metadata | UniquesCall_set_accept_ownership
-
-/**
- * Issue a new class of non-fungible assets from a public origin.
- * 
- * This new asset class has no assets initially and its owner is the origin.
- * 
- * The origin must be Signed and the sender must have sufficient funds free.
- * 
- * `AssetDeposit` funds of sender are reserved.
- * 
- * Parameters:
- * - `class`: The identifier of the new asset class. This must not be currently in use.
- * - `admin`: The admin of this class of assets. The admin is the initial address of each
- * member of the asset class's admin team.
- * 
- * Emits `Created` event when successful.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_create {
-    __kind: 'create'
-    class: number
-    admin: MultiAddress
-}
-
-/**
- * Issue a new class of non-fungible assets from a privileged origin.
- * 
- * This new asset class has no assets initially.
- * 
- * The origin must conform to `ForceOrigin`.
- * 
- * Unlike `create`, no funds are reserved.
- * 
- * - `class`: The identifier of the new asset. This must not be currently in use.
- * - `owner`: The owner of this class of assets. The owner has full superuser permissions
- * over this asset, but may later change and configure the permissions using
- * `transfer_ownership` and `set_team`.
- * 
- * Emits `ForceCreated` event when successful.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_force_create {
-    __kind: 'force_create'
-    class: number
-    owner: MultiAddress
-    freeHolding: boolean
-}
-
-/**
- * Destroy a class of fungible assets.
- * 
- * The origin must conform to `ForceOrigin` or must be `Signed` and the sender must be the
- * owner of the asset `class`.
- * 
- * - `class`: The identifier of the asset class to be destroyed.
- * - `witness`: Information on the instances minted in the asset class. This must be
- * correct.
- * 
- * Emits `Destroyed` event when successful.
- * 
- * Weight: `O(n + m)` where:
- * - `n = witness.instances`
- * - `m = witness.instance_metadatas`
- * - `a = witness.attributes`
- */
-export interface UniquesCall_destroy {
-    __kind: 'destroy'
-    class: number
-    witness: DestroyWitness
-}
-
-/**
- * Mint an asset instance of a particular class.
- * 
- * The origin must be Signed and the sender must be the Issuer of the asset `class`.
- * 
- * - `class`: The class of the asset to be minted.
- * - `instance`: The instance value of the asset to be minted.
- * - `beneficiary`: The initial owner of the minted asset.
- * 
- * Emits `Issued` event when successful.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_mint {
-    __kind: 'mint'
-    class: number
-    instance: number
-    owner: MultiAddress
-}
-
-/**
- * Destroy a single asset instance.
- * 
- * Origin must be Signed and the sender should be the Admin of the asset `class`.
- * 
- * - `class`: The class of the asset to be burned.
- * - `instance`: The instance of the asset to be burned.
- * - `check_owner`: If `Some` then the operation will fail with `WrongOwner` unless the
- *   asset is owned by this value.
- * 
- * Emits `Burned` with the actual amount burned.
- * 
- * Weight: `O(1)`
- * Modes: `check_owner.is_some()`.
- */
-export interface UniquesCall_burn {
-    __kind: 'burn'
-    class: number
-    instance: number
-    checkOwner: (MultiAddress | undefined)
-}
-
-/**
- * Move an asset from the sender account to another.
- * 
- * Origin must be Signed and the signing account must be either:
- * - the Admin of the asset `class`;
- * - the Owner of the asset `instance`;
- * - the approved delegate for the asset `instance` (in this case, the approval is reset).
- * 
- * Arguments:
- * - `class`: The class of the asset to be transferred.
- * - `instance`: The instance of the asset to be transferred.
- * - `dest`: The account to receive ownership of the asset.
- * 
- * Emits `Transferred`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_transfer {
-    __kind: 'transfer'
-    class: number
-    instance: number
-    dest: MultiAddress
-}
-
-/**
- * Reevaluate the deposits on some assets.
- * 
- * Origin must be Signed and the sender should be the Owner of the asset `class`.
- * 
- * - `class`: The class of the asset to be frozen.
- * - `instances`: The instances of the asset class whose deposits will be reevaluated.
- * 
- * NOTE: This exists as a best-effort function. Any asset instances which are unknown or
- * in the case that the owner account does not have reservable funds to pay for a
- * deposit increase are ignored. Generally the owner isn't going to call this on instances
- * whose existing deposit is less than the refreshed deposit as it would only cost them,
- * so it's of little consequence.
- * 
- * It will still return an error in the case that the class is unknown of the signer is
- * not permitted to call it.
- * 
- * Weight: `O(instances.len())`
- */
-export interface UniquesCall_redeposit {
-    __kind: 'redeposit'
-    class: number
-    instances: number[]
-}
-
-/**
- * Disallow further unprivileged transfer of an asset instance.
- * 
- * Origin must be Signed and the sender should be the Freezer of the asset `class`.
- * 
- * - `class`: The class of the asset to be frozen.
- * - `instance`: The instance of the asset to be frozen.
- * 
- * Emits `Frozen`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_freeze {
-    __kind: 'freeze'
-    class: number
-    instance: number
-}
-
-/**
- * Re-allow unprivileged transfer of an asset instance.
- * 
- * Origin must be Signed and the sender should be the Freezer of the asset `class`.
- * 
- * - `class`: The class of the asset to be thawed.
- * - `instance`: The instance of the asset to be thawed.
- * 
- * Emits `Thawed`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_thaw {
-    __kind: 'thaw'
-    class: number
-    instance: number
-}
-
-/**
- * Disallow further unprivileged transfers for a whole asset class.
- * 
- * Origin must be Signed and the sender should be the Freezer of the asset `class`.
- * 
- * - `class`: The asset class to be frozen.
- * 
- * Emits `ClassFrozen`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_freeze_class {
-    __kind: 'freeze_class'
-    class: number
-}
-
-/**
- * Re-allow unprivileged transfers for a whole asset class.
- * 
- * Origin must be Signed and the sender should be the Admin of the asset `class`.
- * 
- * - `class`: The class to be thawed.
- * 
- * Emits `ClassThawed`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_thaw_class {
-    __kind: 'thaw_class'
-    class: number
-}
-
-/**
- * Change the Owner of an asset class.
- * 
- * Origin must be Signed and the sender should be the Owner of the asset `class`.
- * 
- * - `class`: The asset class whose owner should be changed.
- * - `owner`: The new Owner of this asset class. They must have called
- *   `set_accept_ownership` with `class` in order for this operation to succeed.
- * 
- * Emits `OwnerChanged`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_transfer_ownership {
-    __kind: 'transfer_ownership'
-    class: number
-    owner: MultiAddress
-}
-
-/**
- * Change the Issuer, Admin and Freezer of an asset class.
- * 
- * Origin must be Signed and the sender should be the Owner of the asset `class`.
- * 
- * - `class`: The asset class whose team should be changed.
- * - `issuer`: The new Issuer of this asset class.
- * - `admin`: The new Admin of this asset class.
- * - `freezer`: The new Freezer of this asset class.
- * 
- * Emits `TeamChanged`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_set_team {
-    __kind: 'set_team'
-    class: number
-    issuer: MultiAddress
-    admin: MultiAddress
-    freezer: MultiAddress
-}
-
-/**
- * Approve an instance to be transferred by a delegated third-party account.
- * 
- * Origin must be Signed and must be the owner of the asset `instance`.
- * 
- * - `class`: The class of the asset to be approved for delegated transfer.
- * - `instance`: The instance of the asset to be approved for delegated transfer.
- * - `delegate`: The account to delegate permission to transfer the asset.
- * 
- * Emits `ApprovedTransfer` on success.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_approve_transfer {
-    __kind: 'approve_transfer'
-    class: number
-    instance: number
-    delegate: MultiAddress
-}
-
-/**
- * Cancel the prior approval for the transfer of an asset by a delegate.
- * 
- * Origin must be either:
- * - the `Force` origin;
- * - `Signed` with the signer being the Admin of the asset `class`;
- * - `Signed` with the signer being the Owner of the asset `instance`;
- * 
- * Arguments:
- * - `class`: The class of the asset of whose approval will be cancelled.
- * - `instance`: The instance of the asset of whose approval will be cancelled.
- * - `maybe_check_delegate`: If `Some` will ensure that the given account is the one to
- *   which permission of transfer is delegated.
- * 
- * Emits `ApprovalCancelled` on success.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_cancel_approval {
-    __kind: 'cancel_approval'
-    class: number
-    instance: number
-    maybeCheckDelegate: (MultiAddress | undefined)
-}
-
-/**
- * Alter the attributes of a given asset.
- * 
- * Origin must be `ForceOrigin`.
- * 
- * - `class`: The identifier of the asset.
- * - `owner`: The new Owner of this asset.
- * - `issuer`: The new Issuer of this asset.
- * - `admin`: The new Admin of this asset.
- * - `freezer`: The new Freezer of this asset.
- * - `free_holding`: Whether a deposit is taken for holding an instance of this asset
- *   class.
- * - `is_frozen`: Whether this asset class is frozen except for permissioned/admin
- * instructions.
- * 
- * Emits `AssetStatusChanged` with the identity of the asset.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_force_asset_status {
-    __kind: 'force_asset_status'
-    class: number
-    owner: MultiAddress
-    issuer: MultiAddress
-    admin: MultiAddress
-    freezer: MultiAddress
-    freeHolding: boolean
-    isFrozen: boolean
-}
-
-/**
- * Set an attribute for an asset class or instance.
- * 
- * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `class`.
- * 
- * If the origin is Signed, then funds of signer are reserved according to the formula:
- * `MetadataDepositBase + DepositPerByte * (key.len + value.len)` taking into
- * account any already reserved funds.
- * 
- * - `class`: The identifier of the asset class whose instance's metadata to set.
- * - `maybe_instance`: The identifier of the asset instance whose metadata to set.
- * - `key`: The key of the attribute.
- * - `value`: The value to which to set the attribute.
- * 
- * Emits `AttributeSet`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_set_attribute {
-    __kind: 'set_attribute'
-    class: number
-    maybeInstance: (number | undefined)
-    key: Uint8Array
-    value: Uint8Array
-}
-
-/**
- * Clear an attribute for an asset class or instance.
- * 
- * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `class`.
- * 
- * Any deposit is freed for the asset class owner.
- * 
- * - `class`: The identifier of the asset class whose instance's metadata to clear.
- * - `maybe_instance`: The identifier of the asset instance whose metadata to clear.
- * - `key`: The key of the attribute.
- * 
- * Emits `AttributeCleared`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_clear_attribute {
-    __kind: 'clear_attribute'
-    class: number
-    maybeInstance: (number | undefined)
-    key: Uint8Array
-}
-
-/**
- * Set the metadata for an asset instance.
- * 
- * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `class`.
- * 
- * If the origin is Signed, then funds of signer are reserved according to the formula:
- * `MetadataDepositBase + DepositPerByte * data.len` taking into
- * account any already reserved funds.
- * 
- * - `class`: The identifier of the asset class whose instance's metadata to set.
- * - `instance`: The identifier of the asset instance whose metadata to set.
- * - `data`: The general information of this asset. Limited in length by `StringLimit`.
- * - `is_frozen`: Whether the metadata should be frozen against further changes.
- * 
- * Emits `MetadataSet`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_set_metadata {
-    __kind: 'set_metadata'
-    class: number
-    instance: number
-    data: Uint8Array
-    isFrozen: boolean
-}
-
-/**
- * Clear the metadata for an asset instance.
- * 
- * Origin must be either `ForceOrigin` or Signed and the sender should be the Owner of the
- * asset `instance`.
- * 
- * Any deposit is freed for the asset class owner.
- * 
- * - `class`: The identifier of the asset class whose instance's metadata to clear.
- * - `instance`: The identifier of the asset instance whose metadata to clear.
- * 
- * Emits `MetadataCleared`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_clear_metadata {
-    __kind: 'clear_metadata'
-    class: number
-    instance: number
-}
-
-/**
- * Set the metadata for an asset class.
- * 
- * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
- * the asset `class`.
- * 
- * If the origin is `Signed`, then funds of signer are reserved according to the formula:
- * `MetadataDepositBase + DepositPerByte * data.len` taking into
- * account any already reserved funds.
- * 
- * - `class`: The identifier of the asset whose metadata to update.
- * - `data`: The general information of this asset. Limited in length by `StringLimit`.
- * - `is_frozen`: Whether the metadata should be frozen against further changes.
- * 
- * Emits `ClassMetadataSet`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_set_class_metadata {
-    __kind: 'set_class_metadata'
-    class: number
-    data: Uint8Array
-    isFrozen: boolean
-}
-
-/**
- * Clear the metadata for an asset class.
- * 
- * Origin must be either `ForceOrigin` or `Signed` and the sender should be the Owner of
- * the asset `class`.
- * 
- * Any deposit is freed for the asset class owner.
- * 
- * - `class`: The identifier of the asset class whose metadata to clear.
- * 
- * Emits `ClassMetadataCleared`.
- * 
- * Weight: `O(1)`
- */
-export interface UniquesCall_clear_class_metadata {
-    __kind: 'clear_class_metadata'
-    class: number
-}
-
-/**
- * Set (or reset) the acceptance of ownership for a particular account.
- * 
- * Origin must be `Signed` and if `maybe_class` is `Some`, then the signer must have a
- * provider reference.
- * 
- * - `maybe_class`: The identifier of the asset class whose ownership the signer is willing
- *   to accept, or if `None`, an indication that the signer is willing to accept no
- *   ownership transferal.
- * 
- * Emits `OwnershipAcceptanceChanged`.
- */
-export interface UniquesCall_set_accept_ownership {
-    __kind: 'set_accept_ownership'
-    maybeClass: (number | undefined)
-}
-
-/**
- * Contains one variant per dispatchable that can be called by an extrinsic.
- */
-export type PreimageCall = PreimageCall_note_preimage | PreimageCall_unnote_preimage | PreimageCall_request_preimage | PreimageCall_unrequest_preimage
-
-/**
- * Register a preimage on-chain.
- * 
- * If the preimage was previously requested, no fees or deposits are taken for providing
- * the preimage. Otherwise, a deposit is taken proportional to the size of the preimage.
- */
-export interface PreimageCall_note_preimage {
-    __kind: 'note_preimage'
-    bytes: Uint8Array
-}
-
-/**
- * Clear an unrequested preimage from the runtime storage.
- */
-export interface PreimageCall_unnote_preimage {
-    __kind: 'unnote_preimage'
-    hash: Uint8Array
-}
-
-/**
- * Request a preimage be uploaded to the chain without paying any fees or deposits.
- * 
- * If the preimage requests has already been provided on-chain, we unreserve any deposit
- * a user may have paid, and take the control of the preimage out of their hands.
- */
-export interface PreimageCall_request_preimage {
-    __kind: 'request_preimage'
-    hash: Uint8Array
-}
-
-/**
- * Clear a previously made request for a preimage.
- * 
- * NOTE: THIS MUST NOT BE CALLED ON `hash` MORE TIMES THAN `request_preimage`.
- */
-export interface PreimageCall_unrequest_preimage {
-    __kind: 'unrequest_preimage'
-    hash: Uint8Array
-}
-
-/**
- * Contains one variant per dispatchable that can be called by an extrinsic.
- */
 export type EmergencyShutdownCall = EmergencyShutdownCall_toggle
 
 /**
@@ -2203,6 +1758,82 @@ export interface AllocationsOraclesCall_clear_prime {
     __kind: 'clear_prime'
 }
 
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as
+
+/**
+ * Authenticates the sudo key and dispatches a function call with `Root` origin.
+ * 
+ * The dispatch origin for this call must be _Signed_.
+ * 
+ * # <weight>
+ * - O(1).
+ * - Limited storage reads.
+ * - One DB write (event).
+ * - Weight of derivative `call` execution + 10,000.
+ * # </weight>
+ */
+export interface SudoCall_sudo {
+    __kind: 'sudo'
+    call: Call
+}
+
+/**
+ * Authenticates the sudo key and dispatches a function call with `Root` origin.
+ * This function does not check the weight of the call, and instead allows the
+ * Sudo user to specify the weight of the call.
+ * 
+ * The dispatch origin for this call must be _Signed_.
+ * 
+ * # <weight>
+ * - O(1).
+ * - The weight of this call is defined by the caller.
+ * # </weight>
+ */
+export interface SudoCall_sudo_unchecked_weight {
+    __kind: 'sudo_unchecked_weight'
+    call: Call
+    weight: bigint
+}
+
+/**
+ * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
+ * key.
+ * 
+ * The dispatch origin for this call must be _Signed_.
+ * 
+ * # <weight>
+ * - O(1).
+ * - Limited storage reads.
+ * - One DB change.
+ * # </weight>
+ */
+export interface SudoCall_set_key {
+    __kind: 'set_key'
+    new: MultiAddress
+}
+
+/**
+ * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+ * a given account.
+ * 
+ * The dispatch origin for this call must be _Signed_.
+ * 
+ * # <weight>
+ * - O(1).
+ * - Limited storage reads.
+ * - One DB write (event).
+ * - Weight of derivative `call` execution + 10,000.
+ * # </weight>
+ */
+export interface SudoCall_sudo_as {
+    __kind: 'sudo_as'
+    who: MultiAddress
+    call: Call
+}
+
 export type RawOrigin = RawOrigin_Root | RawOrigin_Signed | RawOrigin_None
 
 export interface RawOrigin_Root {
@@ -2218,19 +1849,19 @@ export interface RawOrigin_None {
     __kind: 'None'
 }
 
-export type Type_156 = Type_156_Members | Type_156_Member | Type_156__Phantom
+export type Type_146 = Type_146_Members | Type_146_Member | Type_146__Phantom
 
-export interface Type_156_Members {
+export interface Type_146_Members {
     __kind: 'Members'
     value: [number, number]
 }
 
-export interface Type_156_Member {
+export interface Type_146_Member {
     __kind: 'Member'
     value: Uint8Array
 }
 
-export interface Type_156__Phantom {
+export interface Type_146__Phantom {
     __kind: '_Phantom'
 }
 
@@ -2246,57 +1877,6 @@ export interface Origin_SiblingParachain {
 }
 
 export type Void = never
-
-export interface VestingSchedule {
-    start: number
-    period: number
-    periodCount: number
-    perPeriod: bigint
-}
-
-export interface Header {
-    parentHash: Uint8Array
-    number: number
-    stateRoot: Uint8Array
-    extrinsicsRoot: Uint8Array
-    digest: Digest
-}
-
-export interface SessionKeys {
-    aura: Uint8Array
-}
-
-export interface ParachainInherentData {
-    validationData: V2PersistedValidationData
-    relayChainState: StorageProof
-    downwardMessages: InboundDownwardMessage[]
-    horizontalMessages: [number, InboundHrmpMessage[]][]
-}
-
-export interface Digest {
-    logs: DigestItem[]
-}
-
-export interface V2PersistedValidationData {
-    parentHead: Uint8Array
-    relayParentNumber: number
-    relayParentStorageRoot: Uint8Array
-    maxPovSize: number
-}
-
-export interface StorageProof {
-    trieNodes: Uint8Array[]
-}
-
-export interface InboundDownwardMessage {
-    sentAt: number
-    msg: Uint8Array
-}
-
-export interface InboundHrmpMessage {
-    sentAt: number
-    data: Uint8Array
-}
 
 export type DigestItem = DigestItem_PreRuntime | DigestItem_Consensus | DigestItem_Seal | DigestItem_Other | DigestItem_RuntimeEnvironmentUpdated
 
@@ -2322,4 +1902,43 @@ export interface DigestItem_Other {
 
 export interface DigestItem_RuntimeEnvironmentUpdated {
     __kind: 'RuntimeEnvironmentUpdated'
+}
+
+export interface VestingSchedule {
+    start: number
+    period: number
+    periodCount: number
+    perPeriod: bigint
+}
+
+export interface SessionKeys {
+    aura: Uint8Array
+}
+
+export interface ParachainInherentData {
+    validationData: V1PersistedValidationData
+    relayChainState: StorageProof
+    downwardMessages: InboundDownwardMessage[]
+    horizontalMessages: [number, InboundHrmpMessage[]][]
+}
+
+export interface V1PersistedValidationData {
+    parentHead: Uint8Array
+    relayParentNumber: number
+    relayParentStorageRoot: Uint8Array
+    maxPovSize: number
+}
+
+export interface StorageProof {
+    trieNodes: Uint8Array[]
+}
+
+export interface InboundDownwardMessage {
+    sentAt: number
+    msg: Uint8Array
+}
+
+export interface InboundHrmpMessage {
+    sentAt: number
+    data: Uint8Array
 }
