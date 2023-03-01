@@ -16,62 +16,81 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
     case "System.CodeUpdated":
       e = new SystemCodeUpdatedEvent(ctx, event);
       if (e.isV23) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.ExtrinsicFailed":
       e = new SystemExtrinsicFailedEvent(ctx, event);
       if (e.isV23) {
-        // YOUR CODE HERE
+        let [error, info] = e.asV23;
+        return {
+          dispatchError: error,
+          dispatchInfo: info,
+        };
       } else if (e.isV32) {
-        // YOUR CODE HERE
+        let [error, info] = e.asV23;
+        return {
+          dispatchError: error,
+          dispatchInfo: info,
+        };
       } else if (e.isV34) {
-        // YOUR CODE HERE
+        return event.args;
       } else if (e.isV35) {
-        // YOUR CODE HERE
+        return event.args;
       } else if (e.isV36) {
-        // YOUR CODE HERE
+        return event.args;
       } else if (e.isV42) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.ExtrinsicSuccess":
       e = new SystemExtrinsicSuccessEvent(ctx, event);
       if (e.isV23) {
-        // YOUR CODE HERE
+        let dispatchInfo = e.asV23;
+        return { dispatchInfo };
       } else if (e.isV34) {
-        // YOUR CODE HERE
+        return event.args;
       } else if (e.isV42) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.KilledAccount":
       e = new SystemKilledAccountEvent(ctx, event);
       if (e.isV23) {
-        // YOUR CODE HERE
+        let account = e.asV23;
+        return {
+          account: bufferToHex(account),
+        };
       } else if (e.isV34) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.NewAccount":
       e = new SystemNewAccountEvent(ctx, event);
       if (e.isV23) {
-        // YOUR CODE HERE
+        let account = e.asV23;
+        return {
+          account: bufferToHex(account),
+        };
       } else if (e.isV34) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.Remarked":
       e = new SystemRemarkedEvent(ctx, event);
       if (e.isV23) {
-        // YOUR CODE HERE
+        let [origin, remarkHash] = e.asV23;
+        return {
+          sender: bufferToHex(origin),
+          hash: bufferToHex(remarkHash),
+        };
       } else if (e.isV34) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
