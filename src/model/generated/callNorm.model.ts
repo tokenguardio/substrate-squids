@@ -24,5 +24,5 @@ export class CallNorm {
     args!: unknown | undefined | null
 
     @Column_("bool", {nullable: true})
-    extrinsicSuccess!: boolean | undefined | null
+    success!: boolean | undefined | null
 }
