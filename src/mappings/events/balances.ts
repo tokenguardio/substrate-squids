@@ -5,105 +5,105 @@ import {
   BalancesEndowedEvent,
   BalancesReserveRepatriatedEvent,
   BalancesReservedEvent,
+  BalancesSlashedEvent,
   BalancesTransferEvent,
   BalancesUnreservedEvent,
+  BalancesWithdrawEvent,
 } from "../../types/events";
 import { ChainContext, Event } from "../../types/support";
 import { bufferToHex } from "../../utils/utils";
 import { UnknownVersionError, UnknownEventError } from "../../utils/errors";
 
-export function normalizeBalancesEventArgs(ctx: ChainContext, event: Event) {
+export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
   let e;
   switch (event.name) {
     case "Balances.BalanceSet":
       e = new BalancesBalanceSetEvent(ctx, event);
-      if (e.isV5) {
-        let [who, free, reserved] = e.asV5;
-        return {
-          who: bufferToHex(who),
-          free,
-          reserved,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "Balances.Deposit":
       e = new BalancesDepositEvent(ctx, event);
-      if (e.isV5) {
-        let [who, deposit] = e.asV5;
-        return {
-          who: bufferToHex(who),
-          deposit,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "Balances.DustLost":
       e = new BalancesDustLostEvent(ctx, event);
-      if (e.isV5) {
-        let [account, balance] = e.asV5;
-        return {
-          account: bufferToHex(account),
-          balance,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "Balances.Endowed":
       e = new BalancesEndowedEvent(ctx, event);
-      if (e.isV5) {
-        let [account, free_balance] = e.asV5;
-        return {
-          account: bufferToHex(account),
-          free_balance,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "Balances.ReserveRepatriated":
       e = new BalancesReserveRepatriatedEvent(ctx, event);
-      if (e.isV5) {
-        let [from, to, balance, destination_status] = e.asV5;
-        return {
-          from: bufferToHex(from),
-          to: bufferToHex(to),
-          balance,
-          destination_status,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "Balances.Reserved":
       e = new BalancesReservedEvent(ctx, event);
-      if (e.isV5) {
-        let [who, value] = e.asV5;
-        return {
-          who: bufferToHex(who),
-          value,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Balances.Slashed":
+      e = new BalancesSlashedEvent(ctx, event);
+      if (e.isV33) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "Balances.Transfer":
       e = new BalancesTransferEvent(ctx, event);
-      if (e.isV5) {
-        let [from, to, value] = e.asV5;
-        return {
-          from: bufferToHex(from),
-          to: bufferToHex(to),
-          value,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "Balances.Unreserved":
       e = new BalancesUnreservedEvent(ctx, event);
-      if (e.isV5) {
-        let [who, value] = e.asV5;
-        return {
-          who: bufferToHex(who),
-          value,
-        };
+      if (e.isV23) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Balances.Withdraw":
+      e = new BalancesWithdrawEvent(ctx, event);
+      if (e.isV33) {
+        // YOUR CODE HERE
+      } else if (e.isV34) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownVersionError(event.name);
       }
