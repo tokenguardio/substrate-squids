@@ -1,10 +1,10 @@
 import assert from 'assert'
 import {Chain, ChainContext, EventContext, Event, Result, Option} from './support'
-import * as v5 from './v5'
-import * as v8 from './v8'
-import * as v10 from './v10'
+import * as v3 from './v3'
+import * as v12 from './v12'
+import * as v39 from './v39'
 
-export class AuthorityAuthorizedCallEvent {
+export class AlephChangeEmergencyFinalizerEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -12,28 +12,22 @@ export class AuthorityAuthorizedCallEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Authority.AuthorizedCall')
+        assert(event.name === 'Aleph.ChangeEmergencyFinalizer')
         this._chain = ctx._chain
         this.event = event
     }
 
-    /**
-     *  A call is authorized. \[hash, caller\]
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Authority.AuthorizedCall') === 'f5c1b1c7cf398440dc62ec744a8041a558e574204ed3d6651dddffa28114feda'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Aleph.ChangeEmergencyFinalizer') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
     }
 
-    /**
-     *  A call is authorized. \[hash, caller\]
-     */
-    get asV8(): [Uint8Array, (Uint8Array | undefined)] {
-        assert(this.isV8)
+    get asV39(): Uint8Array {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class AuthorityCancelledEvent {
+export class AlephChangeValidatorsEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -41,28 +35,22 @@ export class AuthorityCancelledEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Authority.Cancelled')
+        assert(event.name === 'Aleph.ChangeValidators')
         this._chain = ctx._chain
         this.event = event
     }
 
-    /**
-     *  A scheduled call is cancelled. [origin, index]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Authority.Cancelled') === 'bc894d0ced6b09cc7f73056bae8b17c72cc6e7c4290d8a9c02033452f0fbfc91'
+    get isV3(): boolean {
+        return this._chain.getEventHash('Aleph.ChangeValidators') === 'e93c1a5a56095e646628f211655a4b5506440dd2f59282b3bfc35091e02aa271'
     }
 
-    /**
-     *  A scheduled call is cancelled. [origin, index]
-     */
-    get asV5(): [v5.PalletsOrigin, number] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array[], number] {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class AuthorityDelayedEvent {
+export class AlephFinalityVersionChangeEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -70,28 +58,22 @@ export class AuthorityDelayedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Authority.Delayed')
+        assert(event.name === 'Aleph.FinalityVersionChange')
         this._chain = ctx._chain
         this.event = event
     }
 
-    /**
-     *  A scheduled call is delayed. [origin, index, when]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Authority.Delayed') === 'd29ebfc7032e6fe29e60f69d3236d28eefded6fda7820314610be38a6e6476aa'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Aleph.FinalityVersionChange') === 'f5471ffca9ff85cb90ee673d8becdd00a4d4307c836a2feaadf584c8e070b1e8'
     }
 
-    /**
-     *  A scheduled call is delayed. [origin, index, when]
-     */
-    get asV5(): [v5.PalletsOrigin, number, number] {
-        assert(this.isV5)
+    get asV39(): v39.VersionChange {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class AuthorityDispatchedEvent {
+export class AlephScheduleFinalityVersionChangeEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -99,139 +81,17 @@ export class AuthorityDispatchedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Authority.Dispatched')
+        assert(event.name === 'Aleph.ScheduleFinalityVersionChange')
         this._chain = ctx._chain
         this.event = event
     }
 
-    /**
-     *  A call is dispatched. [result]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Authority.Dispatched') === '5ac9a036c40a8da705ceb275764da05df0d46faf9a0778b7aa8dc7edf210ee1d'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Aleph.ScheduleFinalityVersionChange') === 'f5471ffca9ff85cb90ee673d8becdd00a4d4307c836a2feaadf584c8e070b1e8'
     }
 
-    /**
-     *  A call is dispatched. [result]
-     */
-    get asV5(): v5.DispatchResult {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class AuthorityFastTrackedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Authority.FastTracked')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A scheduled call is fast tracked. [origin, index, when]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Authority.FastTracked') === 'd29ebfc7032e6fe29e60f69d3236d28eefded6fda7820314610be38a6e6476aa'
-    }
-
-    /**
-     *  A scheduled call is fast tracked. [origin, index, when]
-     */
-    get asV5(): [v5.PalletsOrigin, number, number] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class AuthorityRemovedAuthorizedCallEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Authority.RemovedAuthorizedCall')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  An authorized call was removed. \[hash\]
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Authority.RemovedAuthorizedCall') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
-    }
-
-    /**
-     *  An authorized call was removed. \[hash\]
-     */
-    get asV8(): Uint8Array {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class AuthorityScheduledEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Authority.Scheduled')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A call is scheduled. [origin, index]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Authority.Scheduled') === 'bc894d0ced6b09cc7f73056bae8b17c72cc6e7c4290d8a9c02033452f0fbfc91'
-    }
-
-    /**
-     *  A call is scheduled. [origin, index]
-     */
-    get asV5(): [v5.PalletsOrigin, number] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class AuthorityTriggeredCallByEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Authority.TriggeredCallBy')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  An authorized call was triggered. \[hash, caller\]
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Authority.TriggeredCallBy') === 'e54ae910805a8a9413af1a7f5885a5d0ba5f4e105175cd6b0ce2a8702ddf1861'
-    }
-
-    /**
-     *  An authorized call was triggered. \[hash, caller\]
-     */
-    get asV8(): [Uint8Array, Uint8Array] {
-        assert(this.isV8)
+    get asV39(): v39.VersionChange {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -252,15 +112,30 @@ export class BalancesBalanceSetEvent {
     /**
      *  A balance was set by root. \[who, free, reserved\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.BalanceSet') === '0f263bfdefa394edfb38d20d33662423a2e0902235b599f9b2b0292f157f0902'
     }
 
     /**
      *  A balance was set by root. \[who, free, reserved\]
      */
-    get asV5(): [Uint8Array, bigint, bigint] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, bigint, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A balance was set by root.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.BalanceSet') === '1e2b5d5a07046e6d6e5507661d3f3feaddfb41fc609a2336b24957322080ca77'
+    }
+
+    /**
+     * A balance was set by root.
+     */
+    get asV12(): {who: Uint8Array, free: bigint, reserved: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -281,15 +156,30 @@ export class BalancesDepositEvent {
     /**
      *  Some amount was deposited (e.g. for transaction fees). \[who, deposit\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.Deposit') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
      *  Some amount was deposited (e.g. for transaction fees). \[who, deposit\]
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some amount was deposited (e.g. for transaction fees).
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.Deposit') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some amount was deposited (e.g. for transaction fees).
+     */
+    get asV12(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -311,7 +201,7 @@ export class BalancesDustLostEvent {
      *  An account was removed whose balance was non-zero but below ExistentialDeposit,
      *  resulting in an outright loss. \[account, balance\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.DustLost') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
@@ -319,8 +209,25 @@ export class BalancesDustLostEvent {
      *  An account was removed whose balance was non-zero but below ExistentialDeposit,
      *  resulting in an outright loss. \[account, balance\]
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An account was removed whose balance was non-zero but below ExistentialDeposit,
+     * resulting in an outright loss.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.DustLost') === '504f155afb2789c50df19d1f747fb2dc0e99bf8b7623c30bdb5cf82029fec760'
+    }
+
+    /**
+     * An account was removed whose balance was non-zero but below ExistentialDeposit,
+     * resulting in an outright loss.
+     */
+    get asV12(): {account: Uint8Array, amount: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -341,15 +248,30 @@ export class BalancesEndowedEvent {
     /**
      *  An account was created with some free balance. \[account, free_balance\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.Endowed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
      *  An account was created with some free balance. \[account, free_balance\]
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An account was created with some free balance.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.Endowed') === '75951f685df19cbb5fdda09cf928a105518ceca9576d95bd18d4fac8802730ca'
+    }
+
+    /**
+     * An account was created with some free balance.
+     */
+    get asV12(): {account: Uint8Array, freeBalance: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -372,7 +294,7 @@ export class BalancesReserveRepatriatedEvent {
      *  Final argument indicates the destination balance type.
      *  \[from, to, balance, destination_status\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.ReserveRepatriated') === '68e9ec5664c8ffe977da0c890bac43122a5cf13565c1c936e2120ba4980bcf31'
     }
 
@@ -381,8 +303,25 @@ export class BalancesReserveRepatriatedEvent {
      *  Final argument indicates the destination balance type.
      *  \[from, to, balance, destination_status\]
      */
-    get asV5(): [Uint8Array, Uint8Array, bigint, v5.BalanceStatus] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, Uint8Array, bigint, v3.BalanceStatus] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some balance was moved from the reserve of the first account to the second account.
+     * Final argument indicates the destination balance type.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.ReserveRepatriated') === '6232d50d422cea3a6fd21da36387df36d1d366405d0c589566c6de85c9cf541f'
+    }
+
+    /**
+     * Some balance was moved from the reserve of the first account to the second account.
+     * Final argument indicates the destination balance type.
+     */
+    get asV12(): {from: Uint8Array, to: Uint8Array, amount: bigint, destinationStatus: v12.BalanceStatus} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -403,15 +342,59 @@ export class BalancesReservedEvent {
     /**
      *  Some balance was reserved (moved from free to reserved). \[who, value\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.Reserved') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
      *  Some balance was reserved (moved from free to reserved). \[who, value\]
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some balance was reserved (moved from free to reserved).
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.Reserved') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was reserved (moved from free to reserved).
+     */
+    get asV12(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesSlashedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Slashed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was removed from the account (e.g. for misbehavior).
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.Slashed') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some amount was removed from the account (e.g. for misbehavior).
+     */
+    get asV12(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -432,15 +415,30 @@ export class BalancesTransferEvent {
     /**
      *  Transfer succeeded. \[from, to, value\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.Transfer') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
     }
 
     /**
      *  Transfer succeeded. \[from, to, value\]
      */
-    get asV5(): [Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Transfer succeeded.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.Transfer') === '0ffdf35c495114c2d42a8bf6c241483fd5334ca0198662e14480ad040f1e3a66'
+    }
+
+    /**
+     * Transfer succeeded.
+     */
+    get asV12(): {from: Uint8Array, to: Uint8Array, amount: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -461,20 +459,35 @@ export class BalancesUnreservedEvent {
     /**
      *  Some balance was unreserved (moved from reserved to free). \[who, value\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Balances.Unreserved') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
      *  Some balance was unreserved (moved from reserved to free). \[who, value\]
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV3(): [Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some balance was unreserved (moved from reserved to free).
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.Unreserved') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was unreserved (moved from reserved to free).
+     */
+    get asV12(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class CurrenciesBalanceUpdatedEvent {
+export class BalancesWithdrawEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -482,28 +495,28 @@ export class CurrenciesBalanceUpdatedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Currencies.BalanceUpdated')
+        assert(event.name === 'Balances.Withdraw')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Update balance success. [currency_id, who, amount]
+     * Some amount was withdrawn from the account (e.g. for transaction fees).
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Currencies.BalanceUpdated') === '255affc24ec82c9d452be222eea90ab2524da9472e9e6771a288062c6f60e9c3'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Balances.Withdraw') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
     }
 
     /**
-     *  Update balance success. [currency_id, who, amount]
+     * Some amount was withdrawn from the account (e.g. for transaction fees).
      */
-    get asV5(): [v5.CurrencyIdOf, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV12(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class CurrenciesDepositedEvent {
+export class ElectionsBanValidatorsEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -511,28 +524,28 @@ export class CurrenciesDepositedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Currencies.Deposited')
+        assert(event.name === 'Elections.BanValidators')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Deposit success. [currency_id, who, amount]
+     * Validators have been banned from the committee
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Currencies.Deposited') === '22ae993b7195394790f9bc999b9c363bf7670a6857fa73788e04aaad4a1763d9'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Elections.BanValidators') === '2d4ebe5608962197c7fa15ca66fd6c5bf319b9760e80914362be9673a78ab01b'
     }
 
     /**
-     *  Deposit success. [currency_id, who, amount]
+     * Validators have been banned from the committee
      */
-    get asV5(): [v5.CurrencyIdOf, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): [Uint8Array, v39.BanInfo][] {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class CurrenciesTransferredEvent {
+export class ElectionsChangeMembersEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -540,28 +553,22 @@ export class CurrenciesTransferredEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Currencies.Transferred')
+        assert(event.name === 'Elections.ChangeMembers')
         this._chain = ctx._chain
         this.event = event
     }
 
-    /**
-     *  Currency transfer success. [currency_id, from, to, amount]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Currencies.Transferred') === 'd4c4ab46b6c9788f079a4f0c3d5f463c1c5cea1fcb29e8000373c6d0a171510f'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Elections.ChangeMembers') === 'b108f68a3a6ead7fe33d80e59b6d7124fdd14cd6108c81ad0b9d713fd6046122'
     }
 
-    /**
-     *  Currency transfer success. [currency_id, from, to, amount]
-     */
-    get asV5(): [v5.CurrencyIdOf, Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV12(): Uint8Array[] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class CurrenciesWithdrawnEvent {
+export class ElectionsChangeValidatorsEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -569,28 +576,28 @@ export class CurrenciesWithdrawnEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Currencies.Withdrawn')
+        assert(event.name === 'Elections.ChangeValidators')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Withdraw success. [currency_id, who, amount]
+     * Committee for the next era has changed
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Currencies.Withdrawn') === '22ae993b7195394790f9bc999b9c363bf7670a6857fa73788e04aaad4a1763d9'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Elections.ChangeValidators') === '292d4447092c65df4472dbd8ce0b2064456cac0a350310d5c1314c5fef88242a'
     }
 
     /**
-     *  Withdraw success. [currency_id, who, amount]
+     * Committee for the next era has changed
      */
-    get asV5(): [v5.CurrencyIdOf, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): [Uint8Array[], Uint8Array[], v39.CommitteeSeats] {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class EvmAddStorageQuotaEvent {
+export class ElectionsSetBanConfigEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -598,721 +605,23 @@ export class EvmAddStorageQuotaEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'EVM.AddStorageQuota')
+        assert(event.name === 'Elections.SetBanConfig')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A quota has been added at a given address. \[address, bytes\]
+     * Ban thresholds for the next era has changed
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.AddStorageQuota') === '80357ff79362e3a77b7be6f1a77d71ada85a736a87350d42e118f8db8a4e3368'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Elections.SetBanConfig') === 'c0f3d74180498815d8c0bd4de7e8a0e01e2a51570a1c3a8c9266ebca6aef2a92'
     }
 
     /**
-     *  A quota has been added at a given address. \[address, bytes\]
+     * Ban thresholds for the next era has changed
      */
-    get asV5(): [Uint8Array, number] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmBalanceDepositEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.BalanceDeposit')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A deposit has been made at a given address. \[sender, address,
-     *  value\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.BalanceDeposit') === 'd9b1f7a4397a223baaf288e10404ee5442e38bc06f4d40d247036102327f164e'
-    }
-
-    /**
-     *  A deposit has been made at a given address. \[sender, address,
-     *  value\]
-     */
-    get asV5(): [Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmBalanceWithdrawEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.BalanceWithdraw')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A withdrawal has been made from a given address. \[sender, address,
-     *  value\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.BalanceWithdraw') === 'd9b1f7a4397a223baaf288e10404ee5442e38bc06f4d40d247036102327f164e'
-    }
-
-    /**
-     *  A withdrawal has been made from a given address. \[sender, address,
-     *  value\]
-     */
-    get asV5(): [Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmCanceledTransferMaintainerEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.CanceledTransferMaintainer')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Canceled the transfer maintainer. \[contract, address\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.CanceledTransferMaintainer') === 'e425676e43dfa0f66531077a677904af26bdb7406850c1a937ed39ce997aebee'
-    }
-
-    /**
-     *  Canceled the transfer maintainer. \[contract, address\]
-     */
-    get asV5(): [Uint8Array, Uint8Array] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmConfirmedTransferMaintainerEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.ConfirmedTransferMaintainer')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Confirmed the transfer maintainer. \[contract, address\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.ConfirmedTransferMaintainer') === 'e425676e43dfa0f66531077a677904af26bdb7406850c1a937ed39ce997aebee'
-    }
-
-    /**
-     *  Confirmed the transfer maintainer. \[contract, address\]
-     */
-    get asV5(): [Uint8Array, Uint8Array] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmContractDeployedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.ContractDeployed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Deployed contract. \[contract\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.ContractDeployed') === '15bab564ac60f719121cf1b5dee312d333f0648b54550beefdf79deda6264096'
-    }
-
-    /**
-     *  Deployed contract. \[contract\]
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmContractDevelopmentDisabledEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.ContractDevelopmentDisabled')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Disabled contract development. \[who\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.ContractDevelopmentDisabled') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
-    }
-
-    /**
-     *  Disabled contract development. \[who\]
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmContractDevelopmentEnabledEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.ContractDevelopmentEnabled')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Enabled contract development. \[who\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.ContractDevelopmentEnabled') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
-    }
-
-    /**
-     *  Enabled contract development. \[who\]
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmContractSelfdestructedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.ContractSelfdestructed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Selfdestructed contract code. \[contract\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.ContractSelfdestructed') === '15bab564ac60f719121cf1b5dee312d333f0648b54550beefdf79deda6264096'
-    }
-
-    /**
-     *  Selfdestructed contract code. \[contract\]
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     *  Selfdestructed contract code. \[caller, contract\]
-     */
-    get isV10(): boolean {
-        return this._chain.getEventHash('EVM.ContractSelfdestructed') === 'e425676e43dfa0f66531077a677904af26bdb7406850c1a937ed39ce997aebee'
-    }
-
-    /**
-     *  Selfdestructed contract code. \[caller, contract\]
-     */
-    get asV10(): [Uint8Array, Uint8Array] {
-        assert(this.isV10)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmContractSetCodeEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.ContractSetCode')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Set contract code. \[contract\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.ContractSetCode') === '15bab564ac60f719121cf1b5dee312d333f0648b54550beefdf79deda6264096'
-    }
-
-    /**
-     *  Set contract code. \[contract\]
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmCreatedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.Created')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A contract has been created at given \[address\].
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.Created') === '15bab564ac60f719121cf1b5dee312d333f0648b54550beefdf79deda6264096'
-    }
-
-    /**
-     *  A contract has been created at given \[address\].
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     *  A new contract has been created. \[maintainer, contract, (gas_used, storage_used)\].
-     */
-    get isV10(): boolean {
-        return this._chain.getEventHash('EVM.Created') === 'e7b0c2839ff095fe041ab683e763a166c4aa170aa7996073dd0aff5561c7f23e'
-    }
-
-    /**
-     *  A new contract has been created. \[maintainer, contract, (gas_used, storage_used)\].
-     */
-    get asV10(): [Uint8Array, Uint8Array, [bigint, number]] {
-        assert(this.isV10)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmCreatedFailedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.CreatedFailed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A contract was attempted to be created, but the execution failed.
-     *  \[contract, exit_reason, output\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.CreatedFailed') === '7c6daf3cdfd2d50d065af803c31ae842479c433e613a902d67b8de3f4aa9302e'
-    }
-
-    /**
-     *  A contract was attempted to be created, but the execution failed.
-     *  \[contract, exit_reason, output\]
-     */
-    get asV5(): [Uint8Array, v5.ExitReason, Uint8Array] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     *  A contract was attempted to be created, but the execution failed.
-     *  \[maintainer, contract, exit_reason, output, (gas_used, storage_used)\]
-     */
-    get isV10(): boolean {
-        return this._chain.getEventHash('EVM.CreatedFailed') === 'fb5c28a811d5fb0151c680a2f0d0ad43e62fb79cb9a63618bf9be8551bcaf4ca'
-    }
-
-    /**
-     *  A contract was attempted to be created, but the execution failed.
-     *  \[maintainer, contract, exit_reason, output, (gas_used, storage_used)\]
-     */
-    get asV10(): [Uint8Array, Uint8Array, v10.ExitReason, Uint8Array, [bigint, number]] {
-        assert(this.isV10)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmExecutedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.Executed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A \[contract\] has been executed successfully with states applied.
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.Executed') === '15bab564ac60f719121cf1b5dee312d333f0648b54550beefdf79deda6264096'
-    }
-
-    /**
-     *  A \[contract\] has been executed successfully with states applied.
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     *  A \[caller, contract, (gas_used, storage_used)\] has been executed successfully with states applied.
-     */
-    get isV10(): boolean {
-        return this._chain.getEventHash('EVM.Executed') === 'e7b0c2839ff095fe041ab683e763a166c4aa170aa7996073dd0aff5561c7f23e'
-    }
-
-    /**
-     *  A \[caller, contract, (gas_used, storage_used)\] has been executed successfully with states applied.
-     */
-    get asV10(): [Uint8Array, Uint8Array, [bigint, number]] {
-        assert(this.isV10)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmExecutedFailedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.ExecutedFailed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A contract has been executed with errors. States are reverted with
-     *  only gas fees applied. \[contract, exit_reason, output\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.ExecutedFailed') === '7c6daf3cdfd2d50d065af803c31ae842479c433e613a902d67b8de3f4aa9302e'
-    }
-
-    /**
-     *  A contract has been executed with errors. States are reverted with
-     *  only gas fees applied. \[contract, exit_reason, output\]
-     */
-    get asV5(): [Uint8Array, v5.ExitReason, Uint8Array] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     *  A contract has been executed with errors. States are reverted with
-     *  only gas fees applied. \[caller, contract, exit_reason, output, (gas_used, storage_used)\]
-     */
-    get isV10(): boolean {
-        return this._chain.getEventHash('EVM.ExecutedFailed') === 'fb5c28a811d5fb0151c680a2f0d0ad43e62fb79cb9a63618bf9be8551bcaf4ca'
-    }
-
-    /**
-     *  A contract has been executed with errors. States are reverted with
-     *  only gas fees applied. \[caller, contract, exit_reason, output, (gas_used, storage_used)\]
-     */
-    get asV10(): [Uint8Array, Uint8Array, v10.ExitReason, Uint8Array, [bigint, number]] {
-        assert(this.isV10)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmLogEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.Log')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Ethereum events from contracts.
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.Log') === '9d15dce6e6d818eeb73a868dd136a22667fbfdd27463a338b39cabae62aa4a12'
-    }
-
-    /**
-     *  Ethereum events from contracts.
-     */
-    get asV5(): v5.EvmLog {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmRejectedTransferMaintainerEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.RejectedTransferMaintainer')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Rejected the transfer maintainer. \[contract, address\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.RejectedTransferMaintainer') === 'e425676e43dfa0f66531077a677904af26bdb7406850c1a937ed39ce997aebee'
-    }
-
-    /**
-     *  Rejected the transfer maintainer. \[contract, address\]
-     */
-    get asV5(): [Uint8Array, Uint8Array] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmRemoveStorageQuotaEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.RemoveStorageQuota')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A quota has been removed at a given address. \[address, bytes\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.RemoveStorageQuota') === '80357ff79362e3a77b7be6f1a77d71ada85a736a87350d42e118f8db8a4e3368'
-    }
-
-    /**
-     *  A quota has been removed at a given address. \[address, bytes\]
-     */
-    get asV5(): [Uint8Array, number] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmTransferredMaintainerEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EVM.TransferredMaintainer')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Transferred maintainer. \[contract, address\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EVM.TransferredMaintainer') === 'e425676e43dfa0f66531077a677904af26bdb7406850c1a937ed39ce997aebee'
-    }
-
-    /**
-     *  Transferred maintainer. \[contract, address\]
-     */
-    get asV5(): [Uint8Array, Uint8Array] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class EvmAccountsClaimAccountEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'EvmAccounts.ClaimAccount')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Mapping between Substrate accounts and EVM accounts
-     *  claim account. \[account_id, evm_address\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('EvmAccounts.ClaimAccount') === '1bbfbed2a18ed1015b346a5cabe70b9114a6caa07967174382e901a12e1ea17f'
-    }
-
-    /**
-     *  Mapping between Substrate accounts and EVM accounts
-     *  claim account. \[account_id, evm_address\]
-     */
-    get asV5(): [Uint8Array, Uint8Array] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class GrandpaNewAuthoritiesEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Grandpa.NewAuthorities')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  New authority set has been applied. \[authority_set\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Grandpa.NewAuthorities') === 'a1a8c88e19b8fedde4aab1bef41aa9e1bdfc3748b1e39f7ad5bb09d0347d9505'
-    }
-
-    /**
-     *  New authority set has been applied. \[authority_set\]
-     */
-    get asV5(): [Uint8Array, bigint][] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class GrandpaPausedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Grandpa.Paused')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Current authority set has been paused.
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Grandpa.Paused') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Current authority set has been paused.
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class GrandpaResumedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Grandpa.Resumed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Current authority set has been resumed.
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Grandpa.Resumed') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  Current authority set has been resumed.
-     */
-    get asV5(): null {
-        assert(this.isV5)
+    get asV39(): v39.BanConfig {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1331,17 +640,17 @@ export class IdentityIdentityClearedEvent {
     }
 
     /**
-     *  A name was cleared, and the given balance returned. \[who, deposit\]
+     * A name was cleared, and the given balance returned.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.IdentityCleared') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.IdentityCleared') === '569627bf2a8105e3949fd62dcaae8174fb02f8afedb8e5d8a7fecda5d63b25c3'
     }
 
     /**
-     *  A name was cleared, and the given balance returned. \[who, deposit\]
+     * A name was cleared, and the given balance returned.
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {who: Uint8Array, deposit: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1360,17 +669,17 @@ export class IdentityIdentityKilledEvent {
     }
 
     /**
-     *  A name was removed and the given balance slashed. \[who, deposit\]
+     * A name was removed and the given balance slashed.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.IdentityKilled') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.IdentityKilled') === '569627bf2a8105e3949fd62dcaae8174fb02f8afedb8e5d8a7fecda5d63b25c3'
     }
 
     /**
-     *  A name was removed and the given balance slashed. \[who, deposit\]
+     * A name was removed and the given balance slashed.
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {who: Uint8Array, deposit: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1389,17 +698,17 @@ export class IdentityIdentitySetEvent {
     }
 
     /**
-     *  A name was set or reset (which will remove all judgements). \[who\]
+     * A name was set or reset (which will remove all judgements).
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.IdentitySet') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.IdentitySet') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
     }
 
     /**
-     *  A name was set or reset (which will remove all judgements). \[who\]
+     * A name was set or reset (which will remove all judgements).
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV39(): {who: Uint8Array} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1418,17 +727,17 @@ export class IdentityJudgementGivenEvent {
     }
 
     /**
-     *  A judgement was given by a registrar. \[target, registrar_index\]
+     * A judgement was given by a registrar.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.JudgementGiven') === 'a86a85822cc09ae7b3b9587f12944d2954476832a499d679c195ffaa86c16212'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.JudgementGiven') === '0771fa05d0977d28db0dee420efa5c006fa01a48edbd0b5b50cba5ea1d98b1b8'
     }
 
     /**
-     *  A judgement was given by a registrar. \[target, registrar_index\]
+     * A judgement was given by a registrar.
      */
-    get asV5(): [Uint8Array, number] {
-        assert(this.isV5)
+    get asV39(): {target: Uint8Array, registrarIndex: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1447,17 +756,17 @@ export class IdentityJudgementRequestedEvent {
     }
 
     /**
-     *  A judgement was asked from a registrar. \[who, registrar_index\]
+     * A judgement was asked from a registrar.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.JudgementRequested') === 'a86a85822cc09ae7b3b9587f12944d2954476832a499d679c195ffaa86c16212'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.JudgementRequested') === 'cbefacbef964c7ee928128f7969b3a567b57c51a6945e5bab170a3c3d42e8d5b'
     }
 
     /**
-     *  A judgement was asked from a registrar. \[who, registrar_index\]
+     * A judgement was asked from a registrar.
      */
-    get asV5(): [Uint8Array, number] {
-        assert(this.isV5)
+    get asV39(): {who: Uint8Array, registrarIndex: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1476,17 +785,17 @@ export class IdentityJudgementUnrequestedEvent {
     }
 
     /**
-     *  A judgement request was retracted. \[who, registrar_index\]
+     * A judgement request was retracted.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.JudgementUnrequested') === 'a86a85822cc09ae7b3b9587f12944d2954476832a499d679c195ffaa86c16212'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.JudgementUnrequested') === 'cbefacbef964c7ee928128f7969b3a567b57c51a6945e5bab170a3c3d42e8d5b'
     }
 
     /**
-     *  A judgement request was retracted. \[who, registrar_index\]
+     * A judgement request was retracted.
      */
-    get asV5(): [Uint8Array, number] {
-        assert(this.isV5)
+    get asV39(): {who: Uint8Array, registrarIndex: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1505,17 +814,17 @@ export class IdentityRegistrarAddedEvent {
     }
 
     /**
-     *  A registrar was added. \[registrar_index\]
+     * A registrar was added.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.RegistrarAdded') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.RegistrarAdded') === 'c7c8fe6ce04ac3d49accb0e86098814baf3baab267afb645140023a3c5c84c24'
     }
 
     /**
-     *  A registrar was added. \[registrar_index\]
+     * A registrar was added.
      */
-    get asV5(): number {
-        assert(this.isV5)
+    get asV39(): {registrarIndex: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1534,17 +843,17 @@ export class IdentitySubIdentityAddedEvent {
     }
 
     /**
-     *  A sub-identity was added to an identity and the deposit paid. \[sub, main, deposit\]
+     * A sub-identity was added to an identity and the deposit paid.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.SubIdentityAdded') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.SubIdentityAdded') === '3ffe8c1fa99373079f0c7dbda5849194c73c2867fd7ca2b08d19f7c6b676e1ef'
     }
 
     /**
-     *  A sub-identity was added to an identity and the deposit paid. \[sub, main, deposit\]
+     * A sub-identity was added to an identity and the deposit paid.
      */
-    get asV5(): [Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {sub: Uint8Array, main: Uint8Array, deposit: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1563,19 +872,17 @@ export class IdentitySubIdentityRemovedEvent {
     }
 
     /**
-     *  A sub-identity was removed from an identity and the deposit freed.
-     *  \[sub, main, deposit\]
+     * A sub-identity was removed from an identity and the deposit freed.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.SubIdentityRemoved') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.SubIdentityRemoved') === '3ffe8c1fa99373079f0c7dbda5849194c73c2867fd7ca2b08d19f7c6b676e1ef'
     }
 
     /**
-     *  A sub-identity was removed from an identity and the deposit freed.
-     *  \[sub, main, deposit\]
+     * A sub-identity was removed from an identity and the deposit freed.
      */
-    get asV5(): [Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {sub: Uint8Array, main: Uint8Array, deposit: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1594,193 +901,19 @@ export class IdentitySubIdentityRevokedEvent {
     }
 
     /**
-     *  A sub-identity was cleared, and the given deposit repatriated from the
-     *  main identity account to the sub-identity account. \[sub, main, deposit\]
+     * A sub-identity was cleared, and the given deposit repatriated from the
+     * main identity account to the sub-identity account.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Identity.SubIdentityRevoked') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Identity.SubIdentityRevoked') === '3ffe8c1fa99373079f0c7dbda5849194c73c2867fd7ca2b08d19f7c6b676e1ef'
     }
 
     /**
-     *  A sub-identity was cleared, and the given deposit repatriated from the
-     *  main identity account to the sub-identity account. \[sub, main, deposit\]
+     * A sub-identity was cleared, and the given deposit repatriated from the
+     * main identity account to the sub-identity account.
      */
-    get asV5(): [Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class ImOnlineAllGoodEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'ImOnline.AllGood')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  At the end of the session, no offence was committed.
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('ImOnline.AllGood') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     *  At the end of the session, no offence was committed.
-     */
-    get asV5(): null {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class ImOnlineHeartbeatReceivedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'ImOnline.HeartbeatReceived')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A new heartbeat was received from `AuthorityId` \[authority_id\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('ImOnline.HeartbeatReceived') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
-    }
-
-    /**
-     *  A new heartbeat was received from `AuthorityId` \[authority_id\]
-     */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class ImOnlineSomeOfflineEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'ImOnline.SomeOffline')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  At the end of the session, at least one validator was found to be \[offline\].
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('ImOnline.SomeOffline') === '15e6fe82a6ae2efb2b8a5fb32d03f1140dda1d88a982e280ae917cb281bd63e1'
-    }
-
-    /**
-     *  At the end of the session, at least one validator was found to be \[offline\].
-     */
-    get asV5(): [Uint8Array, v5.FullIdentification][] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class IndicesIndexAssignedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Indices.IndexAssigned')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A account index was assigned. \[index, who\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Indices.IndexAssigned') === 'a86a85822cc09ae7b3b9587f12944d2954476832a499d679c195ffaa86c16212'
-    }
-
-    /**
-     *  A account index was assigned. \[index, who\]
-     */
-    get asV5(): [Uint8Array, number] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class IndicesIndexFreedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Indices.IndexFreed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A account index has been freed up (unassigned). \[index\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Indices.IndexFreed') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
-    }
-
-    /**
-     *  A account index has been freed up (unassigned). \[index\]
-     */
-    get asV5(): number {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class IndicesIndexFrozenEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Indices.IndexFrozen')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A account index has been frozen to its current account ID. \[index, who\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Indices.IndexFrozen') === '0379562584d6426ccff49705dfa9dba95ad94215b772fd97d0ad0c4ca0001c12'
-    }
-
-    /**
-     *  A account index has been frozen to its current account ID. \[index, who\]
-     */
-    get asV5(): [number, Uint8Array] {
-        assert(this.isV5)
+    get asV39(): {sub: Uint8Array, main: Uint8Array, deposit: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1802,7 +935,7 @@ export class MultisigMultisigApprovalEvent {
      *  A multisig operation has been approved by someone.
      *  \[approving, timepoint, multisig, call_hash\]
      */
-    get isV10(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Multisig.MultisigApproval') === '55826bbe203e755c34c0b3ef86b30419518b6e9df69cc64cc5244fa726ca6f02'
     }
 
@@ -1810,8 +943,23 @@ export class MultisigMultisigApprovalEvent {
      *  A multisig operation has been approved by someone.
      *  \[approving, timepoint, multisig, call_hash\]
      */
-    get asV10(): [Uint8Array, v10.Timepoint, Uint8Array, Uint8Array] {
-        assert(this.isV10)
+    get asV3(): [Uint8Array, v3.Timepoint, Uint8Array, Uint8Array] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A multisig operation has been approved by someone.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigApproval') === 'bc800106752cebb28b84cdca738856289d0ade8d1818c303bd3f2000695fbb28'
+    }
+
+    /**
+     * A multisig operation has been approved by someone.
+     */
+    get asV12(): {approving: Uint8Array, timepoint: v12.Timepoint, multisig: Uint8Array, callHash: Uint8Array} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1832,15 +980,30 @@ export class MultisigMultisigCancelledEvent {
     /**
      *  A multisig operation has been cancelled. \[cancelling, timepoint, multisig, call_hash\]
      */
-    get isV10(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Multisig.MultisigCancelled') === '55826bbe203e755c34c0b3ef86b30419518b6e9df69cc64cc5244fa726ca6f02'
     }
 
     /**
      *  A multisig operation has been cancelled. \[cancelling, timepoint, multisig, call_hash\]
      */
-    get asV10(): [Uint8Array, v10.Timepoint, Uint8Array, Uint8Array] {
-        assert(this.isV10)
+    get asV3(): [Uint8Array, v3.Timepoint, Uint8Array, Uint8Array] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A multisig operation has been cancelled.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigCancelled') === 'b24b244f000fd9e834b0f8c6d23aa3931d80d5b1c70f0f9a0e28826f22125b21'
+    }
+
+    /**
+     * A multisig operation has been cancelled.
+     */
+    get asV12(): {cancelling: Uint8Array, timepoint: v12.Timepoint, multisig: Uint8Array, callHash: Uint8Array} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1861,15 +1024,45 @@ export class MultisigMultisigExecutedEvent {
     /**
      *  A multisig operation has been executed. \[approving, timepoint, multisig, call_hash\]
      */
-    get isV10(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Multisig.MultisigExecuted') === 'e368973d939e86d8e4639ec21b8ed877b5a6772f4da0bad0d4fe5df98c063ad2'
     }
 
     /**
      *  A multisig operation has been executed. \[approving, timepoint, multisig, call_hash\]
      */
-    get asV10(): [Uint8Array, v10.Timepoint, Uint8Array, Uint8Array, v10.DispatchResult] {
-        assert(this.isV10)
+    get asV3(): [Uint8Array, v3.Timepoint, Uint8Array, Uint8Array, v3.DispatchResult] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigExecuted') === '077317dae49bec353c6f4e39c53895e53232992132030d820d2209051d4752df'
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get asV12(): {approving: Uint8Array, timepoint: v12.Timepoint, multisig: Uint8Array, callHash: Uint8Array, result: v12.Type_28} {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigExecuted') === '893c7ea80ff9b8edc0f0e804a754035301e2cf91cbfe60a5a7d0565bfa1c133e'
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get asV39(): {approving: Uint8Array, timepoint: v39.Timepoint, multisig: Uint8Array, callHash: Uint8Array, result: v39.Type_30} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1890,20 +1083,35 @@ export class MultisigNewMultisigEvent {
     /**
      *  A new multisig operation has begun. \[approving, multisig, call_hash\]
      */
-    get isV10(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Multisig.NewMultisig') === 'cb6c81f69fb6d8ffb3dbfdb6c03e462f972126345664ca5dc77878a3fa93edf7'
     }
 
     /**
      *  A new multisig operation has begun. \[approving, multisig, call_hash\]
      */
-    get asV10(): [Uint8Array, Uint8Array, Uint8Array] {
-        assert(this.isV10)
+    get asV3(): [Uint8Array, Uint8Array, Uint8Array] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A new multisig operation has begun.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Multisig.NewMultisig') === '137bdeb26018c08567fabc1c357d536046e92cc9fdf480339be5bc9e7e56d3be'
+    }
+
+    /**
+     * A new multisig operation has begun.
+     */
+    get asV12(): {approving: Uint8Array, multisig: Uint8Array, callHash: Uint8Array} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class OffencesOffenceEvent {
+export class NominationPoolsBondedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -1911,53 +1119,28 @@ export class OffencesOffenceEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Offences.Offence')
+        assert(event.name === 'NominationPools.Bonded')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  There is an offence reported of the given `kind` happened at the `session_index` and
-     *  (kind-specific) time slot. This event is not deposited for duplicate slashes. last
-     *  element indicates of the offence was applied (true) or queued (false)
-     *  \[kind, timeslot, applied\].
+     * A member has became bonded in a pool.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Offences.Offence') === '18f4beafc9fe74427abdec4798ff1f921e7eef3c6cdea8f8dc175b766343d5be'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.Bonded') === '346ce619103fbbd79b2dd7272ee712b9245db5dd69c1a8986cf02609a0807acb'
     }
 
     /**
-     *  There is an offence reported of the given `kind` happened at the `session_index` and
-     *  (kind-specific) time slot. This event is not deposited for duplicate slashes. last
-     *  element indicates of the offence was applied (true) or queued (false)
-     *  \[kind, timeslot, applied\].
+     * A member has became bonded in a pool.
      */
-    get asV5(): [Uint8Array, Uint8Array, boolean] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     *  There is an offence reported of the given `kind` happened at the `session_index` and
-     *  (kind-specific) time slot. This event is not deposited for duplicate slashes.
-     *  \[kind, timeslot\].
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Offences.Offence') === 'fca31d079a02b9c3ee63d19bf39a4c783da99a317cdf2920b6c29e7d7d3d0518'
-    }
-
-    /**
-     *  There is an offence reported of the given `kind` happened at the `session_index` and
-     *  (kind-specific) time slot. This event is not deposited for duplicate slashes.
-     *  \[kind, timeslot\].
-     */
-    get asV8(): [Uint8Array, Uint8Array] {
-        assert(this.isV8)
+    get asV39(): {member: Uint8Array, poolId: number, bonded: bigint, joined: boolean} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocBondWithdrawnEvent {
+export class NominationPoolsCreatedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -1965,28 +1148,28 @@ export class PocBondWithdrawnEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.BondWithdrawn')
+        assert(event.name === 'NominationPools.Created')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Bond has been withdrawn
+     * A pool has been created.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.BondWithdrawn') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.Created') === 'd13a4a2e75b059cdf6021a8db830c10b03e25bab152f841299c6ec584141b177'
     }
 
     /**
-     *  Bond has been withdrawn
+     * A pool has been created.
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {depositor: Uint8Array, poolId: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocCandidateAddedEvent {
+export class NominationPoolsDestroyedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -1994,28 +1177,28 @@ export class PocCandidateAddedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.CandidateAdded')
+        assert(event.name === 'NominationPools.Destroyed')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Start candidacy
+     * A pool has been destroyed.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.CandidateAdded') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.Destroyed') === 'a662258b1bdb045a915972ea29e9ec0b46cdd5598b0da37b0e70ac766e3735a0'
     }
 
     /**
-     *  Start candidacy
+     * A pool has been destroyed.
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV39(): {poolId: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocCandidateRemovedEvent {
+export class NominationPoolsMemberRemovedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -2023,28 +1206,32 @@ export class PocCandidateRemovedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.CandidateRemoved')
+        assert(event.name === 'NominationPools.MemberRemoved')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Stop candidacy
+     * A member has been removed from a pool.
+     * 
+     * The removal can be voluntary (withdrawn all unbonded funds) or involuntary (kicked).
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.CandidateRemoved') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.MemberRemoved') === 'f1031007cce5071eaef0950174054819d39b33bd0ae7e341b316675fa8f8e85d'
     }
 
     /**
-     *  Stop candidacy
+     * A member has been removed from a pool.
+     * 
+     * The removal can be voluntary (withdrawn all unbonded funds) or involuntary (kicked).
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV39(): {poolId: number, member: Uint8Array} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocCommittedEvent {
+export class NominationPoolsPaidOutEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -2052,28 +1239,28 @@ export class PocCommittedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.Committed')
+        assert(event.name === 'NominationPools.PaidOut')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Created a new committment
+     * A payout has been made to a member.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.Committed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.PaidOut') === 'cfe21eb17104900a7cf176b7e8828f742dc518d5af2853e13dbd86e25b42d272'
     }
 
     /**
-     *  Created a new committment
+     * A payout has been made to a member.
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {member: Uint8Array, poolId: number, payout: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocElectedEvent {
+export class NominationPoolsPoolSlashedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -2081,28 +1268,28 @@ export class PocElectedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.Elected')
+        assert(event.name === 'NominationPools.PoolSlashed')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Era, Winner,Weight
+     * The active balance of pool `pool_id` has been slashed to `balance`.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.Elected') === '491d5eb10503fbf716b3399d749f1a02c0a60c5f903a500a8ed4f9f98fd07f34'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.PoolSlashed') === '849ff35d9ca5ab6bfa8f0aff533bc59a22437fe70500718dd3337d480ba4b067'
     }
 
     /**
-     *  Era, Winner,Weight
+     * The active balance of pool `pool_id` has been slashed to `balance`.
      */
-    get asV5(): [number, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {poolId: number, balance: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocFundsAddedEvent {
+export class NominationPoolsRolesUpdatedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -2110,28 +1297,30 @@ export class PocFundsAddedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.FundsAdded')
+        assert(event.name === 'NominationPools.RolesUpdated')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Add more funds to existing commitment
+     * The roles of a pool have been updated to the given new roles. Note that the depositor
+     * can never change.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.FundsAdded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.RolesUpdated') === '4994577d179317a8d4c440b26b868db7262057baac00ef9ccf87ccebe30142aa'
     }
 
     /**
-     *  Add more funds to existing commitment
+     * The roles of a pool have been updated to the given new roles. Note that the depositor
+     * can never change.
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {root: (Uint8Array | undefined), stateToggler: (Uint8Array | undefined), nominator: (Uint8Array | undefined)} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocUnbondingStartedEvent {
+export class NominationPoolsStateChangedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -2139,28 +1328,28 @@ export class PocUnbondingStartedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.UnbondingStarted')
+        assert(event.name === 'NominationPools.StateChanged')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  The user has started the unbonding process
+     * The state of a pool has changed
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.UnbondingStarted') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.StateChanged') === 'ad04ef0d578c9399e7bdcc3a160bd0163a158a106de59b5d0ae918d0c38bec89'
     }
 
     /**
-     *  The user has started the unbonding process
+     * The state of a pool has changed
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {poolId: number, newState: v39.PoolState} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocVotedEvent {
+export class NominationPoolsUnbondedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -2168,28 +1357,48 @@ export class PocVotedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.Voted')
+        assert(event.name === 'NominationPools.Unbonded')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Voter,Candidate,VotingPower
+     * A member has unbonded from their pool.
+     * 
+     * - `balance` is the corresponding balance of the number of points that has been
+     *   requested to be unbonded (the argument of the `unbond` transaction) from the bonded
+     *   pool.
+     * - `points` is the number of points that are issued as a result of `balance` being
+     * dissolved into the corresponding unbonding pool.
+     * - `era` is the era in which the balance will be unbonded.
+     * In the absence of slashing, these values will match. In the presence of slashing, the
+     * number of points that are issued in the unbonding pool will be less than the amount
+     * requested to be unbonded.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.Voted') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.Unbonded') === '0832f5131732a2ab621b8912cbcce5335afa6afcde060b027446854e582a5992'
     }
 
     /**
-     *  Voter,Candidate,VotingPower
+     * A member has unbonded from their pool.
+     * 
+     * - `balance` is the corresponding balance of the number of points that has been
+     *   requested to be unbonded (the argument of the `unbond` transaction) from the bonded
+     *   pool.
+     * - `points` is the number of points that are issued as a result of `balance` being
+     * dissolved into the corresponding unbonding pool.
+     * - `era` is the era in which the balance will be unbonded.
+     * In the absence of slashing, these values will match. In the presence of slashing, the
+     * number of points that are issued in the unbonding pool will be less than the amount
+     * requested to be unbonded.
      */
-    get asV5(): [Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {member: Uint8Array, poolId: number, balance: bigint, points: bigint, era: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class PocVoterRewardedEvent {
+export class NominationPoolsUnbondingPoolSlashedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -2197,23 +1406,91 @@ export class PocVoterRewardedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Poc.VoterRewarded')
+        assert(event.name === 'NominationPools.UnbondingPoolSlashed')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  Voter,Reward
+     * The unbond pool at `era` of pool `pool_id` has been slashed to `balance`.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Poc.VoterRewarded') === '491d5eb10503fbf716b3399d749f1a02c0a60c5f903a500a8ed4f9f98fd07f34'
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.UnbondingPoolSlashed') === '3409c75291f32ce014317f489b868f68c390f1473bfcb6f79b1e3e0546ee4a1c'
     }
 
     /**
-     *  Voter,Reward
+     * The unbond pool at `era` of pool `pool_id` has been slashed to `balance`.
      */
-    get asV5(): [number, Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV39(): {poolId: number, era: number, balance: bigint} {
+        assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class NominationPoolsWithdrawnEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'NominationPools.Withdrawn')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A member has withdrawn from their pool.
+     * 
+     * The given number of `points` have been dissolved in return of `balance`.
+     * 
+     * Similar to `Unbonded` event, in the absence of slashing, the ratio of point to balance
+     * will be 1.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('NominationPools.Withdrawn') === 'a1ac2fad866830ba6aeeeeeae4a647a06425cd3c74143fccbac820b3f50b2346'
+    }
+
+    /**
+     * A member has withdrawn from their pool.
+     * 
+     * The given number of `points` have been dissolved in return of `balance`.
+     * 
+     * Similar to `Unbonded` event, in the absence of slashing, the ratio of point to balance
+     * will be 1.
+     */
+    get asV39(): {member: Uint8Array, poolId: number, balance: bigint, points: bigint} {
+        assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SchedulerCallLookupFailedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Scheduler.CallLookupFailed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The call for the provided hash was not found so the task has been aborted.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Scheduler.CallLookupFailed') === 'ecc6a872eaa4608ccd69e4dfbf292a89f058591fc70991470a93ba1be36fd2e4'
+    }
+
+    /**
+     * The call for the provided hash was not found so the task has been aborted.
+     */
+    get asV39(): {task: [number, number], id: (Uint8Array | undefined), error: v39.LookupError} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2234,15 +1511,30 @@ export class SchedulerCanceledEvent {
     /**
      *  Canceled some task. \[when, index\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Scheduler.Canceled') === 'a09602e40984745a7411a1855af06d133893a422fd68f7bdc4fb6a56bf1a3645'
     }
 
     /**
      *  Canceled some task. \[when, index\]
      */
-    get asV5(): [number, number] {
-        assert(this.isV5)
+    get asV3(): [number, number] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Canceled some task.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Scheduler.Canceled') === '4186e24556a58b04e04d6d697a530eedf78f255da1ba9d84df6511dd6d6465f7'
+    }
+
+    /**
+     * Canceled some task.
+     */
+    get asV39(): {when: number, index: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2263,15 +1555,45 @@ export class SchedulerDispatchedEvent {
     /**
      *  Dispatched some task. \[task, id, result\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Scheduler.Dispatched') === '8932a074b1c2cd5ce9792be58d56c1325be1d704098dac81f23ff6804e2d5fee'
     }
 
     /**
      *  Dispatched some task. \[task, id, result\]
      */
-    get asV5(): [[number, number], (Uint8Array | undefined), v5.DispatchResult] {
-        assert(this.isV5)
+    get asV3(): [[number, number], (Uint8Array | undefined), v3.DispatchResult] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Dispatched some task. \[task, id, result\]
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Scheduler.Dispatched') === '0924b109bceeccc61da80b5dece80623d828a98c86b9a531565d13d396698ea8'
+    }
+
+    /**
+     * Dispatched some task. \[task, id, result\]
+     */
+    get asV12(): [[number, number], (Uint8Array | undefined), v12.Type_28] {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Dispatched some task.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Scheduler.Dispatched') === 'ba59527b3bb4801aee2fda92f8229d8d572cc38c565e139a667a87dd8171194b'
+    }
+
+    /**
+     * Dispatched some task.
+     */
+    get asV39(): {task: [number, number], id: (Uint8Array | undefined), result: v39.Type_30} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2292,15 +1614,30 @@ export class SchedulerScheduledEvent {
     /**
      *  Scheduled some task. \[when, index\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Scheduler.Scheduled') === 'a09602e40984745a7411a1855af06d133893a422fd68f7bdc4fb6a56bf1a3645'
     }
 
     /**
      *  Scheduled some task. \[when, index\]
      */
-    get asV5(): [number, number] {
-        assert(this.isV5)
+    get asV3(): [number, number] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Scheduled some task.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Scheduler.Scheduled') === '4186e24556a58b04e04d6d697a530eedf78f255da1ba9d84df6511dd6d6465f7'
+    }
+
+    /**
+     * Scheduled some task.
+     */
+    get asV39(): {when: number, index: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2322,7 +1659,7 @@ export class SessionNewSessionEvent {
      *  New session has happened. Note that the argument is the \[session_index\], not the block
      *  number as the type might suggest.
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Session.NewSession') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
     }
 
@@ -2330,8 +1667,25 @@ export class SessionNewSessionEvent {
      *  New session has happened. Note that the argument is the \[session_index\], not the block
      *  number as the type might suggest.
      */
-    get asV5(): number {
-        assert(this.isV5)
+    get asV3(): number {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * New session has happened. Note that the argument is the session index, not the
+     * block number as the type might suggest.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Session.NewSession') === '75fa09d2d8b5fbcbe4f75feb6c886998092453010ae364a5b06b9bb6319f1086'
+    }
+
+    /**
+     * New session has happened. Note that the argument is the session index, not the
+     * block number as the type might suggest.
+     */
+    get asV12(): {sessionIndex: number} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2350,23 +1704,23 @@ export class StakingBondedEvent {
     }
 
     /**
-     *  An account has bonded this amount. \[stash, amount\]
+     * An account has bonded this amount. \[stash, amount\]
      * 
-     *  NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
-     *  it will not be emitted for staking rewards when they are added to stake.
+     * NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
+     * it will not be emitted for staking rewards when they are added to stake.
      */
-    get isV5(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.Bonded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
-     *  An account has bonded this amount. \[stash, amount\]
+     * An account has bonded this amount. \[stash, amount\]
      * 
-     *  NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
-     *  it will not be emitted for staking rewards when they are added to stake.
+     * NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
+     * it will not be emitted for staking rewards when they are added to stake.
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV12(): [Uint8Array, bigint] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2385,19 +1739,19 @@ export class StakingChilledEvent {
     }
 
     /**
-     *  An account has stopped participating as either a validator or nominator.
-     *  \[stash\]
+     * An account has stopped participating as either a validator or nominator.
+     * \[stash\]
      */
-    get isV8(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.Chilled') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
     }
 
     /**
-     *  An account has stopped participating as either a validator or nominator.
-     *  \[stash\]
+     * An account has stopped participating as either a validator or nominator.
+     * \[stash\]
      */
-    get asV8(): Uint8Array {
-        assert(this.isV8)
+    get asV12(): Uint8Array {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2416,54 +1770,21 @@ export class StakingEraPaidEvent {
     }
 
     /**
-     *  The era payout has been set; the first balance is the validator-payout; the second is
-     *  the remainder from the maximum amount of reward.
-     *  \[era_index, validator_payout, remainder\]
+     * The era payout has been set; the first balance is the validator-payout; the second is
+     * the remainder from the maximum amount of reward.
+     * \[era_index, validator_payout, remainder\]
      */
-    get isV8(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.EraPaid') === '1b75f96f7f74feed246668e0244abf707060018d56d88b1a638f75594d2a8005'
     }
 
     /**
-     *  The era payout has been set; the first balance is the validator-payout; the second is
-     *  the remainder from the maximum amount of reward.
-     *  \[era_index, validator_payout, remainder\]
+     * The era payout has been set; the first balance is the validator-payout; the second is
+     * the remainder from the maximum amount of reward.
+     * \[era_index, validator_payout, remainder\]
      */
-    get asV8(): [number, bigint, bigint] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class StakingEraPayoutEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Staking.EraPayout')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  The era payout has been set; the first balance is the validator-payout; the second is
-     *  the remainder from the maximum amount of reward.
-     *  \[era_index, validator_payout, remainder\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Staking.EraPayout') === '1b75f96f7f74feed246668e0244abf707060018d56d88b1a638f75594d2a8005'
-    }
-
-    /**
-     *  The era payout has been set; the first balance is the validator-payout; the second is
-     *  the remainder from the maximum amount of reward.
-     *  \[era_index, validator_payout, remainder\]
-     */
-    get asV5(): [number, bigint, bigint] {
-        assert(this.isV5)
+    get asV12(): [number, bigint, bigint] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2482,17 +1803,17 @@ export class StakingKickedEvent {
     }
 
     /**
-     *  A nominator has been kicked from a validator. \[nominator, stash\]
+     * A nominator has been kicked from a validator. \[nominator, stash\]
      */
-    get isV5(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.Kicked') === 'e54ae910805a8a9413af1a7f5885a5d0ba5f4e105175cd6b0ce2a8702ddf1861'
     }
 
     /**
-     *  A nominator has been kicked from a validator. \[nominator, stash\]
+     * A nominator has been kicked from a validator. \[nominator, stash\]
      */
-    get asV5(): [Uint8Array, Uint8Array] {
-        assert(this.isV5)
+    get asV12(): [Uint8Array, Uint8Array] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2511,19 +1832,19 @@ export class StakingOldSlashingReportDiscardedEvent {
     }
 
     /**
-     *  An old slashing report from a prior era was discarded because it could
-     *  not be processed. \[session_index\]
+     * An old slashing report from a prior era was discarded because it could
+     * not be processed. \[session_index\]
      */
-    get isV5(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.OldSlashingReportDiscarded') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
     }
 
     /**
-     *  An old slashing report from a prior era was discarded because it could
-     *  not be processed. \[session_index\]
+     * An old slashing report from a prior era was discarded because it could
+     * not be processed. \[session_index\]
      */
-    get asV5(): number {
-        assert(this.isV5)
+    get asV12(): number {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2542,46 +1863,17 @@ export class StakingPayoutStartedEvent {
     }
 
     /**
-     *  The stakers' rewards are getting paid. \[era_index, validator_stash\]
+     * The stakers' rewards are getting paid. \[era_index, validator_stash\]
      */
-    get isV8(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.PayoutStarted') === '0379562584d6426ccff49705dfa9dba95ad94215b772fd97d0ad0c4ca0001c12'
     }
 
     /**
-     *  The stakers' rewards are getting paid. \[era_index, validator_stash\]
+     * The stakers' rewards are getting paid. \[era_index, validator_stash\]
      */
-    get asV8(): [number, Uint8Array] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class StakingRewardEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Staking.Reward')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  The staker has been rewarded by this amount. \[stash, amount\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Staking.Reward') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
-    }
-
-    /**
-     *  The staker has been rewarded by this amount. \[stash, amount\]
-     */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV12(): [number, Uint8Array] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2600,48 +1892,17 @@ export class StakingRewardedEvent {
     }
 
     /**
-     *  The nominator has been rewarded by this amount. \[stash, amount\]
+     * The nominator has been rewarded by this amount. \[stash, amount\]
      */
-    get isV8(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.Rewarded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
-     *  The nominator has been rewarded by this amount. \[stash, amount\]
+     * The nominator has been rewarded by this amount. \[stash, amount\]
      */
-    get asV8(): [Uint8Array, bigint] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class StakingSlashEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Staking.Slash')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  One validator (and its nominators) has been slashed by the given amount.
-     *  \[validator, amount\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Staking.Slash') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
-    }
-
-    /**
-     *  One validator (and its nominators) has been slashed by the given amount.
-     *  \[validator, amount\]
-     */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV12(): [Uint8Array, bigint] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2660,48 +1921,19 @@ export class StakingSlashedEvent {
     }
 
     /**
-     *  One validator (and its nominators) has been slashed by the given amount.
-     *  \[validator, amount\]
+     * One validator (and its nominators) has been slashed by the given amount.
+     * \[validator, amount\]
      */
-    get isV8(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.Slashed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
-     *  One validator (and its nominators) has been slashed by the given amount.
-     *  \[validator, amount\]
+     * One validator (and its nominators) has been slashed by the given amount.
+     * \[validator, amount\]
      */
-    get asV8(): [Uint8Array, bigint] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class StakingSolutionStoredEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Staking.SolutionStored')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A new solution for the upcoming election has been stored. \[compute\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Staking.SolutionStored') === '0bf020e543ea88729b1b61dbeb14181ab6acba99a0e1795514718dacf33fb459'
-    }
-
-    /**
-     *  A new solution for the upcoming election has been stored. \[compute\]
-     */
-    get asV5(): v5.ElectionCompute {
-        assert(this.isV5)
+    get asV12(): [Uint8Array, bigint] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2720,46 +1952,17 @@ export class StakingStakersElectedEvent {
     }
 
     /**
-     *  A new set of stakers was elected.
+     * A new set of stakers was elected.
      */
-    get isV8(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.StakersElected') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
-     *  A new set of stakers was elected.
+     * A new set of stakers was elected.
      */
-    get asV8(): null {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class StakingStakingElectionEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Staking.StakingElection')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  A new set of stakers was elected with the given \[compute\].
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Staking.StakingElection') === '0bf020e543ea88729b1b61dbeb14181ab6acba99a0e1795514718dacf33fb459'
-    }
-
-    /**
-     *  A new set of stakers was elected with the given \[compute\].
-     */
-    get asV5(): v5.ElectionCompute {
-        assert(this.isV5)
+    get asV12(): null {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2778,17 +1981,17 @@ export class StakingStakingElectionFailedEvent {
     }
 
     /**
-     *  The election failed. No new era is planned.
+     * The election failed. No new era is planned.
      */
-    get isV8(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.StakingElectionFailed') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
-     *  The election failed. No new era is planned.
+     * The election failed. No new era is planned.
      */
-    get asV8(): null {
-        assert(this.isV8)
+    get asV12(): null {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2807,17 +2010,46 @@ export class StakingUnbondedEvent {
     }
 
     /**
-     *  An account has unbonded this amount. \[stash, amount\]
+     * An account has unbonded this amount. \[stash, amount\]
      */
-    get isV5(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.Unbonded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
-     *  An account has unbonded this amount. \[stash, amount\]
+     * An account has unbonded this amount. \[stash, amount\]
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV12(): [Uint8Array, bigint] {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class StakingValidatorPrefsSetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Staking.ValidatorPrefsSet')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A validator has set their preferences.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Staking.ValidatorPrefsSet') === '8fa3f27535c1d0f1ffdc2ce940a56867f890d0c9454d7ce784db7b18f03b4648'
+    }
+
+    /**
+     * A validator has set their preferences.
+     */
+    get asV39(): [Uint8Array, v39.ValidatorPrefs] {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2836,19 +2068,19 @@ export class StakingWithdrawnEvent {
     }
 
     /**
-     *  An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
-     *  from the unlocking queue. \[stash, amount\]
+     * An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
+     * from the unlocking queue. \[stash, amount\]
      */
-    get isV5(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Staking.Withdrawn') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
     }
 
     /**
-     *  An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
-     *  from the unlocking queue. \[stash, amount\]
+     * An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
+     * from the unlocking queue. \[stash, amount\]
      */
-    get asV5(): [Uint8Array, bigint] {
-        assert(this.isV5)
+    get asV12(): [Uint8Array, bigint] {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2869,15 +2101,45 @@ export class SudoKeyChangedEvent {
     /**
      *  The \[sudoer\] just switched identity; the old key is supplied.
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Sudo.KeyChanged') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
     }
 
     /**
      *  The \[sudoer\] just switched identity; the old key is supplied.
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV3(): Uint8Array {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The \[sudoer\] just switched identity; the old key is supplied.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Sudo.KeyChanged') === 'bb1582b708cec95486f6bf4ff15529522e5c08c0d8149e09b71d2e042d0dcc8f'
+    }
+
+    /**
+     * The \[sudoer\] just switched identity; the old key is supplied.
+     */
+    get asV12(): {newSudoer: Uint8Array} {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Sudo.KeyChanged') === 'b94a7a753f8f0b026120555f1f1c70878235307461e256807cb791dad15244c2'
+    }
+
+    /**
+     * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+     */
+    get asV39(): {oldSudoer: (Uint8Array | undefined)} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2898,15 +2160,45 @@ export class SudoSudidEvent {
     /**
      *  A sudo just took place. \[result\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Sudo.Sudid') === '5ac9a036c40a8da705ceb275764da05df0d46faf9a0778b7aa8dc7edf210ee1d'
     }
 
     /**
      *  A sudo just took place. \[result\]
      */
-    get asV5(): v5.DispatchResult {
-        assert(this.isV5)
+    get asV3(): v3.DispatchResult {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Sudo.Sudid') === '0904640b321d9467ec4b305822629c9cf7476e30acdbaf45232c9b0c23100db1'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV12(): {sudoResult: v12.Type_28} {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Sudo.Sudid') === 'bfff987b04269a820686fcc24b9885fd64cbc87c576cf203a79a3a99a7c596e1'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV39(): {sudoResult: v39.Type_30} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2927,15 +2219,45 @@ export class SudoSudoAsDoneEvent {
     /**
      *  A sudo just took place. \[result\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('Sudo.SudoAsDone') === '5ac9a036c40a8da705ceb275764da05df0d46faf9a0778b7aa8dc7edf210ee1d'
     }
 
     /**
      *  A sudo just took place. \[result\]
      */
-    get asV5(): v5.DispatchResult {
-        assert(this.isV5)
+    get asV3(): v3.DispatchResult {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Sudo.SudoAsDone') === '0904640b321d9467ec4b305822629c9cf7476e30acdbaf45232c9b0c23100db1'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV12(): {sudoResult: v12.Type_28} {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Sudo.SudoAsDone') === 'bfff987b04269a820686fcc24b9885fd64cbc87c576cf203a79a3a99a7c596e1'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV39(): {sudoResult: v39.Type_30} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2956,15 +2278,15 @@ export class SystemCodeUpdatedEvent {
     /**
      *  `:code` was updated.
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('System.CodeUpdated') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
      *  `:code` was updated.
      */
-    get asV5(): null {
-        assert(this.isV5)
+    get asV3(): null {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2985,15 +2307,45 @@ export class SystemExtrinsicFailedEvent {
     /**
      *  An extrinsic failed. \[error, info\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('System.ExtrinsicFailed') === '09be5714d55bec634be0e5bf6ca98e24886f3a530b5649b618b20e4514550b91'
     }
 
     /**
      *  An extrinsic failed. \[error, info\]
      */
-    get asV5(): [v5.DispatchError, v5.DispatchInfo] {
-        assert(this.isV5)
+    get asV3(): [v3.DispatchError, v3.DispatchInfo] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An extrinsic failed. \[error, info\]
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('System.ExtrinsicFailed') === '0995776ff5e8d5f8662a6841d8556c830acc58fbb01f76a13b6aa4222b987150'
+    }
+
+    /**
+     * An extrinsic failed. \[error, info\]
+     */
+    get asV12(): [v12.DispatchError, v12.DispatchInfo] {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An extrinsic failed.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('System.ExtrinsicFailed') === 'a6220584fa4f22cb02db1bfad4eacf1a689aea2324f22b4763def7376b7dd9bf'
+    }
+
+    /**
+     * An extrinsic failed.
+     */
+    get asV39(): {dispatchError: v39.DispatchError, dispatchInfo: v39.DispatchInfo} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3014,15 +2366,30 @@ export class SystemExtrinsicSuccessEvent {
     /**
      *  An extrinsic completed successfully. \[info\]
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('System.ExtrinsicSuccess') === '00a75e03130fe6755b02b23ca285a19efc2bd57964ead02525eedef36cbf1bd4'
     }
 
     /**
      *  An extrinsic completed successfully. \[info\]
      */
-    get asV5(): v5.DispatchInfo {
-        assert(this.isV5)
+    get asV3(): v3.DispatchInfo {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An extrinsic completed successfully.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('System.ExtrinsicSuccess') === '407ed94c14f243acbe2cdb53df52c37d97bbb5ae550a10a6036bf59677cdd165'
+    }
+
+    /**
+     * An extrinsic completed successfully.
+     */
+    get asV39(): {dispatchInfo: v39.DispatchInfo} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3043,15 +2410,30 @@ export class SystemKilledAccountEvent {
     /**
      *  An \[account\] was reaped.
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('System.KilledAccount') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
     }
 
     /**
      *  An \[account\] was reaped.
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV3(): Uint8Array {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An account was reaped.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('System.KilledAccount') === '7fb7672b764b0a4f0c4910fddefec0709628843df7ad0073a97eede13c53ca92'
+    }
+
+    /**
+     * An account was reaped.
+     */
+    get asV39(): {account: Uint8Array} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3072,15 +2454,30 @@ export class SystemNewAccountEvent {
     /**
      *  A new \[account\] was created.
      */
-    get isV5(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('System.NewAccount') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
     }
 
     /**
      *  A new \[account\] was created.
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV3(): Uint8Array {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A new account was created.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('System.NewAccount') === '7fb7672b764b0a4f0c4910fddefec0709628843df7ad0073a97eede13c53ca92'
+    }
+
+    /**
+     * A new account was created.
+     */
+    get asV39(): {account: Uint8Array} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3101,20 +2498,35 @@ export class SystemRemarkedEvent {
     /**
      *  On on-chain remark happened. \[origin, remark_hash\]
      */
-    get isV8(): boolean {
+    get isV3(): boolean {
         return this._chain.getEventHash('System.Remarked') === 'e54ae910805a8a9413af1a7f5885a5d0ba5f4e105175cd6b0ce2a8702ddf1861'
     }
 
     /**
      *  On on-chain remark happened. \[origin, remark_hash\]
      */
-    get asV8(): [Uint8Array, Uint8Array] {
-        assert(this.isV8)
+    get asV3(): [Uint8Array, Uint8Array] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * On on-chain remark happened.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('System.Remarked') === 'c58b73482fe762a6dcca2f35266f0d1739333312cf7a50eea55c666d0cda6101'
+    }
+
+    /**
+     * On on-chain remark happened.
+     */
+    get asV39(): {sender: Uint8Array, hash: Uint8Array} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TechCouncilApprovedEvent {
+export class TransactionPaymentTransactionFeePaidEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3122,30 +2534,30 @@ export class TechCouncilApprovedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TechCouncil.Approved')
+        assert(event.name === 'TransactionPayment.TransactionFeePaid')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A motion was approved by the required threshold.
-     *  \[proposal_hash\]
+     * A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,
+     * has been paid by `who`.
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('TechCouncil.Approved') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    get isV39(): boolean {
+        return this._chain.getEventHash('TransactionPayment.TransactionFeePaid') === 'f2e962e9996631445edecd62b0646df79871442a2d1a1a6e1f550a0b3a56b226'
     }
 
     /**
-     *  A motion was approved by the required threshold.
-     *  \[proposal_hash\]
+     * A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,
+     * has been paid by `who`.
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV39(): {who: Uint8Array, actualFee: bigint, tip: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TechCouncilClosedEvent {
+export class TreasuryAwardedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3153,30 +2565,43 @@ export class TechCouncilClosedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TechCouncil.Closed')
+        assert(event.name === 'Treasury.Awarded')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A proposal was closed because its threshold was reached or after its duration was up.
-     *  \[proposal_hash, yes, no\]
+     * Some funds have been allocated. \[proposal_index, award, beneficiary\]
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('TechCouncil.Closed') === '7d509ca6ee36d401f2d5410aa32038550c256cc3ce4b34cdfe1f8adea0e1679c'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Treasury.Awarded') === '86708250ac506876b8d63d9c97b4ca0fa73f0199c633da6fb2a8956aaab8c743'
     }
 
     /**
-     *  A proposal was closed because its threshold was reached or after its duration was up.
-     *  \[proposal_hash, yes, no\]
+     * Some funds have been allocated. \[proposal_index, award, beneficiary\]
      */
-    get asV5(): [Uint8Array, number, number] {
-        assert(this.isV5)
+    get asV12(): [number, bigint, Uint8Array] {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some funds have been allocated.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.Awarded') === '998b846fdf605dfbbe27d46b36b246537b990ed6d4deb2f0177d539b9dab3878'
+    }
+
+    /**
+     * Some funds have been allocated.
+     */
+    get asV39(): {proposalIndex: number, award: bigint, account: Uint8Array} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TechCouncilDisapprovedEvent {
+export class TreasuryBurntEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3184,30 +2609,43 @@ export class TechCouncilDisapprovedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TechCouncil.Disapproved')
+        assert(event.name === 'Treasury.Burnt')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A motion was not approved by the required threshold.
-     *  \[proposal_hash\]
+     * Some of our funds have been burnt. \[burn\]
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('TechCouncil.Disapproved') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Treasury.Burnt') === '47b59f698451e50cce59979f0121e842fa3f8b2bcef2e388222dbd69849514f9'
     }
 
     /**
-     *  A motion was not approved by the required threshold.
-     *  \[proposal_hash\]
+     * Some of our funds have been burnt. \[burn\]
      */
-    get asV5(): Uint8Array {
-        assert(this.isV5)
+    get asV12(): bigint {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some of our funds have been burnt.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.Burnt') === '9d1d11cb2e24085666bf949195a4030bd6e80ff41274d0386073977e7cd59a87'
+    }
+
+    /**
+     * Some of our funds have been burnt.
+     */
+    get asV39(): {burntFunds: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TechCouncilExecutedEvent {
+export class TreasuryDepositEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3215,30 +2653,43 @@ export class TechCouncilExecutedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TechCouncil.Executed')
+        assert(event.name === 'Treasury.Deposit')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A motion was executed; result will be `Ok` if it returned without error.
-     *  \[proposal_hash, result\]
+     * Some funds have been deposited. \[deposit\]
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('TechCouncil.Executed') === 'd0cdbb3589e958e044894bb21646de3e18ddd8e6ff7b185a4d1964628627a102'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Treasury.Deposit') === '47b59f698451e50cce59979f0121e842fa3f8b2bcef2e388222dbd69849514f9'
     }
 
     /**
-     *  A motion was executed; result will be `Ok` if it returned without error.
-     *  \[proposal_hash, result\]
+     * Some funds have been deposited. \[deposit\]
      */
-    get asV5(): [Uint8Array, v5.DispatchResult] {
-        assert(this.isV5)
+    get asV12(): bigint {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some funds have been deposited.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.Deposit') === 'd74027ad27459f17d7446fef449271d1b0dc12b852c175623e871d009a661493'
+    }
+
+    /**
+     * Some funds have been deposited.
+     */
+    get asV39(): {value: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TechCouncilMemberExecutedEvent {
+export class TreasuryProposedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3246,30 +2697,43 @@ export class TechCouncilMemberExecutedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TechCouncil.MemberExecuted')
+        assert(event.name === 'Treasury.Proposed')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A single member did some action; result will be `Ok` if it returned without error.
-     *  \[proposal_hash, result\]
+     * New proposal. \[proposal_index\]
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('TechCouncil.MemberExecuted') === 'd0cdbb3589e958e044894bb21646de3e18ddd8e6ff7b185a4d1964628627a102'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Treasury.Proposed') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
     }
 
     /**
-     *  A single member did some action; result will be `Ok` if it returned without error.
-     *  \[proposal_hash, result\]
+     * New proposal. \[proposal_index\]
      */
-    get asV5(): [Uint8Array, v5.DispatchResult] {
-        assert(this.isV5)
+    get asV12(): number {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * New proposal.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.Proposed') === 'e9ffb62c9cf38a8abb0e419c0655e66f4415cc9c0faa1066316d07cb033b8ff6'
+    }
+
+    /**
+     * New proposal.
+     */
+    get asV39(): {proposalIndex: number} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TechCouncilProposedEvent {
+export class TreasuryRejectedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3277,32 +2741,43 @@ export class TechCouncilProposedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TechCouncil.Proposed')
+        assert(event.name === 'Treasury.Rejected')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A motion (given hash) has been proposed (by given account) with a threshold (given
-     *  `MemberCount`).
-     *  \[account, proposal_index, proposal_hash, threshold\]
+     * A proposal was rejected; funds were slashed. \[proposal_index, slashed\]
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('TechCouncil.Proposed') === '8d3dc2ef388c0264b2a1bd5e18788f415f4c08186c50dbbee2c60e61d81cb025'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Treasury.Rejected') === 'a0e51e81445baa317309351746e010ed2435e30ff7e53fbb2cf59283f3b9c536'
     }
 
     /**
-     *  A motion (given hash) has been proposed (by given account) with a threshold (given
-     *  `MemberCount`).
-     *  \[account, proposal_index, proposal_hash, threshold\]
+     * A proposal was rejected; funds were slashed. \[proposal_index, slashed\]
      */
-    get asV5(): [Uint8Array, number, Uint8Array, number] {
-        assert(this.isV5)
+    get asV12(): [number, bigint] {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A proposal was rejected; funds were slashed.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.Rejected') === 'f9b7fb646bc37c38ad87edfaa08a0ca293b38294934c1114934c7a8fe00b6b79'
+    }
+
+    /**
+     * A proposal was rejected; funds were slashed.
+     */
+    get asV39(): {proposalIndex: number, slashed: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TechCouncilVotedEvent {
+export class TreasuryRolloverEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3310,32 +2785,45 @@ export class TechCouncilVotedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TechCouncil.Voted')
+        assert(event.name === 'Treasury.Rollover')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A motion (given hash) has been voted on by given account, leaving
-     *  a tally (yes votes and no votes given respectively as `MemberCount`).
-     *  \[account, proposal_hash, voted, yes, no\]
+     * Spending has finished; this is the amount that rolls over until next spend.
+     * \[budget_remaining\]
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('TechCouncil.Voted') === '5693223b18444daea47c5d959a8026ce5084d3e9c76fe5a2be5ef93f3526e0ac'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Treasury.Rollover') === '47b59f698451e50cce59979f0121e842fa3f8b2bcef2e388222dbd69849514f9'
     }
 
     /**
-     *  A motion (given hash) has been voted on by given account, leaving
-     *  a tally (yes votes and no votes given respectively as `MemberCount`).
-     *  \[account, proposal_hash, voted, yes, no\]
+     * Spending has finished; this is the amount that rolls over until next spend.
+     * \[budget_remaining\]
      */
-    get asV5(): [Uint8Array, Uint8Array, boolean, number, number] {
-        assert(this.isV5)
+    get asV12(): bigint {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Spending has finished; this is the amount that rolls over until next spend.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.Rollover') === 'c9e720e2b3ada12c617b4dcb70771c3afafb9e294bf362df01a9e129683a92dd'
+    }
+
+    /**
+     * Spending has finished; this is the amount that rolls over until next spend.
+     */
+    get asV39(): {rolloverBalance: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TokensBalanceSetEvent {
+export class TreasurySpendApprovedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3343,28 +2831,28 @@ export class TokensBalanceSetEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Tokens.BalanceSet')
+        assert(event.name === 'Treasury.SpendApproved')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  A balance was set by root. \[who, free, reserved\]
+     * A new spend proposal has been approved.
      */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Tokens.BalanceSet') === 'cbeeb2c2ffc52fdc45d5500bf96d68a3d2a0226dc21b2391d09a65af95cedfaa'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.SpendApproved') === 'fce90c02bffde89fb0e8723868aa8e94bfe9c1c48c5af8c34efd8ff5173184f9'
     }
 
     /**
-     *  A balance was set by root. \[who, free, reserved\]
+     * A new spend proposal has been approved.
      */
-    get asV8(): [v8.CurrencyId, Uint8Array, bigint, bigint] {
-        assert(this.isV8)
+    get asV39(): {proposalIndex: number, amount: bigint, beneficiary: Uint8Array} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TokensDustLostEvent {
+export class TreasurySpendingEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -3372,197 +2860,38 @@ export class TokensDustLostEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Tokens.DustLost')
+        assert(event.name === 'Treasury.Spending')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     *  An account was removed whose balance was non-zero but below
-     *  ExistentialDeposit, resulting in an outright loss. \[account,
-     *  currency_id, amount\]
+     * We have ended a spend period and will now allocate funds. \[budget_remaining\]
      */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Tokens.DustLost') === '5d920173fd0a04008feb118f6336d7996b0143a77b0da028d4bdf491af4a3791'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Treasury.Spending') === '47b59f698451e50cce59979f0121e842fa3f8b2bcef2e388222dbd69849514f9'
     }
 
     /**
-     *  An account was removed whose balance was non-zero but below
-     *  ExistentialDeposit, resulting in an outright loss. \[account,
-     *  currency_id, amount\]
+     * We have ended a spend period and will now allocate funds. \[budget_remaining\]
      */
-    get asV5(): [Uint8Array, v5.CurrencyId, bigint] {
-        assert(this.isV5)
+    get asV12(): bigint {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 
     /**
-     *  An account was removed whose balance was non-zero but below
-     *  ExistentialDeposit, resulting in an outright loss. \[currency_id,
-     *  account, balance\]
+     * We have ended a spend period and will now allocate funds.
      */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Tokens.DustLost') === '22ae993b7195394790f9bc999b9c363bf7670a6857fa73788e04aaad4a1763d9'
+    get isV39(): boolean {
+        return this._chain.getEventHash('Treasury.Spending') === 'b9f599ccbbe2e4fd1004f47546e1a3100bc78745b24ac47ac03ed16ca6266290'
     }
 
     /**
-     *  An account was removed whose balance was non-zero but below
-     *  ExistentialDeposit, resulting in an outright loss. \[currency_id,
-     *  account, balance\]
+     * We have ended a spend period and will now allocate funds.
      */
-    get asV8(): [v8.CurrencyId, Uint8Array, bigint] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class TokensEndowedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Tokens.Endowed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  An account was created with some free balance. \[currency_id,
-     *  account, free_balance\]
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Tokens.Endowed') === '22ae993b7195394790f9bc999b9c363bf7670a6857fa73788e04aaad4a1763d9'
-    }
-
-    /**
-     *  An account was created with some free balance. \[currency_id,
-     *  account, free_balance\]
-     */
-    get asV8(): [v8.CurrencyId, Uint8Array, bigint] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class TokensReservedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Tokens.Reserved')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Some balance was reserved (moved from free to reserved).
-     *  \[currency_id, who, value\]
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Tokens.Reserved') === '22ae993b7195394790f9bc999b9c363bf7670a6857fa73788e04aaad4a1763d9'
-    }
-
-    /**
-     *  Some balance was reserved (moved from free to reserved).
-     *  \[currency_id, who, value\]
-     */
-    get asV8(): [v8.CurrencyId, Uint8Array, bigint] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class TokensTransferEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Tokens.Transfer')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Transfer succeeded. \[currency_id, from, to, value\]
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Tokens.Transfer') === 'd4c4ab46b6c9788f079a4f0c3d5f463c1c5cea1fcb29e8000373c6d0a171510f'
-    }
-
-    /**
-     *  Transfer succeeded. \[currency_id, from, to, value\]
-     */
-    get asV8(): [v8.CurrencyId, Uint8Array, Uint8Array, bigint] {
-        assert(this.isV8)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class TokensTransferredEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Tokens.Transferred')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Token transfer success. \[currency_id, from, to, amount\]
-     */
-    get isV5(): boolean {
-        return this._chain.getEventHash('Tokens.Transferred') === 'd4c4ab46b6c9788f079a4f0c3d5f463c1c5cea1fcb29e8000373c6d0a171510f'
-    }
-
-    /**
-     *  Token transfer success. \[currency_id, from, to, amount\]
-     */
-    get asV5(): [v5.CurrencyId, Uint8Array, Uint8Array, bigint] {
-        assert(this.isV5)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class TokensUnreservedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Tokens.Unreserved')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     *  Some balance was unreserved (moved from reserved to free).
-     *  \[currency_id, who, value\]
-     */
-    get isV8(): boolean {
-        return this._chain.getEventHash('Tokens.Unreserved') === '22ae993b7195394790f9bc999b9c363bf7670a6857fa73788e04aaad4a1763d9'
-    }
-
-    /**
-     *  Some balance was unreserved (moved from reserved to free).
-     *  \[currency_id, who, value\]
-     */
-    get asV8(): [v8.CurrencyId, Uint8Array, bigint] {
-        assert(this.isV8)
+    get asV39(): {budgetRemaining: bigint} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3581,17 +2910,46 @@ export class UtilityBatchCompletedEvent {
     }
 
     /**
-     *  Batch of dispatches completed fully with no error.
+     * Batch of dispatches completed fully with no error.
      */
-    get isV10(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Utility.BatchCompleted') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
-     *  Batch of dispatches completed fully with no error.
+     * Batch of dispatches completed fully with no error.
      */
-    get asV10(): null {
-        assert(this.isV10)
+    get asV12(): null {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class UtilityBatchCompletedWithErrorsEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Utility.BatchCompletedWithErrors')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Batch of dispatches completed but has errors.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Utility.BatchCompletedWithErrors') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Batch of dispatches completed but has errors.
+     */
+    get asV39(): null {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3610,19 +2968,80 @@ export class UtilityBatchInterruptedEvent {
     }
 
     /**
-     *  Batch of dispatches did not complete fully. Index of first failing dispatch given, as
-     *  well as the error. \[index, error\]
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
      */
-    get isV10(): boolean {
-        return this._chain.getEventHash('Utility.BatchInterrupted') === 'acf646b5aabc17d1d9bbcec046f84450721211384188c038f062a8174d381ca2'
+    get isV12(): boolean {
+        return this._chain.getEventHash('Utility.BatchInterrupted') === '98bdd6e841214fcd4b95ff7b4750fcf3643d9e94f0203582cf6dd5c7dd772c39'
     }
 
     /**
-     *  Batch of dispatches did not complete fully. Index of first failing dispatch given, as
-     *  well as the error. \[index, error\]
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
      */
-    get asV10(): [number, v10.DispatchError] {
-        assert(this.isV10)
+    get asV12(): {index: number, error: v12.DispatchError} {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Utility.BatchInterrupted') === '30bda593b1e7b041ebb6b79df0135b12bf0ecdbea3d7694f8d9d59560411df93'
+    }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get asV39(): {index: number, error: v39.DispatchError} {
+        assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class UtilityDispatchedAsEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Utility.DispatchedAs')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A call was dispatched. \[result\]
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Utility.DispatchedAs') === '8fdfbdd4d08d5c98b7a7eada31ee13c01f31ab10c8752e768b9d4f32f2edfd25'
+    }
+
+    /**
+     * A call was dispatched. \[result\]
+     */
+    get asV12(): v12.Type_28 {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A call was dispatched.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Utility.DispatchedAs') === '7d690b5ed9f2caaea0254a371bcab7b5a7b6fa958ff0b07661390aaf23c39439'
+    }
+
+    /**
+     * A call was dispatched.
+     */
+    get asV39(): {result: v39.Type_30} {
+        assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3641,17 +3060,140 @@ export class UtilityItemCompletedEvent {
     }
 
     /**
-     *  A single item within a Batch of dispatches has completed with no error.
+     * A single item within a Batch of dispatches has completed with no error.
      */
-    get isV10(): boolean {
+    get isV12(): boolean {
         return this._chain.getEventHash('Utility.ItemCompleted') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
-     *  A single item within a Batch of dispatches has completed with no error.
+     * A single item within a Batch of dispatches has completed with no error.
      */
-    get asV10(): null {
-        assert(this.isV10)
+    get asV12(): null {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class UtilityItemFailedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Utility.ItemFailed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get isV39(): boolean {
+        return this._chain.getEventHash('Utility.ItemFailed') === '59e964849fe0837c16b04e3c81782ce0ee22b9efe3d6a8d43d6ea61e9b25b998'
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get asV39(): {error: v39.DispatchError} {
+        assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class VestingVestingCompletedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Vesting.VestingCompleted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     *  An \[account\] has become fully vested. No further vesting can happen.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Vesting.VestingCompleted') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    }
+
+    /**
+     *  An \[account\] has become fully vested. No further vesting can happen.
+     */
+    get asV3(): Uint8Array {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An \[account\] has become fully vested.
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Vesting.VestingCompleted') === '7fb7672b764b0a4f0c4910fddefec0709628843df7ad0073a97eede13c53ca92'
+    }
+
+    /**
+     * An \[account\] has become fully vested.
+     */
+    get asV12(): {account: Uint8Array} {
+        assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class VestingVestingUpdatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Vesting.VestingUpdated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     *  The amount vested has been updated. This could indicate more funds are available. The
+     *  balance given is the amount which is left unvested (and thus locked).
+     *  \[account, unvested\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Vesting.VestingUpdated') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    }
+
+    /**
+     *  The amount vested has been updated. This could indicate more funds are available. The
+     *  balance given is the amount which is left unvested (and thus locked).
+     *  \[account, unvested\]
+     */
+    get asV3(): [Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The amount vested has been updated. This could indicate a change in funds available.
+     * The balance given is the amount which is left unvested (and thus locked).
+     */
+    get isV12(): boolean {
+        return this._chain.getEventHash('Vesting.VestingUpdated') === '827ca6c1a4e85ce850afac4c8d4d055acd3be5c19141889b40808e42b2c769e3'
+    }
+
+    /**
+     * The amount vested has been updated. This could indicate a change in funds available.
+     * The balance given is the amount which is left unvested (and thus locked).
+     */
+    get asV12(): {account: Uint8Array, unvested: bigint} {
+        assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
 }
