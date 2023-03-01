@@ -16,56 +16,71 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
     case "System.CodeUpdated":
       e = new SystemCodeUpdatedEvent(ctx, event);
       if (e.isV12) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.ExtrinsicFailed":
       e = new SystemExtrinsicFailedEvent(ctx, event);
       if (e.isV12) {
-        // YOUR CODE HERE
+        let [error, info] = e.asV12;
+        return {
+          dispatchError: error,
+          dispatchInfo: info,
+        };
       } else if (e.isV20) {
-        // YOUR CODE HERE
+        return event.name;
       } else if (e.isV45) {
-        // YOUR CODE HERE
+        return event.name;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.ExtrinsicSuccess":
       e = new SystemExtrinsicSuccessEvent(ctx, event);
       if (e.isV12) {
-        // YOUR CODE HERE
+        let dispatchInfo = e.asV12;
+        return { dispatchInfo };
       } else if (e.isV20) {
-        // YOUR CODE HERE
+        return event.args;
       } else if (e.isV45) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.KilledAccount":
       e = new SystemKilledAccountEvent(ctx, event);
       if (e.isV12) {
-        // YOUR CODE HERE
+        let account = e.asV12;
+        return {
+          account: bufferToHex(account),
+        };
       } else if (e.isV20) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.NewAccount":
       e = new SystemNewAccountEvent(ctx, event);
       if (e.isV12) {
-        // YOUR CODE HERE
+        let account = e.asV12;
+        return {
+          account: bufferToHex(account),
+        };
       } else if (e.isV20) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
     case "System.Remarked":
       e = new SystemRemarkedEvent(ctx, event);
       if (e.isV12) {
-        // YOUR CODE HERE
+        let [origin, remarkHash] = e.asV12;
+        return {
+          sender: bufferToHex(origin),
+          hash: bufferToHex(remarkHash),
+        };
       } else if (e.isV20) {
-        // YOUR CODE HERE
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
