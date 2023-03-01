@@ -13,5 +13,5 @@ type CallNorm @entity {
   timestamp: DateTime! @index
   name: String! @index
   args: JSON
-  extrinsicSuccess: Boolean
+  success: Boolean
 }
