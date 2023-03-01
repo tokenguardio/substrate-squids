@@ -3,8 +3,6 @@ name: Deploy pendulum to ECR
 on:
   push:
     branches: ["pendulum-mainnet"]
-  pull_request:
-    branches: ["pendulum-mainnet"]
   workflow_dispatch:
 
 env:
