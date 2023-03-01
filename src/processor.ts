@@ -29,7 +29,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       if (
         item.kind === "event" &&
         (item.event.name.startsWith("Balances.") ||
-          item.event.name.startsWith("Staking.") ||
           item.event.name.startsWith("System.")) &&
         !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
           item.event.name
