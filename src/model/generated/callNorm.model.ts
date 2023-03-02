@@ -25,4 +25,7 @@ export class CallNorm {
 
     @Column_("bool", {nullable: true})
     success!: boolean | undefined | null
+
+    @Column_("jsonb", {nullable: true})
+    origin!: unknown | undefined | null
 }
