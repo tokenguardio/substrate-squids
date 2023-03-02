@@ -95,6 +95,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           name: item.call.name,
           args,
           success: item.call.success,
+          origin: item.call.origin,
         });
         calls.push(call);
       }
