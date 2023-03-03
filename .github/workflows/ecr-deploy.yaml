@@ -29,7 +29,7 @@ jobs:
       - name: Build image
         env:
           DOCKERFILE: ${{ matrix.dockerfile }}
-        run: docker build -t test -f $DOCKERFILE .
+        run: docker build -f $DOCKERFILE .
 
   build-push:
     name: Build image and push to ECR
