@@ -52,20 +52,6 @@ jobs:
             echo "ECR repository '$repository_name' already exists"
           fi
 
-      - name: Debug cache
-        run: |
-          sudo mkdir -p /root/.cache/docker
-          sudo ls -R /root/.cache/docker
-          echo "::group::Create cache"
-          actions/cache@v3
-          with:
-            path: |
-              /root/.cache/docker
-              /var/lib/docker
-            key: Linux-docker-466ff3dd0fb4f0ed7b028e43c45234ccd174a7a809bca70cac19d5978fb01794
-          echo "::endgroup::"
-          sudo ls -R /root/.cache/docker
-
       - name: Cache Docker image layers
         uses: actions/cache@v3
         with:
