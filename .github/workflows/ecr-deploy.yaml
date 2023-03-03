@@ -12,7 +12,7 @@ env:
 
 jobs:
   test-build:
-    name: Check if image build correctly
+    name: Check if image builds correctly on PR
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     strategy:
