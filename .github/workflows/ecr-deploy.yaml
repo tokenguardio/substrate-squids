@@ -29,16 +29,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-          
-      - name: Cache Docker image layers
-        uses: actions/cache@v3
-        with:
-          path: |
-            /root/.cache/docker
-            /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -61,6 +51,29 @@ jobs:
           else
             echo "ECR repository '$repository_name' already exists"
           fi
+
+      - name: Debug cache
+        run: |
+          ls -R /root/.cache/docker
+          echo "::group::Create cache"
+          actions/cache@v2
+          with:
+            path: |
+              /root/.cache/docker
+              /var/lib/docker
+            key: Linux-docker-466ff3dd0fb4f0ed7b028e43c45234ccd174a7a809bca70cac19d5978fb01794
+          echo "::endgroup::"
+          ls -R /root/.cache/docker
+
+      - name: Cache Docker image layers
+        uses: actions/cache@v3
+        with:
+          path: |
+            /root/.cache/docker
+            /var/lib/docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
 
       - name: Build, tag, and push image to Amazon ECR
         env:
