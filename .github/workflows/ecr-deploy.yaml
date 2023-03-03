@@ -1,7 +1,9 @@
-name: Deploy pendulum to ECR
+name: Deploy to ECR
 
 on:
   push:
+    branches: ["pendulum-mainnet"]
+  pull_request:
     branches: ["pendulum-mainnet"]
   workflow_dispatch:
 
@@ -9,8 +11,29 @@ env:
   AWS_REGION: eu-central-1
 
 jobs:
-  build:
-    name: Build Image
+  test-build:
+    name: Check if image builds correctly on PR
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: processor.Dockerfile
+            image-tag: latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build image
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+        run: docker build -f $DOCKERFILE .
+
+  build-push:
+    name: Build image and push to ECR
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
