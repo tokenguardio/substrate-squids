@@ -1,11 +1,7 @@
 name: Deploy to ECR
 
 on:
-  push:
-    branches: ["reef-mainnet"]
-  pull_request:
-    branches: ["reef-mainnet"]
-  workflow_dispatch:
+  workflow_call:
 
 env:
   AWS_REGION: eu-central-1
