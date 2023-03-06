@@ -81,6 +81,13 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
     case "Contracts.upload_code":
       e = new ContractsUploadCodeCall(ctx, call);
       if (e.isV20) {
+        const args = e.asV20;
+        return {
+          ...args,
+          code: bufferToHex(args.code),
+          determinism: null,
+        };
+      } else if (e.isV57) {
         return call.args;
       } else {
         throw new UnknownVersionError(call.name);
