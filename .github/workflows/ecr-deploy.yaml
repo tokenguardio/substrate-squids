@@ -1,86 +1,13 @@
-name: Deploy to ECR
+name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["zeitgeist-mainnet"]
+    branches: ["zeitgeist-testnet"]
   pull_request:
-    branches: ["zeitgeist-mainnet"]
+    branches: ["zeitgeist-testnet"]
   workflow_dispatch:
 
-env:
-  AWS_REGION: eu-central-1
-
 jobs:
-  test-build:
-    name: Check if image builds correctly on PR
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - dockerfile: processor.Dockerfile
-            image-tag: latest
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Build image
-        env:
-          DOCKERFILE: ${{ matrix.dockerfile }}
-        run: docker build -f $DOCKERFILE .
-
-  build-push:
-    name: Build image and push to ECR
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - dockerfile: processor.Dockerfile
-            image-tag: latest
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Set image name
-        id: set-image-name
-        run: |
-          branch=$(echo "$GITHUB_REF" | sed 's#refs/heads/##')
-          echo "::set-output name=image-name::squid-$branch-processor"
-
-      - name: Check if ECR repository exists
-        id: check-ecr-repository
-        run: |
-          repository_name=$(echo "${{ steps.set-image-name.outputs.image-name }}" | tr '[:upper:]' '[:lower:]')
-          repository_url="$ECR_REGISTRY/$repository_name"
-          if ! aws ecr describe-repositories --repository-names "$repository_name" &> /dev/null; then
-            echo "ECR repository '$repository_name' does not exist. Creating it now..."
-            aws ecr create-repository --repository-name "$repository_name"
-          else
-            echo "ECR repository '$repository_name' already exists"
-          fi
-
-      - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ steps.set-image-name.outputs.image-name }}
-          IMAGE_TAG: ${{ matrix.image-tag }}
-          DOCKERFILE: ${{ matrix.dockerfile }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $DOCKERFILE .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+  compliance:
+    uses: tokenguardio/substrate-squids/.github/workflows/reusable-ecr-deploy.yaml@reusable-workflows
+    secrets: inherit
