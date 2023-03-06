@@ -5,6 +5,7 @@ import * as v20 from './v20'
 import * as v24 from './v24'
 import * as v38 from './v38'
 import * as v45 from './v45'
+import * as v57 from './v57'
 
 export class AlephChangeEmergencyFinalizerEvent {
     private readonly _chain: Chain
@@ -2052,6 +2053,35 @@ export class StakingEraPaidEvent {
     }
 }
 
+export class StakingForceEraEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Staking.ForceEra')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A new force era mode was set.
+     */
+    get isV57(): boolean {
+        return this._chain.getEventHash('Staking.ForceEra') === 'd01e60727d072e84480126126bc575ed2a927476ff6a196deed5f14861885e98'
+    }
+
+    /**
+     * A new force era mode was set.
+     */
+    get asV57(): {mode: v57.Forcing} {
+        assert(this.isV57)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class StakingKickedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -2228,6 +2258,37 @@ export class StakingRewardedEvent {
      */
     get asV45(): {stash: Uint8Array, amount: bigint} {
         assert(this.isV45)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class StakingSlashReportedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Staking.SlashReported')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A slash for the given validator, for the given percentage of their stake, at the given
+     * era as been reported.
+     */
+    get isV57(): boolean {
+        return this._chain.getEventHash('Staking.SlashReported') === 'e39cf2a18a4e10b8687c317e88d62091108b3531886ba13edd6e5b2b3fcd9ddc'
+    }
+
+    /**
+     * A slash for the given validator, for the given percentage of their stake, at the given
+     * era as been reported.
+     */
+    get asV57(): {validator: Uint8Array, fraction: number, slashEra: number} {
+        assert(this.isV57)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3279,6 +3340,35 @@ export class TreasurySpendingEvent {
      */
     get asV20(): {budgetRemaining: bigint} {
         assert(this.isV20)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class TreasuryUpdatedInactiveEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Treasury.UpdatedInactive')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The inactive funds of the pallet have been updated.
+     */
+    get isV57(): boolean {
+        return this._chain.getEventHash('Treasury.UpdatedInactive') === 'd25083f089d99f72f11dfcdd8481dbdc5c0c6d9c3369646530e2e08cd9f6bbba'
+    }
+
+    /**
+     * The inactive funds of the pallet have been updated.
+     */
+    get asV57(): {reactivated: bigint, deactivated: bigint} {
+        assert(this.isV57)
         return this._chain.decodeEvent(this.event)
     }
 }
