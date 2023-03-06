@@ -12,6 +12,8 @@ import {
   StakingUnbondedEvent,
   StakingValidatorPrefsSetEvent,
   StakingWithdrawnEvent,
+  StakingSlashReportedEvent,
+  StakingForceEraEvent,
 } from "../../types/events";
 import { ChainContext, Event } from "../../types/support";
 import { bufferToHex } from "../../utils/utils";
@@ -55,6 +57,13 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           remainder,
         };
       } else if (e.isV45) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.ForceEra":
+      e = new StakingForceEraEvent(ctx, event);
+      if (e.isV57) {
         return event.args;
       } else {
         throw new UnknownVersionError(event.name);
@@ -106,6 +115,13 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else if (e.isV45) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.SlashReported":
+      e = new StakingSlashReportedEvent(ctx, event);
+      if (e.isV57) {
         return event.args;
       } else {
         throw new UnknownVersionError(event.name);
