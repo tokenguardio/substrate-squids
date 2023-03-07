@@ -10,7 +10,10 @@ import {
 } from "../../types/events";
 import { ChainContext, Event } from "../../types/support";
 import { bufferToHex } from "../../utils/utils";
-import { UnknownVersionError, UnknownEventError } from "../../utils/errors";
+import {
+  UnknownEventVersionError,
+  UnknownEventError,
+} from "../../utils/errors";
 
 export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
   let e;
@@ -25,7 +28,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           reserved,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Balances.Deposit":
       e = new BalancesDepositEvent(ctx, event);
@@ -36,7 +39,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           deposit,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Balances.DustLost":
       e = new BalancesDustLostEvent(ctx, event);
@@ -47,7 +50,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           balance,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Balances.Endowed":
       e = new BalancesEndowedEvent(ctx, event);
@@ -58,7 +61,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           free_balance,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Balances.ReserveRepatriated":
       e = new BalancesReserveRepatriatedEvent(ctx, event);
@@ -71,7 +74,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           destination_status,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Balances.Reserved":
       e = new BalancesReservedEvent(ctx, event);
@@ -82,7 +85,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           value,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Balances.Transfer":
       e = new BalancesTransferEvent(ctx, event);
@@ -94,7 +97,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           value,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Balances.Unreserved":
       e = new BalancesUnreservedEvent(ctx, event);
@@ -105,7 +108,7 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           value,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
 
     default:

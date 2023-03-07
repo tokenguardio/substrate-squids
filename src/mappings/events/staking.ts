@@ -19,7 +19,10 @@ import {
 } from "../../types/events";
 import { ChainContext, Event } from "../../types/support";
 import { bufferToHex } from "../../utils/utils";
-import { UnknownVersionError, UnknownEventError } from "../../utils/errors";
+import {
+  UnknownEventVersionError,
+  UnknownEventError,
+} from "../../utils/errors";
 
 export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
   let e;
@@ -33,7 +36,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Chilled":
       e = new StakingChilledEvent(ctx, event);
@@ -43,7 +46,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           stash: bufferToHex(stash),
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.EraPaid":
       e = new StakingEraPaidEvent(ctx, event);
@@ -55,7 +58,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           remainder,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.EraPayout":
       e = new StakingEraPayoutEvent(ctx, event);
@@ -67,7 +70,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           remainder,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Kicked":
       e = new StakingKickedEvent(ctx, event);
@@ -78,7 +81,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           stash: bufferToHex(stash),
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.OldSlashingReportDiscarded":
       e = new StakingOldSlashingReportDiscardedEvent(ctx, event);
@@ -88,7 +91,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           session_index,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.PayoutStarted":
       e = new StakingPayoutStartedEvent(ctx, event);
@@ -99,7 +102,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           validator_stash: bufferToHex(validator_stash),
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Reward":
       e = new StakingRewardEvent(ctx, event);
@@ -110,7 +113,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Rewarded":
       e = new StakingRewardedEvent(ctx, event);
@@ -121,7 +124,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Slash":
       e = new StakingSlashEvent(ctx, event);
@@ -132,7 +135,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Slashed":
       e = new StakingSlashedEvent(ctx, event);
@@ -143,7 +146,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.SolutionStored":
       e = new StakingSolutionStoredEvent(ctx, event);
@@ -153,14 +156,14 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           compute,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.StakersElected":
       e = new StakingStakersElectedEvent(ctx, event);
       if (e.isV8) {
         return null;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.StakingElection":
       e = new StakingStakingElectionEvent(ctx, event);
@@ -170,14 +173,14 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           compute,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.StakingElectionFailed":
       e = new StakingStakingElectionFailedEvent(ctx, event);
       if (e.isV8) {
         return null;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Unbonded":
       e = new StakingUnbondedEvent(ctx, event);
@@ -188,7 +191,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Withdrawn":
       e = new StakingWithdrawnEvent(ctx, event);
@@ -199,7 +202,7 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
 
     default:
