@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["branch"]
+    branches: ["polkadot-mainnet"]
   pull_request:
-    branches: ["branch"]
+    branches: ["polkadot-mainnet"]
   workflow_dispatch:
 
 jobs:
