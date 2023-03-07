@@ -125,9 +125,9 @@ class MappingGenerator {
           .join("")}} from "../../types/${this.type}s";
         import { ChainContext, ${this.typeUpper} } from "../../types/support";
         import { bufferToHex } from "../../utils/utils";
-        import { UnknownVersionError, Unknown${
-          this.typeUpper
-        }Error} from "../../utils/errors";
+        import { Unknown${this.typeUpper}VersionError, Unknown${
+        this.typeUpper
+      }Error} from "../../utils/errors";
         
         export function normalize${prefix.slice(0, -1)}${
         this.typeUpper
@@ -146,7 +146,9 @@ class MappingGenerator {
                     }`
                       )
                       .join(" else ")}${c.getters.length > 0 ? " else " : ""}{
-                        throw new UnknownVersionError(${this.type}.name);
+                        throw new Unknown${this.typeUpper}VersionError(${
+              this.type
+            }.name);
                     }
         `;
           })
