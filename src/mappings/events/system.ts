@@ -18,60 +18,63 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
   switch (event.name) {
     case "System.CodeUpdated":
       e = new SystemCodeUpdatedEvent(ctx, event);
-      if (e.isV5) {
-        return null;
+      if (e.isEfinityV1) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "System.ExtrinsicFailed":
       e = new SystemExtrinsicFailedEvent(ctx, event);
-      if (e.isV5) {
-        let [error, info] = e.asV5;
-        return {
-          error,
-          info,
-        };
+      if (e.isEfinityV1) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV2) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV3) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV3000) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV3012) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "System.ExtrinsicSuccess":
       e = new SystemExtrinsicSuccessEvent(ctx, event);
-      if (e.isV5) {
-        let info = e.asV5;
-        return {
-          info,
-        };
+      if (e.isEfinityV1) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV2) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV3000) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV3012) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "System.KilledAccount":
       e = new SystemKilledAccountEvent(ctx, event);
-      if (e.isV5) {
-        let account = e.asV5;
-        return {
-          account: bufferToHex(account),
-        };
+      if (e.isEfinityV1) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV2) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "System.NewAccount":
       e = new SystemNewAccountEvent(ctx, event);
-      if (e.isV5) {
-        let account = e.asV5;
-        return {
-          account: bufferToHex(account),
-        };
+      if (e.isEfinityV1) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV2) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "System.Remarked":
       e = new SystemRemarkedEvent(ctx, event);
-      if (e.isV8) {
-        let [origin, remark_hash] = e.asV8;
-        return {
-          origin: bufferToHex(origin),
-          remark_hash: bufferToHex(remark_hash),
-        };
+      if (e.isEfinityV1) {
+        // YOUR CODE HERE
+      } else if (e.isEfinityV2) {
+        // YOUR CODE HERE
       } else {
         throw new UnknownEventVersionError(event.name);
       }

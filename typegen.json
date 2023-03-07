@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://reef.archive.subsquid.io/graphql",
+  "specVersions": "chainSpecVersions.jsonl",
   "events": true,
   "calls": true,
   "storage": []
