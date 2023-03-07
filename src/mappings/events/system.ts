@@ -8,7 +8,10 @@ import {
 } from "../../types/events";
 import { ChainContext, Event } from "../../types/support";
 import { bufferToHex } from "../../utils/utils";
-import { UnknownVersionError, UnknownEventError } from "../../utils/errors";
+import {
+  UnknownEventVersionError,
+  UnknownEventError,
+} from "../../utils/errors";
 
 export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
   let e;
@@ -18,7 +21,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       if (e.isV12) {
         return event.args;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.ExtrinsicFailed":
       e = new SystemExtrinsicFailedEvent(ctx, event);
@@ -33,7 +36,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       } else if (e.isV45) {
         return event.name;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.ExtrinsicSuccess":
       e = new SystemExtrinsicSuccessEvent(ctx, event);
@@ -45,7 +48,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       } else if (e.isV45) {
         return event.args;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.KilledAccount":
       e = new SystemKilledAccountEvent(ctx, event);
@@ -57,7 +60,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       } else if (e.isV20) {
         return event.args;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.NewAccount":
       e = new SystemNewAccountEvent(ctx, event);
@@ -69,7 +72,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       } else if (e.isV20) {
         return event.args;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.Remarked":
       e = new SystemRemarkedEvent(ctx, event);
@@ -82,7 +85,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       } else if (e.isV20) {
         return event.args;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
 
     default:

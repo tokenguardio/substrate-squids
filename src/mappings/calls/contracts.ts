@@ -11,7 +11,7 @@ import {
 } from "../../types/calls";
 import { ChainContext, Call } from "../../types/support";
 import { bufferToHex } from "../../utils/utils";
-import { UnknownVersionError, UnknownCallError } from "../../utils/errors";
+import { UnknownCallVersionError, UnknownCallError } from "../../utils/errors";
 
 export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
   let e;
@@ -23,14 +23,14 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
       } else if (e.isV45) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.call_old_weight":
       e = new ContractsCallOldWeightCall(ctx, call);
       if (e.isV45) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.instantiate":
       e = new ContractsInstantiateCall(ctx, call);
@@ -39,14 +39,14 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
       } else if (e.isV45) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.instantiate_old_weight":
       e = new ContractsInstantiateOldWeightCall(ctx, call);
       if (e.isV45) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.instantiate_with_code":
       e = new ContractsInstantiateWithCodeCall(ctx, call);
@@ -55,28 +55,28 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
       } else if (e.isV45) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.instantiate_with_code_old_weight":
       e = new ContractsInstantiateWithCodeOldWeightCall(ctx, call);
       if (e.isV45) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.remove_code":
       e = new ContractsRemoveCodeCall(ctx, call);
       if (e.isV20) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.set_code":
       e = new ContractsSetCodeCall(ctx, call);
       if (e.isV20) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
     case "Contracts.upload_code":
       e = new ContractsUploadCodeCall(ctx, call);
@@ -90,7 +90,7 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
       } else if (e.isV57) {
         return call.args;
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
 
     default:
