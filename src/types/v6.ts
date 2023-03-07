@@ -613,7 +613,7 @@ export interface TimestampCall_set {
     now: bigint
 }
 
-export type IndicesCall = IndicesCall_claim | IndicesCall_transfer | IndicesCall_free | IndicesCall_force_transfer | IndicesCall_freeze
+export type IndicesCall = IndicesCall_claim | IndicesCall_transfer | IndicesCall_free | IndicesCall_force_transfer
 
 /**
  *  Assign an previously unassigned index.
@@ -704,7 +704,6 @@ export interface IndicesCall_free {
  * 
  *  - `index`: the index to be (re-)assigned.
  *  - `new`: the new owner of the index. This function is a no-op if it is equal to sender.
- *  - `freeze`: if set to `true`, will freeze the index so it cannot be transferred.
  * 
  *  Emits `IndexAssigned` if successful.
  * 
@@ -723,32 +722,6 @@ export interface IndicesCall_free {
 export interface IndicesCall_force_transfer {
     __kind: 'force_transfer'
     new: Uint8Array
-    index: number
-    freeze: boolean
-}
-
-/**
- *  Freeze an index so it will always point to the sender account. This consumes the deposit.
- * 
- *  The dispatch origin for this call must be _Signed_ and the signing account must have a
- *  non-frozen account `index`.
- * 
- *  - `index`: the index to be frozen in place.
- * 
- *  Emits `IndexFrozen` if successful.
- * 
- *  # <weight>
- *  - `O(1)`.
- *  - One storage mutation (codec `O(1)`).
- *  - Up to one slash operation.
- *  - One event.
- *  -------------------
- *  - Base Weight: 30.86 µs
- *  - DB Weight: 1 Read/Write (Accounts)
- *  # </weight>
- */
-export interface IndicesCall_freeze {
-    __kind: 'freeze'
     index: number
 }
 
@@ -3211,7 +3184,7 @@ export interface ClaimsCall_move_claim {
     maybePreclaim: (Uint8Array | undefined)
 }
 
-export type VestingCall = VestingCall_vest | VestingCall_vest_other | VestingCall_vested_transfer | VestingCall_force_vested_transfer
+export type VestingCall = VestingCall_vest | VestingCall_vest_other | VestingCall_vested_transfer
 
 /**
  *  Unlock any vested funds of the sender account.
@@ -3288,45 +3261,17 @@ export interface VestingCall_vested_transfer {
     schedule: VestingInfo
 }
 
-/**
- *  Force a vested transfer.
- * 
- *  The dispatch origin for this call must be _Root_.
- * 
- *  - `source`: The account whose funds should be transferred.
- *  - `target`: The account that should be transferred the vested funds.
- *  - `amount`: The amount of funds to transfer and will be vested.
- *  - `schedule`: The vesting schedule attached to the transfer.
- * 
- *  Emits `VestingCreated`.
- * 
- *  # <weight>
- *  - `O(1)`.
- *  - DbWeight: 4 Reads, 4 Writes
- *      - Reads: Vesting Storage, Balances Locks, Target Account, Source Account
- *      - Writes: Vesting Storage, Balances Locks, Target Account, Source Account
- *  - Benchmark: 100.3 + .365 * l µs (min square analysis)
- *  - Using 100 µs fixed. Assuming less than 50 locks on any user, else we may want factor in number of locks.
- *  # </weight>
- */
-export interface VestingCall_force_vested_transfer {
-    __kind: 'force_vested_transfer'
-    source: Uint8Array
-    target: Uint8Array
-    schedule: VestingInfo
-}
-
 export type UtilityCall = UtilityCall_batch | UtilityCall_as_sub | UtilityCall_as_limited_sub
 
 /**
  *  Send a batch of dispatch calls.
  * 
+ *  This will execute until the first one fails and then stop. Calls must fulfil the
+ *  `IsCallable` filter unless the origin is `Root`.
+ * 
  *  May be called from any origin.
  * 
  *  - `calls`: The calls to be dispatched from the same origin.
- * 
- *  If origin is root then call are dispatch without checking origin filter. (This includes
- *  bypassing `frame_system::Trait::BaseCallFilter`).
  * 
  *  # <weight>
  *  - Base weight: 14.39 + .987 * c µs
@@ -3348,6 +3293,9 @@ export interface UtilityCall_batch {
 /**
  *  Send a call through an indexed pseudonym of the sender.
  * 
+ *  The call must fulfil only the pre-cleared `IsCallable` filter (i.e. only the level of
+ *  filtering that remains after calling `take()`).
+ * 
  *  NOTE: If you need to ensure that any account-based filtering is honored (i.e. because
  *  you expect `proxy` to have been used prior in the call stack and you want it to apply to
  *  any sub-accounts), then use `as_limited_sub` instead.
@@ -3368,8 +3316,7 @@ export interface UtilityCall_as_sub {
 /**
  *  Send a call through an indexed pseudonym of the sender.
  * 
- *  Filter from origin are passed along. The call will be dispatched with an origin which
- *  use the same filter as the origin of this call.
+ *  Calls must each fulfil the `IsCallable` filter; it is not cleared before.
  * 
  *  NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
  *  because you expect `proxy` to have been used prior in the call stack and you do not want
@@ -3882,38 +3829,14 @@ export interface ProxyCall_kill_anonymous {
     extIndex: number
 }
 
-export type MultisigCall = MultisigCall_as_multi_threshold_1 | MultisigCall_as_multi | MultisigCall_approve_as_multi | MultisigCall_cancel_as_multi
-
-/**
- *  Immediately dispatch a multi-signature call using a single approval from the caller.
- * 
- *  The dispatch origin for this call must be _Signed_.
- * 
- *  - `other_signatories`: The accounts (other than the sender) who are part of the
- *  multi-signature, but do not participate in the approval process.
- *  - `call`: The call to be executed.
- * 
- *  Result is equivalent to the dispatched result.
- * 
- *  # <weight>
- *  O(Z + C) where Z is the length of the call and C its execution weight.
- *  -------------------------------
- *  - Base Weight: 33.72 + 0.002 * Z µs
- *  - DB Weight: None
- *  - Plus Call Weight
- *  # </weight>
- */
-export interface MultisigCall_as_multi_threshold_1 {
-    __kind: 'as_multi_threshold_1'
-    otherSignatories: Uint8Array[]
-    call: Type_44
-}
+export type MultisigCall = MultisigCall_as_multi | MultisigCall_approve_as_multi | MultisigCall_cancel_as_multi
 
 /**
  *  Register approval for a dispatch to be made from a deterministic composite account if
  *  approved by a total of `threshold - 1` of `other_signatories`.
  * 
- *  If there are enough, then dispatch the call.
+ *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
+ *  filter.
  * 
  *  Payment: `DepositBase` will be reserved if this is the first approval, plus
  *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
@@ -3952,13 +3875,12 @@ export interface MultisigCall_as_multi_threshold_1 {
  *    `DepositBase + threshold * DepositFactor`.
  *  -------------------------------
  *  - Base Weight:
- *      - Create:          41.89 + 0.118 * S + .002 * Z µs
- *      - Create w/ Store: 53.57 + 0.119 * S + .003 * Z µs
- *      - Approve:         31.39 + 0.136 * S + .002 * Z µs
- *      - Complete:        39.94 + 0.26  * S + .002 * Z µs
+ *      - Create: 46.55 + 0.089 * S µs
+ *      - Approve: 34.03 + .112 * S µs
+ *      - Complete: 40.36 + .225 * S µs
  *  - DB Weight:
- *      - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
- *      - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+ *      - Reads: Multisig Storage, [Caller Account]
+ *      - Writes: Multisig Storage, [Caller Account]
  *  - Plus Call Weight
  *  # </weight>
  */
@@ -3967,9 +3889,7 @@ export interface MultisigCall_as_multi {
     threshold: number
     otherSignatories: Uint8Array[]
     maybeTimepoint: (Timepoint | undefined)
-    call: Uint8Array
-    storeCall: boolean
-    maxWeight: bigint
+    call: Type_44
 }
 
 /**
@@ -4019,7 +3939,6 @@ export interface MultisigCall_approve_as_multi {
     otherSignatories: Uint8Array[]
     maybeTimepoint: (Timepoint | undefined)
     callHash: Uint8Array
-    maxWeight: bigint
 }
 
 /**
@@ -4045,10 +3964,10 @@ export interface MultisigCall_approve_as_multi {
  *  - I/O: 1 read `O(S)`, one remove.
  *  - Storage: removes one item.
  *  ----------------------------------
- *  - Base Weight: 36.07 + 0.124 * S
+ *  - Base Weight: 37.6 + 0.084 * S
  *  - DB Weight:
- *      - Read: Multisig Storage, [Caller Account], Refund Account, Calls
- *      - Write: Multisig Storage, [Caller Account], Refund Account, Calls
+ *      - Read: Multisig Storage, [Caller Account]
+ *      - Write: Multisig Storage, [Caller Account]
  *  # </weight>
  */
 export interface MultisigCall_cancel_as_multi {

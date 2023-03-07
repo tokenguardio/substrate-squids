@@ -1,6 +1,19 @@
 import type {Result, Option} from './support'
 
-export type Proposal = Proposal_System | Proposal_Scheduler | Proposal_Babe | Proposal_Timestamp | Proposal_Indices | Proposal_Balances | Proposal_Authorship | Proposal_Staking | Proposal_Offences | Proposal_Session | Proposal_FinalityTracker | Proposal_Grandpa | Proposal_ImOnline | Proposal_AuthorityDiscovery | Proposal_Democracy | Proposal_Council | Proposal_TechnicalCommittee | Proposal_ElectionsPhragmen | Proposal_TechnicalMembership | Proposal_Treasury | Proposal_Parachains | Proposal_Attestations | Proposal_Slots | Proposal_Registrar | Proposal_Claims | Proposal_Vesting | Proposal_Utility | Proposal_Sudo | Proposal_Identity | Proposal_Proxy | Proposal_Multisig
+export interface BabeEquivocationProof {
+    offender: Uint8Array
+    slotNumber: bigint
+    firstHeader: Header
+    secondHeader: Header
+}
+
+export interface KeyOwnerProof {
+    session: number
+    trieNodes: Uint8Array[]
+    validatorCount: number
+}
+
+export type Proposal = Proposal_System | Proposal_Scheduler | Proposal_Babe | Proposal_Timestamp | Proposal_Indices | Proposal_Balances | Proposal_Authorship | Proposal_Staking | Proposal_Offences | Proposal_Session | Proposal_FinalityTracker | Proposal_Grandpa | Proposal_ImOnline | Proposal_AuthorityDiscovery | Proposal_Democracy | Proposal_Council | Proposal_TechnicalCommittee | Proposal_ElectionsPhragmen | Proposal_TechnicalMembership | Proposal_Treasury | Proposal_Parachains | Proposal_Attestations | Proposal_Slots | Proposal_Registrar | Proposal_Claims | Proposal_Vesting | Proposal_Utility | Proposal_Sudo | Proposal_Identity | Proposal_Proxy | Proposal_Multisig | Proposal_Poll
 
 export interface Proposal_System {
     __kind: 'System'
@@ -157,12 +170,12 @@ export interface Proposal_Multisig {
     value: MultisigCall
 }
 
-export interface Timepoint {
-    height: number
-    index: number
+export interface Proposal_Poll {
+    __kind: 'Poll'
+    value: PollCall
 }
 
-export type Type_44 = Type_44_System | Type_44_Scheduler | Type_44_Babe | Type_44_Timestamp | Type_44_Indices | Type_44_Balances | Type_44_Authorship | Type_44_Staking | Type_44_Offences | Type_44_Session | Type_44_FinalityTracker | Type_44_Grandpa | Type_44_ImOnline | Type_44_AuthorityDiscovery | Type_44_Democracy | Type_44_Council | Type_44_TechnicalCommittee | Type_44_ElectionsPhragmen | Type_44_TechnicalMembership | Type_44_Treasury | Type_44_Parachains | Type_44_Attestations | Type_44_Slots | Type_44_Registrar | Type_44_Claims | Type_44_Vesting | Type_44_Utility | Type_44_Sudo | Type_44_Identity | Type_44_Proxy | Type_44_Multisig
+export type Type_44 = Type_44_System | Type_44_Scheduler | Type_44_Babe | Type_44_Timestamp | Type_44_Indices | Type_44_Balances | Type_44_Authorship | Type_44_Staking | Type_44_Offences | Type_44_Session | Type_44_FinalityTracker | Type_44_Grandpa | Type_44_ImOnline | Type_44_AuthorityDiscovery | Type_44_Democracy | Type_44_Council | Type_44_TechnicalCommittee | Type_44_ElectionsPhragmen | Type_44_TechnicalMembership | Type_44_Treasury | Type_44_Parachains | Type_44_Attestations | Type_44_Slots | Type_44_Registrar | Type_44_Claims | Type_44_Vesting | Type_44_Utility | Type_44_Sudo | Type_44_Identity | Type_44_Proxy | Type_44_Multisig | Type_44_Poll
 
 export interface Type_44_System {
     __kind: 'System'
@@ -319,6 +332,11 @@ export interface Type_44_Multisig {
     value: MultisigCall
 }
 
+export interface Type_44_Poll {
+    __kind: 'Poll'
+    value: PollCall
+}
+
 export type ProxyType = ProxyType_Any | ProxyType_NonTransfer | ProxyType_Governance | ProxyType_Staking | ProxyType_UnusedSudoBalances | ProxyType_IdentityJudgement | ProxyType_CancelProxy | ProxyType_Auction
 
 export interface ProxyType_Any {
@@ -351,6 +369,14 @@ export interface ProxyType_CancelProxy {
 
 export interface ProxyType_Auction {
     __kind: 'Auction'
+}
+
+export interface Header {
+    parentHash: Uint8Array
+    number: number
+    stateRoot: Uint8Array
+    extrinsicsRoot: Uint8Array
+    digest: Digest
 }
 
 export type SystemCall = SystemCall_fill_block | SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_changes_trie_config | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_suicide
@@ -584,7 +610,35 @@ export interface SchedulerCall_cancel_named {
     id: Uint8Array
 }
 
-export type BabeCall = never
+export type BabeCall = BabeCall_report_equivocation | BabeCall_report_equivocation_unsigned
+
+/**
+ *  Report authority equivocation/misbehavior. This method will verify
+ *  the equivocation proof and validate the given key ownership proof
+ *  against the extracted offender. If both are valid, the offence will
+ *  be reported.
+ */
+export interface BabeCall_report_equivocation {
+    __kind: 'report_equivocation'
+    equivocationProof: BabeEquivocationProof
+    keyOwnerProof: KeyOwnerProof
+}
+
+/**
+ *  Report authority equivocation/misbehavior. This method will verify
+ *  the equivocation proof and validate the given key ownership proof
+ *  against the extracted offender. If both are valid, the offence will
+ *  be reported.
+ *  This extrinsic must be called unsigned and it is expected that only
+ *  block authors will call it (validated in `ValidateUnsigned`), as such
+ *  if the block author is defined it will be defined as the equivocation
+ *  reporter.
+ */
+export interface BabeCall_report_equivocation_unsigned {
+    __kind: 'report_equivocation_unsigned'
+    equivocationProof: BabeEquivocationProof
+    keyOwnerProof: KeyOwnerProof
+}
 
 export type TimestampCall = TimestampCall_set
 
@@ -860,7 +914,7 @@ export interface AuthorshipCall_set_uncles {
     newUncles: Header[]
 }
 
-export type StakingCall = StakingCall_bond | StakingCall_bond_extra | StakingCall_unbond | StakingCall_withdraw_unbonded | StakingCall_validate | StakingCall_nominate | StakingCall_chill | StakingCall_set_payee | StakingCall_set_controller | StakingCall_set_validator_count | StakingCall_force_no_eras | StakingCall_force_new_era | StakingCall_set_invulnerables | StakingCall_force_unstake | StakingCall_force_new_era_always | StakingCall_cancel_deferred_slash | StakingCall_payout_stakers | StakingCall_rebond | StakingCall_set_history_depth | StakingCall_reap_stash | StakingCall_submit_election_solution | StakingCall_submit_election_solution_unsigned
+export type StakingCall = StakingCall_bond | StakingCall_bond_extra | StakingCall_unbond | StakingCall_withdraw_unbonded | StakingCall_validate | StakingCall_nominate | StakingCall_chill | StakingCall_set_payee | StakingCall_set_controller | StakingCall_set_validator_count | StakingCall_increase_validator_count | StakingCall_scale_validator_count | StakingCall_force_no_eras | StakingCall_force_new_era | StakingCall_set_invulnerables | StakingCall_force_unstake | StakingCall_force_new_era_always | StakingCall_cancel_deferred_slash | StakingCall_payout_stakers | StakingCall_rebond | StakingCall_set_history_depth | StakingCall_reap_stash | StakingCall_submit_election_solution | StakingCall_submit_election_solution_unsigned
 
 /**
  *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
@@ -1133,6 +1187,36 @@ export interface StakingCall_set_validator_count {
 }
 
 /**
+ *  Increments the ideal number of validators.
+ * 
+ *  The dispatch origin must be Root.
+ * 
+ *  # <weight>
+ *  Base Weight: 1.717 µs
+ *  Read/Write: Validator Count
+ *  # </weight>
+ */
+export interface StakingCall_increase_validator_count {
+    __kind: 'increase_validator_count'
+    additional: number
+}
+
+/**
+ *  Scale up the ideal number of validators by a factor.
+ * 
+ *  The dispatch origin must be Root.
+ * 
+ *  # <weight>
+ *  Base Weight: 1.717 µs
+ *  Read/Write: Validator Count
+ *  # </weight>
+ */
+export interface StakingCall_scale_validator_count {
+    __kind: 'scale_validator_count'
+    factor: number
+}
+
+/**
  *  Force there to be no new eras indefinitely.
  * 
  *  The dispatch origin must be Root.
@@ -1215,7 +1299,7 @@ export interface StakingCall_force_new_era_always {
 /**
  *  Cancel enactment of a deferred slash.
  * 
- *  Can be called by either the root origin or the `T::SlashCancelOrigin`.
+ *  Can be called by the `T::SlashCancelOrigin`.
  * 
  *  Parameters: era and indices of the slashes for that era to kill.
  * 
@@ -1251,7 +1335,9 @@ export interface StakingCall_cancel_deferred_slash {
  *  - Contains a limited number of reads and writes.
  *  -----------
  *  N is the Number of payouts for the validator (including the validator)
- *  Base Weight: 110 + 54.2 * N µs (Median Slopes)
+ *  Base Weight:
+ *  - Reward Destination Staked: 110 + 54.2 * N µs (Median Slopes)
+ *  - Reward Destination Controller (Creating): 120 + 41.95 * N µs (Median Slopes)
  *  DB Weight:
  *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, ErasValidatorReward,
  *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
@@ -2547,7 +2633,7 @@ export type TechnicalMembershipCall = TechnicalMembershipCall_add_member | Techn
 /**
  *  Add a member `who` to the set.
  * 
- *  May only be called from `AddOrigin` or root.
+ *  May only be called from `T::AddOrigin`.
  */
 export interface TechnicalMembershipCall_add_member {
     __kind: 'add_member'
@@ -2557,7 +2643,7 @@ export interface TechnicalMembershipCall_add_member {
 /**
  *  Remove a member `who` from the set.
  * 
- *  May only be called from `RemoveOrigin` or root.
+ *  May only be called from `T::RemoveOrigin`.
  */
 export interface TechnicalMembershipCall_remove_member {
     __kind: 'remove_member'
@@ -2567,7 +2653,7 @@ export interface TechnicalMembershipCall_remove_member {
 /**
  *  Swap out one member `remove` for another `add`.
  * 
- *  May only be called from `SwapOrigin` or root.
+ *  May only be called from `T::SwapOrigin`.
  * 
  *  Prime membership is *not* passed from `remove` to `add`, if extant.
  */
@@ -2581,7 +2667,7 @@ export interface TechnicalMembershipCall_swap_member {
  *  Change the membership to a new set, disregarding the existing membership. Be nice and
  *  pass `members` pre-sorted.
  * 
- *  May only be called from `ResetOrigin` or root.
+ *  May only be called from `T::ResetOrigin`.
  */
 export interface TechnicalMembershipCall_reset_members {
     __kind: 'reset_members'
@@ -2602,6 +2688,8 @@ export interface TechnicalMembershipCall_change_key {
 
 /**
  *  Set the prime member. Must be a current member.
+ * 
+ *  May only be called from `T::PrimeOrigin`.
  */
 export interface TechnicalMembershipCall_set_prime {
     __kind: 'set_prime'
@@ -2610,6 +2698,8 @@ export interface TechnicalMembershipCall_set_prime {
 
 /**
  *  Remove the prime member if it exists.
+ * 
+ *  May only be called from `T::PrimeOrigin`.
  */
 export interface TechnicalMembershipCall_clear_prime {
     __kind: 'clear_prime'
@@ -2637,6 +2727,8 @@ export interface TreasuryCall_propose_spend {
 /**
  *  Reject a proposed spend. The original deposit will be slashed.
  * 
+ *  May only be called from `T::RejectOrigin`.
+ * 
  *  # <weight>
  *  - Complexity: O(1)
  *  - DbReads: `Proposals`, `rejected proposer account`
@@ -2651,6 +2743,8 @@ export interface TreasuryCall_reject_proposal {
 /**
  *  Approve a proposal. At a later time, the proposal will be allocated to the beneficiary
  *  and the original deposit will be returned.
+ * 
+ *  May only be called from `T::ApproveOrigin`.
  * 
  *  # <weight>
  *  - Complexity: O(1).
@@ -2804,7 +2898,7 @@ export interface TreasuryCall_close_tip {
     hash: Uint8Array
 }
 
-export type ParachainsCall = ParachainsCall_set_heads | ParachainsCall_report_double_vote
+export type ParachainsCall = ParachainsCall_set_heads | ParachainsCall_report_double_vote | ParachainsCall_transfer_to_parachain | ParachainsCall_send_xcmp_message
 
 /**
  *  Provide candidate receipts for parachains, in ascending order by id.
@@ -2823,6 +2917,27 @@ export interface ParachainsCall_set_heads {
 export interface ParachainsCall_report_double_vote {
     __kind: 'report_double_vote'
     report: DoubleVoteReport
+}
+
+/**
+ *  Transfer some tokens into a parachain and leave a message in the downward queue for it.
+ */
+export interface ParachainsCall_transfer_to_parachain {
+    __kind: 'transfer_to_parachain'
+    to: number
+    amount: bigint
+    remark: Uint8Array
+}
+
+/**
+ *  Send a XCMP message to the given parachain.
+ * 
+ *  The origin must be another parachain.
+ */
+export interface ParachainsCall_send_xcmp_message {
+    __kind: 'send_xcmp_message'
+    to: number
+    msg: Uint8Array
 }
 
 export type AttestationsCall = AttestationsCall_more_attestations
@@ -3316,7 +3431,7 @@ export interface VestingCall_force_vested_transfer {
     schedule: VestingInfo
 }
 
-export type UtilityCall = UtilityCall_batch | UtilityCall_as_sub | UtilityCall_as_limited_sub
+export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative
 
 /**
  *  Send a batch of dispatch calls.
@@ -3348,32 +3463,15 @@ export interface UtilityCall_batch {
 /**
  *  Send a call through an indexed pseudonym of the sender.
  * 
- *  NOTE: If you need to ensure that any account-based filtering is honored (i.e. because
- *  you expect `proxy` to have been used prior in the call stack and you want it to apply to
- *  any sub-accounts), then use `as_limited_sub` instead.
- * 
- *  The dispatch origin for this call must be _Signed_.
- * 
- *  # <weight>
- *  - Base weight: 2.861 µs
- *  - Plus the weight of the `call`
- *  # </weight>
- */
-export interface UtilityCall_as_sub {
-    __kind: 'as_sub'
-    index: number
-    call: Type_44
-}
-
-/**
- *  Send a call through an indexed pseudonym of the sender.
- * 
  *  Filter from origin are passed along. The call will be dispatched with an origin which
  *  use the same filter as the origin of this call.
  * 
  *  NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
  *  because you expect `proxy` to have been used prior in the call stack and you do not want
- *  the call restrictions to apply to any sub-accounts), then use `as_sub` instead.
+ *  the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+ *  in the Multisig pallet instead.
+ * 
+ *  NOTE: Prior to version *12, this was called `as_limited_sub`.
  * 
  *  The dispatch origin for this call must be _Signed_.
  * 
@@ -3382,8 +3480,8 @@ export interface UtilityCall_as_sub {
  *  - Plus the weight of the `call`
  *  # </weight>
  */
-export interface UtilityCall_as_limited_sub {
-    __kind: 'as_limited_sub'
+export interface UtilityCall_as_derivative {
+    __kind: 'as_derivative'
     index: number
     call: Type_44
 }
@@ -3465,7 +3563,7 @@ export type IdentityCall = IdentityCall_add_registrar | IdentityCall_set_identit
 /**
  *  Add a registrar to the system.
  * 
- *  The dispatch origin for this call must be `RegistrarOrigin` or `Root`.
+ *  The dispatch origin for this call must be `T::RegistrarOrigin`.
  * 
  *  - `account`: the account of the registrar.
  * 
@@ -3713,7 +3811,7 @@ export interface IdentityCall_provide_judgement {
  *  `Slash`. Verification request deposits are not returned; they should be cancelled
  *  manually using `cancel_request`.
  * 
- *  The dispatch origin for this call must be _Root_ or match `T::ForceOrigin`.
+ *  The dispatch origin for this call must match `T::ForceOrigin`.
  * 
  *  - `target`: the account whose identity the judgement is upon. This must be an account
  *    with a registered identity.
@@ -4059,17 +4157,23 @@ export interface MultisigCall_cancel_as_multi {
     callHash: Uint8Array
 }
 
+export type PollCall = PollCall_vote
+
+/**
+ *  Cast a vote on the poll.
+ */
+export interface PollCall_vote {
+    __kind: 'vote'
+    approvals: boolean[]
+}
+
+export interface Digest {
+    logs: DigestItem[]
+}
+
 export interface ChangesTrieConfiguration {
     digestInterval: number
     digestLevels: number
-}
-
-export interface Header {
-    parentHash: Uint8Array
-    number: number
-    stateRoot: Uint8Array
-    extrinsicsRoot: Uint8Array
-    digest: Digest
 }
 
 export type RewardDestination = RewardDestination_Staked | RewardDestination_Stash | RewardDestination_Controller | RewardDestination_Account | RewardDestination_None
@@ -4126,12 +4230,6 @@ export interface ElectionSize {
 export interface GrandpaEquivocationProof {
     setId: bigint
     equivocation: GrandpaEquivocation
-}
-
-export interface KeyOwnerProof {
-    session: number
-    trieNodes: Uint8Array[]
-    validatorCount: number
 }
 
 export interface Heartbeat {
@@ -4475,8 +4573,55 @@ export interface IdentityJudgement_Erroneous {
     __kind: 'Erroneous'
 }
 
-export interface Digest {
-    logs: DigestItem[]
+export interface Timepoint {
+    height: number
+    index: number
+}
+
+export type DigestItem = DigestItem_Other | DigestItem_AuthoritiesChange | DigestItem_ChangesTrieRoot | DigestItem_SealV0 | DigestItem_Consensus | DigestItem_Seal | DigestItem_PreRuntime | DigestItem_ChangesTrieSignal | DigestItem_RuntimeEnvironmentUpdated
+
+export interface DigestItem_Other {
+    __kind: 'Other'
+    value: Uint8Array
+}
+
+export interface DigestItem_AuthoritiesChange {
+    __kind: 'AuthoritiesChange'
+    value: Uint8Array[]
+}
+
+export interface DigestItem_ChangesTrieRoot {
+    __kind: 'ChangesTrieRoot'
+    value: Uint8Array
+}
+
+export interface DigestItem_SealV0 {
+    __kind: 'SealV0'
+    value: [bigint, Uint8Array]
+}
+
+export interface DigestItem_Consensus {
+    __kind: 'Consensus'
+    value: [Uint8Array, Uint8Array]
+}
+
+export interface DigestItem_Seal {
+    __kind: 'Seal'
+    value: [Uint8Array, Uint8Array]
+}
+
+export interface DigestItem_PreRuntime {
+    __kind: 'PreRuntime'
+    value: [Uint8Array, Uint8Array]
+}
+
+export interface DigestItem_ChangesTrieSignal {
+    __kind: 'ChangesTrieSignal'
+    value: ChangesTrieSignal
+}
+
+export interface DigestItem_RuntimeEnvironmentUpdated {
+    __kind: 'RuntimeEnvironmentUpdated'
 }
 
 export type GrandpaEquivocation = GrandpaEquivocation_Prevote | GrandpaEquivocation_Precommit
@@ -4564,50 +4709,11 @@ export interface SigningContext {
     parentHash: Uint8Array
 }
 
-export type DigestItem = DigestItem_Other | DigestItem_AuthoritiesChange | DigestItem_ChangesTrieRoot | DigestItem_SealV0 | DigestItem_Consensus | DigestItem_Seal | DigestItem_PreRuntime | DigestItem_ChangesTrieSignal | DigestItem_RuntimeEnvironmentUpdated
+export type ChangesTrieSignal = ChangesTrieSignal_NewConfiguration
 
-export interface DigestItem_Other {
-    __kind: 'Other'
-    value: Uint8Array
-}
-
-export interface DigestItem_AuthoritiesChange {
-    __kind: 'AuthoritiesChange'
-    value: Uint8Array[]
-}
-
-export interface DigestItem_ChangesTrieRoot {
-    __kind: 'ChangesTrieRoot'
-    value: Uint8Array
-}
-
-export interface DigestItem_SealV0 {
-    __kind: 'SealV0'
-    value: [bigint, Uint8Array]
-}
-
-export interface DigestItem_Consensus {
-    __kind: 'Consensus'
-    value: [Uint8Array, Uint8Array]
-}
-
-export interface DigestItem_Seal {
-    __kind: 'Seal'
-    value: [Uint8Array, Uint8Array]
-}
-
-export interface DigestItem_PreRuntime {
-    __kind: 'PreRuntime'
-    value: [Uint8Array, Uint8Array]
-}
-
-export interface DigestItem_ChangesTrieSignal {
-    __kind: 'ChangesTrieSignal'
-    value: ChangesTrieSignal
-}
-
-export interface DigestItem_RuntimeEnvironmentUpdated {
-    __kind: 'RuntimeEnvironmentUpdated'
+export interface ChangesTrieSignal_NewConfiguration {
+    __kind: 'NewConfiguration'
+    value: (ChangesTrieConfiguration | undefined)
 }
 
 export interface GrandpaEquivocationValue {
@@ -4624,13 +4730,6 @@ export interface CandidateCommitments {
     headData: Uint8Array
     processedDownwardMessages: number
     hrmpWatermark: number
-}
-
-export type ChangesTrieSignal = ChangesTrieSignal_NewConfiguration
-
-export interface ChangesTrieSignal_NewConfiguration {
-    __kind: 'NewConfiguration'
-    value: (ChangesTrieConfiguration | undefined)
 }
 
 export interface GrandpaPrevote {

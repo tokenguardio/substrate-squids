@@ -157,11 +157,6 @@ export interface Proposal_Multisig {
     value: MultisigCall
 }
 
-export interface Timepoint {
-    height: number
-    index: number
-}
-
 export type Type_44 = Type_44_System | Type_44_Scheduler | Type_44_Babe | Type_44_Timestamp | Type_44_Indices | Type_44_Balances | Type_44_Authorship | Type_44_Staking | Type_44_Offences | Type_44_Session | Type_44_FinalityTracker | Type_44_Grandpa | Type_44_ImOnline | Type_44_AuthorityDiscovery | Type_44_Democracy | Type_44_Council | Type_44_TechnicalCommittee | Type_44_ElectionsPhragmen | Type_44_TechnicalMembership | Type_44_Treasury | Type_44_Parachains | Type_44_Attestations | Type_44_Slots | Type_44_Registrar | Type_44_Claims | Type_44_Vesting | Type_44_Utility | Type_44_Sudo | Type_44_Identity | Type_44_Proxy | Type_44_Multisig
 
 export interface Type_44_System {
@@ -860,7 +855,7 @@ export interface AuthorshipCall_set_uncles {
     newUncles: Header[]
 }
 
-export type StakingCall = StakingCall_bond | StakingCall_bond_extra | StakingCall_unbond | StakingCall_withdraw_unbonded | StakingCall_validate | StakingCall_nominate | StakingCall_chill | StakingCall_set_payee | StakingCall_set_controller | StakingCall_set_validator_count | StakingCall_force_no_eras | StakingCall_force_new_era | StakingCall_set_invulnerables | StakingCall_force_unstake | StakingCall_force_new_era_always | StakingCall_cancel_deferred_slash | StakingCall_payout_stakers | StakingCall_rebond | StakingCall_set_history_depth | StakingCall_reap_stash | StakingCall_submit_election_solution | StakingCall_submit_election_solution_unsigned
+export type StakingCall = StakingCall_bond | StakingCall_bond_extra | StakingCall_unbond | StakingCall_withdraw_unbonded | StakingCall_validate | StakingCall_nominate | StakingCall_chill | StakingCall_set_payee | StakingCall_set_controller | StakingCall_set_validator_count | StakingCall_increase_validator_count | StakingCall_scale_validator_count | StakingCall_force_no_eras | StakingCall_force_new_era | StakingCall_set_invulnerables | StakingCall_force_unstake | StakingCall_force_new_era_always | StakingCall_cancel_deferred_slash | StakingCall_payout_stakers | StakingCall_rebond | StakingCall_set_history_depth | StakingCall_reap_stash | StakingCall_submit_election_solution | StakingCall_submit_election_solution_unsigned
 
 /**
  *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
@@ -1130,6 +1125,36 @@ export interface StakingCall_set_controller {
 export interface StakingCall_set_validator_count {
     __kind: 'set_validator_count'
     new: number
+}
+
+/**
+ *  Increments the ideal number of validators.
+ * 
+ *  The dispatch origin must be Root.
+ * 
+ *  # <weight>
+ *  Base Weight: 1.717 µs
+ *  Read/Write: Validator Count
+ *  # </weight>
+ */
+export interface StakingCall_increase_validator_count {
+    __kind: 'increase_validator_count'
+    additional: number
+}
+
+/**
+ *  Scale up the ideal number of validators by a factor.
+ * 
+ *  The dispatch origin must be Root.
+ * 
+ *  # <weight>
+ *  Base Weight: 1.717 µs
+ *  Read/Write: Validator Count
+ *  # </weight>
+ */
+export interface StakingCall_scale_validator_count {
+    __kind: 'scale_validator_count'
+    factor: number
 }
 
 /**
@@ -4473,6 +4498,11 @@ export interface IdentityJudgement_LowQuality {
 
 export interface IdentityJudgement_Erroneous {
     __kind: 'Erroneous'
+}
+
+export interface Timepoint {
+    height: number
+    index: number
 }
 
 export interface Digest {

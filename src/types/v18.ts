@@ -1,6 +1,6 @@
 import type {Result, Option} from './support'
 
-export type Proposal = Proposal_System | Proposal_Scheduler | Proposal_Babe | Proposal_Timestamp | Proposal_Indices | Proposal_Balances | Proposal_Authorship | Proposal_Staking | Proposal_Offences | Proposal_Session | Proposal_FinalityTracker | Proposal_Grandpa | Proposal_ImOnline | Proposal_AuthorityDiscovery | Proposal_Democracy | Proposal_Council | Proposal_TechnicalCommittee | Proposal_ElectionsPhragmen | Proposal_TechnicalMembership | Proposal_Treasury | Proposal_Parachains | Proposal_Attestations | Proposal_Slots | Proposal_Registrar | Proposal_Claims | Proposal_Vesting | Proposal_Utility | Proposal_Sudo | Proposal_Identity | Proposal_Proxy | Proposal_Multisig
+export type Proposal = Proposal_System | Proposal_Scheduler | Proposal_Babe | Proposal_Timestamp | Proposal_Indices | Proposal_Balances | Proposal_Authorship | Proposal_Staking | Proposal_Offences | Proposal_Session | Proposal_FinalityTracker | Proposal_Grandpa | Proposal_ImOnline | Proposal_AuthorityDiscovery | Proposal_Democracy | Proposal_Council | Proposal_TechnicalCommittee | Proposal_ElectionsPhragmen | Proposal_TechnicalMembership | Proposal_Treasury | Proposal_Parachains | Proposal_Attestations | Proposal_Slots | Proposal_Registrar | Proposal_Claims | Proposal_Vesting | Proposal_Utility | Proposal_Purchase | Proposal_Identity | Proposal_Proxy | Proposal_Multisig
 
 export interface Proposal_System {
     __kind: 'System'
@@ -137,9 +137,9 @@ export interface Proposal_Utility {
     value: UtilityCall
 }
 
-export interface Proposal_Sudo {
-    __kind: 'Sudo'
-    value: SudoCall
+export interface Proposal_Purchase {
+    __kind: 'Purchase'
+    value: PurchaseCall
 }
 
 export interface Proposal_Identity {
@@ -157,12 +157,7 @@ export interface Proposal_Multisig {
     value: MultisigCall
 }
 
-export interface Timepoint {
-    height: number
-    index: number
-}
-
-export type Type_44 = Type_44_System | Type_44_Scheduler | Type_44_Babe | Type_44_Timestamp | Type_44_Indices | Type_44_Balances | Type_44_Authorship | Type_44_Staking | Type_44_Offences | Type_44_Session | Type_44_FinalityTracker | Type_44_Grandpa | Type_44_ImOnline | Type_44_AuthorityDiscovery | Type_44_Democracy | Type_44_Council | Type_44_TechnicalCommittee | Type_44_ElectionsPhragmen | Type_44_TechnicalMembership | Type_44_Treasury | Type_44_Parachains | Type_44_Attestations | Type_44_Slots | Type_44_Registrar | Type_44_Claims | Type_44_Vesting | Type_44_Utility | Type_44_Sudo | Type_44_Identity | Type_44_Proxy | Type_44_Multisig
+export type Type_44 = Type_44_System | Type_44_Scheduler | Type_44_Babe | Type_44_Timestamp | Type_44_Indices | Type_44_Balances | Type_44_Authorship | Type_44_Staking | Type_44_Offences | Type_44_Session | Type_44_FinalityTracker | Type_44_Grandpa | Type_44_ImOnline | Type_44_AuthorityDiscovery | Type_44_Democracy | Type_44_Council | Type_44_TechnicalCommittee | Type_44_ElectionsPhragmen | Type_44_TechnicalMembership | Type_44_Treasury | Type_44_Parachains | Type_44_Attestations | Type_44_Slots | Type_44_Registrar | Type_44_Claims | Type_44_Vesting | Type_44_Utility | Type_44_Purchase | Type_44_Identity | Type_44_Proxy | Type_44_Multisig
 
 export interface Type_44_System {
     __kind: 'System'
@@ -299,9 +294,9 @@ export interface Type_44_Utility {
     value: UtilityCall
 }
 
-export interface Type_44_Sudo {
-    __kind: 'Sudo'
-    value: SudoCall
+export interface Type_44_Purchase {
+    __kind: 'Purchase'
+    value: PurchaseCall
 }
 
 export interface Type_44_Identity {
@@ -506,7 +501,7 @@ export interface SystemCall_suicide {
     __kind: 'suicide'
 }
 
-export type SchedulerCall = SchedulerCall_schedule | SchedulerCall_cancel | SchedulerCall_schedule_named | SchedulerCall_cancel_named
+export type SchedulerCall = SchedulerCall_schedule | SchedulerCall_cancel | SchedulerCall_schedule_named | SchedulerCall_cancel_named | SchedulerCall_schedule_after | SchedulerCall_schedule_named_after
 
 /**
  *  Anonymously schedule a task.
@@ -584,7 +579,66 @@ export interface SchedulerCall_cancel_named {
     id: Uint8Array
 }
 
-export type BabeCall = never
+/**
+ *  Anonymously schedule a task after a delay.
+ * 
+ *  # <weight>
+ *  Same as [`schedule`].
+ *  # </weight>
+ */
+export interface SchedulerCall_schedule_after {
+    __kind: 'schedule_after'
+    after: number
+    maybePeriodic: ([number, number] | undefined)
+    priority: number
+    call: Type_44
+}
+
+/**
+ *  Schedule a named task after a delay.
+ * 
+ *  # <weight>
+ *  Same as [`schedule_named`].
+ *  # </weight>
+ */
+export interface SchedulerCall_schedule_named_after {
+    __kind: 'schedule_named_after'
+    id: Uint8Array
+    after: number
+    maybePeriodic: ([number, number] | undefined)
+    priority: number
+    call: Type_44
+}
+
+export type BabeCall = BabeCall_report_equivocation | BabeCall_report_equivocation_unsigned
+
+/**
+ *  Report authority equivocation/misbehavior. This method will verify
+ *  the equivocation proof and validate the given key ownership proof
+ *  against the extracted offender. If both are valid, the offence will
+ *  be reported.
+ */
+export interface BabeCall_report_equivocation {
+    __kind: 'report_equivocation'
+    equivocationProof: BabeEquivocationProof
+    keyOwnerProof: KeyOwnerProof
+}
+
+/**
+ *  Report authority equivocation/misbehavior. This method will verify
+ *  the equivocation proof and validate the given key ownership proof
+ *  against the extracted offender. If both are valid, the offence will
+ *  be reported.
+ *  This extrinsic must be called unsigned and it is expected that only
+ *  block authors will call it (validated in `ValidateUnsigned`), as such
+ *  if the block author is defined it will be defined as the equivocation
+ *  reporter.
+ */
+export interface BabeCall_report_equivocation_unsigned {
+    __kind: 'report_equivocation_unsigned'
+    equivocationProof: BabeEquivocationProof
+    keyOwnerProof: KeyOwnerProof
+}
 
 export type TimestampCall = TimestampCall_set
 
@@ -860,7 +914,7 @@ export interface AuthorshipCall_set_uncles {
     newUncles: Header[]
 }
 
-export type StakingCall = StakingCall_bond | StakingCall_bond_extra | StakingCall_unbond | StakingCall_withdraw_unbonded | StakingCall_validate | StakingCall_nominate | StakingCall_chill | StakingCall_set_payee | StakingCall_set_controller | StakingCall_set_validator_count | StakingCall_force_no_eras | StakingCall_force_new_era | StakingCall_set_invulnerables | StakingCall_force_unstake | StakingCall_force_new_era_always | StakingCall_cancel_deferred_slash | StakingCall_payout_stakers | StakingCall_rebond | StakingCall_set_history_depth | StakingCall_reap_stash | StakingCall_submit_election_solution | StakingCall_submit_election_solution_unsigned
+export type StakingCall = StakingCall_bond | StakingCall_bond_extra | StakingCall_unbond | StakingCall_withdraw_unbonded | StakingCall_validate | StakingCall_nominate | StakingCall_chill | StakingCall_set_payee | StakingCall_set_controller | StakingCall_set_validator_count | StakingCall_increase_validator_count | StakingCall_scale_validator_count | StakingCall_force_no_eras | StakingCall_force_new_era | StakingCall_set_invulnerables | StakingCall_force_unstake | StakingCall_force_new_era_always | StakingCall_cancel_deferred_slash | StakingCall_payout_stakers | StakingCall_rebond | StakingCall_set_history_depth | StakingCall_reap_stash | StakingCall_submit_election_solution | StakingCall_submit_election_solution_unsigned
 
 /**
  *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
@@ -1133,6 +1187,36 @@ export interface StakingCall_set_validator_count {
 }
 
 /**
+ *  Increments the ideal number of validators.
+ * 
+ *  The dispatch origin must be Root.
+ * 
+ *  # <weight>
+ *  Base Weight: 1.717 µs
+ *  Read/Write: Validator Count
+ *  # </weight>
+ */
+export interface StakingCall_increase_validator_count {
+    __kind: 'increase_validator_count'
+    additional: number
+}
+
+/**
+ *  Scale up the ideal number of validators by a factor.
+ * 
+ *  The dispatch origin must be Root.
+ * 
+ *  # <weight>
+ *  Base Weight: 1.717 µs
+ *  Read/Write: Validator Count
+ *  # </weight>
+ */
+export interface StakingCall_scale_validator_count {
+    __kind: 'scale_validator_count'
+    factor: number
+}
+
+/**
  *  Force there to be no new eras indefinitely.
  * 
  *  The dispatch origin must be Root.
@@ -1215,7 +1299,7 @@ export interface StakingCall_force_new_era_always {
 /**
  *  Cancel enactment of a deferred slash.
  * 
- *  Can be called by either the root origin or the `T::SlashCancelOrigin`.
+ *  Can be called by the `T::SlashCancelOrigin`.
  * 
  *  Parameters: era and indices of the slashes for that era to kill.
  * 
@@ -1251,7 +1335,9 @@ export interface StakingCall_cancel_deferred_slash {
  *  - Contains a limited number of reads and writes.
  *  -----------
  *  N is the Number of payouts for the validator (including the validator)
- *  Base Weight: 110 + 54.2 * N µs (Median Slopes)
+ *  Base Weight:
+ *  - Reward Destination Staked: 110 + 54.2 * N µs (Median Slopes)
+ *  - Reward Destination Controller (Creating): 120 + 41.95 * N µs (Median Slopes)
  *  DB Weight:
  *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, ErasValidatorReward,
  *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
@@ -1473,7 +1559,19 @@ export interface FinalityTrackerCall_final_hint {
     hint: number
 }
 
-export type GrandpaCall = GrandpaCall_report_equivocation
+export type GrandpaCall = GrandpaCall_report_equivocation | GrandpaCall_report_equivocation_unsigned
+
+/**
+ *  Report voter equivocation/misbehavior. This method will verify the
+ *  equivocation proof and validate the given key ownership proof
+ *  against the extracted offender. If both are valid, the offence
+ *  will be reported.
+ */
+export interface GrandpaCall_report_equivocation {
+    __kind: 'report_equivocation'
+    equivocationProof: GrandpaEquivocationProof
+    keyOwnerProof: KeyOwnerProof
+}
 
 /**
  *  Report voter equivocation/misbehavior. This method will verify the
@@ -1481,12 +1579,13 @@ export type GrandpaCall = GrandpaCall_report_equivocation
  *  against the extracted offender. If both are valid, the offence
  *  will be reported.
  * 
- *  Since the weight of the extrinsic is 0, in order to avoid DoS by
- *  submission of invalid equivocation reports, a mandatory pre-validation of
- *  the extrinsic is implemented in a `SignedExtension`.
+ *  This extrinsic must be called unsigned and it is expected that only
+ *  block authors will call it (validated in `ValidateUnsigned`), as such
+ *  if the block author is defined it will be defined as the equivocation
+ *  reporter.
  */
-export interface GrandpaCall_report_equivocation {
-    __kind: 'report_equivocation'
+export interface GrandpaCall_report_equivocation_unsigned {
+    __kind: 'report_equivocation_unsigned'
     equivocationProof: GrandpaEquivocationProof
     keyOwnerProof: KeyOwnerProof
 }
@@ -2547,7 +2646,7 @@ export type TechnicalMembershipCall = TechnicalMembershipCall_add_member | Techn
 /**
  *  Add a member `who` to the set.
  * 
- *  May only be called from `AddOrigin` or root.
+ *  May only be called from `T::AddOrigin`.
  */
 export interface TechnicalMembershipCall_add_member {
     __kind: 'add_member'
@@ -2557,7 +2656,7 @@ export interface TechnicalMembershipCall_add_member {
 /**
  *  Remove a member `who` from the set.
  * 
- *  May only be called from `RemoveOrigin` or root.
+ *  May only be called from `T::RemoveOrigin`.
  */
 export interface TechnicalMembershipCall_remove_member {
     __kind: 'remove_member'
@@ -2567,7 +2666,7 @@ export interface TechnicalMembershipCall_remove_member {
 /**
  *  Swap out one member `remove` for another `add`.
  * 
- *  May only be called from `SwapOrigin` or root.
+ *  May only be called from `T::SwapOrigin`.
  * 
  *  Prime membership is *not* passed from `remove` to `add`, if extant.
  */
@@ -2581,7 +2680,7 @@ export interface TechnicalMembershipCall_swap_member {
  *  Change the membership to a new set, disregarding the existing membership. Be nice and
  *  pass `members` pre-sorted.
  * 
- *  May only be called from `ResetOrigin` or root.
+ *  May only be called from `T::ResetOrigin`.
  */
 export interface TechnicalMembershipCall_reset_members {
     __kind: 'reset_members'
@@ -2602,6 +2701,8 @@ export interface TechnicalMembershipCall_change_key {
 
 /**
  *  Set the prime member. Must be a current member.
+ * 
+ *  May only be called from `T::PrimeOrigin`.
  */
 export interface TechnicalMembershipCall_set_prime {
     __kind: 'set_prime'
@@ -2610,6 +2711,8 @@ export interface TechnicalMembershipCall_set_prime {
 
 /**
  *  Remove the prime member if it exists.
+ * 
+ *  May only be called from `T::PrimeOrigin`.
  */
 export interface TechnicalMembershipCall_clear_prime {
     __kind: 'clear_prime'
@@ -2637,6 +2740,8 @@ export interface TreasuryCall_propose_spend {
 /**
  *  Reject a proposed spend. The original deposit will be slashed.
  * 
+ *  May only be called from `T::RejectOrigin`.
+ * 
  *  # <weight>
  *  - Complexity: O(1)
  *  - DbReads: `Proposals`, `rejected proposer account`
@@ -2651,6 +2756,8 @@ export interface TreasuryCall_reject_proposal {
 /**
  *  Approve a proposal. At a later time, the proposal will be allocated to the beneficiary
  *  and the original deposit will be returned.
+ * 
+ *  May only be called from `T::ApproveOrigin`.
  * 
  *  # <weight>
  *  - Complexity: O(1).
@@ -2804,7 +2911,7 @@ export interface TreasuryCall_close_tip {
     hash: Uint8Array
 }
 
-export type ParachainsCall = ParachainsCall_set_heads | ParachainsCall_report_double_vote
+export type ParachainsCall = ParachainsCall_set_heads | ParachainsCall_report_double_vote | ParachainsCall_transfer_to_parachain | ParachainsCall_send_xcmp_message
 
 /**
  *  Provide candidate receipts for parachains, in ascending order by id.
@@ -2823,6 +2930,27 @@ export interface ParachainsCall_set_heads {
 export interface ParachainsCall_report_double_vote {
     __kind: 'report_double_vote'
     report: DoubleVoteReport
+}
+
+/**
+ *  Transfer some tokens into a parachain and leave a message in the downward queue for it.
+ */
+export interface ParachainsCall_transfer_to_parachain {
+    __kind: 'transfer_to_parachain'
+    to: number
+    amount: bigint
+    remark: Uint8Array
+}
+
+/**
+ *  Send a XCMP message to the given parachain.
+ * 
+ *  The origin must be another parachain.
+ */
+export interface ParachainsCall_send_xcmp_message {
+    __kind: 'send_xcmp_message'
+    to: number
+    msg: Uint8Array
 }
 
 export type AttestationsCall = AttestationsCall_more_attestations
@@ -3316,7 +3444,7 @@ export interface VestingCall_force_vested_transfer {
     schedule: VestingInfo
 }
 
-export type UtilityCall = UtilityCall_batch | UtilityCall_as_sub | UtilityCall_as_limited_sub
+export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative
 
 /**
  *  Send a batch of dispatch calls.
@@ -3348,32 +3476,15 @@ export interface UtilityCall_batch {
 /**
  *  Send a call through an indexed pseudonym of the sender.
  * 
- *  NOTE: If you need to ensure that any account-based filtering is honored (i.e. because
- *  you expect `proxy` to have been used prior in the call stack and you want it to apply to
- *  any sub-accounts), then use `as_limited_sub` instead.
- * 
- *  The dispatch origin for this call must be _Signed_.
- * 
- *  # <weight>
- *  - Base weight: 2.861 µs
- *  - Plus the weight of the `call`
- *  # </weight>
- */
-export interface UtilityCall_as_sub {
-    __kind: 'as_sub'
-    index: number
-    call: Type_44
-}
-
-/**
- *  Send a call through an indexed pseudonym of the sender.
- * 
  *  Filter from origin are passed along. The call will be dispatched with an origin which
  *  use the same filter as the origin of this call.
  * 
  *  NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
  *  because you expect `proxy` to have been used prior in the call stack and you do not want
- *  the call restrictions to apply to any sub-accounts), then use `as_sub` instead.
+ *  the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+ *  in the Multisig pallet instead.
+ * 
+ *  NOTE: Prior to version *12, this was called `as_limited_sub`.
  * 
  *  The dispatch origin for this call must be _Signed_.
  * 
@@ -3382,90 +3493,104 @@ export interface UtilityCall_as_sub {
  *  - Plus the weight of the `call`
  *  # </weight>
  */
-export interface UtilityCall_as_limited_sub {
-    __kind: 'as_limited_sub'
+export interface UtilityCall_as_derivative {
+    __kind: 'as_derivative'
     index: number
     call: Type_44
 }
 
-export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as
+export type PurchaseCall = PurchaseCall_create_account | PurchaseCall_update_validity_status | PurchaseCall_update_balance | PurchaseCall_payout | PurchaseCall_set_payment_account | PurchaseCall_set_statement | PurchaseCall_set_unlock_block
 
 /**
- *  Authenticates the sudo key and dispatches a function call with `Root` origin.
+ *  Create a new account. Proof of existence through a valid signed message.
  * 
- *  The dispatch origin for this call must be _Signed_.
+ *  We check that the account does not exist at this stage.
  * 
- *  # <weight>
- *  - O(1).
- *  - Limited storage reads.
- *  - One DB write (event).
- *  - Weight of derivative `call` execution + 10,000.
- *  # </weight>
+ *  Origin must match the `ValidityOrigin`.
  */
-export interface SudoCall_sudo {
-    __kind: 'sudo'
-    call: Type_44
-}
-
-/**
- *  Authenticates the sudo key and dispatches a function call with `Root` origin.
- *  This function does not check the weight of the call, and instead allows the
- *  Sudo user to specify the weight of the call.
- * 
- *  The dispatch origin for this call must be _Signed_.
- * 
- *  # <weight>
- *  - O(1).
- *  - The weight of this call is defined by the caller.
- *  # </weight>
- */
-export interface SudoCall_sudo_unchecked_weight {
-    __kind: 'sudo_unchecked_weight'
-    call: Type_44
-    weight: bigint
-}
-
-/**
- *  Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo key.
- * 
- *  The dispatch origin for this call must be _Signed_.
- * 
- *  # <weight>
- *  - O(1).
- *  - Limited storage reads.
- *  - One DB change.
- *  # </weight>
- */
-export interface SudoCall_set_key {
-    __kind: 'set_key'
-    new: Uint8Array
-}
-
-/**
- *  Authenticates the sudo key and dispatches a function call with `Signed` origin from
- *  a given account.
- * 
- *  The dispatch origin for this call must be _Signed_.
- * 
- *  # <weight>
- *  - O(1).
- *  - Limited storage reads.
- *  - One DB write (event).
- *  - Weight of derivative `call` execution + 10,000.
- *  # </weight>
- */
-export interface SudoCall_sudo_as {
-    __kind: 'sudo_as'
+export interface PurchaseCall_create_account {
+    __kind: 'create_account'
     who: Uint8Array
-    call: Type_44
+    signature: Uint8Array
 }
 
-export type IdentityCall = IdentityCall_add_registrar | IdentityCall_set_identity | IdentityCall_set_subs | IdentityCall_clear_identity | IdentityCall_request_judgement | IdentityCall_cancel_request | IdentityCall_set_fee | IdentityCall_set_account_id | IdentityCall_set_fields | IdentityCall_provide_judgement | IdentityCall_kill_identity
+/**
+ *  Update the validity status of an existing account. If set to completed, the account
+ *  will no longer be able to continue through the crowdfund process.
+ * 
+ *  We check tht the account exists at this stage, but has not completed the process.
+ * 
+ *  Origin must match the `ValidityOrigin`.
+ */
+export interface PurchaseCall_update_validity_status {
+    __kind: 'update_validity_status'
+    who: Uint8Array
+    validity: AccountValidity
+}
+
+/**
+ *  Update the balance of a valid account.
+ * 
+ *  We check tht the account is valid for a balance transfer at this point.
+ * 
+ *  Origin must match the `ValidityOrigin`.
+ */
+export interface PurchaseCall_update_balance {
+    __kind: 'update_balance'
+    who: Uint8Array
+    freeBalance: bigint
+    lockedBalance: bigint
+    vat: number
+}
+
+/**
+ *  Pay the user and complete the purchase process.
+ * 
+ *  We reverify all assumptions about the state of an account, and complete the process.
+ * 
+ *  Origin must match the configured `PaymentAccount`.
+ */
+export interface PurchaseCall_payout {
+    __kind: 'payout'
+    who: Uint8Array
+}
+
+/**
+ *  Set the account that will be used to payout users in the DOT purchase process.
+ * 
+ *  Origin must match the `ConfigurationOrigin`
+ */
+export interface PurchaseCall_set_payment_account {
+    __kind: 'set_payment_account'
+    who: Uint8Array
+}
+
+/**
+ *  Set the statement that must be signed for a user to participate on the DOT sale.
+ * 
+ *  Origin must match the `ConfigurationOrigin`
+ */
+export interface PurchaseCall_set_statement {
+    __kind: 'set_statement'
+    statement: Uint8Array
+}
+
+/**
+ *  Set the block where locked DOTs will become unlocked.
+ * 
+ *  Origin must match the `ConfigurationOrigin`
+ */
+export interface PurchaseCall_set_unlock_block {
+    __kind: 'set_unlock_block'
+    unlockBlock: number
+}
+
+export type IdentityCall = IdentityCall_add_registrar | IdentityCall_set_identity | IdentityCall_set_subs | IdentityCall_clear_identity | IdentityCall_request_judgement | IdentityCall_cancel_request | IdentityCall_set_fee | IdentityCall_set_account_id | IdentityCall_set_fields | IdentityCall_provide_judgement | IdentityCall_kill_identity | IdentityCall_add_sub | IdentityCall_rename_sub | IdentityCall_remove_sub | IdentityCall_quit_sub
 
 /**
  *  Add a registrar to the system.
  * 
- *  The dispatch origin for this call must be `RegistrarOrigin` or `Root`.
+ *  The dispatch origin for this call must be `T::RegistrarOrigin`.
  * 
  *  - `account`: the account of the registrar.
  * 
@@ -3713,7 +3838,7 @@ export interface IdentityCall_provide_judgement {
  *  `Slash`. Verification request deposits are not returned; they should be cancelled
  *  manually using `cancel_request`.
  * 
- *  The dispatch origin for this call must be _Root_ or match `T::ForceOrigin`.
+ *  The dispatch origin for this call must match `T::ForceOrigin`.
  * 
  *  - `target`: the account whose identity the judgement is upon. This must be an account
  *    with a registered identity.
@@ -3730,6 +3855,63 @@ export interface IdentityCall_provide_judgement {
 export interface IdentityCall_kill_identity {
     __kind: 'kill_identity'
     target: Uint8Array
+}
+
+/**
+ *  Add the given account to the sender's subs.
+ * 
+ *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
+ *  to the sender.
+ * 
+ *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
+ *  sub identity of `sub`.
+ */
+export interface IdentityCall_add_sub {
+    __kind: 'add_sub'
+    sub: Uint8Array
+    data: Data
+}
+
+/**
+ *  Alter the associated name of the given sub-account.
+ * 
+ *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
+ *  sub identity of `sub`.
+ */
+export interface IdentityCall_rename_sub {
+    __kind: 'rename_sub'
+    sub: Uint8Array
+    data: Data
+}
+
+/**
+ *  Remove the given account from the sender's subs.
+ * 
+ *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
+ *  to the sender.
+ * 
+ *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
+ *  sub identity of `sub`.
+ */
+export interface IdentityCall_remove_sub {
+    __kind: 'remove_sub'
+    sub: Uint8Array
+}
+
+/**
+ *  Remove the sender as a sub-account.
+ * 
+ *  Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
+ *  to the sender (*not* the original depositor).
+ * 
+ *  The dispatch origin for this call must be _Signed_ and the sender must have a registered
+ *  super-identity.
+ * 
+ *  NOTE: This should not normally be used, but is provided in the case that the non-
+ *  controller of an account is maliciously registered as a sub-account.
+ */
+export interface IdentityCall_quit_sub {
+    __kind: 'quit_sub'
 }
 
 export type ProxyCall = ProxyCall_proxy | ProxyCall_add_proxy | ProxyCall_remove_proxy | ProxyCall_remove_proxies | ProxyCall_anonymous | ProxyCall_kill_anonymous
@@ -4064,6 +4246,19 @@ export interface ChangesTrieConfiguration {
     digestLevels: number
 }
 
+export interface BabeEquivocationProof {
+    offender: Uint8Array
+    slotNumber: bigint
+    firstHeader: Header
+    secondHeader: Header
+}
+
+export interface KeyOwnerProof {
+    session: number
+    trieNodes: Uint8Array[]
+    validatorCount: number
+}
+
 export interface Header {
     parentHash: Uint8Array
     number: number
@@ -4126,12 +4321,6 @@ export interface ElectionSize {
 export interface GrandpaEquivocationProof {
     setId: bigint
     equivocation: GrandpaEquivocation
-}
-
-export interface KeyOwnerProof {
-    session: number
-    trieNodes: Uint8Array[]
-    validatorCount: number
 }
 
 export interface Heartbeat {
@@ -4239,6 +4428,32 @@ export interface VestingInfo {
     locked: bigint
     perBlock: bigint
     startingBlock: number
+}
+
+export type AccountValidity = AccountValidity_Invalid | AccountValidity_Initiated | AccountValidity_Pending | AccountValidity_ValidLow | AccountValidity_ValidHigh | AccountValidity_Completed
+
+export interface AccountValidity_Invalid {
+    __kind: 'Invalid'
+}
+
+export interface AccountValidity_Initiated {
+    __kind: 'Initiated'
+}
+
+export interface AccountValidity_Pending {
+    __kind: 'Pending'
+}
+
+export interface AccountValidity_ValidLow {
+    __kind: 'ValidLow'
+}
+
+export interface AccountValidity_ValidHigh {
+    __kind: 'ValidHigh'
+}
+
+export interface AccountValidity_Completed {
+    __kind: 'Completed'
 }
 
 export interface IdentityInfo {
@@ -4473,6 +4688,11 @@ export interface IdentityJudgement_LowQuality {
 
 export interface IdentityJudgement_Erroneous {
     __kind: 'Erroneous'
+}
+
+export interface Timepoint {
+    height: number
+    index: number
 }
 
 export interface Digest {
