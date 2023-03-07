@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["branch"]
+    branches: ["moonbeam-mainnet"]
   pull_request:
-    branches: ["branch"]
+    branches: ["moonbeam-mainnet"]
   workflow_dispatch:
 
 jobs:
