@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["enjin-mainnet"]
+    branches: ["efinity-mainnet"]
   pull_request:
-    branches: ["enjin-mainnet"]
+    branches: ["efinity-mainnet"]
   workflow_dispatch:
 
 jobs:
