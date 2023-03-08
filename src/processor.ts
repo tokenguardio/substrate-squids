@@ -61,8 +61,32 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           extrinsicSuccess: item.event.extrinsic?.success,
         });
         events.push(event);
+      } else if (
+        item.kind === "call" &&
+        item.call.name.startsWith("Contracts.")
+      ) {
+        // Normalize the call arguments based on the prefix
+        let args;
+        switch (true) {
+          case item.call.name.startsWith("Contracts."):
+            args = normalizeContractsCallsArgs(ctx, item.call);
+            break;
+        }
+
+        // Create a new call object and push it to the calls array
+        const call = new CallNorm({
+          id: item.call.id,
+          blockHash: block.header.hash,
+          timestamp: new Date(block.header.timestamp),
+          name: item.call.name,
+          args,
+          success: item.call.success,
+          origin: item.call.origin,
+        });
+        calls.push(call);
       }
     }
   }
   await ctx.store.save(events);
+  await ctx.store.save(calls);
 });
