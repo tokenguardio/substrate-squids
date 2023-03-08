@@ -14,7 +14,7 @@ import {
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `https://reef.archive.subsquid.io/graphql`,
+    archive: `https://kusama.archive.subsquid.io/graphql`,
   })
   .addEvent("*", {
     data: {
