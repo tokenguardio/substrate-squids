@@ -25,14 +25,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   let events: EventNorm[] = [];
   for (let block of ctx.blocks) {
     for (let item of block.items) {
-      if (
-        item.kind === "event" &&
-        !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
-          item.event.name
-        )
-      ) {
-        console.log(item.event.name);
-      }
       // Check if the item is an event and if its name starts with one of the prefixes
       if (
         item.kind === "event" &&
