@@ -1,6 +1,6 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm, CallNorm } from "./model";
+import { EventNorm } from "./model";
 import {
   normalizeSystemEventsArgs,
   normalizeBalancesEventsArgs,
