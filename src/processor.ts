@@ -1,6 +1,6 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm } from "./model";
+import { EventNorm, CallNorm } from "./model";
 import {
   normalizeSystemEventsArgs,
   normalizeBalancesEventsArgs,
@@ -21,10 +21,19 @@ const processor = new SubstrateBatchProcessor()
     data: {
       event: true,
     },
-  } as const);
+  })
+  .addCall("*", {
+    data: {
+      call: true,
+      extrinsic: {
+        success: true,
+      },
+    },
+  });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   let events: EventNorm[] = [];
+  let calls: CallNorm[] = [];
   for (let block of ctx.blocks) {
     for (let item of block.items) {
       // Check if the item is an event and if its name starts with one of the prefixes
