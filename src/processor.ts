@@ -4,8 +4,6 @@ import { EventNorm, CallNorm } from "./model";
 import {
   normalizeSystemEventsArgs,
   normalizeBalancesEventsArgs,
-  // normalizeContractsEventsArgs,
-  // normalizeContractsCallsArgs,
 } from "./mappings";
 
 // Avoid type errors when serializing BigInts
@@ -21,19 +19,10 @@ const processor = new SubstrateBatchProcessor()
     data: {
       event: true,
     },
-  })
-  .addCall("*", {
-    data: {
-      call: true,
-      extrinsic: {
-        success: true,
-      },
-    },
   });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   let events: EventNorm[] = [];
-  // let calls: CallNorm[] = [];
   for (let block of ctx.blocks) {
     for (let item of block.items) {
       if (
@@ -48,7 +37,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       if (
         item.kind === "event" &&
         (item.event.name.startsWith("Balances.") ||
-          item.event.name.startsWith("Contracts.") ||
           item.event.name.startsWith("System.")) &&
         !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
           item.event.name
@@ -60,9 +48,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           case item.event.name.startsWith("Balances."):
             args = normalizeBalancesEventsArgs(ctx, item.event);
             break;
-          // case item.event.name.startsWith("Contracts."):
-          //   args = normalizeContractsEventsArgs(ctx, item.event);
-          //   break;
           case item.event.name.startsWith("System."):
             args = normalizeSystemEventsArgs(ctx, item.event);
             break;
@@ -79,32 +64,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         });
         events.push(event);
       }
-      // else if (
-      //   item.kind === "call" &&
-      //   item.call.name.startsWith("Contracts.")
-      // ) {
-      //   // Normalize the call arguments based on the prefix
-      //   let args;
-      //   switch (true) {
-      //     case item.call.name.startsWith("Contracts."):
-      //       args = normalizeContractsCallsArgs(ctx, item.call);
-      //       break;
-      //   }
-
-      //   // Create a new call object and push it to the calls array
-      //   const call = new CallNorm({
-      //     id: item.call.id,
-      //     blockHash: block.header.hash,
-      //     timestamp: new Date(block.header.timestamp),
-      //     name: item.call.name,
-      //     args,
-      //     success: item.call.success,
-      //     origin: item.call.origin,
-      //   });
-      //   calls.push(call);
-      // }
     }
   }
   await ctx.store.save(events);
-  // await ctx.store.save(calls);
 });
