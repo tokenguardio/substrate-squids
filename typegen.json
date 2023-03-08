@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "chainSpecVersions.jsonl",
+  "specVersions": "https://efinity.archive.subsquid.io/graphql",
   "events": true,
   "calls": true,
   "storage": []

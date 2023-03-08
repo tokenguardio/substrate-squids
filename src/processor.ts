@@ -4,8 +4,8 @@ import { EventNorm, CallNorm } from "./model";
 import {
   normalizeSystemEventsArgs,
   normalizeBalancesEventsArgs,
-  normalizeContractsEventsArgs,
-  normalizeContractsCallsArgs,
+  // normalizeContractsEventsArgs,
+  // normalizeContractsCallsArgs,
 } from "./mappings";
 
 // Avoid type errors when serializing BigInts
@@ -15,7 +15,7 @@ import {
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
+    archive: `https://efinity.archive.subsquid.io/graphql`,
   })
   .addEvent("*", {
     data: {
@@ -33,9 +33,17 @@ const processor = new SubstrateBatchProcessor()
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   let events: EventNorm[] = [];
-  let calls: CallNorm[] = [];
+  // let calls: CallNorm[] = [];
   for (let block of ctx.blocks) {
     for (let item of block.items) {
+      if (
+        item.kind === "event" &&
+        !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
+          item.event.name
+        )
+      ) {
+        console.log(item.event.name);
+      }
       // Check if the item is an event and if its name starts with one of the prefixes
       if (
         item.kind === "event" &&
@@ -52,9 +60,9 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           case item.event.name.startsWith("Balances."):
             args = normalizeBalancesEventsArgs(ctx, item.event);
             break;
-          case item.event.name.startsWith("Contracts."):
-            args = normalizeContractsEventsArgs(ctx, item.event);
-            break;
+          // case item.event.name.startsWith("Contracts."):
+          //   args = normalizeContractsEventsArgs(ctx, item.event);
+          //   break;
           case item.event.name.startsWith("System."):
             args = normalizeSystemEventsArgs(ctx, item.event);
             break;
@@ -70,32 +78,33 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           extrinsicSuccess: item.event.extrinsic?.success,
         });
         events.push(event);
-      } else if (
-        item.kind === "call" &&
-        item.call.name.startsWith("Contracts.")
-      ) {
-        // Normalize the call arguments based on the prefix
-        let args;
-        switch (true) {
-          case item.call.name.startsWith("Contracts."):
-            args = normalizeContractsCallsArgs(ctx, item.call);
-            break;
-        }
-
-        // Create a new call object and push it to the calls array
-        const call = new CallNorm({
-          id: item.call.id,
-          blockHash: block.header.hash,
-          timestamp: new Date(block.header.timestamp),
-          name: item.call.name,
-          args,
-          success: item.call.success,
-          origin: item.call.origin,
-        });
-        calls.push(call);
       }
+      // else if (
+      //   item.kind === "call" &&
+      //   item.call.name.startsWith("Contracts.")
+      // ) {
+      //   // Normalize the call arguments based on the prefix
+      //   let args;
+      //   switch (true) {
+      //     case item.call.name.startsWith("Contracts."):
+      //       args = normalizeContractsCallsArgs(ctx, item.call);
+      //       break;
+      //   }
+
+      //   // Create a new call object and push it to the calls array
+      //   const call = new CallNorm({
+      //     id: item.call.id,
+      //     blockHash: block.header.hash,
+      //     timestamp: new Date(block.header.timestamp),
+      //     name: item.call.name,
+      //     args,
+      //     success: item.call.success,
+      //     origin: item.call.origin,
+      //   });
+      //   calls.push(call);
+      // }
     }
   }
   await ctx.store.save(events);
-  await ctx.store.save(calls);
+  // await ctx.store.save(calls);
 });
