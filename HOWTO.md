@@ -12,7 +12,7 @@ Instructions on how to develop squid that will index choosen events and calls an
     - [3. Generate mapping templates](#3-generate-mapping-templates)
     - [4. Add mappings](#4-add-mappings)
     - [5. Change processor logic](#5-change-processor-logic)
-    - [5. Update Github workflow](#5-update-github-workflow)
+    - [6. Update Github workflow](#6-update-github-workflow)
 
 ## Flow
 
@@ -171,7 +171,7 @@ case "Staking.Bonded":
 
 You can check out `azero-testnet` for an example of processor that also handles calls.
 
-### 5. Update Github workflow
+### 6. Update Github workflow
 
 In `.github/workflows/ecr-deploy.yaml` change `"branch"` string to correct branch name.
 
