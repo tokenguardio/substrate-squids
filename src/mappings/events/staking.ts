@@ -133,10 +133,14 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
         return {
           reward,
           remainder,
+          stash: null,
+          amount: null,
         };
       } else if (e.isV1050) {
         let [stash, amount] = e.asV1050;
         return {
+          reward: null,
+          remainder: null,
           stash: bufferToHex(stash),
           amount,
         };
