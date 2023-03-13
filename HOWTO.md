@@ -9,7 +9,7 @@ Instructions on how to develop squid that will index choosen events and calls an
   - [Flow](#flow)
     - [1. Create new branch from template on main](#1-create-new-branch-from-template-on-main)
     - [2. Generate typings](#2-generate-typings)
-    - [3. Generate mapping templates](#3-generate-mapping-templates)
+    - [3. Generate mapping templates (optional)](#3-generate-mapping-templates-optional)
     - [4. Add mappings](#4-add-mappings)
     - [5. Change processor logic](#5-change-processor-logic)
     - [6. Update Github workflow](#6-update-github-workflow)
@@ -93,11 +93,13 @@ make typegen
 
 It will generate types in `src/types/` folder.
 
-### 3. Generate mapping templates
+### 3. Generate mapping templates (optional)
 
 We are currently interested in events from pallets: `Balances`, `Staking`, `System`, `Contracts` and in calls from pallet `Contracts`. Arguments from these events and calls need to be normalized across their versions.
 
-`src/tools/mapping-generator.ts` is a helper script that can be used to create templates for mappings. It reads from previously generated `types/events.ts` and `types/calls.ts` and creates template files with mappings for pallets that are specified.
+There is a bit of repetitive writing when doing that but you can automate this to some extent using `mapping-generator`.
+
+`src/tools/mapping-generator.ts` is a simple helper script that can be used to create templates for mappings. It reads from previously generated `types/events.ts` and `types/calls.ts` and creates template files with mappings for pallets that are specified.
 
 To use it provide pallet names in the constructor in `mapping-generator.ts` file:
 
