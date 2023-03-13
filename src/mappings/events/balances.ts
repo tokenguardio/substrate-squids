@@ -91,7 +91,7 @@ export function normalizeBalancesEventArgs(ctx: ChainContext, event: Event) {
         return {
           from: bufferToHex(from),
           to: bufferToHex(to),
-          value,
+          amount: value,
         };
       } else {
         throw new UnknownVersionError(event.name);
