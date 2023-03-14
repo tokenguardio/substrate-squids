@@ -20,7 +20,8 @@ const processor = new SubstrateBatchProcessor()
     data: {
       event: true,
     },
-  } as const);
+  })
+  .setTypesBundle("../typesBundle.json");
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   let events: EventNorm[] = [];
