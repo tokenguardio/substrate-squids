@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "azeroMainnetVersions.jsonl",
+  "specVersions": "azeroSpecVersions.jsonl",
   "typesBundle": "typesBundle.json",
   "events": true,
   "calls": true,
