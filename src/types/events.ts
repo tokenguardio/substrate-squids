@@ -3,6 +3,7 @@ import {Chain, ChainContext, EventContext, Event, Result, Option} from './suppor
 import * as v3 from './v3'
 import * as v12 from './v12'
 import * as v39 from './v39'
+import * as v58 from './v58'
 
 export class AlephChangeEmergencyFinalizerEvent {
     private readonly _chain: Chain
@@ -1065,6 +1066,21 @@ export class MultisigMultisigExecutedEvent {
         assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigExecuted') === '303cb15b241c821ed02efcceb1d8f92a11e2a124e8eef73810b68e2592455034'
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get asV58(): {approving: Uint8Array, timepoint: v58.Timepoint, multisig: Uint8Array, callHash: Uint8Array, result: v58.Type_32} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class MultisigNewMultisigEvent {
@@ -1495,6 +1511,35 @@ export class SchedulerCallLookupFailedEvent {
     }
 }
 
+export class SchedulerCallUnavailableEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Scheduler.CallUnavailable')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The call for the provided hash was not found so the task has been aborted.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Scheduler.CallUnavailable') === '3f8a02e4aab86c69eee850370e5a22ba709a5a92af04e5636b8cbc2a1920b477'
+    }
+
+    /**
+     * The call for the provided hash was not found so the task has been aborted.
+     */
+    get asV58(): {task: [number, number], id: (Uint8Array | undefined)} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class SchedulerCanceledEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1594,6 +1639,79 @@ export class SchedulerDispatchedEvent {
      */
     get asV39(): {task: [number, number], id: (Uint8Array | undefined), result: v39.Type_30} {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Dispatched some task.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Scheduler.Dispatched') === 'b67102cc706599639b8e52e776b81c51142dad43652e91e7e72197b7df9a63f4'
+    }
+
+    /**
+     * Dispatched some task.
+     */
+    get asV58(): {task: [number, number], id: (Uint8Array | undefined), result: v58.Type_32} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SchedulerPeriodicFailedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Scheduler.PeriodicFailed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The given task was unable to be renewed since the agenda is full at that block.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Scheduler.PeriodicFailed') === '3f8a02e4aab86c69eee850370e5a22ba709a5a92af04e5636b8cbc2a1920b477'
+    }
+
+    /**
+     * The given task was unable to be renewed since the agenda is full at that block.
+     */
+    get asV58(): {task: [number, number], id: (Uint8Array | undefined)} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SchedulerPermanentlyOverweightEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Scheduler.PermanentlyOverweight')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The given task can never be executed since it is overweight.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Scheduler.PermanentlyOverweight') === '3f8a02e4aab86c69eee850370e5a22ba709a5a92af04e5636b8cbc2a1920b477'
+    }
+
+    /**
+     * The given task can never be executed since it is overweight.
+     */
+    get asV58(): {task: [number, number], id: (Uint8Array | undefined)} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1723,6 +1841,27 @@ export class StakingBondedEvent {
         assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An account has bonded this amount. \[stash, amount\]
+     * 
+     * NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
+     * it will not be emitted for staking rewards when they are added to stake.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.Bonded') === '9623d141834cd425342a1ff7a2b2265acd552799bcd6a0df67eb08a661e2215d'
+    }
+
+    /**
+     * An account has bonded this amount. \[stash, amount\]
+     * 
+     * NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
+     * it will not be emitted for staking rewards when they are added to stake.
+     */
+    get asV58(): {stash: Uint8Array, amount: bigint} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class StakingChilledEvent {
@@ -1752,6 +1891,21 @@ export class StakingChilledEvent {
      */
     get asV12(): Uint8Array {
         assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An account has stopped participating as either a validator or nominator.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.Chilled') === '7f6c53511d7cf7d5d6d53c9bd68762f88e130eef3cdaff66e227fd21c493b12c'
+    }
+
+    /**
+     * An account has stopped participating as either a validator or nominator.
+     */
+    get asV58(): {stash: Uint8Array} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1787,6 +1941,23 @@ export class StakingEraPaidEvent {
         assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * The era payout has been set; the first balance is the validator-payout; the second is
+     * the remainder from the maximum amount of reward.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.EraPaid') === '940fb56de13a3a5bb887ff8bc3518465d73e48a2e4418a6edb32a9d338f0b44a'
+    }
+
+    /**
+     * The era payout has been set; the first balance is the validator-payout; the second is
+     * the remainder from the maximum amount of reward.
+     */
+    get asV58(): {eraIndex: number, validatorPayout: bigint, remainder: bigint} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class StakingKickedEvent {
@@ -1814,6 +1985,21 @@ export class StakingKickedEvent {
      */
     get asV12(): [Uint8Array, Uint8Array] {
         assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A nominator has been kicked from a validator.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.Kicked') === 'd7d337878d792eb4a5ab3986a889ac0dcae3a639d0158fd9509bad8b5f25f81a'
+    }
+
+    /**
+     * A nominator has been kicked from a validator.
+     */
+    get asV58(): {nominator: Uint8Array, stash: Uint8Array} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1847,6 +2033,23 @@ export class StakingOldSlashingReportDiscardedEvent {
         assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An old slashing report from a prior era was discarded because it could
+     * not be processed.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.OldSlashingReportDiscarded') === '75fa09d2d8b5fbcbe4f75feb6c886998092453010ae364a5b06b9bb6319f1086'
+    }
+
+    /**
+     * An old slashing report from a prior era was discarded because it could
+     * not be processed.
+     */
+    get asV58(): {sessionIndex: number} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class StakingPayoutStartedEvent {
@@ -1874,6 +2077,21 @@ export class StakingPayoutStartedEvent {
      */
     get asV12(): [number, Uint8Array] {
         assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The stakers' rewards are getting paid.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.PayoutStarted') === 'd95599bb0ef0f714befa738223f11c2fc8127ccc863fcf601c59c2c90393c3cf'
+    }
+
+    /**
+     * The stakers' rewards are getting paid.
+     */
+    get asV58(): {eraIndex: number, validatorStash: Uint8Array} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1905,6 +2123,21 @@ export class StakingRewardedEvent {
         assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * The nominator has been rewarded by this amount.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.Rewarded') === '9623d141834cd425342a1ff7a2b2265acd552799bcd6a0df67eb08a661e2215d'
+    }
+
+    /**
+     * The nominator has been rewarded by this amount.
+     */
+    get asV58(): {stash: Uint8Array, amount: bigint} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class StakingSlashedEvent {
@@ -1934,6 +2167,21 @@ export class StakingSlashedEvent {
      */
     get asV12(): [Uint8Array, bigint] {
         assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * One staker (and potentially its nominators) has been slashed by the given amount.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.Slashed') === '8043a273ae232adf290e1fbbd88711bdf078eb5beb2a947de455999b434e7896'
+    }
+
+    /**
+     * One staker (and potentially its nominators) has been slashed by the given amount.
+     */
+    get asV58(): {staker: Uint8Array, amount: bigint} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2023,6 +2271,21 @@ export class StakingUnbondedEvent {
         assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An account has unbonded this amount.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.Unbonded') === '9623d141834cd425342a1ff7a2b2265acd552799bcd6a0df67eb08a661e2215d'
+    }
+
+    /**
+     * An account has unbonded this amount.
+     */
+    get asV58(): {stash: Uint8Array, amount: bigint} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class StakingValidatorPrefsSetEvent {
@@ -2050,6 +2313,21 @@ export class StakingValidatorPrefsSetEvent {
      */
     get asV39(): [Uint8Array, v39.ValidatorPrefs] {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A validator has set their preferences.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.ValidatorPrefsSet') === 'ddd49ae78e2f486962719114045bf4dd54c48ed4387a2f0ad91dc62c7bfc3212'
+    }
+
+    /**
+     * A validator has set their preferences.
+     */
+    get asV58(): {stash: Uint8Array, prefs: v58.ValidatorPrefs} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2081,6 +2359,23 @@ export class StakingWithdrawnEvent {
      */
     get asV12(): [Uint8Array, bigint] {
         assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
+     * from the unlocking queue.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Staking.Withdrawn') === '9623d141834cd425342a1ff7a2b2265acd552799bcd6a0df67eb08a661e2215d'
+    }
+
+    /**
+     * An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
+     * from the unlocking queue.
+     */
+    get asV58(): {stash: Uint8Array, amount: bigint} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2201,6 +2496,21 @@ export class SudoSudidEvent {
         assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Sudo.Sudid') === '1b4cd14e3ef27d194a19f72ca99c0748bad5378dacf5240cdcde1536e1d11dad'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV58(): {sudoResult: v58.Type_32} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SudoSudoAsDoneEvent {
@@ -2258,6 +2568,21 @@ export class SudoSudoAsDoneEvent {
      */
     get asV39(): {sudoResult: v39.Type_30} {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Sudo.SudoAsDone') === '1b4cd14e3ef27d194a19f72ca99c0748bad5378dacf5240cdcde1536e1d11dad'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV58(): {sudoResult: v58.Type_32} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2348,6 +2673,21 @@ export class SystemExtrinsicFailedEvent {
         assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An extrinsic failed.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('System.ExtrinsicFailed') === '36c29895cd15b6f845bb064a671635ce07ef9de9648695c2803020e8510d0fb3'
+    }
+
+    /**
+     * An extrinsic failed.
+     */
+    get asV58(): {dispatchError: v58.DispatchError, dispatchInfo: v58.DispatchInfo} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SystemExtrinsicSuccessEvent {
@@ -2390,6 +2730,21 @@ export class SystemExtrinsicSuccessEvent {
      */
     get asV39(): {dispatchInfo: v39.DispatchInfo} {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An extrinsic completed successfully.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('System.ExtrinsicSuccess') === '6b78214e1591ecc2de1662ebf5ca93838612414a62415cde1cdd2962f8235a92'
+    }
+
+    /**
+     * An extrinsic completed successfully.
+     */
+    get asV58(): {dispatchInfo: v58.DispatchInfo} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3000,6 +3355,23 @@ export class UtilityBatchInterruptedEvent {
         assert(this.isV39)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Utility.BatchInterrupted') === '14dbb9456065a44deeed159d4dbd21796ec92754c0494d698c9bcc529d0f7279'
+    }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get asV58(): {index: number, error: v58.DispatchError} {
+        assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class UtilityDispatchedAsEvent {
@@ -3042,6 +3414,21 @@ export class UtilityDispatchedAsEvent {
      */
     get asV39(): {result: v39.Type_30} {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A call was dispatched.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Utility.DispatchedAs') === 'd15218d9451baa25e4e3c2b30a15d679f7c3c9aa3d43b64b531831430663eb58'
+    }
+
+    /**
+     * A call was dispatched.
+     */
+    get asV58(): {result: v58.Type_32} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3100,6 +3487,21 @@ export class UtilityItemFailedEvent {
      */
     get asV39(): {error: v39.DispatchError} {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get isV58(): boolean {
+        return this._chain.getEventHash('Utility.ItemFailed') === '58463e011dfd19c6786d4056e9e9452b33b4cb0fcf9c6e8c032e8ad7d16b0d34'
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get asV58(): {error: v58.DispatchError} {
+        assert(this.isV58)
         return this._chain.decodeEvent(this.event)
     }
 }

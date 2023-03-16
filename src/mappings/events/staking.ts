@@ -28,6 +28,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           stash: bufferToHex(stash),
           amount,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -38,6 +40,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
         return {
           stash: bufferToHex(stash),
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -50,6 +54,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           validatorPayout,
           remainder,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -61,6 +67,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           nominator: bufferToHex(nominator),
           stash: bufferToHex(stash),
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -71,6 +79,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
         return {
           sessionIndex,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -82,6 +92,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           eraIndex,
           validatorStash: bufferToHex(validatorStash),
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -93,6 +105,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           stash: bufferToHex(stash),
           amount,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -101,9 +115,11 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       if (e.isV12) {
         let [validator, amount] = e.asV12;
         return {
-          validator: bufferToHex(validator),
+          staker: bufferToHex(validator),
           amount,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -129,6 +145,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           stash: bufferToHex(stash),
           amount,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -140,6 +158,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           stash: bufferToHex(stash),
           prefs,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -151,6 +171,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           stash: bufferToHex(stash),
           amount,
         };
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }

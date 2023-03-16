@@ -36,6 +36,8 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         };
       } else if (e.isV39) {
         return event.args;
+      } else if (e.isV58) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }
@@ -45,6 +47,8 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         let dispatchInfo = e.asV3;
         return { dispatchInfo };
       } else if (e.isV39) {
+        return event.args;
+      } else if (e.isV58) {
         return event.args;
       } else {
         throw new UnknownVersionError(event.name);

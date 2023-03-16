@@ -3,6 +3,7 @@ import {Chain, ChainContext, CallContext, Call, Result, Option} from './support'
 import * as v3 from './v3'
 import * as v12 from './v12'
 import * as v39 from './v39'
+import * as v58 from './v58'
 
 export class AlephChangeValidatorsCall {
     private readonly _chain: Chain
@@ -858,6 +859,45 @@ export class IdentityAddRegistrarCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Add a registrar to the system.
+     * 
+     * The dispatch origin for this call must be `T::RegistrarOrigin`.
+     * 
+     * - `account`: the account of the registrar.
+     * 
+     * Emits `RegistrarAdded` if successful.
+     * 
+     * # <weight>
+     * - `O(R)` where `R` registrar-count (governance-bounded and code-bounded).
+     * - One storage mutation (codec `O(R)`).
+     * - One event.
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Identity.add_registrar') === '2842be90a4599435dbefe83c28be9576bf64e6ff14aa9fa87c5fdb6255ef27b2'
+    }
+
+    /**
+     * Add a registrar to the system.
+     * 
+     * The dispatch origin for this call must be `T::RegistrarOrigin`.
+     * 
+     * - `account`: the account of the registrar.
+     * 
+     * Emits `RegistrarAdded` if successful.
+     * 
+     * # <weight>
+     * - `O(R)` where `R` registrar-count (governance-bounded and code-bounded).
+     * - One storage mutation (codec `O(R)`).
+     * - One event.
+     * # </weight>
+     */
+    get asV58(): {account: v58.MultiAddress} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class IdentityAddSubCall {
@@ -1153,6 +1193,59 @@ export class IdentityProvideJudgementCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Provide a judgement for an account's identity.
+     * 
+     * The dispatch origin for this call must be _Signed_ and the sender must be the account
+     * of the registrar whose index is `reg_index`.
+     * 
+     * - `reg_index`: the index of the registrar whose judgement is being made.
+     * - `target`: the account whose identity the judgement is upon. This must be an account
+     *   with a registered identity.
+     * - `judgement`: the judgement of the registrar of index `reg_index` about `target`.
+     * - `identity`: The hash of the [`IdentityInfo`] for that the judgement is provided.
+     * 
+     * Emits `JudgementGiven` if successful.
+     * 
+     * # <weight>
+     * - `O(R + X)`.
+     * - One balance-transfer operation.
+     * - Up to one account-lookup operation.
+     * - Storage: 1 read `O(R)`, 1 mutate `O(R + X)`.
+     * - One event.
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Identity.provide_judgement') === '293a16f5e8f521553f92204e3de7063fafc7905d71ca7812337b8bc6e200bcf9'
+    }
+
+    /**
+     * Provide a judgement for an account's identity.
+     * 
+     * The dispatch origin for this call must be _Signed_ and the sender must be the account
+     * of the registrar whose index is `reg_index`.
+     * 
+     * - `reg_index`: the index of the registrar whose judgement is being made.
+     * - `target`: the account whose identity the judgement is upon. This must be an account
+     *   with a registered identity.
+     * - `judgement`: the judgement of the registrar of index `reg_index` about `target`.
+     * - `identity`: The hash of the [`IdentityInfo`] for that the judgement is provided.
+     * 
+     * Emits `JudgementGiven` if successful.
+     * 
+     * # <weight>
+     * - `O(R + X)`.
+     * - One balance-transfer operation.
+     * - Up to one account-lookup operation.
+     * - Storage: 1 read `O(R)`, 1 mutate `O(R + X)`.
+     * - One event.
+     * # </weight>
+     */
+    get asV58(): {regIndex: number, target: v58.MultiAddress, judgement: v58.Judgement, identity: Uint8Array} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class IdentityQuitSubCall {
@@ -1400,6 +1493,45 @@ export class IdentitySetAccountIdCall {
      */
     get asV39(): {index: number, new: Uint8Array} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Change the account associated with a registrar.
+     * 
+     * The dispatch origin for this call must be _Signed_ and the sender must be the account
+     * of the registrar whose index is `index`.
+     * 
+     * - `index`: the index of the registrar whose fee is to be set.
+     * - `new`: the new account ID.
+     * 
+     * # <weight>
+     * - `O(R)`.
+     * - One storage mutation `O(R)`.
+     * - Benchmark: 8.823 + R * 0.32 µs (min squares analysis)
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Identity.set_account_id') === '7c569a09ae3438c742df387f66c9e012ebdf2af1dfe1befa9aba3df316cee1aa'
+    }
+
+    /**
+     * Change the account associated with a registrar.
+     * 
+     * The dispatch origin for this call must be _Signed_ and the sender must be the account
+     * of the registrar whose index is `index`.
+     * 
+     * - `index`: the index of the registrar whose fee is to be set.
+     * - `new`: the new account ID.
+     * 
+     * # <weight>
+     * - `O(R)`.
+     * - One storage mutation `O(R)`.
+     * - Benchmark: 8.823 + R * 0.32 µs (min squares analysis)
+     * # </weight>
+     */
+    get asV58(): {index: number, new: v58.MultiAddress} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1741,6 +1873,89 @@ export class MultisigApproveAsMultiCall {
         assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call_hash`: The hash of the call to be executed.
+     * 
+     * NOTE: If this is the final approval, you will want to use `as_multi` instead.
+     * 
+     * # <weight>
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * ----------------------------------
+     * - DB Weight:
+     *     - Read: Multisig Storage, [Caller Account]
+     *     - Write: Multisig Storage, [Caller Account]
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Multisig.approve_as_multi') === '88561668497d8fdee3be21d28e6e68bc1cd9568f418501a4b294fe2b9803acb4'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call_hash`: The hash of the call to be executed.
+     * 
+     * NOTE: If this is the final approval, you will want to use `as_multi` instead.
+     * 
+     * # <weight>
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * ----------------------------------
+     * - DB Weight:
+     *     - Read: Multisig Storage, [Caller Account]
+     *     - Write: Multisig Storage, [Caller Account]
+     * # </weight>
+     */
+    get asV58(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v58.Timepoint | undefined), callHash: Uint8Array, maxWeight: v58.Weight} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiCall {
@@ -1858,6 +2073,109 @@ export class MultisigAsMultiCall {
      */
     get asV3(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v3.Timepoint | undefined), call: Uint8Array, storeCall: boolean, maxWeight: bigint} {
         assert(this.isV3)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === 'b2c8f77d023f5ef303280cf9cc29fb36b6182a3846ca21594feca90f81c19a5e'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV58(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v58.Timepoint | undefined), call: v58.Call, maxWeight: v58.Weight} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2007,6 +2325,51 @@ export class MultisigAsMultiThreshold1Call {
      */
     get asV39(): {otherSignatories: Uint8Array[], call: v39.Call} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'ec1f6426256c5889aa3709fe518ea6b28cd22cda218f3a62458c961e0b859ac1'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV58(): {otherSignatories: Uint8Array[], call: v58.Call} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2266,6 +2629,53 @@ export class NominationPoolsCreateCall {
      */
     get asV39(): {amount: bigint, root: Uint8Array, nominator: Uint8Array, stateToggler: Uint8Array} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Create a new delegation pool.
+     * 
+     * # Arguments
+     * 
+     * * `amount` - The amount of funds to delegate to the pool. This also acts of a sort of
+     *   deposit since the pools creator cannot fully unbond funds until the pool is being
+     *   destroyed.
+     * * `index` - A disambiguation index for creating the account. Likely only useful when
+     *   creating multiple pools in the same extrinsic.
+     * * `root` - The account to set as [`PoolRoles::root`].
+     * * `nominator` - The account to set as the [`PoolRoles::nominator`].
+     * * `state_toggler` - The account to set as the [`PoolRoles::state_toggler`].
+     * 
+     * # Note
+     * 
+     * In addition to `amount`, the caller will transfer the existential deposit; so the caller
+     * needs at have at least `amount + existential_deposit` transferrable.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('NominationPools.create') === '7ae05fded37735d5e310868c744bd330fdc58661eabd48fb4518ad22fc21bba3'
+    }
+
+    /**
+     * Create a new delegation pool.
+     * 
+     * # Arguments
+     * 
+     * * `amount` - The amount of funds to delegate to the pool. This also acts of a sort of
+     *   deposit since the pools creator cannot fully unbond funds until the pool is being
+     *   destroyed.
+     * * `index` - A disambiguation index for creating the account. Likely only useful when
+     *   creating multiple pools in the same extrinsic.
+     * * `root` - The account to set as [`PoolRoles::root`].
+     * * `nominator` - The account to set as the [`PoolRoles::nominator`].
+     * * `state_toggler` - The account to set as the [`PoolRoles::state_toggler`].
+     * 
+     * # Note
+     * 
+     * In addition to `amount`, the caller will transfer the existential deposit; so the caller
+     * needs at have at least `amount + existential_deposit` transferrable.
+     */
+    get asV58(): {amount: bigint, root: v58.MultiAddress, nominator: v58.MultiAddress, stateToggler: v58.MultiAddress} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2607,6 +3017,75 @@ export class NominationPoolsUnbondCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Unbond up to `unbonding_points` of the `member_account`'s funds from the pool. It
+     * implicitly collects the rewards one last time, since not doing so would mean some
+     * rewards would be forfeited.
+     * 
+     * Under certain conditions, this call can be dispatched permissionlessly (i.e. by any
+     * account).
+     * 
+     * # Conditions for a permissionless dispatch.
+     * 
+     * * The pool is blocked and the caller is either the root or state-toggler. This is
+     *   refereed to as a kick.
+     * * The pool is destroying and the member is not the depositor.
+     * * The pool is destroying, the member is the depositor and no other members are in the
+     *   pool.
+     * 
+     * ## Conditions for permissioned dispatch (i.e. the caller is also the
+     * `member_account`):
+     * 
+     * * The caller is not the depositor.
+     * * The caller is the depositor, the pool is destroying and no other members are in the
+     *   pool.
+     * 
+     * # Note
+     * 
+     * If there are too many unlocking chunks to unbond with the pool account,
+     * [`Call::pool_withdraw_unbonded`] can be called to try and minimize unlocking chunks. If
+     * there are too many unlocking chunks, the result of this call will likely be the
+     * `NoMoreChunks` error from the staking system.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('NominationPools.unbond') === '64450cc91b317addf9e9ebaf23d031c6cc889c6e14ecf696013d737cfe185ec8'
+    }
+
+    /**
+     * Unbond up to `unbonding_points` of the `member_account`'s funds from the pool. It
+     * implicitly collects the rewards one last time, since not doing so would mean some
+     * rewards would be forfeited.
+     * 
+     * Under certain conditions, this call can be dispatched permissionlessly (i.e. by any
+     * account).
+     * 
+     * # Conditions for a permissionless dispatch.
+     * 
+     * * The pool is blocked and the caller is either the root or state-toggler. This is
+     *   refereed to as a kick.
+     * * The pool is destroying and the member is not the depositor.
+     * * The pool is destroying, the member is the depositor and no other members are in the
+     *   pool.
+     * 
+     * ## Conditions for permissioned dispatch (i.e. the caller is also the
+     * `member_account`):
+     * 
+     * * The caller is not the depositor.
+     * * The caller is the depositor, the pool is destroying and no other members are in the
+     *   pool.
+     * 
+     * # Note
+     * 
+     * If there are too many unlocking chunks to unbond with the pool account,
+     * [`Call::pool_withdraw_unbonded`] can be called to try and minimize unlocking chunks. If
+     * there are too many unlocking chunks, the result of this call will likely be the
+     * `NoMoreChunks` error from the staking system.
+     */
+    get asV58(): {memberAccount: v58.MultiAddress, unbondingPoints: bigint} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class NominationPoolsUpdateRolesCall {
@@ -2713,6 +3192,57 @@ export class NominationPoolsWithdrawUnbondedCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Withdraw unbonded funds from `member_account`. If no bonded funds can be unbonded, an
+     * error is returned.
+     * 
+     * Under certain conditions, this call can be dispatched permissionlessly (i.e. by any
+     * account).
+     * 
+     * # Conditions for a permissionless dispatch
+     * 
+     * * The pool is in destroy mode and the target is not the depositor.
+     * * The target is the depositor and they are the only member in the sub pools.
+     * * The pool is blocked and the caller is either the root or state-toggler.
+     * 
+     * # Conditions for permissioned dispatch
+     * 
+     * * The caller is the target and they are not the depositor.
+     * 
+     * # Note
+     * 
+     * If the target is the depositor, the pool will be destroyed.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('NominationPools.withdraw_unbonded') === '52fb3ae57a795478589c557de25b0d870d311ba397654773c80592329c8a086e'
+    }
+
+    /**
+     * Withdraw unbonded funds from `member_account`. If no bonded funds can be unbonded, an
+     * error is returned.
+     * 
+     * Under certain conditions, this call can be dispatched permissionlessly (i.e. by any
+     * account).
+     * 
+     * # Conditions for a permissionless dispatch
+     * 
+     * * The pool is in destroy mode and the target is not the depositor.
+     * * The target is the depositor and they are the only member in the sub pools.
+     * * The pool is blocked and the caller is either the root or state-toggler.
+     * 
+     * # Conditions for permissioned dispatch
+     * 
+     * * The caller is the target and they are not the depositor.
+     * 
+     * # Note
+     * 
+     * If the target is the depositor, the pool will be destroyed.
+     */
+    get asV58(): {memberAccount: v58.MultiAddress, numSlashingSpans: number} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerCancelCall {
@@ -2807,6 +3337,21 @@ export class SchedulerCancelNamedCall {
         assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Cancel a named scheduled task.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Scheduler.cancel_named') === '2a01c4c05d6bf45e0dc267bd7f6e27df3b3e4b23af7982734357c4de87ef690c'
+    }
+
+    /**
+     * Cancel a named scheduled task.
+     */
+    get asV58(): {id: Uint8Array} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleCall {
@@ -2882,6 +3427,21 @@ export class SchedulerScheduleCall {
      */
     get asV39(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v39.MaybeHashed} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === '670bf883b2ee3e917086942595239600e26cc5fb55a5e1019b074356f4b8f3f0'
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get asV58(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v58.Call} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2967,6 +3527,29 @@ export class SchedulerScheduleAfterCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === 'ddf551d83d8017d796ab8f98a96d25d21d0c6c9431a8a4bae0a858c8786e3820'
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get asV58(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v58.Call} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleNamedCall {
@@ -3042,6 +3625,21 @@ export class SchedulerScheduleNamedCall {
      */
     get asV39(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v39.MaybeHashed} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '6f6ff46a67a93c1eb428282cdc01b5ef17a97988dd1e60e98d77300e03450146'
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get asV58(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v58.Call} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3125,6 +3723,29 @@ export class SchedulerScheduleNamedAfterCall {
      */
     get asV39(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v39.MaybeHashed} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === '32d1bb8954943ad9862eee301214e9b48bfb7afe1bc5813456fbab833da020b0'
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get asV58(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v58.Call} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -4898,6 +5519,39 @@ export class SudoSudoCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '1fb595724b3c92ed9b025254904ce29b37cb6111391afec36bf58ca3dbb5af54'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get asV58(): {call: v58.Call} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoAsCall {
@@ -5017,6 +5671,41 @@ export class SudoSudoAsCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'e1cad343a1b9f9d77f0eb4e2ff3fdceea6e5a61449d0f276d88a695b8e9483d9'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get asV58(): {who: v58.MultiAddress, call: v58.Call} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -5128,6 +5817,39 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV39(): {call: v39.Call, weight: bigint} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '438b102a115ea4a3ec8d29abf53d69c438896ca1e99e0a591633defb772a6299'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
+     */
+    get asV58(): {call: v58.Call, weight: v58.Weight} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5936,6 +6658,45 @@ export class UtilityAsDerivativeCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'f433dc65d51952f1608acefd7380e050ef58103a21fc650e10efb1be72b10ba2'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV58(): {index: number, call: v58.Call} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -6052,6 +6813,57 @@ export class UtilityBatchCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '864be4fff39ae05565001d371639fb27728d265bd34eb7add1c41303c2fd4fa6'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV58(): {calls: v58.Call[]} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -6148,6 +6960,47 @@ export class UtilityBatchAllCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '864be4fff39ae05565001d371639fb27728d265bd34eb7add1c41303c2fd4fa6'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV58(): {calls: v58.Call[]} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -6228,6 +7081,39 @@ export class UtilityDispatchAsCall {
         assert(this.isV39)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '66390e1d10a80c94ebf22cdd03ff139cbdda002bca5ae87d85a12e5f08d2b319'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV58(): {asOrigin: v58.OriginCaller, call: v58.Call} {
+        assert(this.isV58)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -6281,6 +7167,47 @@ export class UtilityForceBatchCall {
      */
     get asV39(): {calls: v39.Call[]} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV58(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '864be4fff39ae05565001d371639fb27728d265bd34eb7add1c41303c2fd4fa6'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV58(): {calls: v58.Call[]} {
+        assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
 }
