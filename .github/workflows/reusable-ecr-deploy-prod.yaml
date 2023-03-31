@@ -90,49 +90,50 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.build-push-ecr.outputs.digest }}
 
-  deploy-eks:
-    name: Deploy image on EKS(tokenguard-prod)
-    needs: build-push
-    runs-on: self-hosted
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - dockerfile: processor.Dockerfile
-            image-tag: ${{ github.sha }}
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
-          aws-region: ${{ env.AWS_REGION }}
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+# Unfortunately as long as this repo is public we cannot let the self-hosted runners run the PRs.
+  # deploy-eks:
+  #   name: Deploy image on EKS(tokenguard-prod)
+  #   needs: build-push
+  #   runs-on: self-hosted
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - dockerfile: processor.Dockerfile
+  #           image-tag: ${{ github.sha }}
+  #   steps:
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+  #         aws-region: ${{ env.AWS_REGION }}
+  #     - name: Login to Amazon ECR
+  #       id: login-ecr
+  #       uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Set image name
-        id: set-image-name
-        run: |
-          branch=$(echo "$GITHUB_REF" | sed 's#refs/heads/##')
-          echo "::set-output name=image-name::tokenguard-prod-squid-$branch-processor"
-          echo "::set-output name=deployment-name::$branch-squid-processor"
+  #     - name: Set image name
+  #       id: set-image-name
+  #       run: |
+  #         branch=$(echo "$GITHUB_REF" | sed 's#refs/heads/##')
+  #         echo "::set-output name=image-name::tokenguard-prod-squid-$branch-processor"
+  #         echo "::set-output name=deployment-name::$branch-squid-processor"
 
-      - name: Deploy to tokenguard-prod
-        uses: christallire/kubectl-aws-eks@1.1.0-arm64-fix2
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ steps.set-image-name.outputs.image-name }}
-          IMAGE_TAG: ${{ matrix.image-tag }}
-          DEPLOYMENT_NAME: ${{ steps.set-image-name.outputs.deployment-name }}
-        with:
-          args: -n prod set image deployment/$DEPLOYMENT_NAME tgv2-client=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+  #     - name: Deploy to tokenguard-prod
+  #       uses: christallire/kubectl-aws-eks@1.1.0-arm64-fix2
+  #       env:
+  #         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
+  #         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  #         ECR_REPOSITORY: ${{ steps.set-image-name.outputs.image-name }}
+  #         IMAGE_TAG: ${{ matrix.image-tag }}
+  #         DEPLOYMENT_NAME: ${{ steps.set-image-name.outputs.deployment-name }}
+  #       with:
+  #         args: -n prod set image deployment/$DEPLOYMENT_NAME tgv2-client=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
-      - name: verify deployment
-        uses: christallire/kubectl-aws-eks@1.1.0-arm64-fix2
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
-          DEPLOYMENT_NAME: ${{ steps.set-image-name.outputs.deployment-name }}
-        with:
-          args: -n prod rollout status deployment/$DEPLOYMENT_NAME
+  #     - name: verify deployment
+  #       uses: christallire/kubectl-aws-eks@1.1.0-arm64-fix2
+  #       env:
+  #         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
+  #         DEPLOYMENT_NAME: ${{ steps.set-image-name.outputs.deployment-name }}
+  #       with:
+  #         args: -n prod rollout status deployment/$DEPLOYMENT_NAME
