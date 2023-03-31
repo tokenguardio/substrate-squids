@@ -1,6 +1,7 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm, CallNorm } from "./model";
+import { EventNorm, CallNorm, AddressMapping } from "./model";
+import * as ss58 from "@subsquid/ss58";
 import {
   normalizeBalancesEventsArgs,
   normalizeStakingEventsArgs,
@@ -8,6 +9,10 @@ import {
   normalizeContractsEventsArgs,
   normalizeContractsCallsArgs,
 } from "./mappings";
+import { SystemNewAccountEvent } from "./types/events";
+import { bufferToHex } from "./utils/utils";
+import { UnknownVersionError } from "./utils/errors";
+import { ChainContext, Event } from "./types/support";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -16,7 +21,7 @@ import {
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
+    archive: "https://aleph-zero-testnet.archive.subsquid.io/graphql",
   })
   .addEvent("*", {
     data: {
@@ -35,6 +40,7 @@ const processor = new SubstrateBatchProcessor()
 processor.run(new TypeormDatabase(), async (ctx) => {
   let events: EventNorm[] = [];
   let calls: CallNorm[] = [];
+  let addressMappings: AddressMapping[] = [];
   for (let block of ctx.blocks) {
     for (let item of block.items) {
       // Check if the item is an event and if its name starts with one of the prefixes
@@ -63,6 +69,15 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           case item.event.name.startsWith("Contracts."):
             args = normalizeContractsEventsArgs(ctx, item.event);
             break;
+        }
+
+        if ((item.event.name as string) === "System.NewAccount") {
+          const mapped = mapAccounts(ctx, item.event);
+          const addressMapping = new AddressMapping({
+            id: mapped.account_hex,
+            ss58: mapped.account_ss58,
+          });
+          addressMappings.push(addressMapping);
         }
 
         // Create a new event object and push it to the events array
@@ -103,4 +118,24 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   }
   await ctx.store.save(calls);
   await ctx.store.save(events);
+  await ctx.store.save(addressMappings);
 });
+
+function mapAccounts(ctx: ChainContext, event: Event) {
+  const e = new SystemNewAccountEvent(ctx, event);
+  if (e.isV12) {
+    let account = e.asV12;
+    return {
+      account_hex: bufferToHex(account),
+      account_ss58: ss58.codec("substrate").encode(account),
+    };
+  } else if (e.isV20) {
+    let { account } = e.asV20;
+    return {
+      account_hex: bufferToHex(account),
+      account_ss58: ss58.codec("substrate").encode(account),
+    };
+  } else {
+    throw new UnknownVersionError(event.name);
+  }
+}
