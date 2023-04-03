@@ -2,10 +2,12 @@ import {
   StakingBondedEvent,
   StakingChilledEvent,
   StakingEraPaidEvent,
+  StakingForceEraEvent,
   StakingKickedEvent,
   StakingOldSlashingReportDiscardedEvent,
   StakingPayoutStartedEvent,
   StakingRewardedEvent,
+  StakingSlashReportedEvent,
   StakingSlashedEvent,
   StakingStakersElectedEvent,
   StakingStakingElectionFailedEvent,
@@ -59,6 +61,13 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       } else {
         throw new UnknownVersionError(event.name);
       }
+    case "Staking.ForceEra":
+      e = new StakingForceEraEvent(ctx, event);
+      if (e.isV59) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
     case "Staking.Kicked":
       e = new StakingKickedEvent(ctx, event);
       if (e.isV12) {
@@ -106,6 +115,13 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else if (e.isV58) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "Staking.SlashReported":
+      e = new StakingSlashReportedEvent(ctx, event);
+      if (e.isV59) {
         return event.args;
       } else {
         throw new UnknownVersionError(event.name);

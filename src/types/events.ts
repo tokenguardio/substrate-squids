@@ -4,6 +4,7 @@ import * as v3 from './v3'
 import * as v12 from './v12'
 import * as v39 from './v39'
 import * as v58 from './v58'
+import * as v59 from './v59'
 
 export class AlephChangeEmergencyFinalizerEvent {
     private readonly _chain: Chain
@@ -513,6 +514,272 @@ export class BalancesWithdrawEvent {
      */
     get asV12(): {who: Uint8Array, amount: bigint} {
         assert(this.isV12)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCalledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Called')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.Called') === '21a729a4d368d7f57eb42f0ec77b595e3270a67ec14974cfcbc643abeda2921f'
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get asV59(): {caller: Uint8Array, contract: Uint8Array} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCodeRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.CodeRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.CodeRemoved') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get asV59(): {codeHash: Uint8Array} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCodeStoredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.CodeStored')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.CodeStored') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get asV59(): {codeHash: Uint8Array} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsContractCodeUpdatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.ContractCodeUpdated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract's code was updated.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.ContractCodeUpdated') === 'f9de6decda4961d31d7cf59e3f8acd4849a220323ebabbb036464d999de54c18'
+    }
+
+    /**
+     * A contract's code was updated.
+     */
+    get asV59(): {contract: Uint8Array, newCodeHash: Uint8Array, oldCodeHash: Uint8Array} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsContractEmittedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.ContractEmitted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A custom event emitted by the contract.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.ContractEmitted') === '7f28393268795b9a97f05e82911cdcc4200d99e9968c1ab6a564f949f753b929'
+    }
+
+    /**
+     * A custom event emitted by the contract.
+     */
+    get asV59(): {contract: Uint8Array, data: Uint8Array} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsDelegateCalledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.DelegateCalled')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract delegate called a code hash.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.DelegateCalled') === '76261d7cbe52d35ce20ad428e69f2cc49c1719d1fbb27a3b951b1e26e8ef5993'
+    }
+
+    /**
+     * A contract delegate called a code hash.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get asV59(): {contract: Uint8Array, codeHash: Uint8Array} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsInstantiatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Instantiated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Contract deployed by address at the specified address.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.Instantiated') === '20f9f9057a4149f58eb48c00359f9800a42b51d4d2168437dfcce668c27a8d37'
+    }
+
+    /**
+     * Contract deployed by address at the specified address.
+     */
+    get asV59(): {deployer: Uint8Array, contract: Uint8Array} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsTerminatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Terminated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Contract has been removed.
+     * 
+     * # Note
+     * 
+     * The only way for a contract to be removed and emitting this event is by calling
+     * `seal_terminate`.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Contracts.Terminated') === '8e0b376b4821223ecd835a0ae76a615e7aa14158260ff9c7f87220449d98175b'
+    }
+
+    /**
+     * Contract has been removed.
+     * 
+     * # Note
+     * 
+     * The only way for a contract to be removed and emitting this event is by calling
+     * `seal_terminate`.
+     */
+    get asV59(): {contract: Uint8Array, beneficiary: Uint8Array} {
+        assert(this.isV59)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1960,6 +2227,35 @@ export class StakingEraPaidEvent {
     }
 }
 
+export class StakingForceEraEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Staking.ForceEra')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A new force era mode was set.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Staking.ForceEra') === 'd01e60727d072e84480126126bc575ed2a927476ff6a196deed5f14861885e98'
+    }
+
+    /**
+     * A new force era mode was set.
+     */
+    get asV59(): {mode: v59.Forcing} {
+        assert(this.isV59)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class StakingKickedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -2136,6 +2432,37 @@ export class StakingRewardedEvent {
      */
     get asV58(): {stash: Uint8Array, amount: bigint} {
         assert(this.isV58)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class StakingSlashReportedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Staking.SlashReported')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A slash for the given validator, for the given percentage of their stake, at the given
+     * era as been reported.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Staking.SlashReported') === 'e39cf2a18a4e10b8687c317e88d62091108b3531886ba13edd6e5b2b3fcd9ddc'
+    }
+
+    /**
+     * A slash for the given validator, for the given percentage of their stake, at the given
+     * era as been reported.
+     */
+    get asV59(): {validator: Uint8Array, fraction: number, slashEra: number} {
+        assert(this.isV59)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3247,6 +3574,35 @@ export class TreasurySpendingEvent {
      */
     get asV39(): {budgetRemaining: bigint} {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class TreasuryUpdatedInactiveEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Treasury.UpdatedInactive')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The inactive funds of the pallet have been updated.
+     */
+    get isV59(): boolean {
+        return this._chain.getEventHash('Treasury.UpdatedInactive') === 'd25083f089d99f72f11dfcdd8481dbdc5c0c6d9c3369646530e2e08cd9f6bbba'
+    }
+
+    /**
+     * The inactive funds of the pallet have been updated.
+     */
+    get asV59(): {reactivated: bigint, deactivated: bigint} {
+        assert(this.isV59)
         return this._chain.decodeEvent(this.event)
     }
 }
