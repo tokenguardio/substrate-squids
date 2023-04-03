@@ -9,6 +9,7 @@ import {
   normalizeContractsCallsArgs,
   mapAccount,
 } from "./mappings";
+import { removeDuplicates } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -115,5 +116,5 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   }
   await ctx.store.save(events);
   await ctx.store.save(calls);
-  await ctx.store.save(addressMappings);
+  await ctx.store.save(removeDuplicates(addressMappings, "id"));
 });
