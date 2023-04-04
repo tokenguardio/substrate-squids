@@ -7,13 +7,13 @@ import {
   BalancesReservedEvent,
   BalancesTransferEvent,
   BalancesUnreservedEvent,
-} from "../../types/events";
-import { ChainContext, Event } from "../../types/support";
-import { bufferToHex } from "../../utils/utils";
+} from "../../../types/events";
+import { ChainContext, Event } from "../../../types/support";
+import { bufferToHex } from "../../../utils/utils";
 import {
   UnknownEventVersionError,
   UnknownEventError,
-} from "../../utils/errors";
+} from "../../../utils/errors";
 
 export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
   let e;
