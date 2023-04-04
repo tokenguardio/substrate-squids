@@ -6,8 +6,14 @@ import * as ss58 from "@subsquid/ss58";
 
 export function mapAccount(ctx: ChainContext, event: Event) {
   const e = new SystemNewAccountEvent(ctx, event);
-  if (e.isV5) {
-    let account = e.asV5;
+  if (e.isV1) {
+    let account = e.asV1;
+    return {
+      account_hex: bufferToHex(account),
+      account_ss58: ss58.codec("substrate").encode(account),
+    };
+  } else if (e.isV926) {
+    let { account } = e.asV926;
     return {
       account_hex: bufferToHex(account),
       account_ss58: ss58.codec("substrate").encode(account),
