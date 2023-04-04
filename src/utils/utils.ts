@@ -11,18 +11,12 @@ export function bufferArrToHexArr(buffers: Uint8Array[]): string[] {
   return buffers.map((b) => bufferToHex(b));
 }
 
-interface argsObject {
-  [key: string]: Uint8Array | any;
-}
-
-export function mapObjUint8ToHex(obj: argsObject): { [key: string]: any } {
-  return Object.entries(obj).reduce(
-    (acc: { [key: string]: any }, [key, value]) => {
-      if (value instanceof Uint8Array) {
-        acc[key] = bufferToHex(value);
-      }
-      return acc;
-    },
-    {}
-  );
+export function removeDuplicates<T>(items: T[], key: keyof T): T[] {
+  const seen = new Set();
+  const filtered = items.filter((i) => {
+    const duplicate = seen.has(i[key]);
+    seen.add(i[key]);
+    return !duplicate;
+  });
+  return filtered;
 }

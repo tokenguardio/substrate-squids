@@ -4,9 +4,15 @@ export class UnknownBufferFormatError extends Error {
   }
 }
 
-export class UnknownVersionError extends Error {
+export class UnknownEventVersionError extends Error {
   constructor(eventName: string) {
-    super(`Uknown version of ${eventName}`);
+    super(`Uknown version of ${eventName} event`);
+  }
+}
+
+export class UnknownCallVersionError extends Error {
+  constructor(callName: string) {
+    super(`Uknown version of ${callName} call`);
   }
 }
 
