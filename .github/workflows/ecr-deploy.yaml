@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  compliance:
     uses: tokenguardio/substrate-squids/.github/workflows/reusable-ecr-deploy.yaml@reusable-workflows
     secrets: inherit
   compliance-new-infra:
