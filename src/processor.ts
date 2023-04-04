@@ -3,7 +3,6 @@ import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { EventNorm, AddressMapping } from "./model";
 import {
   normalizeBalancesEventsArgs,
-  normalizeStakingEventsArgs,
   normalizeSystemEventsArgs,
   mapAccount,
 } from "./mappings";
@@ -16,7 +15,7 @@ import { removeDuplicates } from "./utils/utils";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `https://reef.archive.subsquid.io/graphql`,
+    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
   })
   .addEvent("*", {
     data: {
@@ -33,7 +32,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       if (
         item.kind === "event" &&
         (item.event.name.startsWith("Balances.") ||
-          item.event.name.startsWith("Staking.") ||
           item.event.name.startsWith("System.")) &&
         !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
           item.event.name
@@ -44,9 +42,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         switch (true) {
           case item.event.name.startsWith("Balances."):
             args = normalizeBalancesEventsArgs(ctx, item.event);
-            break;
-          case item.event.name.startsWith("Staking."):
-            args = normalizeStakingEventsArgs(ctx, item.event);
             break;
           case item.event.name.startsWith("System."):
             args = normalizeSystemEventsArgs(ctx, item.event);
