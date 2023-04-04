@@ -8,10 +8,10 @@ import {
   ContractsRemoveCodeCall,
   ContractsSetCodeCall,
   ContractsUploadCodeCall,
-} from "../../types/calls";
-import { ChainContext, Call } from "../../types/support";
-import { bufferToHex } from "../../utils/utils";
-import { UnknownVersionError, UnknownCallError } from "../../utils/errors";
+} from "../../../types/calls";
+import { ChainContext, Call } from "../../../types/support";
+import { bufferToHex } from "../../../utils/utils";
+import { UnknownVersionError, UnknownCallError } from "../../../utils/errors";
 
 export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
   let e;

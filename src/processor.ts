@@ -1,13 +1,15 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm, CallNorm } from "./model";
+import { EventNorm, CallNorm, AddressMapping } from "./model";
 import {
   normalizeBalancesEventsArgs,
   normalizeStakingEventsArgs,
   normalizeSystemEventsArgs,
   normalizeContractsEventsArgs,
   normalizeContractsCallsArgs,
+  mapAccount,
 } from "./mappings";
+import { removeDuplicates } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -33,10 +35,11 @@ const processor = new SubstrateBatchProcessor()
   });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
-  let events: EventNorm[] = [];
-  let calls: CallNorm[] = [];
-  for (let block of ctx.blocks) {
-    for (let item of block.items) {
+  const events: EventNorm[] = [];
+  const calls: CallNorm[] = [];
+  const addressMappings: AddressMapping[] = [];
+  for (const block of ctx.blocks) {
+    for (const item of block.items) {
       // Check if the item is an event and if its name starts with one of the prefixes
       if (
         item.kind === "event" &&
@@ -63,6 +66,15 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           case item.event.name.startsWith("Contracts."):
             args = normalizeContractsEventsArgs(ctx, item.event);
             break;
+        }
+
+        if ((item.event.name as string) === "System.NewAccount") {
+          const mappedAccount = mapAccount(ctx, item.event);
+          const addressMapping = new AddressMapping({
+            id: mappedAccount.account_hex,
+            ss58: mappedAccount.account_ss58,
+          });
+          addressMappings.push(addressMapping);
         }
 
         // Create a new event object and push it to the events array
@@ -103,4 +115,5 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   }
   await ctx.store.save(calls);
   await ctx.store.save(events);
+  await ctx.store.save(removeDuplicates(addressMappings, "id"));
 });

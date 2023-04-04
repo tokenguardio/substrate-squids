@@ -1,6 +1,8 @@
-export * from "./events/system";
-export * from "./events/balances";
-export * from "./events/staking";
-export * from "./events/contracts";
+export * from "./pallets/events/system";
+export * from "./pallets/events/balances";
+export * from "./pallets/events/staking";
+export * from "./pallets/events/contracts";
 
-export * from "./calls/contracts";
+export * from "./pallets/calls/contracts";
+
+export * from "./specific/account";

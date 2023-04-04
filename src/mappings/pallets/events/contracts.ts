@@ -7,10 +7,10 @@ import {
   ContractsDelegateCalledEvent,
   ContractsInstantiatedEvent,
   ContractsTerminatedEvent,
-} from "../../types/events";
-import { ChainContext, Event } from "../../types/support";
-import { bufferToHex } from "../../utils/utils";
-import { UnknownVersionError, UnknownEventError } from "../../utils/errors";
+} from "../../../types/events";
+import { ChainContext, Event } from "../../../types/support";
+import { bufferToHex } from "../../../utils/utils";
+import { UnknownVersionError, UnknownEventError } from "../../../utils/errors";
 
 export function normalizeContractsEventsArgs(ctx: ChainContext, event: Event) {
   let e;
