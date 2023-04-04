@@ -1,10 +1,12 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm } from "./model";
+import { EventNorm, AddressMapping } from "./model";
 import {
   normalizeSystemEventsArgs,
   normalizeBalancesEventsArgs,
+  mapAccount,
 } from "./mappings";
+import { removeDuplicates } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -22,7 +24,8 @@ const processor = new SubstrateBatchProcessor()
   });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
-  let events: EventNorm[] = [];
+  const events: EventNorm[] = [];
+  const addressMappings: AddressMapping[] = [];
   for (let block of ctx.blocks) {
     for (let item of block.items) {
       // Check if the item is an event and if its name starts with one of the prefixes
@@ -45,6 +48,15 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             break;
         }
 
+        if ((item.event.name as string) === "System.NewAccount") {
+          const mappedAccount = mapAccount(ctx, item.event);
+          const addressMapping = new AddressMapping({
+            id: mappedAccount.account_hex,
+            ss58: mappedAccount.account_ss58,
+          });
+          addressMappings.push(addressMapping);
+        }
+
         // Create a new event object and push it to the events array
         const event = new EventNorm({
           id: item.event.id,
@@ -59,4 +71,5 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     }
   }
   await ctx.store.save(events);
+  await ctx.store.save(removeDuplicates(addressMappings, "id"));
 });
