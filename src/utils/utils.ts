@@ -10,3 +10,13 @@ export function bufferToHex(buffer: Uint8Array): string {
 export function bufferArrToHexArr(buffers: Uint8Array[]): string[] {
   return buffers.map((b) => bufferToHex(b));
 }
+
+export function removeDuplicates<T>(items: T[], key: keyof T): T[] {
+  const seen = new Set();
+  const filtered = items.filter((i) => {
+    const duplicate = seen.has(i[key]);
+    seen.add(i[key]);
+    return !duplicate;
+  });
+  return filtered;
+}
