@@ -29,9 +29,11 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         let [dispatchError, dispatchInfo] = e.asV1;
         return { dispatchError, dispatchInfo };
       } else if (e.isV6) {
-        return e.asV6;
+        return event.args;
       } else if (e.isV10) {
-        return e.asV10;
+        return event.args;
+      } else if (e.isV19) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -41,7 +43,9 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         let dispatchInfo = e.asV1;
         return { dispatchInfo };
       } else if (e.isV6) {
-        return e.asV6;
+        return event.args;
+      } else if (e.isV19) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }

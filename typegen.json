@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "http://127.0.0.1:8765/graphql",
+  "specVersions": "nodleSpecVersions.jsonl",
   "events": true,
   "calls": true,
   "storage": []
