@@ -10,13 +10,13 @@ export function mapAccount(ctx: ChainContext, event: Event) {
     let account = e.asV1;
     return {
       account_hex: bufferToHex(account),
-      account_ss58: ss58.codec("substrate").encode(account),
+      account_ss58: ss58.codec("nodle").encode(account),
     };
   } else if (e.isV6) {
     let { account } = e.asV6;
     return {
       account_hex: bufferToHex(account),
-      account_ss58: ss58.codec("substrate").encode(account),
+      account_ss58: ss58.codec("nodle").encode(account),
     };
   } else {
     throw new UnknownEventVersionError(event.name);
