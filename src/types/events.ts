@@ -13,6 +13,36 @@ import * as v30 from './v30'
 import * as v33 from './v33'
 import * as v43 from './v43'
 import * as v49 from './v49'
+import * as v52 from './v52'
+
+export class AssetsAccountsDestroyedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.AccountsDestroyed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Accounts were destroyed for given asset.
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('Assets.AccountsDestroyed') === 'a5d06575533459915a8ffae0d8d9eceaed7fe1e8a4c5fe068d1de39f4760ac67'
+    }
+
+    /**
+     * Accounts were destroyed for given asset.
+     */
+    get asV52(): {assetId: bigint, accountsDestroyed: number, accountsRemaining: number} {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
+}
 
 export class AssetsApprovalCancelledEvent {
     private readonly _chain: Chain
@@ -39,6 +69,35 @@ export class AssetsApprovalCancelledEvent {
      */
     get asV15(): {assetId: bigint, owner: Uint8Array, delegate: Uint8Array} {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class AssetsApprovalsDestroyedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.ApprovalsDestroyed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Approvals were destroyed for given asset.
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('Assets.ApprovalsDestroyed') === '4163dff444138f5bde96db2221ab99bf76a9c641472c3ed900fd00a16a468571'
+    }
+
+    /**
+     * Approvals were destroyed for given asset.
+     */
+    get asV52(): {assetId: bigint, approvalsDestroyed: number, approvalsRemaining: number} {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -242,6 +301,35 @@ export class AssetsDestroyedEvent {
      */
     get asV15(): {assetId: bigint} {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class AssetsDestructionStartedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.DestructionStarted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An asset class is in the process of being destroyed.
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('Assets.DestructionStarted') === '6828465f4945ca3643a9c1df872454dc32b979f43e4cf2413d78116734a92c6a'
+    }
+
+    /**
+     * An asset class is in the process of being destroyed.
+     */
+    get asV52(): {assetId: bigint} {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1231,6 +1319,272 @@ export class CollatorSelectionNewInvulnerablesEvent {
 
     get asV1(): Uint8Array[] {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCalledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Called')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.Called') === '21a729a4d368d7f57eb42f0ec77b595e3270a67ec14974cfcbc643abeda2921f'
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get asV55(): {caller: Uint8Array, contract: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCodeRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.CodeRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.CodeRemoved') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get asV55(): {codeHash: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCodeStoredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.CodeStored')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.CodeStored') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get asV55(): {codeHash: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsContractCodeUpdatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.ContractCodeUpdated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract's code was updated.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.ContractCodeUpdated') === 'f9de6decda4961d31d7cf59e3f8acd4849a220323ebabbb036464d999de54c18'
+    }
+
+    /**
+     * A contract's code was updated.
+     */
+    get asV55(): {contract: Uint8Array, newCodeHash: Uint8Array, oldCodeHash: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsContractEmittedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.ContractEmitted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A custom event emitted by the contract.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.ContractEmitted') === '7f28393268795b9a97f05e82911cdcc4200d99e9968c1ab6a564f949f753b929'
+    }
+
+    /**
+     * A custom event emitted by the contract.
+     */
+    get asV55(): {contract: Uint8Array, data: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsDelegateCalledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.DelegateCalled')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract delegate called a code hash.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.DelegateCalled') === '76261d7cbe52d35ce20ad428e69f2cc49c1719d1fbb27a3b951b1e26e8ef5993'
+    }
+
+    /**
+     * A contract delegate called a code hash.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get asV55(): {contract: Uint8Array, codeHash: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsInstantiatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Instantiated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Contract deployed by address at the specified address.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.Instantiated') === '20f9f9057a4149f58eb48c00359f9800a42b51d4d2168437dfcce668c27a8d37'
+    }
+
+    /**
+     * Contract deployed by address at the specified address.
+     */
+    get asV55(): {deployer: Uint8Array, contract: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsTerminatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Terminated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Contract has been removed.
+     * 
+     * # Note
+     * 
+     * The only way for a contract to be removed and emitting this event is by calling
+     * `seal_terminate`.
+     */
+    get isV55(): boolean {
+        return this._chain.getEventHash('Contracts.Terminated') === '8e0b376b4821223ecd835a0ae76a615e7aa14158260ff9c7f87220449d98175b'
+    }
+
+    /**
+     * Contract has been removed.
+     * 
+     * # Note
+     * 
+     * The only way for a contract to be removed and emitting this event is by calling
+     * `seal_terminate`.
+     */
+    get asV55(): {contract: Uint8Array, beneficiary: Uint8Array} {
+        assert(this.isV55)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3535,6 +3889,25 @@ export class PolkadotXcmAssetsTrappedEvent {
         assert(this.isV15)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.AssetsTrapped') === '357607142e5298824c427a1fe0bfb4dd63f3878ebfea84e52fa98b82b1a4f4c6'
+    }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get asV52(): [Uint8Array, v52.V1MultiLocation, v52.VersionedMultiAssets] {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmAttemptedEvent {
@@ -3605,6 +3978,29 @@ export class PolkadotXcmInvalidResponderEvent {
         assert(this.isV15)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected location \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponder') === '990cc00e432c7557e78d8fc369a5ff1c27aceeaff4ef11984d218478dc53d382'
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected location \]
+     */
+    get asV52(): [v52.V1MultiLocation, bigint, (v52.V1MultiLocation | undefined)] {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmInvalidResponderVersionEvent {
@@ -3648,6 +4044,37 @@ export class PolkadotXcmInvalidResponderVersionEvent {
      */
     get asV15(): [v15.V1MultiLocation, bigint] {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponderVersion') === 'a42731758e356b8640e3321dafe151b8ac297a2be71bc4ceff985033060f2569'
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV52(): [v52.V1MultiLocation, bigint] {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3875,6 +4302,27 @@ export class PolkadotXcmNotifyTargetMigrationFailEvent {
         assert(this.isV15)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     * 
+     * \[ location, query ID \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetMigrationFail') === 'df85778aaaf8dd844e177ac92fcb3256708dd8f3a8c5f94e1fa79f126116dc1c'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     * 
+     * \[ location, query ID \]
+     */
+    get asV52(): [v52.VersionedMultiLocation, bigint] {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmNotifyTargetSendFailEvent {
@@ -3910,6 +4358,27 @@ export class PolkadotXcmNotifyTargetSendFailEvent {
         assert(this.isV15)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     * 
+     * \[ location, query ID, error \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetSendFail') === '70b4128bc206c159059329487777fcca974cd67403fafe82ed254a875947534d'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     * 
+     * \[ location, query ID, error \]
+     */
+    get asV52(): [v52.V1MultiLocation, bigint, v52.V2Error] {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmResponseReadyEvent {
@@ -3943,6 +4412,27 @@ export class PolkadotXcmResponseReadyEvent {
      */
     get asV15(): [bigint, v15.V2Response] {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     * 
+     * \[ id, response \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.ResponseReady') === 'b377afa93f6a1fa3fbbbe2957f60a56bc7c8e08a09d110a511fc3ed24c3c67a4'
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     * 
+     * \[ id, response \]
+     */
+    get asV52(): [bigint, v52.V2Response] {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4011,6 +4501,25 @@ export class PolkadotXcmSentEvent {
         assert(this.isV15)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A XCM message was sent.
+     * 
+     * \[ origin, destination, message \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Sent') === '2d7b5f95d8bfc74ce68a179c7a746363dc0d3d0eca2fe88f6606a522fbe34a83'
+    }
+
+    /**
+     * A XCM message was sent.
+     * 
+     * \[ origin, destination, message \]
+     */
+    get asV52(): [v52.V1MultiLocation, v52.V1MultiLocation, v52.V2Instruction[]] {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmSupportedVersionChangedEvent {
@@ -4044,6 +4553,27 @@ export class PolkadotXcmSupportedVersionChangedEvent {
      */
     get asV15(): [v15.V1MultiLocation, number] {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     * 
+     * \[ location, XCM version \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.SupportedVersionChanged') === 'a03fd5bf20a50aaaf59ab7760b98733a03d897f929733dd0cc98b0a5d9bb0924'
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     * 
+     * \[ location, XCM version \]
+     */
+    get asV52(): [v52.V1MultiLocation, number] {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4083,6 +4613,29 @@ export class PolkadotXcmUnexpectedResponseEvent {
         assert(this.isV15)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.UnexpectedResponse') === 'a42731758e356b8640e3321dafe151b8ac297a2be71bc4ceff985033060f2569'
+    }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV52(): [v52.V1MultiLocation, bigint] {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmVersionChangeNotifiedEvent {
@@ -4114,6 +4667,25 @@ export class PolkadotXcmVersionChangeNotifiedEvent {
      */
     get asV15(): [v15.V1MultiLocation, number] {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * \[ destination, result \]
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionChangeNotified') === 'a03fd5bf20a50aaaf59ab7760b98733a03d897f929733dd0cc98b0a5d9bb0924'
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * \[ destination, result \]
+     */
+    get asV52(): [v52.V1MultiLocation, number] {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5183,6 +5755,21 @@ export class XcAssetConfigAssetLocationChangedEvent {
         assert(this.isV23)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Changed the asset type mapping for a given asset id
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('XcAssetConfig.AssetLocationChanged') === '6570f041f5f394a2284987c6c487ddc27124827b58f5ffecd84495ecc29a01b2'
+    }
+
+    /**
+     * Changed the asset type mapping for a given asset id
+     */
+    get asV52(): {previousAssetLocation: v52.VersionedMultiLocation, assetId: bigint, newAssetLocation: v52.VersionedMultiLocation} {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcAssetConfigAssetRegisteredEvent {
@@ -5210,6 +5797,21 @@ export class XcAssetConfigAssetRegisteredEvent {
      */
     get asV23(): {assetLocation: v23.VersionedMultiLocation, assetId: bigint} {
         assert(this.isV23)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Registed mapping between asset type and asset Id.
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('XcAssetConfig.AssetRegistered') === '4713b154ac1fea6acd79f2ee7853ffc08443db65eb8fcafe9eaae6782f44bc0b'
+    }
+
+    /**
+     * Registed mapping between asset type and asset Id.
+     */
+    get asV52(): {assetLocation: v52.VersionedMultiLocation, assetId: bigint} {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5241,6 +5843,21 @@ export class XcAssetConfigAssetRemovedEvent {
         assert(this.isV23)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Removed all information related to an asset Id
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('XcAssetConfig.AssetRemoved') === '4713b154ac1fea6acd79f2ee7853ffc08443db65eb8fcafe9eaae6782f44bc0b'
+    }
+
+    /**
+     * Removed all information related to an asset Id
+     */
+    get asV52(): {assetLocation: v52.VersionedMultiLocation, assetId: bigint} {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcAssetConfigSupportedAssetRemovedEvent {
@@ -5270,6 +5887,21 @@ export class XcAssetConfigSupportedAssetRemovedEvent {
         assert(this.isV23)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Supported asset type for fee payment removed.
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('XcAssetConfig.SupportedAssetRemoved') === '0f54ca54e6b9765d1eb9502b7af2d9c7fa1d33ad23e7f72734019d7482201709'
+    }
+
+    /**
+     * Supported asset type for fee payment removed.
+     */
+    get asV52(): {assetLocation: v52.VersionedMultiLocation} {
+        assert(this.isV52)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcAssetConfigUnitsPerSecondChangedEvent {
@@ -5297,6 +5929,21 @@ export class XcAssetConfigUnitsPerSecondChangedEvent {
      */
     get asV23(): {assetLocation: v23.VersionedMultiLocation, unitsPerSecond: bigint} {
         assert(this.isV23)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Changed the amount of units we are charging per execution second for an asset
+     */
+    get isV52(): boolean {
+        return this._chain.getEventHash('XcAssetConfig.UnitsPerSecondChanged') === '71ded49b017b8cc39a540beb71a1e684154fa6cf9ec0ceb3bed96e63c3252814'
+    }
+
+    /**
+     * Changed the amount of units we are charging per execution second for an asset
+     */
+    get asV52(): {assetLocation: v52.VersionedMultiLocation, unitsPerSecond: bigint} {
+        assert(this.isV52)
         return this._chain.decodeEvent(this.event)
     }
 }

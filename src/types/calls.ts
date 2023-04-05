@@ -14,6 +14,8 @@ import * as v30 from './v30'
 import * as v33 from './v33'
 import * as v43 from './v43'
 import * as v49 from './v49'
+import * as v52 from './v52'
+import * as v55 from './v55'
 
 export class AssetsApproveTransferCall {
     private readonly _chain: Chain
@@ -365,6 +367,155 @@ export class AssetsDestroyCall {
      */
     get asV15(): {id: bigint, witness: v15.DestroyWitness} {
         assert(this.isV15)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class AssetsDestroyAccountsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Assets.destroy_accounts')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Destroy all accounts associated with a given asset.
+     * 
+     * `destroy_accounts` should only be called after `start_destroy` has been called, and the
+     * asset is in a `Destroying` state.
+     * 
+     * Due to weight restrictions, this function may need to be called multiple times to fully
+     * destroy all accounts. It will destroy `RemoveItemsLimit` accounts at a time.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * Each call emits the `Event::DestroyedAccounts` event.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Assets.destroy_accounts') === 'af839aed37c40068406cf360e78f8d27e97676290c49ab02329804a32b2876ab'
+    }
+
+    /**
+     * Destroy all accounts associated with a given asset.
+     * 
+     * `destroy_accounts` should only be called after `start_destroy` has been called, and the
+     * asset is in a `Destroying` state.
+     * 
+     * Due to weight restrictions, this function may need to be called multiple times to fully
+     * destroy all accounts. It will destroy `RemoveItemsLimit` accounts at a time.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * Each call emits the `Event::DestroyedAccounts` event.
+     */
+    get asV52(): {id: bigint} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class AssetsDestroyApprovalsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Assets.destroy_approvals')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Destroy all approvals associated with a given asset up to the max (T::RemoveItemsLimit).
+     * 
+     * `destroy_approvals` should only be called after `start_destroy` has been called, and the
+     * asset is in a `Destroying` state.
+     * 
+     * Due to weight restrictions, this function may need to be called multiple times to fully
+     * destroy all approvals. It will destroy `RemoveItemsLimit` approvals at a time.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * Each call emits the `Event::DestroyedApprovals` event.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Assets.destroy_approvals') === 'af839aed37c40068406cf360e78f8d27e97676290c49ab02329804a32b2876ab'
+    }
+
+    /**
+     * Destroy all approvals associated with a given asset up to the max (T::RemoveItemsLimit).
+     * 
+     * `destroy_approvals` should only be called after `start_destroy` has been called, and the
+     * asset is in a `Destroying` state.
+     * 
+     * Due to weight restrictions, this function may need to be called multiple times to fully
+     * destroy all approvals. It will destroy `RemoveItemsLimit` approvals at a time.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * Each call emits the `Event::DestroyedApprovals` event.
+     */
+    get asV52(): {id: bigint} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class AssetsFinishDestroyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Assets.finish_destroy')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Complete destroying asset and unreserve currency.
+     * 
+     * `finish_destroy` should only be called after `start_destroy` has been called, and the
+     * asset is in a `Destroying` state. All accounts or approvals should be destroyed before
+     * hand.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * Each successful call emits the `Event::Destroyed` event.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Assets.finish_destroy') === 'af839aed37c40068406cf360e78f8d27e97676290c49ab02329804a32b2876ab'
+    }
+
+    /**
+     * Complete destroying asset and unreserve currency.
+     * 
+     * `finish_destroy` should only be called after `start_destroy` has been called, and the
+     * asset is in a `Destroying` state. All accounts or approvals should be destroyed before
+     * hand.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * Each successful call emits the `Event::Destroyed` event.
+     */
+    get asV52(): {id: bigint} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1019,6 +1170,55 @@ export class AssetsSetTeamCall {
      */
     get asV15(): {id: bigint, issuer: v15.MultiAddress, admin: v15.MultiAddress, freezer: v15.MultiAddress} {
         assert(this.isV15)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class AssetsStartDestroyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Assets.start_destroy')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Start the process of destroying a fungible asset class.
+     * 
+     * `start_destroy` is the first in a series of extrinsics that should be called, to allow
+     * destruction of an asset class.
+     * 
+     * The origin must conform to `ForceOrigin` or must be `Signed` by the asset's `owner`.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * The asset class must be frozen before calling `start_destroy`.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Assets.start_destroy') === 'af839aed37c40068406cf360e78f8d27e97676290c49ab02329804a32b2876ab'
+    }
+
+    /**
+     * Start the process of destroying a fungible asset class.
+     * 
+     * `start_destroy` is the first in a series of extrinsics that should be called, to allow
+     * destruction of an asset class.
+     * 
+     * The origin must conform to `ForceOrigin` or must be `Signed` by the asset's `owner`.
+     * 
+     * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+     *   asset.
+     * 
+     * The asset class must be frozen before calling `start_destroy`.
+     */
+    get asV52(): {id: bigint} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1993,6 +2193,417 @@ export class CollatorSelectionSetInvulnerablesCall {
 
     get asV1(): {new: Uint8Array[]} {
         assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsCallCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.call')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Makes a call to an account, optionally transferring some balance.
+     * 
+     * # Parameters
+     * 
+     * * `dest`: Address of the contract to call.
+     * * `value`: The balance to transfer from the `origin` to `dest`.
+     * * `gas_limit`: The gas limit enforced when executing the constructor.
+     * * `storage_deposit_limit`: The maximum amount of balance that can be charged from the
+     *   caller to pay for the storage consumed.
+     * * `data`: The input data to pass to the contract.
+     * 
+     * * If the account is a smart-contract account, the associated code will be
+     * executed and any value will be transferred.
+     * * If the account is a regular account, any value will be transferred.
+     * * If no account exists and the call value is not less than `existential_deposit`,
+     * a regular account will be created and any value will be transferred.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.call') === '9b1b707b0f5c537afca26d44d0081d29092614e330ff3810d328d0342d6a1845'
+    }
+
+    /**
+     * Makes a call to an account, optionally transferring some balance.
+     * 
+     * # Parameters
+     * 
+     * * `dest`: Address of the contract to call.
+     * * `value`: The balance to transfer from the `origin` to `dest`.
+     * * `gas_limit`: The gas limit enforced when executing the constructor.
+     * * `storage_deposit_limit`: The maximum amount of balance that can be charged from the
+     *   caller to pay for the storage consumed.
+     * * `data`: The input data to pass to the contract.
+     * 
+     * * If the account is a smart-contract account, the associated code will be
+     * executed and any value will be transferred.
+     * * If the account is a regular account, any value will be transferred.
+     * * If no account exists and the call value is not less than `existential_deposit`,
+     * a regular account will be created and any value will be transferred.
+     */
+    get asV55(): {dest: v55.MultiAddress, value: bigint, gasLimit: v55.Weight, storageDepositLimit: (bigint | undefined), data: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsCallOldWeightCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.call_old_weight')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Deprecated version if [`Self::call`] for use in an in-storage `Call`.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.call_old_weight') === 'd96c8a6656d7a4d6af6d5d0d51dd36e041c9ea8a92a7ead343d711addd74780f'
+    }
+
+    /**
+     * Deprecated version if [`Self::call`] for use in an in-storage `Call`.
+     */
+    get asV55(): {dest: v55.MultiAddress, value: bigint, gasLimit: bigint, storageDepositLimit: (bigint | undefined), data: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsInstantiateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.instantiate')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Instantiates a contract from a previously deployed wasm binary.
+     * 
+     * This function is identical to [`Self::instantiate_with_code`] but without the
+     * code deployment step. Instead, the `code_hash` of an on-chain deployed wasm binary
+     * must be supplied.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.instantiate') === '144f181b3afbf1b5f0fd6ab12277b9e2a4600a80dfdf6fa1aab631acc55d1bd1'
+    }
+
+    /**
+     * Instantiates a contract from a previously deployed wasm binary.
+     * 
+     * This function is identical to [`Self::instantiate_with_code`] but without the
+     * code deployment step. Instead, the `code_hash` of an on-chain deployed wasm binary
+     * must be supplied.
+     */
+    get asV55(): {value: bigint, gasLimit: v55.Weight, storageDepositLimit: (bigint | undefined), codeHash: Uint8Array, data: Uint8Array, salt: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsInstantiateOldWeightCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.instantiate_old_weight')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Deprecated version if [`Self::instantiate`] for use in an in-storage `Call`.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.instantiate_old_weight') === '065e28d4aca8ef55389ab2cdeb357c40056320f063a3db0a6c9157a597c14b5b'
+    }
+
+    /**
+     * Deprecated version if [`Self::instantiate`] for use in an in-storage `Call`.
+     */
+    get asV55(): {value: bigint, gasLimit: bigint, storageDepositLimit: (bigint | undefined), codeHash: Uint8Array, data: Uint8Array, salt: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsInstantiateWithCodeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.instantiate_with_code')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Instantiates a new contract from the supplied `code` optionally transferring
+     * some balance.
+     * 
+     * This dispatchable has the same effect as calling [`Self::upload_code`] +
+     * [`Self::instantiate`]. Bundling them together provides efficiency gains. Please
+     * also check the documentation of [`Self::upload_code`].
+     * 
+     * # Parameters
+     * 
+     * * `value`: The balance to transfer from the `origin` to the newly created contract.
+     * * `gas_limit`: The gas limit enforced when executing the constructor.
+     * * `storage_deposit_limit`: The maximum amount of balance that can be charged/reserved
+     *   from the caller to pay for the storage consumed.
+     * * `code`: The contract code to deploy in raw bytes.
+     * * `data`: The input data to pass to the contract constructor.
+     * * `salt`: Used for the address derivation. See [`Pallet::contract_address`].
+     * 
+     * Instantiation is executed as follows:
+     * 
+     * - The supplied `code` is instrumented, deployed, and a `code_hash` is created for that
+     *   code.
+     * - If the `code_hash` already exists on the chain the underlying `code` will be shared.
+     * - The destination address is computed based on the sender, code_hash and the salt.
+     * - The smart-contract account is created at the computed address.
+     * - The `value` is transferred to the new account.
+     * - The `deploy` function is executed in the context of the newly-created account.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.instantiate_with_code') === 'f764596bd52fce313b3fe7a10bf25a782558f542e67923c0437000f75dc3d1c8'
+    }
+
+    /**
+     * Instantiates a new contract from the supplied `code` optionally transferring
+     * some balance.
+     * 
+     * This dispatchable has the same effect as calling [`Self::upload_code`] +
+     * [`Self::instantiate`]. Bundling them together provides efficiency gains. Please
+     * also check the documentation of [`Self::upload_code`].
+     * 
+     * # Parameters
+     * 
+     * * `value`: The balance to transfer from the `origin` to the newly created contract.
+     * * `gas_limit`: The gas limit enforced when executing the constructor.
+     * * `storage_deposit_limit`: The maximum amount of balance that can be charged/reserved
+     *   from the caller to pay for the storage consumed.
+     * * `code`: The contract code to deploy in raw bytes.
+     * * `data`: The input data to pass to the contract constructor.
+     * * `salt`: Used for the address derivation. See [`Pallet::contract_address`].
+     * 
+     * Instantiation is executed as follows:
+     * 
+     * - The supplied `code` is instrumented, deployed, and a `code_hash` is created for that
+     *   code.
+     * - If the `code_hash` already exists on the chain the underlying `code` will be shared.
+     * - The destination address is computed based on the sender, code_hash and the salt.
+     * - The smart-contract account is created at the computed address.
+     * - The `value` is transferred to the new account.
+     * - The `deploy` function is executed in the context of the newly-created account.
+     */
+    get asV55(): {value: bigint, gasLimit: v55.Weight, storageDepositLimit: (bigint | undefined), code: Uint8Array, data: Uint8Array, salt: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsInstantiateWithCodeOldWeightCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.instantiate_with_code_old_weight')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Deprecated version if [`Self::instantiate_with_code`] for use in an in-storage `Call`.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.instantiate_with_code_old_weight') === '2204435764a14a39d7c13f6cffbf98550fcaad4cba9d91306fe99d88a718a62c'
+    }
+
+    /**
+     * Deprecated version if [`Self::instantiate_with_code`] for use in an in-storage `Call`.
+     */
+    get asV55(): {value: bigint, gasLimit: bigint, storageDepositLimit: (bigint | undefined), code: Uint8Array, data: Uint8Array, salt: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsRemoveCodeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.remove_code')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove the code stored under `code_hash` and refund the deposit to its owner.
+     * 
+     * A code can only be removed by its original uploader (its owner) and only if it is
+     * not used by any contract.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.remove_code') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * Remove the code stored under `code_hash` and refund the deposit to its owner.
+     * 
+     * A code can only be removed by its original uploader (its owner) and only if it is
+     * not used by any contract.
+     */
+    get asV55(): {codeHash: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsSetCodeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.set_code')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Privileged function that changes the code of an existing contract.
+     * 
+     * This takes care of updating refcounts and all other necessary operations. Returns
+     * an error if either the `code_hash` or `dest` do not exist.
+     * 
+     * # Note
+     * 
+     * This does **not** change the address of the contract in question. This means
+     * that the contract address is no longer derived from its code hash after calling
+     * this dispatchable.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.set_code') === '70cd8e4f03fe2c8334a13735563897eedfa16eb9b8e0c97b3aacce6c108aacc0'
+    }
+
+    /**
+     * Privileged function that changes the code of an existing contract.
+     * 
+     * This takes care of updating refcounts and all other necessary operations. Returns
+     * an error if either the `code_hash` or `dest` do not exist.
+     * 
+     * # Note
+     * 
+     * This does **not** change the address of the contract in question. This means
+     * that the contract address is no longer derived from its code hash after calling
+     * this dispatchable.
+     */
+    get asV55(): {dest: v55.MultiAddress, codeHash: Uint8Array} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ContractsUploadCodeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.upload_code')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Upload new `code` without instantiating a contract from it.
+     * 
+     * If the code does not already exist a deposit is reserved from the caller
+     * and unreserved only when [`Self::remove_code`] is called. The size of the reserve
+     * depends on the instrumented size of the the supplied `code`.
+     * 
+     * If the code already exists in storage it will still return `Ok` and upgrades
+     * the in storage version to the current
+     * [`InstructionWeights::version`](InstructionWeights).
+     * 
+     * - `determinism`: If this is set to any other value but [`Determinism::Deterministic`]
+     *   then the only way to use this code is to delegate call into it from an offchain
+     *   execution. Set to [`Determinism::Deterministic`] if in doubt.
+     * 
+     * # Note
+     * 
+     * Anyone can instantiate a contract from any uploaded code and thus prevent its removal.
+     * To avoid this situation a constructor could employ access control so that it can
+     * only be instantiated by permissioned entities. The same is true when uploading
+     * through [`Self::instantiate_with_code`].
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Contracts.upload_code') === '0611b158a1c5ea1399a178957cd7f7e3f18854c4cbba7eb06690c056695e0ff2'
+    }
+
+    /**
+     * Upload new `code` without instantiating a contract from it.
+     * 
+     * If the code does not already exist a deposit is reserved from the caller
+     * and unreserved only when [`Self::remove_code`] is called. The size of the reserve
+     * depends on the instrumented size of the the supplied `code`.
+     * 
+     * If the code already exists in storage it will still return `Ok` and upgrades
+     * the in storage version to the current
+     * [`InstructionWeights::version`](InstructionWeights).
+     * 
+     * - `determinism`: If this is set to any other value but [`Determinism::Deterministic`]
+     *   then the only way to use this code is to delegate call into it from an offchain
+     *   execution. Set to [`Determinism::Deterministic`] if in doubt.
+     * 
+     * # Note
+     * 
+     * Anyone can instantiate a contract from any uploaded code and thus prevent its removal.
+     * To avoid this situation a constructor could employ access control so that it can
+     * only be instantiated by permissioned entities. The same is true when uploading
+     * through [`Self::instantiate_with_code`].
+     */
+    get asV55(): {code: Uint8Array, storageDepositLimit: (bigint | undefined), determinism: v55.Determinism} {
+        assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3366,6 +3977,56 @@ export class EthCallCallCall {
      */
     get asV49(): {call: v49.Call, signer: Uint8Array, signature: Uint8Array, nonce: number} {
         assert(this.isV49)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + read/write + 10_000.
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('EthCall.call') === '4baa10bd04e66928f7d3446ea628bc20b441c5ad13098916748f59cf3dc120fd'
+    }
+
+    /**
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + read/write + 10_000.
+     * # </weight>
+     */
+    get asV52(): {call: v52.Call, signer: Uint8Array, signature: Uint8Array, nonce: number} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + read/write + 10_000.
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('EthCall.call') === '490e4ca3f71a4c53148fdd84c4d76dc28321845db8a98c8b4bf289a1555ae56b'
+    }
+
+    /**
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + read/write + 10_000.
+     * # </weight>
+     */
+    get asV55(): {call: v55.Call, signer: Uint8Array, signature: Uint8Array, nonce: number} {
+        assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -4966,6 +5627,212 @@ export class MultisigAsMultiCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '6e924a718c064307fe87e19f194509db5b56926bc8bf9e65d73a7325c1f5bdf5'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV52(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v52.Timepoint | undefined), call: v52.Call, maxWeight: v52.Weight} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === 'c486440d5cb837fd309518b6bf2cbf804ec64c24914dc0cfa9f5aeb029307ea1'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV55(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v55.Timepoint | undefined), call: v55.Call, maxWeight: v55.Weight} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -5610,6 +6477,96 @@ export class MultisigAsMultiThreshold1Call {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '23eedb7700afd5cc14ee28cdc469f0e841d2a88fdc838a703823d23a9c928b6c'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV52(): {otherSignatories: Uint8Array[], call: v52.Call} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '840a43164b1ffd6601b9cbcffa995cb9e1dd66c8a7508237f0486c61c33f659e'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV55(): {otherSignatories: Uint8Array[], call: v55.Call} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigCancelAsMultiCall {
@@ -5961,6 +6918,41 @@ export class PolkadotXcmExecuteCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Execute an XCM message from a local, signed, origin.
+     * 
+     * An event is deposited indicating whether `msg` could be executed completely or only
+     * partially.
+     * 
+     * No more than `max_weight` will be used in its attempted execution. If this is less than the
+     * maximum amount of weight that the message could take to be executed, then no execution
+     * attempt will be made.
+     * 
+     * NOTE: A successful return to this does *not* imply that the `msg` was executed successfully
+     * to completion; only that *some* of it was executed.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.execute') === 'be5e344e53bc9a5c603bc8d8e5818c5a9d385b2163c44bf463eba6c0f569c635'
+    }
+
+    /**
+     * Execute an XCM message from a local, signed, origin.
+     * 
+     * An event is deposited indicating whether `msg` could be executed completely or only
+     * partially.
+     * 
+     * No more than `max_weight` will be used in its attempted execution. If this is less than the
+     * maximum amount of weight that the message could take to be executed, then no execution
+     * attempt will be made.
+     * 
+     * NOTE: A successful return to this does *not* imply that the `msg` was executed successfully
+     * to completion; only that *some* of it was executed.
+     */
+    get asV52(): {message: v52.Type_230, maxWeight: v52.Weight} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceDefaultXcmVersionCall {
@@ -6033,6 +7025,27 @@ export class PolkadotXcmForceSubscribeVersionNotifyCall {
         assert(this.isV15)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Ask a location to notify us regarding their XCM version and any changes to it.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we should subscribe for XCM version notifications.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_subscribe_version_notify') === '56aed4b742721d521279794a608d71ae9db256750e90b7beb3d50a9d01aff0f9'
+    }
+
+    /**
+     * Ask a location to notify us regarding their XCM version and any changes to it.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we should subscribe for XCM version notifications.
+     */
+    get asV52(): {location: v52.VersionedMultiLocation} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceUnsubscribeVersionNotifyCall {
@@ -6072,6 +7085,31 @@ export class PolkadotXcmForceUnsubscribeVersionNotifyCall {
         assert(this.isV15)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Require that a particular destination should no longer notify us regarding any XCM
+     * version changes.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we are currently subscribed for XCM version
+     *   notifications which we no longer desire.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_unsubscribe_version_notify') === '56aed4b742721d521279794a608d71ae9db256750e90b7beb3d50a9d01aff0f9'
+    }
+
+    /**
+     * Require that a particular destination should no longer notify us regarding any XCM
+     * version changes.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we are currently subscribed for XCM version
+     *   notifications which we no longer desire.
+     */
+    get asV52(): {location: v52.VersionedMultiLocation} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceXcmVersionCall {
@@ -6109,6 +7147,31 @@ export class PolkadotXcmForceXcmVersionCall {
      */
     get asV15(): {location: v15.V1MultiLocation, xcmVersion: number} {
         assert(this.isV15)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Extoll that a particular destination can be communicated with through a particular
+     * version of XCM.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The destination that is being described.
+     * - `xcm_version`: The latest version of XCM that `location` supports.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_xcm_version') === '855b9a66c3d6c203c5e887917dc681372ed5d32210a8c6cc86c7d5f227944d9c'
+    }
+
+    /**
+     * Extoll that a particular destination can be communicated with through a particular
+     * version of XCM.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The destination that is being described.
+     * - `xcm_version`: The latest version of XCM that `location` supports.
+     */
+    get asV52(): {location: v52.V1MultiLocation, xcmVersion: number} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6174,6 +7237,55 @@ export class PolkadotXcmLimitedReserveTransferAssetsCall {
         assert(this.isV15)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_reserve_transfer_assets') === '1818300d2dec2685942619973f1ec81b7ecf2b979534f1965b98b7b6c9d833ea'
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number, weightLimit: v52.V2WeightLimit} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmLimitedReserveWithdrawAssetsCall {
@@ -6233,6 +7345,53 @@ export class PolkadotXcmLimitedReserveWithdrawAssetsCall {
      */
     get asV23(): {dest: v23.VersionedMultiLocation, beneficiary: v23.VersionedMultiLocation, assets: v23.VersionedMultiAssets, feeAssetItem: number, weightLimit: v23.V2WeightLimit} {
         assert(this.isV23)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_reserve_withdraw_assets') === '1818300d2dec2685942619973f1ec81b7ecf2b979534f1965b98b7b6c9d833ea'
+    }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number, weightLimit: v52.V2WeightLimit} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6296,6 +7455,53 @@ export class PolkadotXcmLimitedTeleportAssetsCall {
         assert(this.isV15)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_teleport_assets') === '1818300d2dec2685942619973f1ec81b7ecf2b979534f1965b98b7b6c9d833ea'
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number, weightLimit: v52.V2WeightLimit} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmReserveTransferAssetsCall {
@@ -6353,6 +7559,51 @@ export class PolkadotXcmReserveTransferAssetsCall {
      */
     get asV15(): {dest: v15.VersionedMultiLocation, beneficiary: v15.VersionedMultiLocation, assets: v15.VersionedMultiAssets, feeAssetItem: number} {
         assert(this.isV15)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.reserve_transfer_assets') === 'b79cf2a68b1db82f94409ee603047fcd82f4343b83df6736c115e3338c04cecc'
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6414,6 +7665,51 @@ export class PolkadotXcmReserveWithdrawAssetsCall {
         assert(this.isV23)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.reserve_withdraw_assets') === 'b79cf2a68b1db82f94409ee603047fcd82f4343b83df6736c115e3338c04cecc'
+    }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmSendCall {
@@ -6435,6 +7731,15 @@ export class PolkadotXcmSendCall {
 
     get asV15(): {dest: v15.VersionedMultiLocation, message: v15.VersionedXcm} {
         assert(this.isV15)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.send') === '23ee62671c78b4c334d1aac87969a94e2d7514e9e9acd1949878df4525736480'
+    }
+
+    get asV52(): {dest: v52.VersionedMultiLocation, message: v52.VersionedXcm} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6492,6 +7797,49 @@ export class PolkadotXcmTeleportAssetsCall {
      */
     get asV15(): {dest: v15.VersionedMultiLocation, beneficiary: v15.VersionedMultiLocation, assets: v15.VersionedMultiAssets, feeAssetItem: number} {
         assert(this.isV15)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.teleport_assets') === 'b79cf2a68b1db82f94409ee603047fcd82f4343b83df6736c115e3338c04cecc'
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -7123,6 +8471,72 @@ export class SudoSudoCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === 'e1a943fb77b10238384e0d3605110167ce1d80312e82583b522db4bb769602c2'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get asV52(): {call: v52.Call} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '9c0a641655908029d83c00e36b45cd4f95ee03292546121d1c0981b033f995ad'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get asV55(): {call: v55.Call} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoAsCall {
@@ -7627,6 +9041,76 @@ export class SudoSudoAsCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'b35e5755b6c588522c64f13897fcf58d99117d23cf4a8f305620860440e6292e'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get asV52(): {who: v52.MultiAddress, call: v52.Call} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'abf3dc62c103053d9e981b26c5341689f260d2185092c0aa930ecf31a673698f'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + 10,000.
+     * # </weight>
+     */
+    get asV55(): {who: v55.MultiAddress, call: v55.Call} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -8101,6 +9585,72 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV49(): {call: v49.Call, weight: v49.Weight} {
         assert(this.isV49)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'e280ed223f426e6f27843c2d23244c134199a6282f7a10f2edccae37f595cacf'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
+     */
+    get asV52(): {call: v52.Call, weight: v52.Weight} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '2cdfab42d7c5be16eb01d2de6df06ebe1fd8409d07b410b9faa2b8ca41afa654'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - The weight of this call is defined by the caller.
+     * # </weight>
+     */
+    get asV55(): {call: v55.Call, weight: v55.Weight} {
+        assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -9150,6 +10700,84 @@ export class UtilityAsDerivativeCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === '213234245219ade32345cdce03aa69a46802d33136e060a95c443f593e5fc3b0'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV52(): {index: number, call: v52.Call} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'cfa05a0f06727cedf61230476024efafe72c8c7014d75e0a15cf5a85744a4b58'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV55(): {index: number, call: v55.Call} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -9878,6 +11506,108 @@ export class UtilityBatchCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'aad5ab5d3c9c1a3a7c68d76e8bad474c4828413cc19103a43cc43a5aa1bb598b'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV52(): {calls: v52.Call[]} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'c56c338ab496f825e7782dd5143a1fad9422c6c7ab40149c20443030a4f7daee'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV55(): {calls: v55.Call[]} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -10466,6 +12196,88 @@ export class UtilityBatchAllCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'aad5ab5d3c9c1a3a7c68d76e8bad474c4828413cc19103a43cc43a5aa1bb598b'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV52(): {calls: v52.Call[]} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'c56c338ab496f825e7782dd5143a1fad9422c6c7ab40149c20443030a4f7daee'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV55(): {calls: v55.Call[]} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -10909,6 +12721,72 @@ export class UtilityDispatchAsCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '46841da1aa1e267064e8383be2749ae3b5889c4a4bf1bc28a4e7db497b05515f'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV52(): {asOrigin: v52.OriginCaller, call: v52.Call} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '310fa8c0defdced97deb7fc4eef43ff45719ae0b5256d70061d7439979b342de'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV55(): {asOrigin: v55.OriginCaller, call: v55.Call} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -11126,6 +13004,152 @@ export class UtilityForceBatchCall {
      */
     get asV49(): {calls: v49.Call[]} {
         assert(this.isV49)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'aad5ab5d3c9c1a3a7c68d76e8bad474c4828413cc19103a43cc43a5aa1bb598b'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV52(): {calls: v52.Call[]} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'c56c338ab496f825e7782dd5143a1fad9422c6c7ab40149c20443030a4f7daee'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV55(): {calls: v55.Call[]} {
+        assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class UtilityWithWeightCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Utility.with_weight')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === 'e280ed223f426e6f27843c2d23244c134199a6282f7a10f2edccae37f595cacf'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV52(): {call: v52.Call, weight: v52.Weight} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV55(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '2cdfab42d7c5be16eb01d2de6df06ebe1fd8409d07b410b9faa2b8ca41afa654'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV55(): {call: v55.Call, weight: v55.Weight} {
+        assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -11513,6 +13537,23 @@ export class XcAssetConfigChangeExistingAssetLocationCall {
         assert(this.isV23)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Change the xcm type mapping for a given asset Id.
+     * The new asset type will inherit old `units per second` value.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.change_existing_asset_location') === '43694a94d30a2ed4444632d4a9d9ff820d35b5ae12d8f990fce120b7c1cbb76a'
+    }
+
+    /**
+     * Change the xcm type mapping for a given asset Id.
+     * The new asset type will inherit old `units per second` value.
+     */
+    get asV52(): {newAssetLocation: v52.VersionedMultiLocation, assetId: bigint} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcAssetConfigRegisterAssetLocationCall {
@@ -11544,6 +13585,25 @@ export class XcAssetConfigRegisterAssetLocationCall {
      */
     get asV23(): {assetLocation: v23.VersionedMultiLocation, assetId: bigint} {
         assert(this.isV23)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register new asset location to asset Id mapping.
+     * 
+     * This makes the asset eligible for XCM interaction.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.register_asset_location') === '6afa226dd6ef51e2491aa89e1af20f764edbcfa6cb5c66a68e1add2ea147948d'
+    }
+
+    /**
+     * Register new asset location to asset Id mapping.
+     * 
+     * This makes the asset eligible for XCM interaction.
+     */
+    get asV52(): {assetLocation: v52.VersionedMultiLocation, assetId: bigint} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -11608,6 +13668,25 @@ export class XcAssetConfigRemovePaymentAssetCall {
         assert(this.isV23)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Removes asset from the set of supported payment assets.
+     * 
+     * The asset can still be interacted with via XCM but it cannot be used to pay for execution time.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.remove_payment_asset') === '0f54ca54e6b9765d1eb9502b7af2d9c7fa1d33ad23e7f72734019d7482201709'
+    }
+
+    /**
+     * Removes asset from the set of supported payment assets.
+     * 
+     * The asset can still be interacted with via XCM but it cannot be used to pay for execution time.
+     */
+    get asV52(): {assetLocation: v52.VersionedMultiLocation} {
+        assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcAssetConfigSetAssetUnitsPerSecondCall {
@@ -11637,6 +13716,23 @@ export class XcAssetConfigSetAssetUnitsPerSecondCall {
      */
     get asV23(): {assetLocation: v23.VersionedMultiLocation, unitsPerSecond: bigint} {
         assert(this.isV23)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Change the amount of units we are charging per execution second
+     * for a given AssetLocation.
+     */
+    get isV52(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.set_asset_units_per_second') === 'a34e60741dd366231341aa564c552b379bca66ac0fcfb2574a504a30a8d31f2d'
+    }
+
+    /**
+     * Change the amount of units we are charging per execution second
+     * for a given AssetLocation.
+     */
+    get asV52(): {assetLocation: v52.VersionedMultiLocation, unitsPerSecond: bigint} {
+        assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
 }
