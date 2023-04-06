@@ -1,6 +1,7 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://reef.archive.subsquid.io/graphql",
+  "specVersions": "edgewareSpecVersions.jsonl",
+  "typesBundle": "typesBundle.json",
   "events": true,
   "calls": true,
   "storage": []

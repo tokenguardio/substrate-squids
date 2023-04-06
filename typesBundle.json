@@ -1,5 +1,6 @@
 {
-  "types": [
+  "types": {},
+  "versions": [
     {
       "minmax": [0, 31],
       "types": {
@@ -56,7 +57,6 @@
         "OpenTip": "OpenTipTo225",
         "ContractExecResult": "ContractExecResultTo255",
         "CompactAssignments": "CompactAssignmentsTo257",
-        "RewardDestination": "RewardDestinationTo257",
         "RefCount": "RefCountTo259",
         "AccountInfo": "AccountInfoWithRefCount",
         "Address": "IndicesLookupSource",
@@ -112,7 +112,6 @@
 
         "CompactAssignments": "CompactAssignmentsTo257",
         "ContractExecResult": "ContractExecResultTo255",
-        "RewardDestination": "RewardDestinationTo257",
         "RefCount": "u32",
         "AccountInfo": "AccountInfoWithRefCount",
         "Address": "IndicesLookupSource",
