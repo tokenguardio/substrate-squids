@@ -29,8 +29,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
   switch (event.name) {
     case "Staking.Bonded":
       e = new StakingBondedEvent(ctx, event);
-      if (e.isV5) {
-        let [stash, amount] = e.asV5;
+      if (e.isV38) {
+        let [stash, amount] = e.asV38;
         return {
           stash: bufferToHex(stash),
           amount,
@@ -40,8 +40,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.Chilled":
       e = new StakingChilledEvent(ctx, event);
-      if (e.isV8) {
-        let stash = e.asV8;
+      if (e.isV53) {
+        let stash = e.asV53;
         return {
           stash: bufferToHex(stash),
         };
@@ -50,11 +50,11 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.EraPaid":
       e = new StakingEraPaidEvent(ctx, event);
-      if (e.isV8) {
-        let [era_index, validator_payout, remainder] = e.asV8;
+      if (e.isV53) {
+        let [eraIndex, validatorPayout, remainder] = e.asV53;
         return {
-          era_index,
-          validator_payout,
+          eraIndex,
+          validatorPayout,
           remainder,
         };
       } else {
@@ -62,11 +62,11 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.EraPayout":
       e = new StakingEraPayoutEvent(ctx, event);
-      if (e.isV5) {
-        let [era_index, validator_payout, remainder] = e.asV5;
+      if (e.isV38) {
+        let [eraIndex, validatorPayout, remainder] = e.asV38;
         return {
-          era_index,
-          validator_payout,
+          eraIndex,
+          validatorPayout,
           remainder,
         };
       } else {
@@ -74,8 +74,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.Kicked":
       e = new StakingKickedEvent(ctx, event);
-      if (e.isV5) {
-        let [nominator, stash] = e.asV5;
+      if (e.isV53) {
+        let [nominator, stash] = e.asV53;
         return {
           nominator: bufferToHex(nominator),
           stash: bufferToHex(stash),
@@ -85,30 +85,40 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.OldSlashingReportDiscarded":
       e = new StakingOldSlashingReportDiscardedEvent(ctx, event);
-      if (e.isV5) {
-        let session_index = e.asV5;
+      if (e.isV31) {
+        let sessionIndex = e.asV31;
         return {
-          session_index,
+          sessionIndex,
         };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "Staking.PayoutStarted":
       e = new StakingPayoutStartedEvent(ctx, event);
-      if (e.isV8) {
-        let [era_index, validator_stash] = e.asV8;
+      if (e.isV53) {
+        let [eraIndex, validatorStash] = e.asV53;
         return {
-          era_index,
-          validator_stash: bufferToHex(validator_stash),
+          eraIndex,
+          validatorStash: bufferToHex(validatorStash),
         };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Reward":
       e = new StakingRewardEvent(ctx, event);
-      if (e.isV5) {
-        let [stash, amount] = e.asV5;
+      if (e.isV31) {
+        let [balance, remainder] = e.asV38;
         return {
+          balance,
+          remainder,
+          stash: null,
+          amount: null,
+        };
+      } else if (e.isV38) {
+        let [stash, amount] = e.asV38;
+        return {
+          balance: null,
+          remainder: null,
           stash: bufferToHex(stash),
           amount,
         };
@@ -117,8 +127,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.Rewarded":
       e = new StakingRewardedEvent(ctx, event);
-      if (e.isV8) {
-        let [stash, amount] = e.asV8;
+      if (e.isV53) {
+        let [stash, amount] = e.asV53;
         return {
           stash: bufferToHex(stash),
           amount,
@@ -128,8 +138,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.Slash":
       e = new StakingSlashEvent(ctx, event);
-      if (e.isV5) {
-        let [validator, amount] = e.asV5;
+      if (e.isV31) {
+        let [validator, amount] = e.asV31;
         return {
           validator: bufferToHex(validator),
           amount,
@@ -139,8 +149,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.Slashed":
       e = new StakingSlashedEvent(ctx, event);
-      if (e.isV8) {
-        let [validator, amount] = e.asV8;
+      if (e.isV53) {
+        let [validator, amount] = e.asV53;
         return {
           validator: bufferToHex(validator),
           amount,
@@ -150,42 +160,42 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.SolutionStored":
       e = new StakingSolutionStoredEvent(ctx, event);
-      if (e.isV5) {
-        let compute = e.asV5;
+      if (e.isV38) {
+        let electionCompute = e.asV38;
         return {
-          compute,
+          electionCompute,
         };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "Staking.StakersElected":
       e = new StakingStakersElectedEvent(ctx, event);
-      if (e.isV8) {
-        return null;
+      if (e.isV53) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "Staking.StakingElection":
       e = new StakingStakingElectionEvent(ctx, event);
-      if (e.isV5) {
-        let compute = e.asV5;
+      if (e.isV38) {
+        let electionCompute = e.asV38;
         return {
-          compute,
+          electionCompute,
         };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "Staking.StakingElectionFailed":
       e = new StakingStakingElectionFailedEvent(ctx, event);
-      if (e.isV8) {
-        return null;
+      if (e.isV53) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "Staking.Unbonded":
       e = new StakingUnbondedEvent(ctx, event);
-      if (e.isV5) {
-        let [stash, amount] = e.asV5;
+      if (e.isV38) {
+        let [stash, amount] = e.asV38;
         return {
           stash: bufferToHex(stash),
           amount,
@@ -195,8 +205,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
       }
     case "Staking.Withdrawn":
       e = new StakingWithdrawnEvent(ctx, event);
-      if (e.isV5) {
-        let [stash, amount] = e.asV5;
+      if (e.isV38) {
+        let [stash, amount] = e.asV38;
         return {
           stash: bufferToHex(stash),
           amount,
