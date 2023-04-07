@@ -6,6 +6,8 @@ import {
   normalizeStakingEventsArgs,
   normalizeSystemEventsArgs,
   normalizeContractsEventsArgs,
+  normalizeNominationPoolsEventsArgs,
+  normalizeNominationPoolsCallsArgs,
   normalizeContractsCallsArgs,
   mapAccount,
 } from "./mappings";
@@ -47,7 +49,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         (item.event.name.startsWith("Balances.") ||
           item.event.name.startsWith("Staking.") ||
           item.event.name.startsWith("System.") ||
-          item.event.name.startsWith("Contracts.")) &&
+          item.event.name.startsWith("Contracts.") ||
+          item.event.name.startsWith("NominationPools.")) &&
         !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
           item.event.name
         )
@@ -66,6 +69,9 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             break;
           case item.event.name.startsWith("Contracts."):
             args = normalizeContractsEventsArgs(ctx, item.event);
+            break;
+          case item.event.name.startsWith("NominationPools."):
+            args = normalizeNominationPoolsEventsArgs(ctx, item.event);
             break;
         }
 
@@ -90,13 +96,17 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         events.push(event);
       } else if (
         item.kind === "call" &&
-        item.call.name.startsWith("Contracts.")
+        (item.call.name.startsWith("Contracts.") ||
+          item.call.name.startsWith("NominationPools."))
       ) {
         // Normalize the call arguments based on the prefix
         let args;
         switch (true) {
           case item.call.name.startsWith("Contracts."):
             args = normalizeContractsCallsArgs(ctx, item.call);
+            break;
+          case item.call.name.startsWith("NominationPools."):
+            args = normalizeNominationPoolsCallsArgs(ctx, item.call);
             break;
         }
 
