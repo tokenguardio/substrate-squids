@@ -36,6 +36,7 @@ import * as v967 from './v967'
 import * as v968 from './v968'
 import * as v970 from './v970'
 import * as v971 from './v971'
+import * as v972 from './v972'
 
 export class AssetRegistryAssetRegisteredEvent {
     private readonly _chain: Chain
@@ -327,6 +328,21 @@ export class AssetRegistryMultiLocationSetEvent {
      */
     get asV970(): {currencyId: v970.CurrencyId, location: v970.V1MultiLocation, weight: bigint} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * MultiLocation Force set.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('AssetRegistry.MultiLocationSet') === 'e1a3179fb37f977ce891f62c9165000a772f9416b0e1b03e85d8bf5175bc23e0'
+    }
+
+    /**
+     * MultiLocation Force set.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, location: v972.V3MultiLocation, weight: v972.Weight} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2404,6 +2420,23 @@ export class CumulusXcmExecutedDownwardEvent {
         assert(this.isV926)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message executed with the given outcome.
+     * \[ id, outcome \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('CumulusXcm.ExecutedDownward') === '0a5524dcf48d575bf19533e72499c1b6f08167113160e1bb190028315c81787f'
+    }
+
+    /**
+     * Downward message executed with the given outcome.
+     * \[ id, outcome \]
+     */
+    get asV972(): [Uint8Array, v972.V3Outcome] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class CumulusXcmInvalidFormatEvent {
@@ -2435,6 +2468,23 @@ export class CumulusXcmInvalidFormatEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message is invalid XCM.
+     * \[ id \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('CumulusXcm.InvalidFormat') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    }
+
+    /**
+     * Downward message is invalid XCM.
+     * \[ id \]
+     */
+    get asV972(): Uint8Array {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class CumulusXcmUnsupportedVersionEvent {
@@ -2464,6 +2514,23 @@ export class CumulusXcmUnsupportedVersionEvent {
      */
     get asV1(): Uint8Array {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Downward message is unsupported version of XCM.
+     * \[ id \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('CumulusXcm.UnsupportedVersion') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    }
+
+    /**
+     * Downward message is unsupported version of XCM.
+     * \[ id \]
+     */
+    get asV972(): Uint8Array {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3926,6 +3993,21 @@ export class DmpQueueExecutedDownwardEvent {
         assert(this.isV952)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message executed with the given outcome.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('DmpQueue.ExecutedDownward') === 'bbdc5e15442f2bee7199707f9da66674b3ad89835c84687a406e183c7d31121e'
+    }
+
+    /**
+     * Downward message executed with the given outcome.
+     */
+    get asV972(): {messageId: Uint8Array, outcome: v972.V3Outcome} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class DmpQueueInvalidFormatEvent {
@@ -3970,6 +4052,35 @@ export class DmpQueueInvalidFormatEvent {
      */
     get asV952(): {messageId: Uint8Array} {
         assert(this.isV952)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DmpQueueMaxMessagesExhaustedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DmpQueue.MaxMessagesExhausted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The maximum number of downward messages was.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('DmpQueue.MaxMessagesExhausted') === '6bcb1469518e8e7bacd0242af782ebd652887f65f7377a9b2d81ccea6505416e'
+    }
+
+    /**
+     * The maximum number of downward messages was.
+     */
+    get asV972(): {messageId: Uint8Array} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -9219,6 +9330,21 @@ export class OrmlXcmSentEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * XCM message sent. \[to, message\]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('OrmlXcm.Sent') === '3a86f4dc1fd9ac7a9db26bfc04e4e976c06d6b089449fea20d7cfce98a4b3528'
+    }
+
+    /**
+     * XCM message sent. \[to, message\]
+     */
+    get asV972(): {to: v972.V3MultiLocation, message: v972.V3Instruction[]} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class ParachainStakingBlocksPerRoundSetEvent {
@@ -10361,6 +10487,35 @@ export class ParachainSystemUpgradeAuthorizedEvent {
     }
 }
 
+export class ParachainSystemUpwardMessageSentEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ParachainSystem.UpwardMessageSent')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An upward message was sent to the relay chain.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('ParachainSystem.UpwardMessageSent') === 'ccbb82ba01a4d742bdd34e545836a89f2c435428f6887f28ce1ecf0166419df1'
+    }
+
+    /**
+     * An upward message was sent to the relay chain.
+     */
+    get asV972(): {messageHash: (Uint8Array | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class ParachainSystemValidationFunctionAppliedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -10842,6 +10997,25 @@ export class PolkadotXcmAssetsClaimedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.AssetsClaimed') === '31f92e7520747dddaef3e11b450bf3ace3a2df72f612e4237ea77faaffe7a16c'
+    }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get asV972(): [Uint8Array, v972.V3MultiLocation, v972.VersionedMultiAssets] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmAssetsTrappedEvent {
@@ -10892,6 +11066,25 @@ export class PolkadotXcmAssetsTrappedEvent {
      */
     get asV970(): [Uint8Array, v970.V1MultiLocation, v970.VersionedMultiAssets] {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.AssetsTrapped') === '31f92e7520747dddaef3e11b450bf3ace3a2df72f612e4237ea77faaffe7a16c'
+    }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get asV972(): [Uint8Array, v972.V3MultiLocation, v972.VersionedMultiAssets] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -10964,6 +11157,140 @@ export class PolkadotXcmAttemptedEvent {
         assert(this.isV926)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Execution of an XCM message was attempted.
+     * 
+     * \[ outcome \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Attempted') === '9f44833a3470bf6416377180f3875a05cfa0cf60651f18f6456d9e12cbab7095'
+    }
+
+    /**
+     * Execution of an XCM message was attempted.
+     * 
+     * \[ outcome \]
+     */
+    get asV972(): v972.V3Outcome {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmFeesPaidEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.FeesPaid')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     * 
+     * \[ paying location, fees \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.FeesPaid') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     * 
+     * \[ paying location, fees \]
+     */
+    get asV972(): [v972.V3MultiLocation, v972.V3MultiAsset[]] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmInvalidQuerierEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.InvalidQuerier')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected querier, maybe actual querier \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidQuerier') === '7c1090f283eee877a7601bfed0fd6fc3ca831930ac944924347ca8a2c6bd92e3'
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected querier, maybe actual querier \]
+     */
+    get asV972(): [v972.V3MultiLocation, bigint, v972.V3MultiLocation, (v972.V3MultiLocation | undefined)] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmInvalidQuerierVersionEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.InvalidQuerierVersion')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidQuerierVersion') === 'b8a7ace58226e359dd4ed6ffcc01266723020043e3fad0900eec6eb6f910a91e'
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV972(): [v972.V3MultiLocation, bigint] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmInvalidResponderEvent {
@@ -11022,6 +11349,29 @@ export class PolkadotXcmInvalidResponderEvent {
      */
     get asV970(): [v970.V1MultiLocation, bigint, (v970.V1MultiLocation | undefined)] {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected location \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponder') === '3bf64d16d6fb5992c738643efff778414cc181e36377c106ab8130ca32b906de'
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected location \]
+     */
+    get asV972(): [v972.V3MultiLocation, bigint, (v972.V3MultiLocation | undefined)] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -11098,6 +11448,37 @@ export class PolkadotXcmInvalidResponderVersionEvent {
      */
     get asV970(): [v970.V1MultiLocation, bigint] {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponderVersion') === 'b8a7ace58226e359dd4ed6ffcc01266723020043e3fad0900eec6eb6f910a91e'
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV972(): [v972.V3MultiLocation, bigint] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -11323,6 +11704,27 @@ export class PolkadotXcmNotifyTargetMigrationFailEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     * 
+     * \[ location, query ID \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetMigrationFail') === '8266fa3a9f901885a47ef275cb4d4053fa3a36033a40564944a565ca686bb27d'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     * 
+     * \[ location, query ID \]
+     */
+    get asV972(): [v972.VersionedMultiLocation, bigint] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmNotifyTargetSendFailEvent {
@@ -11400,6 +11802,27 @@ export class PolkadotXcmNotifyTargetSendFailEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     * 
+     * \[ location, query ID, error \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetSendFail') === '26c26186934c8414941ac6565c3465399a31fd237e9f48bcc04601c00427c6fc'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     * 
+     * \[ location, query ID, error \]
+     */
+    get asV972(): [v972.V3MultiLocation, bigint, v972.V3Error] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmResponseReadyEvent {
@@ -11475,6 +11898,27 @@ export class PolkadotXcmResponseReadyEvent {
      */
     get asV970(): [bigint, v970.V2Response] {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     * 
+     * \[ id, response \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.ResponseReady') === '47e2336328ac2f8cffe468836a85755d501dbd3f9fe77c829ae5b5c5c33f5e9c'
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     * 
+     * \[ id, response \]
+     */
+    get asV972(): [bigint, v972.V3Response] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -11599,6 +12043,25 @@ export class PolkadotXcmSentEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A XCM message was sent.
+     * 
+     * \[ origin, destination, message \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Sent') === '8b71eb54444ef55962e90645805fd80535dfb12f572b41fdb1e093b7627b132d'
+    }
+
+    /**
+     * A XCM message was sent.
+     * 
+     * \[ origin, destination, message \]
+     */
+    get asV972(): [v972.V3MultiLocation, v972.V3MultiLocation, v972.V3Instruction[]] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmSupportedVersionChangedEvent {
@@ -11653,6 +12116,27 @@ export class PolkadotXcmSupportedVersionChangedEvent {
      */
     get asV970(): [v970.V1MultiLocation, number] {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     * 
+     * \[ location, XCM version \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.SupportedVersionChanged') === '9fb88093240cec5964187b6999557d2d8c4331f97b6c42c5664d30afbf50d7d4'
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     * 
+     * \[ location, XCM version \]
+     */
+    get asV972(): [v972.V3MultiLocation, number] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -11715,6 +12199,29 @@ export class PolkadotXcmUnexpectedResponseEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.UnexpectedResponse') === 'b8a7ace58226e359dd4ed6ffcc01266723020043e3fad0900eec6eb6f910a91e'
+    }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV972(): [v972.V3MultiLocation, bigint] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmVersionChangeNotifiedEvent {
@@ -11765,6 +12272,130 @@ export class PolkadotXcmVersionChangeNotifiedEvent {
      */
     get asV970(): [v970.V1MultiLocation, number] {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     * 
+     * \[ destination, result, cost \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionChangeNotified') === '3e656c216d68595d03592e62a70ad5d9d6a20b8a41bc0686433d36902cc47f08'
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     * 
+     * \[ destination, result, cost \]
+     */
+    get asV972(): [v972.V3MultiLocation, number, v972.V3MultiAsset[]] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmVersionNotifyRequestedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.VersionNotifyRequested')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * We have requested that a remote chain sends us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyRequested') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * We have requested that a remote chain sends us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get asV972(): [v972.V3MultiLocation, v972.V3MultiAsset[]] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmVersionNotifyStartedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.VersionNotifyStarted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     * 
+     * \[ destination location, cost \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyStarted') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     * 
+     * \[ destination location, cost \]
+     */
+    get asV972(): [v972.V3MultiLocation, v972.V3MultiAsset[]] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmVersionNotifyUnrequestedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.VersionNotifyUnrequested')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyUnrequested') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get asV972(): [v972.V3MultiLocation, v972.V3MultiAsset[]] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12315,6 +12946,21 @@ export class SalpContributeFailedEvent {
         assert(this.isV900)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Fail on contribute to crowd sale. [who, fund_index, amount]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('Salp.ContributeFailed') === 'ad00729b31f26d2879a6f96c1691ed42a69cd4947c75e84221a6bde93a3415bc'
+    }
+
+    /**
+     * Fail on contribute to crowd sale. [who, fund_index, amount]
+     */
+    get asV972(): [Uint8Array, number, bigint] {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SalpContributedEvent {
@@ -12342,6 +12988,21 @@ export class SalpContributedEvent {
      */
     get asV900(): [Uint8Array, number, bigint, Uint8Array] {
         assert(this.isV900)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Contributed to a crowd sale. [who, fund_index, amount]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('Salp.Contributed') === 'ad00729b31f26d2879a6f96c1691ed42a69cd4947c75e84221a6bde93a3415bc'
+    }
+
+    /**
+     * Contributed to a crowd sale. [who, fund_index, amount]
+     */
+    get asV972(): [Uint8Array, number, bigint] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13688,6 +14349,15 @@ export class SlpChillEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.Chill') === '0681f65f9d6dc30ca4cb4f9f4198d67151dbbe99998e24c8fd26b30eea1662c8'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, queryId: bigint, queryIdHash: Uint8Array} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpConvertAssetEvent {
@@ -13709,6 +14379,15 @@ export class SlpConvertAssetEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation, amount: bigint} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.ConvertAsset') === 'dc4a0fbcbd838160e6bd703772ca3f79d18f7780d3e32c1c3191cbdd054cf43a'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, amount: bigint} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13870,6 +14549,15 @@ export class SlpDelegatedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.Delegated') === '058b887aceba65ae4969bf6a2d154f8902ac224ef3ba1b514ff94f235afa6f11'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, targets: (v972.V3MultiLocation[] | undefined), queryId: bigint, queryIdHash: Uint8Array} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpDelegatorAddedEvent {
@@ -13918,6 +14606,15 @@ export class SlpDelegatorAddedEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, index: number, delegatorId: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorAdded') === '099678c1c304d07f05e368f94e51f219b6b4a1ae0ce3a909bbd15a4a8a7b543d'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, index: number, delegatorId: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13979,6 +14676,15 @@ export class SlpDelegatorBondExtraEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorBondExtra') === '4c8ddabfd1c628bbbd74fbb44f3fd4083d738f892900e4a931372331d4832495'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, extraBondedAmount: bigint, queryId: bigint, queryIdHash: Uint8Array, validator: (v972.V3MultiLocation | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpDelegatorBondedEvent {
@@ -14038,6 +14744,15 @@ export class SlpDelegatorBondedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorBonded') === '4ca1d17cfa59d79282f8bde5960d1bef586ca7863888d66e2bb65b225ee46ffb'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, bondedAmount: bigint, queryId: bigint, queryIdHash: Uint8Array, validator: (v972.V3MultiLocation | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpDelegatorInitializedEvent {
@@ -14086,6 +14801,15 @@ export class SlpDelegatorInitializedEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, delegatorId: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorInitialized') === '42c6d15752f469e2d9591b1b69803adf497f418a2707b74c2b3bd5a35ccef3c7'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14156,6 +14880,15 @@ export class SlpDelegatorLedgerQueryResponseConfirmedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorLedgerQueryResponseConfirmed') === 'c70283ed4250bdda098092831a301ca5ef828da39c58f493bc6c76d2b376739b'
+    }
+
+    get asV972(): {queryId: bigint, entry: v972.LedgerUpdateEntry} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpDelegatorLedgerQueryResponseFailSuccessfullyEvent {
@@ -14177,6 +14910,29 @@ export class SlpDelegatorLedgerQueryResponseFailSuccessfullyEvent {
 
     get asV940(): {queryId: bigint} {
         assert(this.isV940)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SlpDelegatorLedgerQueryResponseFailedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Slp.DelegatorLedgerQueryResponseFailed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorLedgerQueryResponseFailed') === '7173deafe34d70ded9e7b845f6a1e223f3ba2dd506fd01ad6df32f6835032bbd'
+    }
+
+    get asV972(): {queryId: bigint} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14247,6 +15003,15 @@ export class SlpDelegatorLedgerSetEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorLedgerSet') === '120cc7d080907b1529c7ad5273c48a1b5935bcfca1965af2ce4bf888e975fd99'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegator: v972.V3MultiLocation, ledger: (v972.Ledger | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpDelegatorRebondEvent {
@@ -14306,6 +15071,15 @@ export class SlpDelegatorRebondEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorRebond') === '354bfb7a17ebed6db2d74a267391c6f6cb03af19a42fddf7d4b28978382d52db'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, rebondAmount: (bigint | undefined), queryId: bigint, queryIdHash: Uint8Array, validator: (v972.V3MultiLocation | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpDelegatorRemovedEvent {
@@ -14354,6 +15128,15 @@ export class SlpDelegatorRemovedEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, delegatorId: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorRemoved') === '42c6d15752f469e2d9591b1b69803adf497f418a2707b74c2b3bd5a35ccef3c7'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14415,6 +15198,15 @@ export class SlpDelegatorUnbondEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorUnbond') === '8d97eea73908fb93adbba0693d27df1e44da8530df8ca32798a1c7ea1d658bf6'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, unbondAmount: bigint, queryId: bigint, queryIdHash: Uint8Array, validator: (v972.V3MultiLocation | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpDelegatorUnbondAllEvent {
@@ -14463,6 +15255,15 @@ export class SlpDelegatorUnbondAllEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, delegatorId: v970.V1MultiLocation, queryId: bigint, queryIdHash: Uint8Array} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.DelegatorUnbondAll') === '0681f65f9d6dc30ca4cb4f9f4198d67151dbbe99998e24c8fd26b30eea1662c8'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, queryId: bigint, queryIdHash: Uint8Array} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14515,6 +15316,15 @@ export class SlpFeeSourceSetEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.FeeSourceSet') === '3eab9cf21c46a724e233ce144763f583de5973ed9e9ebcc02f7c0ce77080ae2d'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, whoAndFee: ([v972.V3MultiLocation, bigint] | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpFeeSupplementedEvent {
@@ -14563,6 +15373,15 @@ export class SlpFeeSupplementedEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, amount: bigint, from: v970.V1MultiLocation, to: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.FeeSupplemented') === 'a093220c3552d8f68fe74df7c130b2bf4b8e372d22f0db7e3ad8b4383a3dd590'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, amount: bigint, from: v972.V3MultiLocation, to: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14697,6 +15516,15 @@ export class SlpHostingFeesSetEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.HostingFeesSet') === '75806e7779e8e0be165255055117bbd6e8dfb08178112161c164aa662f45f7de'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, fees: ([number, v972.V3MultiLocation] | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpLiquidizeEvent {
@@ -14754,6 +15582,15 @@ export class SlpLiquidizeEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, delegatorId: v970.V1MultiLocation, timeUnit: (v970.TimeUnit | undefined), queryId: bigint, queryIdHash: Uint8Array, amount: (bigint | undefined)} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.Liquidize') === 'cb22e3bccd74cd664feb1fedb8edca651a679da056c9be9473ecdd91cdbbd595'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, timeUnit: (v972.TimeUnit | undefined), queryId: bigint, queryIdHash: Uint8Array, amount: (bigint | undefined)} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14947,6 +15784,15 @@ export class SlpPayoutEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.Payout') === '8397d7de58af0ddcf6a750313c36c60cc6cf5ab409148290212dd64ea1a6f17d'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, validator: v972.V3MultiLocation, timeUnit: (v972.TimeUnit | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpPoolTokenDecreasedEvent {
@@ -15138,6 +15984,15 @@ export class SlpSupplementFeeAccountWhitelistAddedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.SupplementFeeAccountWhitelistAdded') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpSupplementFeeAccountWhitelistRemovedEvent {
@@ -15186,6 +16041,15 @@ export class SlpSupplementFeeAccountWhitelistRemovedEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.SupplementFeeAccountWhitelistRemoved') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -15297,6 +16161,15 @@ export class SlpTransferBackEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.TransferBack') === '506f9e4fa34f23ff6ad95427388a738b204392baefd5158808ea1d1e4f688b4d'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, from: v972.V3MultiLocation, to: v972.V3MultiLocation, amount: bigint} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpTransferToEvent {
@@ -15345,6 +16218,15 @@ export class SlpTransferToEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, from: v970.V1MultiLocation, to: v970.V1MultiLocation, amount: bigint} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.TransferTo') === '506f9e4fa34f23ff6ad95427388a738b204392baefd5158808ea1d1e4f688b4d'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, from: v972.V3MultiLocation, to: v972.V3MultiLocation, amount: bigint} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -15397,6 +16279,15 @@ export class SlpUndelegatedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.Undelegated') === 'fffa1c7cd50e04bfebd758741167406428bf64bc59a03ec3a6a0940b59b778d1'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, delegatorId: v972.V3MultiLocation, targets: v972.V3MultiLocation[], queryId: bigint, queryIdHash: Uint8Array} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpValidatorsAddedEvent {
@@ -15445,6 +16336,15 @@ export class SlpValidatorsAddedEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, validatorId: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsAdded') === '2dea165f902d6865e8a53afdb4f42c66aa130f95721cdc40cf73662f132b4ce1'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, validatorId: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -15497,6 +16397,15 @@ export class SlpValidatorsByDelegatorQueryResponseConfirmedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsByDelegatorQueryResponseConfirmed') === '37c0937dead8533141ef62af0dfc7033b966bd3defb71fcb874e9141920bd596'
+    }
+
+    get asV972(): {queryId: bigint, entry: v972.ValidatorsByDelegatorUpdateEntry} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpValidatorsByDelegatorQueryResponseFailSuccessfullyEvent {
@@ -15518,6 +16427,29 @@ export class SlpValidatorsByDelegatorQueryResponseFailSuccessfullyEvent {
 
     get asV940(): {queryId: bigint} {
         assert(this.isV940)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SlpValidatorsByDelegatorQueryResponseFailedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Slp.ValidatorsByDelegatorQueryResponseFailed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsByDelegatorQueryResponseFailed') === '7173deafe34d70ded9e7b845f6a1e223f3ba2dd506fd01ad6df32f6835032bbd'
+    }
+
+    get asV972(): {queryId: bigint} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -15570,6 +16502,15 @@ export class SlpValidatorsByDelegatorSetEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsByDelegatorSet') === 'caecdf6f96c1463ddb48c9af265f920d7dbf37aaba032d62820e82ae430ce988'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, validatorsList: [v972.V3MultiLocation, Uint8Array][], delegatorId: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpValidatorsRemovedEvent {
@@ -15618,6 +16559,15 @@ export class SlpValidatorsRemovedEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, validatorId: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsRemoved') === '2dea165f902d6865e8a53afdb4f42c66aa130f95721cdc40cf73662f132b4ce1'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, validatorId: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -15677,6 +16627,15 @@ export class SlpXcmDestWeightAndFeeSetEvent {
 
     get asV970(): {currencyId: v970.CurrencyId, operation: v970.XcmOperation, weightAndFee: ([bigint, bigint] | undefined)} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getEventHash('Slp.XcmDestWeightAndFeeSet') === '1598e459d378a368e7d5fca7b08b78b79921151fa17ae03a7b8f7bd3132263dc'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, operation: v972.XcmOperation, weightAndFee: ([v972.Weight, bigint] | undefined)} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -18929,6 +19888,35 @@ export class TokensLockSetEvent {
     }
 }
 
+export class TokensLockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Tokens.Locked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some free balance was locked.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('Tokens.Locked') === '8d097e22a8a65a807386a44e215b345bde223f175804b191c97bafcf19519fc0'
+    }
+
+    /**
+     * Some free balance was locked.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class TokensRepatriatedReserveEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -19470,6 +20458,35 @@ export class TokensTransferEvent {
      */
     get asV962(): {currencyId: v962.CurrencyId, from: Uint8Array, to: Uint8Array, amount: bigint} {
         assert(this.isV962)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class TokensUnlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Tokens.Unlocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some locked balance was freed.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('Tokens.Unlocked') === '8d097e22a8a65a807386a44e215b345bde223f175804b191c97bafcf19519fc0'
+    }
+
+    /**
+     * Some locked balance was freed.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -20161,6 +21178,21 @@ export class UnknownTokensDepositedEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Deposit success.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('UnknownTokens.Deposited') === '56d763db65b5d2d0b08faf432352ea07b43e96d3748f93c593bf63f666b69808'
+    }
+
+    /**
+     * Deposit success.
+     */
+    get asV972(): {asset: v972.V3MultiAsset, who: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class UnknownTokensWithdrawnEvent {
@@ -20248,6 +21280,21 @@ export class UnknownTokensWithdrawnEvent {
      */
     get asV970(): {asset: v970.V1MultiAsset, who: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Withdraw success.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('UnknownTokens.Withdrawn') === '56d763db65b5d2d0b08faf432352ea07b43e96d3748f93c593bf63f666b69808'
+    }
+
+    /**
+     * Withdraw success.
+     */
+    get asV972(): {asset: v972.V3MultiAsset, who: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -22396,6 +23443,21 @@ export class XTokensTransferredMultiAssetsEvent {
         assert(this.isV970)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('XTokens.TransferredMultiAssets') === '15736a72848dcda33acde4ffd89efcf41166a311cefd45a3ccad9cf54e78a91d'
+    }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get asV972(): {sender: Uint8Array, assets: v972.V3MultiAsset[], fee: v972.V3MultiAsset, dest: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XTokensTransferredMultiCurrenciesEvent {
@@ -22534,6 +23596,21 @@ export class XcmInterfaceXcmDestWeightUpdatedEvent {
      */
     get asV927(): [v927.XcmInterfaceOperation, bigint] {
         assert(this.isV927)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Xcm dest weight has been updated. \[xcm_operation, new_xcm_dest_weight\]
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('XcmInterface.XcmDestWeightUpdated') === '4ab993d3ea4bef01efccaedc2648e3fbc1a19792d803eb7ceefe6f06f677f6b4'
+    }
+
+    /**
+     * Xcm dest weight has been updated. \[xcm_operation, new_xcm_dest_weight\]
+     */
+    get asV972(): [v972.XcmInterfaceOperation, v972.Weight] {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -22755,6 +23832,21 @@ export class XcmpQueueFailEvent {
      */
     get asV968(): {messageHash: (Uint8Array | undefined), error: v968.V2Error, weight: v968.Weight} {
         assert(this.isV968)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some XCM failed.
+     */
+    get isV972(): boolean {
+        return this._chain.getEventHash('XcmpQueue.Fail') === 'add7b9cc246aa92449c7315a345573f307df55cd0b7e472982a726f0e1757cf0'
+    }
+
+    /**
+     * Some XCM failed.
+     */
+    get asV972(): {messageHash: (Uint8Array | undefined), error: v972.V3Error, weight: v972.Weight} {
+        assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
 }

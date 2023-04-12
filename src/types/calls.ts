@@ -38,6 +38,7 @@ import * as v964 from './v964'
 import * as v967 from './v967'
 import * as v968 from './v968'
 import * as v970 from './v970'
+import * as v972 from './v972'
 
 export class AssetRegistryForceSetMultilocationCall {
     private readonly _chain: Chain
@@ -67,6 +68,15 @@ export class AssetRegistryForceSetMultilocationCall {
 
     get asV970(): {currencyId: v970.CurrencyId, location: v970.VersionedMultiLocation, weight: bigint} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('AssetRegistry.force_set_multilocation') === 'd077d19577717c3371dff93a17e861ea34dd5365db105b1f360b820c7da96129'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, location: v972.VersionedMultiLocation, weight: v972.Weight} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -133,6 +143,15 @@ export class AssetRegistryRegisterMultilocationCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('AssetRegistry.register_multilocation') === 'd077d19577717c3371dff93a17e861ea34dd5365db105b1f360b820c7da96129'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, location: v972.VersionedMultiLocation, weight: v972.Weight} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class AssetRegistryRegisterNativeAssetCall {
@@ -181,6 +200,15 @@ export class AssetRegistryRegisterNativeAssetCall {
 
     get asV970(): {currencyId: v970.CurrencyId, location: v970.VersionedMultiLocation, metadata: v970.AssetMetadata} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('AssetRegistry.register_native_asset') === 'd76afe806033bf2a7ebcf1d7ed6857ffed2055e244225c6a82465589bb21bfc1'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, location: v972.VersionedMultiLocation, metadata: v972.AssetMetadata} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -346,6 +374,15 @@ export class AssetRegistryUpdateNativeAssetCall {
 
     get asV970(): {currencyId: v970.CurrencyId, location: v970.VersionedMultiLocation, metadata: v970.AssetMetadata} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('AssetRegistry.update_native_asset') === 'd76afe806033bf2a7ebcf1d7ed6857ffed2055e244225c6a82465589bb21bfc1'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, location: v972.VersionedMultiLocation, metadata: v972.AssetMetadata} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2994,6 +3031,41 @@ export class CouncilExecuteCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Council.execute') === 'c245940a9eb46c2c23d12b8669b1052fcb616bced5919f2e33cb606a6c64e5e0'
+    }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get asV972(): {proposal: v972.Call, lengthBound: number} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class CouncilProposeCall {
@@ -5351,6 +5423,73 @@ export class CouncilProposeCall {
      */
     get asV970(): {threshold: number, proposal: v970.Call, lengthBound: number} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Council.propose') === '3045fee08872ddc64e0b5aef0e83be55f34c08fba3c390c4cf5a50bcc32a2203'
+    }
+
+    /**
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
+     */
+    get asV972(): {threshold: number, proposal: v972.Call, lengthBound: number} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -8004,6 +8143,21 @@ export class DmpQueueServiceOverweightCall {
      */
     get asV1(): {index: bigint, weightLimit: bigint} {
         assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Service a single overweight message.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('DmpQueue.service_overweight') === '80fae8875bf513efc1e06b7dac547fccfc1e5fc45888cc8afd9b43812cf51bf5'
+    }
+
+    /**
+     * Service a single overweight message.
+     */
+    get asV972(): {index: bigint, weightLimit: v972.Weight} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13028,6 +13182,109 @@ export class MultisigAsMultiCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '46d29f1f458b441eb7b6ce2656f7d6afd5cf6e991a44dcb024d8d6b4b8e12164'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * # <weight>
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * -------------------------------
+     * - DB Weight:
+     *     - Reads: Multisig Storage, [Caller Account]
+     *     - Writes: Multisig Storage, [Caller Account]
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV972(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v972.Timepoint | undefined), call: v972.Call, maxWeight: v972.Weight} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -14572,6 +14829,51 @@ export class MultisigAsMultiThreshold1Call {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '1b73b88b7919937e1e6d34867ac5bb8185b2937717f8d71062fc65cfd792d6fc'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * # <weight>
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     * -------------------------------
+     * - DB Weight: None
+     * - Plus Call Weight
+     * # </weight>
+     */
+    get asV972(): {otherSignatories: Uint8Array[], call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigCancelAsMultiCall {
@@ -14753,6 +15055,21 @@ export class OrmlXcmSendAsSovereignCall {
      */
     get asV970(): {dest: v970.VersionedMultiLocation, message: v970.VersionedXcm} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send an XCM message as parachain sovereign.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('OrmlXcm.send_as_sovereign') === '9c814457e6c06e355f17d8e2e59924a734ef38dfc7852490ba89fd5b845b6f48'
+    }
+
+    /**
+     * Send an XCM message as parachain sovereign.
+     */
+    get asV972(): {dest: v972.VersionedMultiLocation, message: v972.VersionedXcm} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -16567,6 +16884,41 @@ export class PolkadotXcmExecuteCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Execute an XCM message from a local, signed, origin.
+     * 
+     * An event is deposited indicating whether `msg` could be executed completely or only
+     * partially.
+     * 
+     * No more than `max_weight` will be used in its attempted execution. If this is less than the
+     * maximum amount of weight that the message could take to be executed, then no execution
+     * attempt will be made.
+     * 
+     * NOTE: A successful return to this does *not* imply that the `msg` was executed successfully
+     * to completion; only that *some* of it was executed.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.execute') === 'a1da862b5d9db8fd6f3072da00ea4e66052f97b5dcfb87e58d49ca1fd1f1ef90'
+    }
+
+    /**
+     * Execute an XCM message from a local, signed, origin.
+     * 
+     * An event is deposited indicating whether `msg` could be executed completely or only
+     * partially.
+     * 
+     * No more than `max_weight` will be used in its attempted execution. If this is less than the
+     * maximum amount of weight that the message could take to be executed, then no execution
+     * attempt will be made.
+     * 
+     * NOTE: A successful return to this does *not* imply that the `msg` was executed successfully
+     * to completion; only that *some* of it was executed.
+     */
+    get asV972(): {message: v972.Type_365, maxWeight: v972.Weight} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceDefaultXcmVersionCall {
@@ -16660,6 +17012,27 @@ export class PolkadotXcmForceSubscribeVersionNotifyCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Ask a location to notify us regarding their XCM version and any changes to it.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we should subscribe for XCM version notifications.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_subscribe_version_notify') === '0448b7eed1a6d9cd0a489ea792df94cc3ce5a37e203f19b1a5a0c4516a8d696c'
+    }
+
+    /**
+     * Ask a location to notify us regarding their XCM version and any changes to it.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we should subscribe for XCM version notifications.
+     */
+    get asV972(): {location: v972.VersionedMultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceUnsubscribeVersionNotifyCall {
@@ -16724,6 +17097,31 @@ export class PolkadotXcmForceUnsubscribeVersionNotifyCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Require that a particular destination should no longer notify us regarding any XCM
+     * version changes.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we are currently subscribed for XCM version
+     *   notifications which we no longer desire.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_unsubscribe_version_notify') === '0448b7eed1a6d9cd0a489ea792df94cc3ce5a37e203f19b1a5a0c4516a8d696c'
+    }
+
+    /**
+     * Require that a particular destination should no longer notify us regarding any XCM
+     * version changes.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we are currently subscribed for XCM version
+     *   notifications which we no longer desire.
+     */
+    get asV972(): {location: v972.VersionedMultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceXcmVersionCall {
@@ -16786,6 +17184,31 @@ export class PolkadotXcmForceXcmVersionCall {
      */
     get asV970(): {location: v970.V1MultiLocation, xcmVersion: number} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Extoll that a particular destination can be communicated with through a particular
+     * version of XCM.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The destination that is being described.
+     * - `xcm_version`: The latest version of XCM that `location` supports.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_xcm_version') === '998b5a56e7662d76955b41c2526c2219fe8304fec6501afa115db1bd705e7ff6'
+    }
+
+    /**
+     * Extoll that a particular destination can be communicated with through a particular
+     * version of XCM.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The destination that is being described.
+     * - `xcm_version`: The latest version of XCM that `location` supports.
+     */
+    get asV972(): {location: v972.V3MultiLocation, xcmVersion: number} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -16894,6 +17317,55 @@ export class PolkadotXcmLimitedReserveTransferAssetsCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_reserve_transfer_assets') === 'c5f45c1775bd92c7b425f46c92a6891334f7df5ae2518cd2c0a106447da3bbd9'
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV972(): {dest: v972.VersionedMultiLocation, beneficiary: v972.VersionedMultiLocation, assets: v972.VersionedMultiAssets, feeAssetItem: number, weightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmLimitedTeleportAssetsCall {
@@ -16994,6 +17466,53 @@ export class PolkadotXcmLimitedTeleportAssetsCall {
      */
     get asV970(): {dest: v970.VersionedMultiLocation, beneficiary: v970.VersionedMultiLocation, assets: v970.VersionedMultiAssets, feeAssetItem: number, weightLimit: v970.V2WeightLimit} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_teleport_assets') === 'c5f45c1775bd92c7b425f46c92a6891334f7df5ae2518cd2c0a106447da3bbd9'
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV972(): {dest: v972.VersionedMultiLocation, beneficiary: v972.VersionedMultiLocation, assets: v972.VersionedMultiAssets, feeAssetItem: number, weightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -17174,6 +17693,51 @@ export class PolkadotXcmReserveTransferAssetsCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.reserve_transfer_assets') === 'ebd99cece75c1b0fc48830527bc513cf672b8d0c6c0c505498bba5c8c5e1617c'
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV972(): {dest: v972.VersionedMultiLocation, beneficiary: v972.VersionedMultiLocation, assets: v972.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmSendCall {
@@ -17231,6 +17795,15 @@ export class PolkadotXcmSendCall {
 
     get asV970(): {dest: v970.VersionedMultiLocation, message: v970.VersionedXcm} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.send') === '9c814457e6c06e355f17d8e2e59924a734ef38dfc7852490ba89fd5b845b6f48'
+    }
+
+    get asV972(): {dest: v972.VersionedMultiLocation, message: v972.VersionedXcm} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -17401,6 +17974,49 @@ export class PolkadotXcmTeleportAssetsCall {
      */
     get asV970(): {dest: v970.VersionedMultiLocation, beneficiary: v970.VersionedMultiLocation, assets: v970.VersionedMultiAssets, feeAssetItem: number} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.teleport_assets') === 'ebd99cece75c1b0fc48830527bc513cf672b8d0c6c0c505498bba5c8c5e1617c'
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV972(): {dest: v972.VersionedMultiLocation, beneficiary: v972.VersionedMultiLocation, assets: v972.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -19346,6 +19962,37 @@ export class ProxyProxyCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '7634e0f415f0b01653beab090f5f42ad653cf9506dd1ad3454c0c5b15e26a223'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV972(): {real: v972.MultiAddress, forceProxyType: (v972.ProxyType | undefined), call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyProxyAnnouncedCall {
@@ -20652,6 +21299,41 @@ export class ProxyProxyAnnouncedCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '706bb0b81a36e4a40c31c695c3303f2c5854e5846783b9a28d0e510e286e51a8'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV972(): {delegate: v972.MultiAddress, real: v972.MultiAddress, forceProxyType: (v972.ProxyType | undefined), call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyRejectAnnouncementCall {
@@ -21127,6 +21809,29 @@ export class SalpConfirmContributeCall {
      */
     get asV900(): {who: Uint8Array, index: number, isSuccess: boolean, messageId: Uint8Array} {
         assert(this.isV900)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SalpConfirmContributionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Salp.confirm_contribution')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Salp.confirm_contribution') === 'bef8f7543dfaf827f16faeecf1ae77b01b3a27a17ca90af1a821e1cb820998fa'
+    }
+
+    get asV972(): {queryId: bigint, response: v972.V3Response} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -23111,6 +23816,21 @@ export class SchedulerScheduleCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === 'e3ce90ec3d3e5096806e97e4e421eac01b49753f2854b370485ede7650099640'
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get asV972(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleAfterCall {
@@ -23999,6 +24719,29 @@ export class SchedulerScheduleAfterCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === 'feaae8d852f15152139eda01bb586e1c6ec6b2b99aaeb6ec8e298c52a67b8d19'
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule`].
+     * # </weight>
+     */
+    get asV972(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleNamedCall {
@@ -24851,6 +25594,21 @@ export class SchedulerScheduleNamedCall {
      */
     get asV970(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v970.Call} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '74d49639b6111434fc43d01ad5876d715e3e41592a4763cb9ff187f8e85460c6'
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get asV972(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v972.Call} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -25741,6 +26499,29 @@ export class SchedulerScheduleNamedAfterCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === '619ebfc4d7b95fa7b34223d82d91041ea3b2ccd9513258acf0e7da78acd4758c'
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     * 
+     * # <weight>
+     * Same as [`schedule_named`](Self::schedule_named).
+     * # </weight>
+     */
+    get asV972(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SessionPurgeKeysCall {
@@ -25962,6 +26743,21 @@ export class SlpAddDelegatorCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Update storage DelegatorsIndex2Multilocation<T> 和 DelegatorsMultilocation2Index<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.add_delegator') === 'b114db1115f904479247aa70f70fe559af680e210bc4d6fb0f04a67b9b2cafb6'
+    }
+
+    /**
+     * Update storage DelegatorsIndex2Multilocation<T> 和 DelegatorsMultilocation2Index<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, index: number, who: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpAddSupplementFeeAccountToWhitelistCall {
@@ -26010,6 +26806,15 @@ export class SlpAddSupplementFeeAccountToWhitelistCall {
 
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.add_supplement_fee_account_to_whitelist') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -26084,6 +26889,21 @@ export class SlpAddValidatorCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Update storage Validators<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.add_validator') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    /**
+     * Update storage Validators<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -26175,6 +26995,21 @@ export class SlpBondCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * First time bonding some amount to a delegator.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.bond') === 'f07d9ab41f99d1c0b6355d16343d66effae732c3c73a902c600b0cdb77d61613'
+    }
+
+    /**
+     * First time bonding some amount to a delegator.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, amount: bigint, validator: (v972.V3MultiLocation | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpBondExtraCall {
@@ -26262,6 +27097,21 @@ export class SlpBondExtraCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation, validator: (v970.V1MultiLocation | undefined), amount: bigint} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Bond extra amount to a delegator.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.bond_extra') === '4ba41b276257fe560429ea23dbceb09986af703f496bbeaec083b9bbaeecf46e'
+    }
+
+    /**
+     * Bond extra amount to a delegator.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, validator: (v972.V3MultiLocation | undefined), amount: bigint} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -26363,6 +27213,23 @@ export class SlpChargeHostFeeAndTuneVtokenExchangeRateCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Charge staking host fee, tune vtoken/token exchange rate, and update delegator ledger
+     * for single delegator.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.charge_host_fee_and_tune_vtoken_exchange_rate') === '647169f9827c57b7f48c65b3856bf701451488691b5cb4a79800f5601d51ba8e'
+    }
+
+    /**
+     * Charge staking host fee, tune vtoken/token exchange rate, and update delegator ledger
+     * for single delegator.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, value: bigint, who: (v972.V3MultiLocation | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpChillCall {
@@ -26435,6 +27302,44 @@ export class SlpChillCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Initiate payout for a certain delegator.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.chill') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    /**
+     * Initiate payout for a certain delegator.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SlpConfirmDelegatorLedgerCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Slp.confirm_delegator_ledger')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.confirm_delegator_ledger') === 'bef8f7543dfaf827f16faeecf1ae77b01b3a27a17ca90af1a821e1cb820998fa'
+    }
+
+    get asV972(): {queryId: bigint, response: v972.V3Response} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -26510,6 +27415,29 @@ export class SlpConfirmDelegatorLedgerQueryResponseCall {
     }
 }
 
+export class SlpConfirmValidatorsByDelegatorCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Slp.confirm_validators_by_delegator')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.confirm_validators_by_delegator') === 'bef8f7543dfaf827f16faeecf1ae77b01b3a27a17ca90af1a821e1cb820998fa'
+    }
+
+    get asV972(): {queryId: bigint, response: v972.V3Response} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class SlpConfirmValidatorsByDelegatorQueryResponseCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -26570,6 +27498,15 @@ export class SlpConvertAssetCall {
 
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation, amount: bigint, ifFromCurrency: boolean} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.convert_asset') === '4a39155e28adc74b6a4aaa6b6a2647cd3300b29fc50812c5c5f48c470612cdde'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, amount: bigint, ifFromCurrency: boolean} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -26685,6 +27622,21 @@ export class SlpDelegateCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation, targets: v970.V1MultiLocation[]} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Delegate to some validator set.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.delegate') === 'eaffe467c13dd67c77396813bddbd1ca6015af425423b79fa29f7053a9f1d56d'
+    }
+
+    /**
+     * Delegate to some validator set.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, targets: v972.V3MultiLocation[]} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -26916,6 +27868,29 @@ export class SlpInitializeDelegatorCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * ****************************x/
+     * ****** Outer Calls *****x/
+     * ****************************x/
+     * 
+     * Delegator initialization work. Generate a new delegator and return its ID.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.initialize_delegator') === '01e1d1ee17553b9f2884f61e5dd42d63c0f2a963a927a9e70c43f2d8239fa35a'
+    }
+
+    /**
+     * ****************************x/
+     * ****** Outer Calls *****x/
+     * ****************************x/
+     * 
+     * Delegator initialization work. Generate a new delegator and return its ID.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, delegatorLocation: (v972.V3MultiLocation | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpLiquidizeCall {
@@ -27003,6 +27978,21 @@ export class SlpLiquidizeCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation, when: (v970.TimeUnit | undefined), validator: (v970.V1MultiLocation | undefined), amount: (bigint | undefined)} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Withdraw the due payout into free balance.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.liquidize') === 'a37575b4c022365ca5dd1ff071de8b3d43c80fb814c1a08d60a398dbf6caf3c0'
+    }
+
+    /**
+     * Withdraw the due payout into free balance.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, when: (v972.TimeUnit | undefined), validator: (v972.V3MultiLocation | undefined), amount: (bigint | undefined)} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -27094,6 +28084,21 @@ export class SlpPayoutCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Initiate payout for a certain delegator.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.payout') === '0fe1ae6904ff985eca13156063a43cbfcb0753b9ab4a3c09c47b4b89f135ddeb'
+    }
+
+    /**
+     * Initiate payout for a certain delegator.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, validator: v972.V3MultiLocation, when: (v972.TimeUnit | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpRebondCall {
@@ -27183,6 +28188,21 @@ export class SlpRebondCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Rebond some unlocking amount to a delegator.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.rebond') === 'baa6b6061dbb97bca46cd0e2bd3901795f184ab59de2abd87d2e82ee9c3cbb13'
+    }
+
+    /**
+     * Rebond some unlocking amount to a delegator.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, validator: (v972.V3MultiLocation | undefined), amount: (bigint | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpRedelegateCall {
@@ -27270,6 +28290,21 @@ export class SlpRedelegateCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation, targets: (v970.V1MultiLocation[] | undefined)} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Re-delegate existing delegation to a new validator set.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.redelegate') === 'f447da6386e3d5760b518c790daed585eceefb0c119e77ca3386566774adc5ee'
+    }
+
+    /**
+     * Re-delegate existing delegation to a new validator set.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, targets: (v972.V3MultiLocation[] | undefined)} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -27387,6 +28422,21 @@ export class SlpRemoveDelegatorCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Update storage DelegatorsIndex2Multilocation<T> 和 DelegatorsMultilocation2Index<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.remove_delegator') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    /**
+     * Update storage DelegatorsIndex2Multilocation<T> 和 DelegatorsMultilocation2Index<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpRemoveSupplementFeeAccountFromWhitelistCall {
@@ -27435,6 +28485,15 @@ export class SlpRemoveSupplementFeeAccountFromWhitelistCall {
 
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.remove_supplement_fee_account_from_whitelist') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -27509,6 +28568,21 @@ export class SlpRemoveValidatorCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Update storage Validators<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.remove_validator') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    /**
+     * Update storage Validators<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -27763,6 +28837,21 @@ export class SlpSetDelegatorLedgerCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Update storage DelegatorLedgers<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.set_delegator_ledger') === 'ad9cdfe87d8b11ad40266e24f17cec136c66365b421304e55cfe90ba2ad05b81'
+    }
+
+    /**
+     * Update storage DelegatorLedgers<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, ledger: (v972.Ledger | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpSetFeeSourceCall {
@@ -27837,6 +28926,21 @@ export class SlpSetFeeSourceCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Update storage FeeSources<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.set_fee_source') === '3eab9cf21c46a724e233ce144763f583de5973ed9e9ebcc02f7c0ce77080ae2d'
+    }
+
+    /**
+     * Update storage FeeSources<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, whoAndFee: ([v972.V3MultiLocation, bigint] | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpSetHostingFeesCall {
@@ -27909,6 +29013,21 @@ export class SlpSetHostingFeesCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, maybeFeeSet: ([number, v970.V1MultiLocation] | undefined)} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Set HostingFees storage.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.set_hosting_fees') === '54ca1a8e07de3371987fe7d14490233798fb527ca82e7959cb42fcf03f4f8ca0'
+    }
+
+    /**
+     * Set HostingFees storage.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, maybeFeeSet: ([number, v972.V3MultiLocation] | undefined)} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -28177,6 +29296,21 @@ export class SlpSetValidatorsByDelegatorCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Update storage ValidatorsByDelegator<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.set_validators_by_delegator') === 'f75b1f9fa96fe9ae6cc6c67b1d758c089986f58ad6aed70b33aa49e0f344541b'
+    }
+
+    /**
+     * Update storage ValidatorsByDelegator<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, validators: v972.V3MultiLocation[]} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpSetXcmDestWeightAndFeeCall {
@@ -28306,6 +29440,29 @@ export class SlpSetXcmDestWeightAndFeeCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * ****************************x/
+     * ****** Storage Setters *****x/
+     * ****************************x/
+     * 
+     * Update storage XcmDestWeightAndFee<T>.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.set_xcm_dest_weight_and_fee') === '1598e459d378a368e7d5fca7b08b78b79921151fa17ae03a7b8f7bd3132263dc'
+    }
+
+    /**
+     * ****************************x/
+     * ****** Storage Setters *****x/
+     * ****************************x/
+     * 
+     * Update storage XcmDestWeightAndFee<T>.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, operation: v972.XcmOperation, weightAndFee: ([v972.Weight, bigint] | undefined)} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpSupplementFeeReserveCall {
@@ -28354,6 +29511,15 @@ export class SlpSupplementFeeReserveCall {
 
     get asV970(): {currencyId: v970.CurrencyId, dest: v970.V1MultiLocation} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.supplement_fee_reserve') === '6b5059ef9445aef0eb34788189a2e8006bd974fc57afcf8ce2d82624e5f3a9bc'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, dest: v972.V3MultiLocation} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -28406,6 +29572,15 @@ export class SlpTransferBackCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.transfer_back') === '506f9e4fa34f23ff6ad95427388a738b204392baefd5158808ea1d1e4f688b4d'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, from: v972.V3MultiLocation, to: v972.V3MultiLocation, amount: bigint} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpTransferToCall {
@@ -28454,6 +29629,15 @@ export class SlpTransferToCall {
 
     get asV970(): {currencyId: v970.CurrencyId, from: v970.V1MultiLocation, to: v970.V1MultiLocation, amount: bigint} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.transfer_to') === '506f9e4fa34f23ff6ad95427388a738b204392baefd5158808ea1d1e4f688b4d'
+    }
+
+    get asV972(): {currencyId: v972.CurrencyId, from: v972.V3MultiLocation, to: v972.V3MultiLocation, amount: bigint} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -28555,6 +29739,23 @@ export class SlpUnbondCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Decrease some amount to a delegator. Leave no less than the minimum delegator
+     * requirement.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.unbond') === '4ba41b276257fe560429ea23dbceb09986af703f496bbeaec083b9bbaeecf46e'
+    }
+
+    /**
+     * Decrease some amount to a delegator. Leave no less than the minimum delegator
+     * requirement.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, validator: (v972.V3MultiLocation | undefined), amount: bigint} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpUnbondAllCall {
@@ -28629,6 +29830,21 @@ export class SlpUnbondAllCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Unbond all the active amount of a delegator.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.unbond_all') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    /**
+     * Unbond all the active amount of a delegator.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SlpUndelegateCall {
@@ -28701,6 +29917,21 @@ export class SlpUndelegateCall {
      */
     get asV970(): {currencyId: v970.CurrencyId, who: v970.V1MultiLocation, targets: v970.V1MultiLocation[]} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Re-delegate existing delegation to a new validator set.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Slp.undelegate') === 'eaffe467c13dd67c77396813bddbd1ca6015af425423b79fa29f7053a9f1d56d'
+    }
+
+    /**
+     * Re-delegate existing delegation to a new validator set.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, who: v972.V3MultiLocation, targets: v972.V3MultiLocation[]} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -31679,6 +32910,41 @@ export class TechnicalCommitteeExecuteCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.execute') === 'c245940a9eb46c2c23d12b8669b1052fcb616bced5919f2e33cb606a6c64e5e0'
+    }
+
+    /**
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
+     */
+    get asV972(): {proposal: v972.Call, lengthBound: number} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class TechnicalCommitteeProposeCall {
@@ -34036,6 +35302,73 @@ export class TechnicalCommitteeProposeCall {
      */
     get asV970(): {threshold: number, proposal: v970.Call, lengthBound: number} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('TechnicalCommittee.propose') === '3045fee08872ddc64e0b5aef0e83be55f34c08fba3c390c4cf5a50bcc32a2203'
+    }
+
+    /**
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
+     */
+    get asV972(): {threshold: number, proposal: v972.Call, lengthBound: number} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -38711,6 +40044,45 @@ export class UtilityAsDerivativeCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === '1895995806256bbe9c0cf68294fd7352b0438b42b09808aad7db5900a65a0fe5'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV972(): {index: number, call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -40655,6 +42027,57 @@ export class UtilityBatchCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '9b81376896d5764aeb77347d490b3ba696646768e5d75fbe8a2c902a78a3039d'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV972(): {calls: v972.Call[]} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -42219,6 +43642,47 @@ export class UtilityBatchAllCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '9b81376896d5764aeb77347d490b3ba696646768e5d75fbe8a2c902a78a3039d'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV972(): {calls: v972.Call[]} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -42992,6 +44456,39 @@ export class UtilityDispatchAsCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === 'd0489523729360354f4354ebc677e539380df30ab9d74b0ea2c68eaf0aa8dbda'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
+     * # </weight>
+     */
+    get asV972(): {asOrigin: v972.OriginCaller, call: v972.Call} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -43498,6 +44995,47 @@ export class UtilityForceBatchCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '9b81376896d5764aeb77347d490b3ba696646768e5d75fbe8a2c902a78a3039d'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * # <weight>
+     * - Complexity: O(C) where C is the number of calls to be batched.
+     * # </weight>
+     */
+    get asV972(): {calls: v972.Call[]} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -43535,6 +45073,31 @@ export class UtilityWithWeightCall {
      */
     get asV970(): {call: v970.Call, weight: v970.Weight} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === 'bc3d6983147d82c6b523ab3be4745479f690a30bb67d8d4227f74cbe26480a8e'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV972(): {call: v972.Call, weight: v972.Weight} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -45324,6 +46887,43 @@ export class XTokensTransferCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer native currencies.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XTokens.transfer') === 'ab0447c8c7de2d846e859b244dd57de1efab50a2364a0a45cbf75f0d423327d4'
+    }
+
+    /**
+     * Transfer native currencies.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, amount: bigint, dest: v972.VersionedMultiLocation, destWeightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XTokensTransferMultiassetCall {
@@ -45560,6 +47160,43 @@ export class XTokensTransferMultiassetCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer `MultiAsset`.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multiasset') === 'a87b2931a2da31f4548173df0d164afbd7f9413f0b0a9373582011906fdc8ac9'
+    }
+
+    /**
+     * Transfer `MultiAsset`.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV972(): {asset: v972.VersionedMultiAsset, dest: v972.VersionedMultiLocation, destWeightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XTokensTransferMultiassetWithFeeCall {
@@ -45739,6 +47376,61 @@ export class XTokensTransferMultiassetWithFeeCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer `MultiAsset` specifying the fee and amount as separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the multiasset to be spent to pay for execution in
+     * destination chain. Both fee and amount will be subtracted form the
+     * callers balance For now we only accept fee and asset having the same
+     * `MultiLocation` id.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multiasset_with_fee') === 'e1673c048436ca84c1278f4f2f8a12456b25e4911f3ec72d0295b843ed7a4c7f'
+    }
+
+    /**
+     * Transfer `MultiAsset` specifying the fee and amount as separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the multiasset to be spent to pay for execution in
+     * destination chain. Both fee and amount will be subtracted form the
+     * callers balance For now we only accept fee and asset having the same
+     * `MultiLocation` id.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV972(): {asset: v972.VersionedMultiAsset, fee: v972.VersionedMultiAsset, dest: v972.VersionedMultiLocation, destWeightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XTokensTransferMultiassetsCall {
@@ -45880,6 +47572,49 @@ export class XTokensTransferMultiassetsCall {
      */
     get asV970(): {assets: v970.VersionedMultiAssets, feeItem: number, dest: v970.VersionedMultiLocation, destWeightLimit: v970.V2WeightLimit} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Transfer several `MultiAsset` specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the MultiAssets that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multiassets') === 'b49a1a3bce05ffe02f0ac5efca4907e6bf7f963113419870a760a3013dc86495'
+    }
+
+    /**
+     * Transfer several `MultiAsset` specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the MultiAssets that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV972(): {assets: v972.VersionedMultiAssets, feeItem: number, dest: v972.VersionedMultiLocation, destWeightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -46152,6 +47887,49 @@ export class XTokensTransferMulticurrenciesCall {
      */
     get asV970(): {currencies: [v970.CurrencyId, bigint][], feeItem: number, dest: v970.VersionedMultiLocation, destWeightLimit: v970.V2WeightLimit} {
         assert(this.isV970)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Transfer several currencies specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the currencies tuple that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multicurrencies') === '95be4bd800ba1555d5e5b1a3b2262ef93f3100e29bc7aee596cf38c93f361803'
+    }
+
+    /**
+     * Transfer several currencies specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the currencies tuple that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV972(): {currencies: [v972.CurrencyId, bigint][], feeItem: number, dest: v972.VersionedMultiLocation, destWeightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -46553,6 +48331,61 @@ export class XTokensTransferWithFeeCall {
         assert(this.isV970)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer native currencies specifying the fee and amount as
+     * separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the amount to be spent to pay for execution in destination
+     * chain. Both fee and amount will be subtracted form the callers
+     * balance.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_with_fee') === '24caba08900be72a7c57a5dacae6c9aa3fcc78c81779302b871dd695a3156519'
+    }
+
+    /**
+     * Transfer native currencies specifying the fee and amount as
+     * separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the amount to be spent to pay for execution in destination
+     * chain. Both fee and amount will be subtracted form the callers
+     * balance.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV972(): {currencyId: v972.CurrencyId, amount: bigint, fee: bigint, dest: v972.VersionedMultiLocation, destWeightLimit: v972.V3WeightLimit} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcmInterfaceTransferStatemineAssetsCall {
@@ -46609,6 +48442,27 @@ export class XcmInterfaceUpdateXcmDestWeightAndFeeCall {
      */
     get asV927(): {updates: [v927.XcmInterfaceOperation, (bigint | undefined), (bigint | undefined)][]} {
         assert(this.isV927)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Sets the xcm_dest_weight and fee for XCM operation of XcmInterface.
+     * 
+     * Parameters:
+     * - `updates`: vec of tuple: (XcmInterfaceOperation, WeightChange, FeeChange).
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XcmInterface.update_xcm_dest_weight_and_fee') === 'a2aa0952e569dbddbfb94cecd9c9f0b380cbb2aadddfcd505cee3dfe55e0b6d5'
+    }
+
+    /**
+     * Sets the xcm_dest_weight and fee for XCM operation of XcmInterface.
+     * 
+     * Parameters:
+     * - `updates`: vec of tuple: (XcmInterfaceOperation, WeightChange, FeeChange).
+     */
+    get asV972(): {updates: [v972.XcmInterfaceOperation, (v972.Weight | undefined), (bigint | undefined)][]} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -46699,6 +48553,45 @@ export class XcmpQueueServiceOverweightCall {
      */
     get asV926(): {index: bigint, weightLimit: bigint} {
         assert(this.isV926)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Services a single overweight XCM.
+     * 
+     * - `origin`: Must pass `ExecuteOverweightOrigin`.
+     * - `index`: The index of the overweight XCM to service
+     * - `weight_limit`: The amount of weight that XCM execution may take.
+     * 
+     * Errors:
+     * - `BadOverweightIndex`: XCM under `index` is not found in the `Overweight` storage map.
+     * - `BadXcm`: XCM under `index` cannot be properly decoded into a valid XCM format.
+     * - `WeightOverLimit`: XCM execution may use greater `weight_limit`.
+     * 
+     * Events:
+     * - `OverweightServiced`: On success.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XcmpQueue.service_overweight') === '80fae8875bf513efc1e06b7dac547fccfc1e5fc45888cc8afd9b43812cf51bf5'
+    }
+
+    /**
+     * Services a single overweight XCM.
+     * 
+     * - `origin`: Must pass `ExecuteOverweightOrigin`.
+     * - `index`: The index of the overweight XCM to service
+     * - `weight_limit`: The amount of weight that XCM execution may take.
+     * 
+     * Errors:
+     * - `BadOverweightIndex`: XCM under `index` is not found in the `Overweight` storage map.
+     * - `BadXcm`: XCM under `index` cannot be properly decoded into a valid XCM format.
+     * - `WeightOverLimit`: XCM execution may use greater `weight_limit`.
+     * 
+     * Events:
+     * - `OverweightServiced`: On success.
+     */
+    get asV972(): {index: bigint, weightLimit: v972.Weight} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -46880,6 +48773,27 @@ export class XcmpQueueUpdateThresholdWeightCall {
         assert(this.isV932)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Overwrites the amount of remaining weight under which we stop processing messages.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.threshold_weight`
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XcmpQueue.update_threshold_weight') === '75eef6f2cd3523e44f50db837d1610f4db03539037986ac2704c4a043d58ba81'
+    }
+
+    /**
+     * Overwrites the amount of remaining weight under which we stop processing messages.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.threshold_weight`
+     */
+    get asV972(): {new: v972.Weight} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcmpQueueUpdateWeightRestrictDecayCall {
@@ -46917,6 +48831,29 @@ export class XcmpQueueUpdateWeightRestrictDecayCall {
         assert(this.isV932)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Overwrites the speed to which the available weight approaches the maximum weight.
+     * A lower number results in a faster progression. A value of 1 makes the entire weight available initially.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.weight_restrict_decay`.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XcmpQueue.update_weight_restrict_decay') === '75eef6f2cd3523e44f50db837d1610f4db03539037986ac2704c4a043d58ba81'
+    }
+
+    /**
+     * Overwrites the speed to which the available weight approaches the maximum weight.
+     * A lower number results in a faster progression. A value of 1 makes the entire weight available initially.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.weight_restrict_decay`.
+     */
+    get asV972(): {new: v972.Weight} {
+        assert(this.isV972)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcmpQueueUpdateXcmpMaxIndividualWeightCall {
@@ -46952,6 +48889,29 @@ export class XcmpQueueUpdateXcmpMaxIndividualWeightCall {
      */
     get asV932(): {new: bigint} {
         assert(this.isV932)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Overwrite the maximum amount of weight any individual message may consume.
+     * Messages above this weight go into the overweight queue and may only be serviced explicitly.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.xcmp_max_individual_weight`.
+     */
+    get isV972(): boolean {
+        return this._chain.getCallHash('XcmpQueue.update_xcmp_max_individual_weight') === '75eef6f2cd3523e44f50db837d1610f4db03539037986ac2704c4a043d58ba81'
+    }
+
+    /**
+     * Overwrite the maximum amount of weight any individual message may consume.
+     * Messages above this weight go into the overweight queue and may only be serviced explicitly.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.xcmp_max_individual_weight`.
+     */
+    get asV972(): {new: v972.Weight} {
+        assert(this.isV972)
         return this._chain.decodeCall(this.call)
     }
 }
