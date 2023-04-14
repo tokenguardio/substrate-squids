@@ -48,10 +48,10 @@ export function normalizeStakingEventArgs(ctx: ChainContext, event: Event) {
     case "Staking.EraPaid":
       e = new StakingEraPaidEvent(ctx, event);
       if (e.isV8) {
-        let [era_index, validator_payout, remainder] = e.asV8;
+        let [eraIndex, validatorPayout, remainder] = e.asV8;
         return {
-          era_index,
-          validator_payout,
+          eraIndex,
+          validatorPayout,
           remainder,
         };
       } else {
@@ -60,10 +60,10 @@ export function normalizeStakingEventArgs(ctx: ChainContext, event: Event) {
     case "Staking.EraPayout":
       e = new StakingEraPayoutEvent(ctx, event);
       if (e.isV5) {
-        let [era_index, validator_payout, remainder] = e.asV5;
+        let [eraIndex, validatorPayout, remainder] = e.asV5;
         return {
-          era_index,
-          validator_payout,
+          eraIndex,
+          validatorPayout,
           remainder,
         };
       } else {
@@ -83,9 +83,9 @@ export function normalizeStakingEventArgs(ctx: ChainContext, event: Event) {
     case "Staking.OldSlashingReportDiscarded":
       e = new StakingOldSlashingReportDiscardedEvent(ctx, event);
       if (e.isV5) {
-        let session_index = e.asV5;
+        let sessionIndex = e.asV5;
         return {
-          session_index,
+          sessionIndex,
         };
       } else {
         throw new UnknownVersionError(event.name);
@@ -93,10 +93,10 @@ export function normalizeStakingEventArgs(ctx: ChainContext, event: Event) {
     case "Staking.PayoutStarted":
       e = new StakingPayoutStartedEvent(ctx, event);
       if (e.isV8) {
-        let [era_index, validator_stash] = e.asV8;
+        let [eraIndex, validatorStash] = e.asV8;
         return {
-          era_index,
-          validator_stash: bufferToHex(validator_stash),
+          eraIndex,
+          validatorStash: bufferToHex(validatorStash),
         };
       } else {
         throw new UnknownVersionError(event.name);

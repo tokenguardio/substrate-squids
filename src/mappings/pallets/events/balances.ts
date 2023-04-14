@@ -52,10 +52,10 @@ export function normalizeBalancesEventArgs(ctx: ChainContext, event: Event) {
     case "Balances.Endowed":
       e = new BalancesEndowedEvent(ctx, event);
       if (e.isV5) {
-        let [account, free_balance] = e.asV5;
+        let [account, freeBalance] = e.asV5;
         return {
           account: bufferToHex(account),
-          free_balance,
+          freeBalance,
         };
       } else {
         throw new UnknownVersionError(event.name);
@@ -63,12 +63,12 @@ export function normalizeBalancesEventArgs(ctx: ChainContext, event: Event) {
     case "Balances.ReserveRepatriated":
       e = new BalancesReserveRepatriatedEvent(ctx, event);
       if (e.isV5) {
-        let [from, to, balance, destination_status] = e.asV5;
+        let [from, to, balance, destinationStatus] = e.asV5;
         return {
           from: bufferToHex(from),
           to: bufferToHex(to),
           balance,
-          destination_status,
+          destinationStatus,
         };
       } else {
         throw new UnknownVersionError(event.name);

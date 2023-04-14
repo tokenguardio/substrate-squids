@@ -64,10 +64,10 @@ export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
     case "System.Remarked":
       e = new SystemRemarkedEvent(ctx, event);
       if (e.isV8) {
-        let [origin, remark_hash] = e.asV8;
+        let [origin, remarkHash] = e.asV8;
         return {
           origin: bufferToHex(origin),
-          remark_hash: bufferToHex(remark_hash),
+          remarkHash: bufferToHex(remarkHash),
         };
       } else {
         throw new UnknownVersionError(event.name);
