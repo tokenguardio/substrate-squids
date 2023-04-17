@@ -2,6 +2,7 @@ import assert from 'assert'
 import {Chain, ChainContext, EventContext, Event, Result, Option} from './support'
 import * as v1 from './v1'
 import * as v2 from './v2'
+import * as v3 from './v3'
 
 export class BalancesBalanceSetEvent {
     private readonly _chain: Chain
@@ -612,6 +613,272 @@ export class ChildBountiesClaimedEvent {
      */
     get asV1(): {index: number, childIndex: number, payout: bigint, beneficiary: Uint8Array} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCalledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Called')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.Called') === '21a729a4d368d7f57eb42f0ec77b595e3270a67ec14974cfcbc643abeda2921f'
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get asV3(): {caller: Uint8Array, contract: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCodeRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.CodeRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.CodeRemoved') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get asV3(): {codeHash: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsCodeStoredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.CodeStored')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.CodeStored') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get asV3(): {codeHash: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsContractCodeUpdatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.ContractCodeUpdated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract's code was updated.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.ContractCodeUpdated') === 'f9de6decda4961d31d7cf59e3f8acd4849a220323ebabbb036464d999de54c18'
+    }
+
+    /**
+     * A contract's code was updated.
+     */
+    get asV3(): {contract: Uint8Array, newCodeHash: Uint8Array, oldCodeHash: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsContractEmittedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.ContractEmitted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A custom event emitted by the contract.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.ContractEmitted') === '7f28393268795b9a97f05e82911cdcc4200d99e9968c1ab6a564f949f753b929'
+    }
+
+    /**
+     * A custom event emitted by the contract.
+     */
+    get asV3(): {contract: Uint8Array, data: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsDelegateCalledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.DelegateCalled')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A contract delegate called a code hash.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.DelegateCalled') === '76261d7cbe52d35ce20ad428e69f2cc49c1719d1fbb27a3b951b1e26e8ef5993'
+    }
+
+    /**
+     * A contract delegate called a code hash.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get asV3(): {contract: Uint8Array, codeHash: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsInstantiatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Instantiated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Contract deployed by address at the specified address.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.Instantiated') === '20f9f9057a4149f58eb48c00359f9800a42b51d4d2168437dfcce668c27a8d37'
+    }
+
+    /**
+     * Contract deployed by address at the specified address.
+     */
+    get asV3(): {deployer: Uint8Array, contract: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsTerminatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.Terminated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Contract has been removed.
+     * 
+     * # Note
+     * 
+     * The only way for a contract to be removed and emitting this event is by calling
+     * `seal_terminate`.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Contracts.Terminated') === '8e0b376b4821223ecd835a0ae76a615e7aa14158260ff9c7f87220449d98175b'
+    }
+
+    /**
+     * Contract has been removed.
+     * 
+     * # Note
+     * 
+     * The only way for a contract to be removed and emitting this event is by calling
+     * `seal_terminate`.
+     */
+    get asV3(): {contract: Uint8Array, beneficiary: Uint8Array} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1322,6 +1589,180 @@ export class DemocracyVotedEvent {
     }
 }
 
+export class DiaOracleModuleAccountIdAuthorizedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DiaOracleModule.AccountIdAuthorized')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Event is triggered when account is authorized
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('DiaOracleModule.AccountIdAuthorized') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    }
+
+    /**
+     * Event is triggered when account is authorized
+     */
+    get asV3(): Uint8Array {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DiaOracleModuleAccountIdDeauthorizedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DiaOracleModule.AccountIdDeauthorized')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Event is triggered when account is deauthorized
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('DiaOracleModule.AccountIdDeauthorized') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    }
+
+    /**
+     * Event is triggered when account is deauthorized
+     */
+    get asV3(): Uint8Array {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DiaOracleModuleBatchingApiRouteSetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DiaOracleModule.BatchingApiRouteSet')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Event is triggered when batching api route is set from the list
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('DiaOracleModule.BatchingApiRouteSet') === '2f3c83e89fe8252155817328a8c403c0bd3d9afea4de66b5b6e2ad04b3011a7a'
+    }
+
+    /**
+     * Event is triggered when batching api route is set from the list
+     */
+    get asV3(): Uint8Array {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DiaOracleModuleCurrencyAddedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DiaOracleModule.CurrencyAdded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Event is triggered when currency is added to the list
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('DiaOracleModule.CurrencyAdded') === '6ac2cdf180e95ec69493abb05b6725ed248f5ffaabd316f38277fbbb4a7fb255'
+    }
+
+    /**
+     * Event is triggered when currency is added to the list
+     */
+    get asV3(): [Uint8Array, Uint8Array] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DiaOracleModuleCurrencyRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DiaOracleModule.CurrencyRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Event is triggered when currency is remove from the list
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('DiaOracleModule.CurrencyRemoved') === '6ac2cdf180e95ec69493abb05b6725ed248f5ffaabd316f38277fbbb4a7fb255'
+    }
+
+    /**
+     * Event is triggered when currency is remove from the list
+     */
+    get asV3(): [Uint8Array, Uint8Array] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DiaOracleModuleUpdatedPricesEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DiaOracleModule.UpdatedPrices')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Event is triggered when prices are updated
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('DiaOracleModule.UpdatedPrices') === 'a95ec71ae20ecf7d0621b22ad3f636dc4dea11a58a924e27d208ba412c7fe74d'
+    }
+
+    /**
+     * Event is triggered when prices are updated
+     */
+    get asV3(): [[Uint8Array, Uint8Array], v3.CoinInfo][] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class DmpQueueExecutedDownwardEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1492,6 +1933,298 @@ export class DmpQueueWeightExhaustedEvent {
      */
     get asV1(): {messageId: Uint8Array, remainingWeight: v1.Weight, requiredWeight: v1.Weight} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentityIdentityClearedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.IdentityCleared')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A name was cleared, and the given balance returned.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.IdentityCleared') === '569627bf2a8105e3949fd62dcaae8174fb02f8afedb8e5d8a7fecda5d63b25c3'
+    }
+
+    /**
+     * A name was cleared, and the given balance returned.
+     */
+    get asV3(): {who: Uint8Array, deposit: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentityIdentityKilledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.IdentityKilled')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A name was removed and the given balance slashed.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.IdentityKilled') === '569627bf2a8105e3949fd62dcaae8174fb02f8afedb8e5d8a7fecda5d63b25c3'
+    }
+
+    /**
+     * A name was removed and the given balance slashed.
+     */
+    get asV3(): {who: Uint8Array, deposit: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentityIdentitySetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.IdentitySet')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A name was set or reset (which will remove all judgements).
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.IdentitySet') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * A name was set or reset (which will remove all judgements).
+     */
+    get asV3(): {who: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentityJudgementGivenEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.JudgementGiven')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A judgement was given by a registrar.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.JudgementGiven') === '0771fa05d0977d28db0dee420efa5c006fa01a48edbd0b5b50cba5ea1d98b1b8'
+    }
+
+    /**
+     * A judgement was given by a registrar.
+     */
+    get asV3(): {target: Uint8Array, registrarIndex: number} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentityJudgementRequestedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.JudgementRequested')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A judgement was asked from a registrar.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.JudgementRequested') === 'cbefacbef964c7ee928128f7969b3a567b57c51a6945e5bab170a3c3d42e8d5b'
+    }
+
+    /**
+     * A judgement was asked from a registrar.
+     */
+    get asV3(): {who: Uint8Array, registrarIndex: number} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentityJudgementUnrequestedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.JudgementUnrequested')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A judgement request was retracted.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.JudgementUnrequested') === 'cbefacbef964c7ee928128f7969b3a567b57c51a6945e5bab170a3c3d42e8d5b'
+    }
+
+    /**
+     * A judgement request was retracted.
+     */
+    get asV3(): {who: Uint8Array, registrarIndex: number} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentityRegistrarAddedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.RegistrarAdded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A registrar was added.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.RegistrarAdded') === 'c7c8fe6ce04ac3d49accb0e86098814baf3baab267afb645140023a3c5c84c24'
+    }
+
+    /**
+     * A registrar was added.
+     */
+    get asV3(): {registrarIndex: number} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentitySubIdentityAddedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.SubIdentityAdded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A sub-identity was added to an identity and the deposit paid.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.SubIdentityAdded') === '3ffe8c1fa99373079f0c7dbda5849194c73c2867fd7ca2b08d19f7c6b676e1ef'
+    }
+
+    /**
+     * A sub-identity was added to an identity and the deposit paid.
+     */
+    get asV3(): {sub: Uint8Array, main: Uint8Array, deposit: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentitySubIdentityRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.SubIdentityRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A sub-identity was removed from an identity and the deposit freed.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.SubIdentityRemoved') === '3ffe8c1fa99373079f0c7dbda5849194c73c2867fd7ca2b08d19f7c6b676e1ef'
+    }
+
+    /**
+     * A sub-identity was removed from an identity and the deposit freed.
+     */
+    get asV3(): {sub: Uint8Array, main: Uint8Array, deposit: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class IdentitySubIdentityRevokedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Identity.SubIdentityRevoked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A sub-identity was cleared, and the given deposit repatriated from the
+     * main identity account to the sub-identity account.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Identity.SubIdentityRevoked') === '3ffe8c1fa99373079f0c7dbda5849194c73c2867fd7ca2b08d19f7c6b676e1ef'
+    }
+
+    /**
+     * A sub-identity was cleared, and the given deposit repatriated from the
+     * main identity account to the sub-identity account.
+     */
+    get asV3(): {sub: Uint8Array, main: Uint8Array, deposit: bigint} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4088,6 +4821,21 @@ export class TokensBalanceSetEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A balance was set by root.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.BalanceSet') === '352dd1eb5aa782b5cb915ad1a616eea87e66963ca53146b83e647b650af30751'
+    }
+
+    /**
+     * A balance was set by root.
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, free: bigint, reserved: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TokensDepositedEvent {
@@ -4115,6 +4863,21 @@ export class TokensDepositedEvent {
      */
     get asV1(): {currencyId: v1.CurrencyId, who: Uint8Array, amount: bigint} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Deposited some balance into an account
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.Deposited') === 'c07b65b17f9ab4499880c4f2d15007e67d3ad1abb4da4ae0fc46a8c3e3d626ca'
+    }
+
+    /**
+     * Deposited some balance into an account
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4148,6 +4911,23 @@ export class TokensDustLostEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An account was removed whose balance was non-zero but below
+     * ExistentialDeposit, resulting in an outright loss.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.DustLost') === 'c07b65b17f9ab4499880c4f2d15007e67d3ad1abb4da4ae0fc46a8c3e3d626ca'
+    }
+
+    /**
+     * An account was removed whose balance was non-zero but below
+     * ExistentialDeposit, resulting in an outright loss.
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TokensEndowedEvent {
@@ -4175,6 +4955,21 @@ export class TokensEndowedEvent {
      */
     get asV1(): {currencyId: v1.CurrencyId, who: Uint8Array, amount: bigint} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An account was created with some free balance.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.Endowed') === 'c07b65b17f9ab4499880c4f2d15007e67d3ad1abb4da4ae0fc46a8c3e3d626ca'
+    }
+
+    /**
+     * An account was created with some free balance.
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4206,6 +5001,21 @@ export class TokensLockRemovedEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some locked funds were unlocked
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.LockRemoved') === 'f2f1d6869c180835d1c5aeb08b371e92609d28639b7cb646c6685298a81d8dea'
+    }
+
+    /**
+     * Some locked funds were unlocked
+     */
+    get asV3(): {lockId: Uint8Array, currencyId: v3.CurrencyId, who: Uint8Array} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TokensLockSetEvent {
@@ -4233,6 +5043,21 @@ export class TokensLockSetEvent {
      */
     get asV1(): {lockId: Uint8Array, currencyId: v1.CurrencyId, who: Uint8Array, amount: bigint} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some funds are locked
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.LockSet') === 'cf8e328c82a5fdf8aae0d0af71a4ad3159a59088a7b99b1ead45bb5fc93869bd'
+    }
+
+    /**
+     * Some funds are locked
+     */
+    get asV3(): {lockId: Uint8Array, currencyId: v3.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4266,6 +5091,23 @@ export class TokensReserveRepatriatedEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some reserved balance was repatriated (moved from reserved to
+     * another account).
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.ReserveRepatriated') === '0563ba3dc94275c74a07bfaa608a06d65bb1a26342540e5c5de264b986f6185a'
+    }
+
+    /**
+     * Some reserved balance was repatriated (moved from reserved to
+     * another account).
+     */
+    get asV3(): {currencyId: v3.CurrencyId, from: Uint8Array, to: Uint8Array, amount: bigint, status: v3.BalanceStatus} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TokensReservedEvent {
@@ -4293,6 +5135,21 @@ export class TokensReservedEvent {
      */
     get asV1(): {currencyId: v1.CurrencyId, who: Uint8Array, amount: bigint} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some balance was reserved (moved from free to reserved).
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.Reserved') === 'c07b65b17f9ab4499880c4f2d15007e67d3ad1abb4da4ae0fc46a8c3e3d626ca'
+    }
+
+    /**
+     * Some balance was reserved (moved from free to reserved).
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4324,6 +5181,21 @@ export class TokensSlashedEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some balances were slashed (e.g. due to mis-behavior)
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.Slashed') === '52475d81959863b179fd702c689d675d15563a8fc85f0cd5a38198d2ccaf73ee'
+    }
+
+    /**
+     * Some balances were slashed (e.g. due to mis-behavior)
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, freeAmount: bigint, reservedAmount: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TokensTotalIssuanceSetEvent {
@@ -4351,6 +5223,21 @@ export class TokensTotalIssuanceSetEvent {
      */
     get asV1(): {currencyId: v1.CurrencyId, amount: bigint} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The total issuance of an currency has been set
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.TotalIssuanceSet') === '2ce8a408dd412e35564ffa1f31a7cbf189c7d7471b48e2b5dc2aaee014a7b057'
+    }
+
+    /**
+     * The total issuance of an currency has been set
+     */
+    get asV3(): {currencyId: v3.CurrencyId, amount: bigint} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4382,6 +5269,21 @@ export class TokensTransferEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Transfer succeeded.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.Transfer') === '6540edfd4c34e23f8c1b93fdaacba40ae3a9a98eae38b1dff93c38ae37186a0f'
+    }
+
+    /**
+     * Transfer succeeded.
+     */
+    get asV3(): {currencyId: v3.CurrencyId, from: Uint8Array, to: Uint8Array, amount: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TokensUnreservedEvent {
@@ -4411,6 +5313,21 @@ export class TokensUnreservedEvent {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some balance was unreserved (moved from reserved to free).
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.Unreserved') === 'c07b65b17f9ab4499880c4f2d15007e67d3ad1abb4da4ae0fc46a8c3e3d626ca'
+    }
+
+    /**
+     * Some balance was unreserved (moved from reserved to free).
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TokensWithdrawnEvent {
@@ -4438,6 +5355,21 @@ export class TokensWithdrawnEvent {
      */
     get asV1(): {currencyId: v1.CurrencyId, who: Uint8Array, amount: bigint} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some balances were withdrawn (e.g. pay for transaction fee)
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('Tokens.Withdrawn') === 'c07b65b17f9ab4499880c4f2d15007e67d3ad1abb4da4ae0fc46a8c3e3d626ca'
+    }
+
+    /**
+     * Some balances were withdrawn (e.g. pay for transaction fee)
+     */
+    get asV3(): {currencyId: v3.CurrencyId, who: Uint8Array, amount: bigint} {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5265,6 +6197,519 @@ export class XcmpQueueXcmpMessageSentEvent {
      */
     get asV1(): {messageHash: (Uint8Array | undefined)} {
         assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolAssetSwapEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.AssetSwap')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Transact in trading \[owner, recipient, swap_path, balances\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.AssetSwap') === 'e9cbb9bf25ce7ca78f66cb163c5de7b5b796a1f9f5cf2f1d1955496bd76f264e'
+    }
+
+    /**
+     * Transact in trading \[owner, recipient, swap_path, balances\]
+     */
+    get asV3(): [Uint8Array, Uint8Array, v3.AssetId[], bigint[]] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolBootstrapClaimEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.BootstrapClaim')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Claim a bootstrap pair. \[bootstrap_pair_account, claimer, receiver, asset_0, asset_1,
+     * asset_0_refund, asset_1_refund, lp_amount\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.BootstrapClaim') === '9f397d74483c63bdeb31933ca67702b49c002073bc385a9e2919eb634445ab6d'
+    }
+
+    /**
+     * Claim a bootstrap pair. \[bootstrap_pair_account, claimer, receiver, asset_0, asset_1,
+     * asset_0_refund, asset_1_refund, lp_amount\]
+     */
+    get asV3(): [Uint8Array, Uint8Array, Uint8Array, v3.AssetId, v3.AssetId, bigint, bigint, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolBootstrapContributeEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.BootstrapContribute')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Contribute to bootstrap pair. \[who, asset_0, asset_0_contribute, asset_1_contribute\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.BootstrapContribute') === '726cebd378988611fa5795c5b53a9d8d719e78e47f5eee68164e9079140d07a5'
+    }
+
+    /**
+     * Contribute to bootstrap pair. \[who, asset_0, asset_0_contribute, asset_1_contribute\]
+     */
+    get asV3(): [Uint8Array, v3.AssetId, bigint, v3.AssetId, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolBootstrapCreatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.BootstrapCreated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Create a bootstrap pair. \[bootstrap_pair_account, asset_0, asset_1,
+     * total_supply_0,total_supply_1, capacity_supply_0,capacity_supply_1, end\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.BootstrapCreated') === 'a77a9eeb930843adbd7f90994be473145cd760add6920bb1a62eb814654fb701'
+    }
+
+    /**
+     * Create a bootstrap pair. \[bootstrap_pair_account, asset_0, asset_1,
+     * total_supply_0,total_supply_1, capacity_supply_0,capacity_supply_1, end\]
+     */
+    get asV3(): [Uint8Array, v3.AssetId, v3.AssetId, bigint, bigint, bigint, bigint, number] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolBootstrapEndEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.BootstrapEnd')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A bootstrap pair end. \[asset_0, asset_1, asset_0_amount, asset_1_amount,
+     * total_lp_supply]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.BootstrapEnd') === '5f5d55fa972999c10c97887cd2f66c1de65b1073ea28762a6a76905861421c32'
+    }
+
+    /**
+     * A bootstrap pair end. \[asset_0, asset_1, asset_0_amount, asset_1_amount,
+     * total_lp_supply]
+     */
+    get asV3(): [v3.AssetId, v3.AssetId, bigint, bigint, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolBootstrapRefundEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.BootstrapRefund')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Refund from disable bootstrap pair. \[bootstrap_pair_account, caller, asset_0, asset_1,
+     * asset_0_refund, asset_1_refund\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.BootstrapRefund') === 'e217f75c475cb3242c0504d6751e8aca1b4ddb966974f760d49ee271a7a1941b'
+    }
+
+    /**
+     * Refund from disable bootstrap pair. \[bootstrap_pair_account, caller, asset_0, asset_1,
+     * asset_0_refund, asset_1_refund\]
+     */
+    get asV3(): [Uint8Array, Uint8Array, v3.AssetId, v3.AssetId, bigint, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolBootstrapUpdateEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.BootstrapUpdate')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Update a bootstrap pair. \[caller, asset_0, asset_1,
+     * total_supply_0,total_supply_1, capacity_supply_0,capacity_supply_1\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.BootstrapUpdate') === 'a77a9eeb930843adbd7f90994be473145cd760add6920bb1a62eb814654fb701'
+    }
+
+    /**
+     * Update a bootstrap pair. \[caller, asset_0, asset_1,
+     * total_supply_0,total_supply_1, capacity_supply_0,capacity_supply_1\]
+     */
+    get asV3(): [Uint8Array, v3.AssetId, v3.AssetId, bigint, bigint, bigint, bigint, number] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolBurnedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.Burned')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some assets were burned. \[asset_id, owner, amount\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.Burned') === 'e4eeef0eec41bfc805e5f50309b959d152e5ab690f4cb216786d30475ae2d654'
+    }
+
+    /**
+     * Some assets were burned. \[asset_id, owner, amount\]
+     */
+    get asV3(): [v3.AssetId, Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolChargeRewardEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.ChargeReward')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Charge reward into a bootstrap.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.ChargeReward') === 'b5ae49fb929f0953669397de4c61e106b6d41d4f7d56edde962056d7a98c6fe3'
+    }
+
+    /**
+     * Charge reward into a bootstrap.
+     */
+    get asV3(): [v3.AssetId, v3.AssetId, Uint8Array, [v3.AssetId, bigint][]] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolDistributeRewardEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.DistributeReward')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Bootstrap distribute some rewards to contributors.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.DistributeReward') === 'b5ae49fb929f0953669397de4c61e106b6d41d4f7d56edde962056d7a98c6fe3'
+    }
+
+    /**
+     * Bootstrap distribute some rewards to contributors.
+     */
+    get asV3(): [v3.AssetId, v3.AssetId, Uint8Array, [v3.AssetId, bigint][]] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolLiquidityAddedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.LiquidityAdded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Add liquidity. \[owner, asset_0, asset_1, add_balance_0, add_balance_1,
+     * mint_balance_lp\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.LiquidityAdded') === '1bfafadda80f84623e855502fa86cbd5fb805fa26a6254ee45104d1d976c2219'
+    }
+
+    /**
+     * Add liquidity. \[owner, asset_0, asset_1, add_balance_0, add_balance_1,
+     * mint_balance_lp\]
+     */
+    get asV3(): [Uint8Array, v3.AssetId, v3.AssetId, bigint, bigint, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolLiquidityRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.LiquidityRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Remove liquidity. \[owner, recipient, asset_0, asset_1, rm_balance_0, rm_balance_1,
+     * burn_balance_lp\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.LiquidityRemoved') === '9decbbc0fd030ae8322c18bf256e4f3ace487600f6cf3b11b8961ab923a40bf1'
+    }
+
+    /**
+     * Remove liquidity. \[owner, recipient, asset_0, asset_1, rm_balance_0, rm_balance_1,
+     * burn_balance_lp\]
+     */
+    get asV3(): [Uint8Array, Uint8Array, v3.AssetId, v3.AssetId, bigint, bigint, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolMintedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.Minted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some assets were minted. \[asset_id, owner, amount\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.Minted') === 'e4eeef0eec41bfc805e5f50309b959d152e5ab690f4cb216786d30475ae2d654'
+    }
+
+    /**
+     * Some assets were minted. \[asset_id, owner, amount\]
+     */
+    get asV3(): [v3.AssetId, Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolPairCreatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.PairCreated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Swap
+     * Create a trading pair. \[asset_0, asset_1\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.PairCreated') === '911b42e78e1203830b12e06de8a355b6c5efa5dc9bbf88a02d2f42a507b36000'
+    }
+
+    /**
+     * Swap
+     * Create a trading pair. \[asset_0, asset_1\]
+     */
+    get asV3(): [v3.AssetId, v3.AssetId] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolTransferredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.Transferred')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Foreign Asset
+     * Some assets were transferred. \[asset_id, owner, target, amount\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.Transferred') === '5c4552595fe36fc54d7e59c702065e08f2e90579360c5cbee3d4c769b7849c80'
+    }
+
+    /**
+     * Foreign Asset
+     * Some assets were transferred. \[asset_id, owner, target, amount\]
+     */
+    get asV3(): [v3.AssetId, Uint8Array, Uint8Array, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolTransferredToParachainEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.TransferredToParachain')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Transfer by xcm
+     * Transferred to parachain. \[asset_id, src, para_id, dest, amount, used_weight\]
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.TransferredToParachain') === '4d00bf0ac4a700d0211bdc1147faad1ebd365229cdb1db9a5329ebb10f91f989'
+    }
+
+    /**
+     * Transfer by xcm
+     * Transferred to parachain. \[asset_id, src, para_id, dest, amount, used_weight\]
+     */
+    get asV3(): [v3.AssetId, Uint8Array, number, Uint8Array, bigint, bigint] {
+        assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ZenlinkProtocolWithdrawRewardEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ZenlinkProtocol.WithdrawReward')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Withdraw all reward from a bootstrap.
+     */
+    get isV3(): boolean {
+        return this._chain.getEventHash('ZenlinkProtocol.WithdrawReward') === 'e0e00821b93517c8655ae29c76312d876524dae73d220d6732bfc3f70140bc31'
+    }
+
+    /**
+     * Withdraw all reward from a bootstrap.
+     */
+    get asV3(): [v3.AssetId, v3.AssetId, Uint8Array] {
+        assert(this.isV3)
         return this._chain.decodeEvent(this.event)
     }
 }
