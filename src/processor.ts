@@ -1,10 +1,12 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm, AddressMapping } from "./model";
+import { EventNorm, CallNorm, AddressMapping } from "./model";
 import {
   normalizeBalancesEventsArgs,
   normalizeStakingEventsArgs,
   normalizeSystemEventsArgs,
+  normalizeNominationPoolsEventsArgs,
+  normalizeNominationPoolsCallsArgs,
   mapAccount,
 } from "./mappings";
 import { removeDuplicates } from "./utils/utils";
@@ -16,16 +18,25 @@ import { removeDuplicates } from "./utils/utils";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
+    archive: `https://polkadot.archive.subsquid.io/graphql`,
   })
   .addEvent("*", {
     data: {
       event: true,
     },
-  } as const);
+  })
+  .addCall("*", {
+    data: {
+      call: true,
+      extrinsic: {
+        success: true,
+      },
+    },
+  });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
+  const calls: CallNorm[] = [];
   const addressMappings: AddressMapping[] = [];
   for (const block of ctx.blocks) {
     for (const item of block.items) {
@@ -34,7 +45,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         item.kind === "event" &&
         (item.event.name.startsWith("Balances.") ||
           item.event.name.startsWith("Staking.") ||
-          item.event.name.startsWith("System.")) &&
+          item.event.name.startsWith("System.") ||
+          item.event.name.startsWith("NominationPools.")) &&
         !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
           item.event.name
         )
@@ -50,6 +62,9 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             break;
           case item.event.name.startsWith("System."):
             args = normalizeSystemEventsArgs(ctx, item.event);
+            break;
+          case item.event.name.startsWith("NominationPools."):
+            args = normalizeNominationPoolsEventsArgs(ctx, item.event);
             break;
         }
 
@@ -72,9 +87,34 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           extrinsicSuccess: item.event.extrinsic?.success,
         });
         events.push(event);
+      } else if (
+        item.kind === "call" &&
+        item.call.name.startsWith("NominationPools.")
+      ) {
+        // Normalize the call arguments based on the prefix
+        let args;
+        switch (true) {
+          case item.call.name.startsWith("NominationPools."):
+            args = normalizeNominationPoolsCallsArgs(ctx, item.call);
+            break;
+        }
+
+        // Create a new call object and push it to the calls array
+        const call = new CallNorm({
+          id: item.call.id,
+          blockHash: block.header.hash,
+          timestamp: new Date(block.header.timestamp),
+          name: item.call.name,
+          args,
+          success: item.call.success,
+          origin: item.call.origin,
+        });
+        calls.push(call);
       }
     }
   }
+
   await ctx.store.save(events);
+  await ctx.store.save(calls);
   await ctx.store.save(removeDuplicates(addressMappings, "id"));
 });
