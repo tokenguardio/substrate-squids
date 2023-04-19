@@ -18,7 +18,7 @@ import { removeDuplicates } from "./utils/utils";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `https://polkadot.archive.subsquid.io/graphql`,
+    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
   })
   .addEvent("*", {
     data: {
