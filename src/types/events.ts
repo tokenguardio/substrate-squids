@@ -13,6 +13,7 @@ import * as v1901 from './v1901'
 import * as v2000 from './v2000'
 import * as v2100 from './v2100'
 import * as v2201 from './v2201'
+import * as v2302 from './v2302'
 
 export class AssetManagerAssetRegisteredEvent {
     private readonly _chain: Chain
@@ -132,6 +133,21 @@ export class AssetManagerForeignAssetDestroyedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Removed all information related to an assetId and destroyed asset
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('AssetManager.ForeignAssetDestroyed') === 'f2205c3a4f6b488fd2e716b52d38c4e5753882c65024acdfde008070f42cff13'
+    }
+
+    /**
+     * Removed all information related to an assetId and destroyed asset
+     */
+    get asV2302(): {assetId: bigint, assetType: v2302.AssetType} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class AssetManagerForeignAssetRegisteredEvent {
@@ -174,6 +190,21 @@ export class AssetManagerForeignAssetRegisteredEvent {
      */
     get asV2201(): {assetId: bigint, asset: v2201.AssetType, metadata: v2201.AssetRegistrarMetadata} {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * New asset with the asset manager is registered
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('AssetManager.ForeignAssetRegistered') === '970b9569b49ee32a02e8a9da34c2f5f9e6e09b2321e86c7fae5d8d3ffb6bb879'
+    }
+
+    /**
+     * New asset with the asset manager is registered
+     */
+    get asV2302(): {assetId: bigint, asset: v2302.AssetType, metadata: v2302.AssetRegistrarMetadata} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -220,6 +251,21 @@ export class AssetManagerForeignAssetRemovedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Removed all information related to an assetId
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('AssetManager.ForeignAssetRemoved') === 'f2205c3a4f6b488fd2e716b52d38c4e5753882c65024acdfde008070f42cff13'
+    }
+
+    /**
+     * Removed all information related to an assetId
+     */
+    get asV2302(): {assetId: bigint, assetType: v2302.AssetType} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class AssetManagerForeignAssetTypeChangedEvent {
@@ -262,6 +308,21 @@ export class AssetManagerForeignAssetTypeChangedEvent {
      */
     get asV2201(): {assetId: bigint, newAssetType: v2201.AssetType} {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Changed the xcm type mapping for a given asset id
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('AssetManager.ForeignAssetTypeChanged') === 'a94831e96b1a4436aaada03c17adcb82d4b29b7c5f046e66723e5572be36a627'
+    }
+
+    /**
+     * Changed the xcm type mapping for a given asset id
+     */
+    get asV2302(): {assetId: bigint, newAssetType: v2302.AssetType} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -366,6 +427,21 @@ export class AssetManagerSupportedAssetRemovedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Supported asset type for fee payment removed
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('AssetManager.SupportedAssetRemoved') === '9df9f743141332d28d19e86204f3c81b974db65ce087d4f0febee34d6223a67d'
+    }
+
+    /**
+     * Supported asset type for fee payment removed
+     */
+    get asV2302(): {assetType: v2302.AssetType} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class AssetManagerUnitsPerSecondChangedEvent {
@@ -417,6 +493,21 @@ export class AssetManagerUnitsPerSecondChangedEvent {
      */
     get asV2201(): {assetType: v2201.AssetType, unitsPerSecond: bigint} {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Changed the amount of units we are charging per execution second for a given asset
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('AssetManager.UnitsPerSecondChanged') === 'f0eea56fc01ac48cd5e453f12840ac116d3c6a32ee51dd9d67dd2b0c1ed87bb0'
+    }
+
+    /**
+     * Changed the amount of units we are charging per execution second for a given asset
+     */
+    get asV2302(): {assetType: v2302.AssetType, unitsPerSecond: bigint} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -823,6 +914,21 @@ export class AssetsIssuedEvent {
      */
     get asV1201(): {assetId: bigint, owner: Uint8Array, totalSupply: bigint} {
         assert(this.isV1201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some assets were issued.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('Assets.Issued') === 'f5215492a3461802d8c3f823a3df5eb1a9f55a5200e569d6f979d3f5495ea385'
+    }
+
+    /**
+     * Some assets were issued.
+     */
+    get asV2302(): {assetId: bigint, owner: Uint8Array, amount: bigint} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2633,6 +2739,23 @@ export class CumulusXcmExecutedDownwardEvent {
         assert(this.isV1300)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message executed with the given outcome.
+     * \[ id, outcome \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('CumulusXcm.ExecutedDownward') === '0a5524dcf48d575bf19533e72499c1b6f08167113160e1bb190028315c81787f'
+    }
+
+    /**
+     * Downward message executed with the given outcome.
+     * \[ id, outcome \]
+     */
+    get asV2302(): [Uint8Array, v2302.V3Outcome] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class CumulusXcmInvalidFormatEvent {
@@ -2664,6 +2787,23 @@ export class CumulusXcmInvalidFormatEvent {
         assert(this.isV1201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message is invalid XCM.
+     * \[ id \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('CumulusXcm.InvalidFormat') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    }
+
+    /**
+     * Downward message is invalid XCM.
+     * \[ id \]
+     */
+    get asV2302(): Uint8Array {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class CumulusXcmUnsupportedVersionEvent {
@@ -2693,6 +2833,23 @@ export class CumulusXcmUnsupportedVersionEvent {
      */
     get asV1201(): Uint8Array {
         assert(this.isV1201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Downward message is unsupported version of XCM.
+     * \[ id \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('CumulusXcm.UnsupportedVersion') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+    }
+
+    /**
+     * Downward message is unsupported version of XCM.
+     * \[ id \]
+     */
+    get asV2302(): Uint8Array {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3708,6 +3865,21 @@ export class DmpQueueExecutedDownwardEvent {
         assert(this.isV1701)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message executed with the given outcome.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('DmpQueue.ExecutedDownward') === 'bbdc5e15442f2bee7199707f9da66674b3ad89835c84687a406e183c7d31121e'
+    }
+
+    /**
+     * Downward message executed with the given outcome.
+     */
+    get asV2302(): {messageId: Uint8Array, outcome: v2302.V3Outcome} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class DmpQueueInvalidFormatEvent {
@@ -3752,6 +3924,35 @@ export class DmpQueueInvalidFormatEvent {
      */
     get asV1701(): {messageId: Uint8Array} {
         assert(this.isV1701)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DmpQueueMaxMessagesExhaustedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DmpQueue.MaxMessagesExhausted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The maximum number of downward messages was.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('DmpQueue.MaxMessagesExhausted') === '6bcb1469518e8e7bacd0242af782ebd652887f65f7377a9b2d81ccea6505416e'
+    }
+
+    /**
+     * The maximum number of downward messages was.
+     */
+    get asV2302(): {messageId: Uint8Array} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5245,6 +5446,21 @@ export class LocalAssetsIssuedEvent {
      */
     get asV1401(): {assetId: bigint, owner: Uint8Array, totalSupply: bigint} {
         assert(this.isV1401)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some assets were issued.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('LocalAssets.Issued') === 'f5215492a3461802d8c3f823a3df5eb1a9f55a5200e569d6f979d3f5495ea385'
+    }
+
+    /**
+     * Some assets were issued.
+     */
+    get asV2302(): {assetId: bigint, owner: Uint8Array, amount: bigint} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -8147,6 +8363,35 @@ export class ParachainSystemUpgradeAuthorizedEvent {
     }
 }
 
+export class ParachainSystemUpwardMessageSentEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ParachainSystem.UpwardMessageSent')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An upward message was sent to the relay chain.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('ParachainSystem.UpwardMessageSent') === 'ccbb82ba01a4d742bdd34e545836a89f2c435428f6887f28ce1ecf0166419df1'
+    }
+
+    /**
+     * An upward message was sent to the relay chain.
+     */
+    get asV2302(): {messageHash: (Uint8Array | undefined)} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class ParachainSystemValidationFunctionAppliedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -8316,6 +8561,25 @@ export class PolkadotXcmAssetsClaimedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.AssetsClaimed') === '31f92e7520747dddaef3e11b450bf3ace3a2df72f612e4237ea77faaffe7a16c'
+    }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get asV2302(): [Uint8Array, v2302.V3MultiLocation, v2302.VersionedMultiAssets] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmAssetsTrappedEvent {
@@ -8368,6 +8632,25 @@ export class PolkadotXcmAssetsTrappedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.AssetsTrapped') === '31f92e7520747dddaef3e11b450bf3ace3a2df72f612e4237ea77faaffe7a16c'
+    }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     * 
+     * \[ hash, origin, assets \]
+     */
+    get asV2302(): [Uint8Array, v2302.V3MultiLocation, v2302.VersionedMultiAssets] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmAttemptedEvent {
@@ -8418,6 +8701,140 @@ export class PolkadotXcmAttemptedEvent {
      */
     get asV1300(): v1300.V2Outcome {
         assert(this.isV1300)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Execution of an XCM message was attempted.
+     * 
+     * \[ outcome \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Attempted') === '9f44833a3470bf6416377180f3875a05cfa0cf60651f18f6456d9e12cbab7095'
+    }
+
+    /**
+     * Execution of an XCM message was attempted.
+     * 
+     * \[ outcome \]
+     */
+    get asV2302(): v2302.V3Outcome {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmFeesPaidEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.FeesPaid')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     * 
+     * \[ paying location, fees \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.FeesPaid') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     * 
+     * \[ paying location, fees \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, v2302.V3MultiAsset[]] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmInvalidQuerierEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.InvalidQuerier')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected querier, maybe actual querier \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidQuerier') === '7c1090f283eee877a7601bfed0fd6fc3ca831930ac944924347ca8a2c6bd92e3'
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected querier, maybe actual querier \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, bigint, v2302.V3MultiLocation, (v2302.V3MultiLocation | undefined)] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmInvalidQuerierVersionEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.InvalidQuerierVersion')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidQuerierVersion') === 'b8a7ace58226e359dd4ed6ffcc01266723020043e3fad0900eec6eb6f910a91e'
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, bigint] {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -8478,6 +8895,29 @@ export class PolkadotXcmInvalidResponderEvent {
      */
     get asV2201(): [v2201.V1MultiLocation, bigint, (v2201.V1MultiLocation | undefined)] {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected location \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponder') === '3bf64d16d6fb5992c738643efff778414cc181e36377c106ab8130ca32b906de'
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     * 
+     * \[ origin location, id, expected location \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, bigint, (v2302.V3MultiLocation | undefined)] {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -8554,6 +8994,37 @@ export class PolkadotXcmInvalidResponderVersionEvent {
      */
     get asV2201(): [v2201.V1MultiLocation, bigint] {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponderVersion') === 'b8a7ace58226e359dd4ed6ffcc01266723020043e3fad0900eec6eb6f910a91e'
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, bigint] {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -8802,6 +9273,27 @@ export class PolkadotXcmNotifyTargetMigrationFailEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     * 
+     * \[ location, query ID \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetMigrationFail') === '8266fa3a9f901885a47ef275cb4d4053fa3a36033a40564944a565ca686bb27d'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     * 
+     * \[ location, query ID \]
+     */
+    get asV2302(): [v2302.VersionedMultiLocation, bigint] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmNotifyTargetSendFailEvent {
@@ -8879,6 +9371,27 @@ export class PolkadotXcmNotifyTargetSendFailEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     * 
+     * \[ location, query ID, error \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetSendFail') === '26c26186934c8414941ac6565c3465399a31fd237e9f48bcc04601c00427c6fc'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     * 
+     * \[ location, query ID, error \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, bigint, v2302.V3Error] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmResponseReadyEvent {
@@ -8954,6 +9467,27 @@ export class PolkadotXcmResponseReadyEvent {
      */
     get asV2201(): [bigint, v2201.V2Response] {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     * 
+     * \[ id, response \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.ResponseReady') === '47e2336328ac2f8cffe468836a85755d501dbd3f9fe77c829ae5b5c5c33f5e9c'
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     * 
+     * \[ id, response \]
+     */
+    get asV2302(): [bigint, v2302.V3Response] {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -9060,6 +9594,25 @@ export class PolkadotXcmSentEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A XCM message was sent.
+     * 
+     * \[ origin, destination, message \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Sent') === '8b71eb54444ef55962e90645805fd80535dfb12f572b41fdb1e093b7627b132d'
+    }
+
+    /**
+     * A XCM message was sent.
+     * 
+     * \[ origin, destination, message \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, v2302.V3MultiLocation, v2302.V3Instruction[]] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmSupportedVersionChangedEvent {
@@ -9114,6 +9667,27 @@ export class PolkadotXcmSupportedVersionChangedEvent {
      */
     get asV2201(): [v2201.V1MultiLocation, number] {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     * 
+     * \[ location, XCM version \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.SupportedVersionChanged') === '9fb88093240cec5964187b6999557d2d8c4331f97b6c42c5664d30afbf50d7d4'
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     * 
+     * \[ location, XCM version \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, number] {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -9176,6 +9750,29 @@ export class PolkadotXcmUnexpectedResponseEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     * 
+     * \[ origin location, id \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.UnexpectedResponse') === 'b8a7ace58226e359dd4ed6ffcc01266723020043e3fad0900eec6eb6f910a91e'
+    }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     * 
+     * \[ origin location, id \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, bigint] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmVersionChangeNotifiedEvent {
@@ -9226,6 +9823,130 @@ export class PolkadotXcmVersionChangeNotifiedEvent {
      */
     get asV2201(): [v2201.V1MultiLocation, number] {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     * 
+     * \[ destination, result, cost \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionChangeNotified') === '3e656c216d68595d03592e62a70ad5d9d6a20b8a41bc0686433d36902cc47f08'
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     * 
+     * \[ destination, result, cost \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, number, v2302.V3MultiAsset[]] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmVersionNotifyRequestedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.VersionNotifyRequested')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * We have requested that a remote chain sends us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyRequested') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * We have requested that a remote chain sends us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, v2302.V3MultiAsset[]] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmVersionNotifyStartedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.VersionNotifyStarted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     * 
+     * \[ destination location, cost \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyStarted') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     * 
+     * \[ destination location, cost \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, v2302.V3MultiAsset[]] {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class PolkadotXcmVersionNotifyUnrequestedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'PolkadotXcm.VersionNotifyUnrequested')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyUnrequested') === '1e1917ab347c95883db9a398c08711e7ca09b4af3514b1b64b18534cb58a1f4e'
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change notifications.
+     * 
+     * \[ destination location, cost \]
+     */
+    get asV2302(): [v2302.V3MultiLocation, v2302.V3MultiAsset[]] {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12111,6 +12832,21 @@ export class XTokensTransferredMultiAssetsEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XTokens.TransferredMultiAssets') === '3a5a5725aa285145316ab55857fde5e3e6f8155ef47257a4f65f4cd981b1328f'
+    }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get asV2302(): {sender: Uint8Array, assets: v2302.V3MultiAsset[], fee: v2302.V3MultiAsset, dest: v2302.V3MultiLocation} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XTokensTransferredMultiCurrenciesEvent {
@@ -12251,6 +12987,21 @@ export class XcmTransactorDestFeePerSecondChangedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Set dest fee per second
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.DestFeePerSecondChanged') === '0ccbaadc75d87854ea95282bc05537c0fa2efe79a353cd5763137a466644b66f'
+    }
+
+    /**
+     * Set dest fee per second
+     */
+    get asV2302(): {location: v2302.V3MultiLocation, feePerSecond: bigint} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmTransactorDestFeePerSecondRemovedEvent {
@@ -12295,6 +13046,21 @@ export class XcmTransactorDestFeePerSecondRemovedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Remove dest fee per second
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.DestFeePerSecondRemoved') === '03db8e67ce4f6d5cf2a1b5a2811fa2334588cf4bf4318064c565b6ef4a0afe88'
+    }
+
+    /**
+     * Remove dest fee per second
+     */
+    get asV2302(): {location: v2302.V3MultiLocation} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmTransactorHrmpManagementSentEvent {
@@ -12322,6 +13088,21 @@ export class XcmTransactorHrmpManagementSentEvent {
      */
     get asV2100(): {action: v2100.HrmpOperation} {
         assert(this.isV2100)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * HRMP manage action succesfully sent
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.HrmpManagementSent') === '613f0a2379006ad038b30aa498f6d6647f14da681b919395e88ebca7b30e4585'
+    }
+
+    /**
+     * HRMP manage action succesfully sent
+     */
+    get asV2302(): {action: v2302.HrmpOperation} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12429,6 +13210,21 @@ export class XcmTransactorTransactFailedEvent {
         assert(this.isV1300)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Transact failed
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.TransactFailed') === '966240bd73a0dbdd98fb77e2340f17585312e165a21f7e5fcf87894fd328ba3c'
+    }
+
+    /**
+     * Transact failed
+     */
+    get asV2302(): {error: v2302.V3Error} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmTransactorTransactInfoChangedEvent {
@@ -12497,6 +13293,21 @@ export class XcmTransactorTransactInfoChangedEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Changed the transact info of a location
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.TransactInfoChanged') === '0ad7f4c672adf771435c0efe1b42c856aa1c1a048e593cf654b26e966bf8efea'
+    }
+
+    /**
+     * Changed the transact info of a location
+     */
+    get asV2302(): {location: v2302.V3MultiLocation, remoteInfo: v2302.RemoteTransactInfoWithMaxWeight} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmTransactorTransactInfoRemovedEvent {
@@ -12539,6 +13350,21 @@ export class XcmTransactorTransactInfoRemovedEvent {
      */
     get asV2201(): {location: v2201.V1MultiLocation} {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Removed the transact info of a location
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.TransactInfoRemoved') === '03db8e67ce4f6d5cf2a1b5a2811fa2334588cf4bf4318064c565b6ef4a0afe88'
+    }
+
+    /**
+     * Removed the transact info of a location
+     */
+    get asV2302(): {location: v2302.V3MultiLocation} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12594,6 +13420,21 @@ export class XcmTransactorTransactedDerivativeEvent {
         assert(this.isV2201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Transacted the inner call through a derivative account in a destination chain.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.TransactedDerivative') === 'e61d3f9a021f4820f2bb27d7f5d5c347f0cbabf424567b70f8b7cf76e8364cb7'
+    }
+
+    /**
+     * Transacted the inner call through a derivative account in a destination chain.
+     */
+    get asV2302(): {accountId: Uint8Array, dest: v2302.V3MultiLocation, call: Uint8Array, index: number} {
+        assert(this.isV2302)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmTransactorTransactedSignedEvent {
@@ -12636,6 +13477,21 @@ export class XcmTransactorTransactedSignedEvent {
      */
     get asV2201(): {feePayer: Uint8Array, dest: v2201.V1MultiLocation, call: Uint8Array} {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Transacted the call through a signed account in a destination chain.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.TransactedSigned') === '1c15c3c04f205293d9a432aa605f613c5f84b24e2ec14538c8ecf0923bd5b4f9'
+    }
+
+    /**
+     * Transacted the call through a signed account in a destination chain.
+     */
+    get asV2302(): {feePayer: Uint8Array, dest: v2302.V3MultiLocation, call: Uint8Array} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12689,6 +13545,21 @@ export class XcmTransactorTransactedSovereignEvent {
      */
     get asV2201(): {feePayer: Uint8Array, dest: v2201.V1MultiLocation, call: Uint8Array} {
         assert(this.isV2201)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Transacted the call through the sovereign account in a destination chain.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmTransactor.TransactedSovereign') === '1c15c3c04f205293d9a432aa605f613c5f84b24e2ec14538c8ecf0923bd5b4f9'
+    }
+
+    /**
+     * Transacted the call through the sovereign account in a destination chain.
+     */
+    get asV2302(): {feePayer: Uint8Array, dest: v2302.V3MultiLocation, call: Uint8Array} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12866,6 +13737,21 @@ export class XcmpQueueFailEvent {
      */
     get asV2000(): {messageHash: (Uint8Array | undefined), error: v2000.V2Error, weight: v2000.Weight} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some XCM failed.
+     */
+    get isV2302(): boolean {
+        return this._chain.getEventHash('XcmpQueue.Fail') === 'add7b9cc246aa92449c7315a345573f307df55cd0b7e472982a726f0e1757cf0'
+    }
+
+    /**
+     * Some XCM failed.
+     */
+    get asV2302(): {messageHash: (Uint8Array | undefined), error: v2302.V3Error, weight: v2302.Weight} {
+        assert(this.isV2302)
         return this._chain.decodeEvent(this.event)
     }
 }
