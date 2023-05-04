@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "azeroSpecVersions.jsonl",
+  "specVersions": "https://aleph-zero.archive.subsquid.io/graphql",
   "typesBundle": "typesBundle.json",
   "events": true,
   "calls": true,
