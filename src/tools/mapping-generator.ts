@@ -172,14 +172,14 @@ class MappingGenerator {
 
 const eventMappingGenerator = new MappingGenerator(
   "../types/events.ts",
-  ["Balances.", "Staking.", "System.", "Contracts."],
+  ["Balances.", "Staking.", "System.", "Contracts.", "EVM.", "Ethereum."],
   TransactionType.Event
 );
 eventMappingGenerator.generateMappings();
 
 const callMappingGenerator = new MappingGenerator(
   "../types/calls.ts",
-  ["Contracts."],
+  ["Contracts.", "EVM.", "Ethereum."],
   TransactionType.Call
 );
 callMappingGenerator.generateMappings();
