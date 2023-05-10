@@ -1,4 +1,7 @@
-import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
+import {
+  SubstrateBatchProcessor,
+  SubstrateBlock,
+} from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { EventNorm, CallNorm, AddressMapping } from "./model";
 import {
@@ -10,8 +13,9 @@ import {
   normalizeEVMCallsArgs,
   normalizeEthereumCallsArgs,
   normalizeContractsCallsArgs,
-  mapAccount,
+  mapAddress,
 } from "./mappings";
+import { MappedAddress } from "./interfaces/mappings/specific";
 import { removeDuplicates } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
@@ -59,15 +63,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   for (let block of ctx.blocks) {
     for (let item of block.items) {
       if (item.kind === "event") {
-        if ((item.event.name as string) === "System.NewAccount") {
-          const mappedAccount = mapAccount(ctx, item.event);
-          const addressMapping = new AddressMapping({
-            id: mappedAccount.account_hex,
-            ss58: mappedAccount.account_ss58,
-          });
-          addressMappings.push(addressMapping);
-        }
-
         const prefix = item.event.name.split(".")[0] + ".";
         if (
           eventHandlers[prefix] &&
@@ -76,31 +71,19 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           )
         ) {
           let args = eventHandlers[prefix](ctx, item.event);
-
-          const event = new EventNorm({
-            id: item.event.id,
-            blockHash: block.header.hash,
-            timestamp: new Date(block.header.timestamp),
-            name: item.event.name,
-            args,
-            extrinsicSuccess: item.event.extrinsic?.success,
-          });
+          const event = createEventNorm(block.header, item.event, args);
           events.push(event);
+        }
+        if ((item.event.name as string) === "System.NewAccount") {
+          const mappedAddress = mapAddress(ctx, item.event);
+          const addressMapping = createAddressMapping(mappedAddress);
+          addressMappings.push(addressMapping);
         }
       } else if (item.kind === "call") {
         const prefix = item.call.name.split(".")[0] + ".";
         if (callHandlers[prefix]) {
           let args = callHandlers[prefix](ctx, item.call);
-
-          const call = new CallNorm({
-            id: item.call.id,
-            blockHash: block.header.hash,
-            timestamp: new Date(block.header.timestamp),
-            name: item.call.name,
-            args,
-            success: item.call.success,
-            origin: item.call.origin,
-          });
+          const call = createCallNorm(block.header, item.call, args);
           calls.push(call);
         }
       }
@@ -111,3 +94,33 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   await ctx.store.save(calls);
   await ctx.store.save(removeDuplicates(addressMappings, "id"));
 });
+
+function createEventNorm(block: SubstrateBlock, event: any, args: any) {
+  return new EventNorm({
+    id: event.id,
+    blockHash: block.hash,
+    timestamp: new Date(block.timestamp),
+    name: event.name,
+    args,
+    extrinsicSuccess: event.extrinsic?.success,
+  });
+}
+
+function createCallNorm(block: SubstrateBlock, call: any, args: any) {
+  return new CallNorm({
+    id: call.id,
+    blockHash: block.hash,
+    timestamp: new Date(block.timestamp),
+    name: call.name,
+    args,
+    success: call.success,
+    origin: call.origin,
+  });
+}
+
+function createAddressMapping(mappedAddress: MappedAddress) {
+  return new AddressMapping({
+    id: mappedAddress.hex,
+    ss58: mappedAddress.ss58,
+  });
+}
