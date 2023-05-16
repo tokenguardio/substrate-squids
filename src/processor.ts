@@ -20,7 +20,8 @@ import { MappedAddress, AddressArgs } from "./interfaces/mappings/specific";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `https://astar.archive.subsquid.io/graphql`,
+    archive:
+      process.env.GATEWAY_URL ?? "https://polkadot.archive.subsquid.io/graphql",
   })
   .addEvent("*", {
     data: {

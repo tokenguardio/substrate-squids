@@ -1,23 +1,17 @@
 import { normalizeBalancesEventsArgs } from "./events/balances";
-import { normalizeContractsEventsArgs } from "./events/contracts";
 import { normalizeSystemEventsArgs } from "./events/system";
-import { normalizeEthereumEventsArgs } from "./events/ethereum";
-import { normalizeEVMEventsArgs } from "./events/evm";
+import { normalizeNominationPoolsEventsArgs } from "./events/nomination-pools";
+import { normalizeStakingEventsArgs } from "./events/staking";
 
-import { normalizeContractsCallsArgs } from "./calls/contracts";
-import { normalizeEthereumCallsArgs } from "./calls/ethereum";
-import { normalizeEVMCallsArgs } from "./calls/evm";
+import { normalizeNominationPoolsCallsArgs } from "./calls/nomination-pools";
 
 export const eventNormalizationHandlers: { [key: string]: any } = {
   Balances: normalizeBalancesEventsArgs,
   System: normalizeSystemEventsArgs,
-  Contracts: normalizeContractsEventsArgs,
-  EVM: normalizeEVMEventsArgs,
-  Ethereum: normalizeEthereumEventsArgs,
+  NominationPools: normalizeNominationPoolsEventsArgs,
+  Staking: normalizeStakingEventsArgs,
 };
 
 export const callNormalizationHandlers: { [key: string]: any } = {
-  Contracts: normalizeContractsCallsArgs,
-  EVM: normalizeEVMCallsArgs,
-  Ethereum: normalizeEthereumCallsArgs,
+  NominationPools: normalizeNominationPoolsCallsArgs,
 };
