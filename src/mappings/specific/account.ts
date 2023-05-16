@@ -1,22 +1,23 @@
 import { SystemNewAccountEvent } from "../../types/events";
 import { ChainContext, Event } from "../../types/support";
 import { bufferToHex } from "../../utils/utils";
-import { UnknownVersionError } from "../../utils/errors";
+import { UnknownEventVersionError } from "../../utils/errors";
+import { MappedAddress } from "../../interfaces/mappings/specific";
 import * as ss58 from "@subsquid/ss58";
 
-export function mapAccount(ctx: ChainContext, event: Event) {
+export function mapAddress(ctx: ChainContext, event: Event): MappedAddress {
   const e = new SystemNewAccountEvent(ctx, event);
   if (e.isV3) {
     let account = e.asV3;
     return {
-      account_hex: bufferToHex(account),
-      account_ss58: ss58.codec("substrate").encode(account),
+      hex: bufferToHex(account),
+      ss58: ss58.codec("astar").encode(account),
     };
   } else if (e.isV39) {
     let { account } = e.asV39;
     return {
-      account_hex: bufferToHex(account),
-      account_ss58: ss58.codec("substrate").encode(account),
+      hex: bufferToHex(account),
+      ss58: ss58.codec("astar").encode(account),
     };
   } else {
     throw new UnknownVersionError(event.name);
