@@ -8,7 +8,9 @@ export function mapAddresses(
   addressArgs: AddressArgs
 ): MappedAddress[] {
   const addressArgNames = addressArgs[itemName] || [];
-  const addresses: string[] = addressArgNames.map((name) => args[name]);
+  const addresses: string[] = addressArgNames
+    .map((name) => args[name])
+    .filter(Boolean);
 
   return addresses.map((address) => {
     return {
