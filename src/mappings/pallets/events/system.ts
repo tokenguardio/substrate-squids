@@ -7,7 +7,7 @@ import {
   SystemRemarkedEvent,
 } from "../../../types/events";
 import { ChainContext, Event } from "../../../types/support";
-import { bufferToHex } from "../../../utils/utils";
+import { toHex } from "@subsquid/util-internal-hex";
 import {
   UnknownEventVersionError,
   UnknownEventError,
@@ -61,7 +61,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       if (e.isV1) {
         let account = e.asV1;
         return {
-          account: bufferToHex(account),
+          account: toHex(account),
         };
       } else if (e.isV9) {
         return event.args;
@@ -73,7 +73,7 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       if (e.isV1) {
         let account = e.asV1;
         return {
-          account: bufferToHex(account),
+          account: toHex(account),
         };
       } else if (e.isV9) {
         return event.args;
@@ -85,8 +85,8 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       if (e.isV1) {
         let [origin, remarkHash] = e.asV1;
         return {
-          sender: bufferToHex(origin),
-          hash: bufferToHex(remarkHash),
+          sender: toHex(origin),
+          hash: toHex(remarkHash),
         };
       } else if (e.isV9) {
         return event.args;
