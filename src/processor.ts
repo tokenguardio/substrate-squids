@@ -1,14 +1,22 @@
-import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
+import {
+  SubstrateBatchProcessor,
+  SubstrateBlock,
+} from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { EventNorm, CallNorm, AddressMapping } from "./model";
 import {
   normalizeBalancesEventsArgs,
   normalizeStakingEventsArgs,
   normalizeSystemEventsArgs,
-  normalizeNominationPoolsEventsArgs,
-  normalizeNominationPoolsCallsArgs,
-  mapAccount,
+  normalizeContractsEventsArgs,
+  normalizeEVMEventsArgs,
+  normalizeEthereumEventsArgs,
+  normalizeEVMCallsArgs,
+  normalizeEthereumCallsArgs,
+  normalizeContractsCallsArgs,
+  mapAddress,
 } from "./mappings";
+import { MappedAddress } from "./interfaces/mappings/specific";
 import { removeDuplicates } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
@@ -68,48 +76,32 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             break;
         }
 
+  for (let block of ctx.blocks) {
+    for (let item of block.items) {
+      if (item.kind === "event") {
+        const prefix = item.event.name.split(".")[0] + ".";
+        if (
+          eventHandlers[prefix] &&
+          !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
+            item.event.name
+          )
+        ) {
+          let args = eventHandlers[prefix](ctx, item.event);
+          const event = createEventNorm(block.header, item.event, args);
+          events.push(event);
+        }
         if ((item.event.name as string) === "System.NewAccount") {
-          const mappedAccount = mapAccount(ctx, item.event);
-          const addressMapping = new AddressMapping({
-            id: mappedAccount.account_hex,
-            ss58: mappedAccount.account_ss58,
-          });
+          const mappedAddress = mapAddress(ctx, item.event);
+          const addressMapping = createAddressMapping(mappedAddress);
           addressMappings.push(addressMapping);
         }
-
-        // Create a new event object and push it to the events array
-        const event = new EventNorm({
-          id: item.event.id,
-          blockHash: block.header.hash,
-          timestamp: new Date(block.header.timestamp),
-          name: item.event.name,
-          args,
-          extrinsicSuccess: item.event.extrinsic?.success,
-        });
-        events.push(event);
-      } else if (
-        item.kind === "call" &&
-        item.call.name.startsWith("NominationPools.")
-      ) {
-        // Normalize the call arguments based on the prefix
-        let args;
-        switch (true) {
-          case item.call.name.startsWith("NominationPools."):
-            args = normalizeNominationPoolsCallsArgs(ctx, item.call);
-            break;
+      } else if (item.kind === "call") {
+        const prefix = item.call.name.split(".")[0] + ".";
+        if (callHandlers[prefix]) {
+          let args = callHandlers[prefix](ctx, item.call);
+          const call = createCallNorm(block.header, item.call, args);
+          calls.push(call);
         }
-
-        // Create a new call object and push it to the calls array
-        const call = new CallNorm({
-          id: item.call.id,
-          blockHash: block.header.hash,
-          timestamp: new Date(block.header.timestamp),
-          name: item.call.name,
-          args,
-          success: item.call.success,
-          origin: item.call.origin,
-        });
-        calls.push(call);
       }
     }
   }
@@ -118,3 +110,33 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   await ctx.store.save(calls);
   await ctx.store.save(removeDuplicates(addressMappings, "id"));
 });
+
+function createEventNorm(block: SubstrateBlock, event: any, args: any) {
+  return new EventNorm({
+    id: event.id,
+    blockHash: block.hash,
+    timestamp: new Date(block.timestamp),
+    name: event.name,
+    args,
+    extrinsicSuccess: event.extrinsic?.success,
+  });
+}
+
+function createCallNorm(block: SubstrateBlock, call: any, args: any) {
+  return new CallNorm({
+    id: call.id,
+    blockHash: block.hash,
+    timestamp: new Date(block.timestamp),
+    name: call.name,
+    args,
+    success: call.success,
+    origin: call.origin,
+  });
+}
+
+function createAddressMapping(mappedAddress: MappedAddress) {
+  return new AddressMapping({
+    id: mappedAddress.hex,
+    ss58: mappedAddress.ss58,
+  });
+}
