@@ -20,7 +20,7 @@ import { MappedAddress, AddressArgs } from "./interfaces/mappings/specific";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
-    archive: `https://astar.archive.subsquid.io/graphql`,
+    archive: `${process.env.ARCHIVE_GATEWAY_HOST}:${process.env.ARCHIVE_GATEWAY_PORT}/graphql`,
   })
   .addEvent("*", {
     data: {
@@ -116,7 +116,7 @@ function createAddressMapping(mappedAddress: MappedAddress): AddressMapping {
   });
 }
 
-export function addAddressesToMap(
+function addAddressesToMap(
   itemName: string,
   args: any,
   addressArgs: AddressArgs,
