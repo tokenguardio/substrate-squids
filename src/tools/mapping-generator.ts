@@ -107,7 +107,7 @@ class MappingGenerator {
 
   public generateMappings() {
     this.parseSourceFile();
-    const outputFolderPath = path.resolve(__dirname, "./");
+    const outputFolderPath = path.resolve(__dirname, `./${this.type}s`);
 
     if (!fs.existsSync(outputFolderPath)) {
       fs.mkdirSync(outputFolderPath);
@@ -122,12 +122,12 @@ class MappingGenerator {
       const template = `import {
         ${filteredClasses
           .map((c) => `  ${c.className},\n`)
-          .join("")}} from "../types/${this.type}s.ts";
-        import { ChainContext, ${this.typeUpper} } from "../types/support";
-        import { bufferToHex } from "../utils/utils";
-        import { UnknownVersionError, Unknown${
-          this.typeUpper
-        }Error} from "../utils/errors";
+          .join("")}} from "../../types/${this.type}s";
+        import { ChainContext, ${this.typeUpper} } from "../../types/support";
+        import { bufferToHex } from "../../utils/utils";
+        import { Unknown${this.typeUpper}VersionError, Unknown${
+        this.typeUpper
+      }Error} from "../../utils/errors";
         
         export function normalize${prefix.slice(0, -1)}${
         this.typeUpper
@@ -146,7 +146,9 @@ class MappingGenerator {
                     }`
                       )
                       .join(" else ")}${c.getters.length > 0 ? " else " : ""}{
-                        throw new UnknownVersionError(${this.type}.name);
+                        throw new Unknown${this.typeUpper}VersionError(${
+              this.type
+            }.name);
                     }
         `;
           })
@@ -170,14 +172,14 @@ class MappingGenerator {
 
 const eventMappingGenerator = new MappingGenerator(
   "../types/events.ts",
-  ["Balances.", "Staking.", "System."],
+  ["Balances.", "Staking.", "System.", "Contracts.", "EVM.", "Ethereum."],
   TransactionType.Event
 );
 eventMappingGenerator.generateMappings();
 
 const callMappingGenerator = new MappingGenerator(
   "../types/calls.ts",
-  ["Contracts."],
+  ["Contracts.", "EVM.", "Ethereum."],
   TransactionType.Call
 );
 callMappingGenerator.generateMappings();

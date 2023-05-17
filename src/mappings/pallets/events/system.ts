@@ -8,9 +8,12 @@ import {
 } from "../../../types/events";
 import { ChainContext, Event } from "../../../types/support";
 import { bufferToHex } from "../../../utils/utils";
-import { UnknownVersionError, UnknownEventError } from "../../../utils/errors";
+import {
+  UnknownEventVersionError,
+  UnknownEventError,
+} from "../../../utils/errors";
 
-export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
+export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
   let e;
   switch (event.name) {
     case "System.CodeUpdated":
@@ -18,7 +21,7 @@ export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
       if (e.isV5) {
         return null;
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.ExtrinsicFailed":
       e = new SystemExtrinsicFailedEvent(ctx, event);
@@ -29,7 +32,7 @@ export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
           info,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.ExtrinsicSuccess":
       e = new SystemExtrinsicSuccessEvent(ctx, event);
@@ -39,7 +42,7 @@ export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
           info,
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.KilledAccount":
       e = new SystemKilledAccountEvent(ctx, event);
@@ -49,7 +52,7 @@ export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
           account: bufferToHex(account),
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.NewAccount":
       e = new SystemNewAccountEvent(ctx, event);
@@ -59,7 +62,7 @@ export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
           account: bufferToHex(account),
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
     case "System.Remarked":
       e = new SystemRemarkedEvent(ctx, event);
@@ -70,7 +73,7 @@ export function normalizeSystemEventArgs(ctx: ChainContext, event: Event) {
           remarkHash: bufferToHex(remarkHash),
         };
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
 
     default:
