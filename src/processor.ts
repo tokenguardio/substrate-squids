@@ -117,7 +117,7 @@ function createAddressMapping(mappedAddress: MappedAddress): AddressMapping {
   });
 }
 
-export function addAddressesToMap(
+function addAddressesToMap(
   itemName: string,
   args: any,
   addressArgs: AddressArgs,
