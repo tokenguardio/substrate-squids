@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "zeitgeistVersions.jsonl",
+  "specVersions": "https://zeitgeist.archive.subsquid.io/graphql",
   "typesBundle": "typesBundle.json",
   "events": true,
   "calls": true,
