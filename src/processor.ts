@@ -55,31 +55,31 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           const args = eventNormalizationHandlers[pallet](ctx, item.event);
           const event = createEventNorm(block.header, item.event, args);
           events.push(event);
-          addAddressesToMap(
-            item.event.name,
-            args,
-            eventsAddressArgs,
-            addressMappings
-          );
+          // addAddressesToMap(
+          //   item.event.name,
+          //   args,
+          //   eventsAddressArgs,
+          //   addressMappings
+          // );
         }
       } else if (item.kind === "call") {
         if (callNormalizationHandlers[pallet]) {
           const args = callNormalizationHandlers[pallet](ctx, item.call);
           const call = createCallNorm(block.header, item.call, args);
           calls.push(call);
-          addAddressesToMap(
-            item.call.name,
-            args,
-            callsAddressArgs,
-            addressMappings
-          );
+          // addAddressesToMap(
+          //   item.call.name,
+          //   args,
+          //   callsAddressArgs,
+          //   addressMappings
+          // );
         }
       }
     }
   }
   await ctx.store.save(events);
   await ctx.store.save(calls);
-  await ctx.store.save(Array.from(addressMappings.values()));
+  // await ctx.store.save(Array.from(addressMappings.values()));
 });
 
 function createEventNorm(
