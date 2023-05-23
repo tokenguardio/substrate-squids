@@ -37,6 +37,7 @@ import * as v968 from './v968'
 import * as v970 from './v970'
 import * as v971 from './v971'
 import * as v972 from './v972'
+import * as v974 from './v974'
 
 export class AssetRegistryAssetRegisteredEvent {
     private readonly _chain: Chain
@@ -4360,6 +4361,29 @@ export class FarmingAllRetiredEvent {
     }
 }
 
+export class FarmingBoostChargedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Farming.BoostCharged')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Farming.BoostCharged') === 'f9b058ea8537617a1348a8d3121c38e982d2981d1501665d7b84a084cbfb50e8'
+    }
+
+    get asV974(): {who: Uint8Array, rewards: [v974.CurrencyId, bigint][]} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class FarmingChargedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -4650,6 +4674,98 @@ export class FarmingRetireLimitSetEvent {
 
     get asV944(): {limit: number} {
         assert(this.isV944)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class FarmingRoundEndEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Farming.RoundEnd')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Farming.RoundEnd') === '75be23c7c4a0569a0610e6b1f96c4bf9d4ed73dc2d70fb0100025b388400eb08'
+    }
+
+    get asV974(): {totalVotes: bigint, startRound: number, endRound: number} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class FarmingRoundStartEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Farming.RoundStart')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Farming.RoundStart') === '557b03e879588083c91a3273ad372e661ca8e1298a1640ef91a6e02f6e471e2f'
+    }
+
+    get asV974(): {roundLength: number} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class FarmingRoundStartErrorEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Farming.RoundStartError')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Farming.RoundStartError') === 'cb599325ccef7d3e2bddde986c338db5bcd6db4d736458e7fcffb4ba082ba16b'
+    }
+
+    get asV974(): {info: v974.DispatchError} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class FarmingVotedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Farming.Voted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Farming.Voted') === '45a87e558cb12177e56cc10bb36948150ca7668fc6be87470b4c32a50abb411e'
+    }
+
+    get asV974(): {who: Uint8Array, voteList: [number, number][]} {
+        assert(this.isV974)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -15936,6 +16052,29 @@ export class SlpRefundEvent {
     }
 }
 
+export class SlpRemovedFromBoostListEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Slp.RemovedFromBoostList')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Slp.RemovedFromBoostList') === 'ec87264805a12c1c8157c39e6de627fc752dbd2f0958e747fe5c3f9a4a19532b'
+    }
+
+    get asV974(): {currencyId: v974.CurrencyId, who: v974.V3MultiLocation} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class SlpSupplementFeeAccountWhitelistAddedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -16290,6 +16429,52 @@ export class SlpUndelegatedEvent {
     }
 }
 
+export class SlpValidatorBoostListAddedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Slp.ValidatorBoostListAdded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorBoostListAdded') === 'c4905b3255d135b572da04a0d41db0186c71e0d77fa31d136dee830e277afbc6'
+    }
+
+    get asV974(): {currencyId: v974.CurrencyId, who: v974.V3MultiLocation, dueBlockNumber: number} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SlpValidatorBoostListSetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Slp.ValidatorBoostListSet')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorBoostListSet') === '16ea1a263fa51f2459b17a16f878c423f5f5fd3f3fa07dfeb3b5fba1f3ec6dfd'
+    }
+
+    get asV974(): {currencyId: v974.CurrencyId, validatorBoostList: [v974.V3MultiLocation, number][]} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class SlpValidatorsAddedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -16406,6 +16591,15 @@ export class SlpValidatorsByDelegatorQueryResponseConfirmedEvent {
         assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsByDelegatorQueryResponseConfirmed') === '178fecbf2baf5ee64c3c8943fd0eb2dc457960c13548c962a4169e9959cf3561'
+    }
+
+    get asV974(): {queryId: bigint, entry: v974.ValidatorsByDelegatorUpdateEntry} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpValidatorsByDelegatorQueryResponseFailSuccessfullyEvent {
@@ -16511,6 +16705,15 @@ export class SlpValidatorsByDelegatorSetEvent {
         assert(this.isV972)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsByDelegatorSet') === 'de4d5fc44fd6ce4708bc7a975060564d2975c536ca9874f2bb46fa51b876e1c4'
+    }
+
+    get asV974(): {currencyId: v974.CurrencyId, validatorsList: v974.V3MultiLocation[], delegatorId: v974.V3MultiLocation} {
+        assert(this.isV974)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SlpValidatorsRemovedEvent {
@@ -16568,6 +16771,29 @@ export class SlpValidatorsRemovedEvent {
 
     get asV972(): {currencyId: v972.CurrencyId, validatorId: v972.V3MultiLocation} {
         assert(this.isV972)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SlpValidatorsResetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Slp.ValidatorsReset')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV974(): boolean {
+        return this._chain.getEventHash('Slp.ValidatorsReset') === 'aed67613234cd89840bf9882da9cd2ed28814d58cf1a0778b76dd36e65ab3835'
+    }
+
+    get asV974(): {currencyId: v974.CurrencyId, validatorList: v974.V3MultiLocation[]} {
+        assert(this.isV974)
         return this._chain.decodeEvent(this.event)
     }
 }
