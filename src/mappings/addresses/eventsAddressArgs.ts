@@ -29,20 +29,16 @@ const System: AddressArgs = {
 };
 
 const DappsStaking: AddressArgs = {
-  "DappsStaking.BondAndStake": ["account", "contract"],
-  "DappsStaking.ContractRemoved": ["account", "contract"],
-  "DappsStaking.NewContract": ["account", "contract"],
-  "DappsStaking.NominationTransfer": [
-    "staker",
-    "originContract",
-    "targetContract",
-  ],
-  "DappsStaking.Reward": ["account", "contract"],
+  "DappsStaking.BondAndStake": ["account"],
+  "DappsStaking.ContractRemoved": ["account"],
+  "DappsStaking.NewContract": ["account"],
+  "DappsStaking.NominationTransfer": ["staker"],
+  "DappsStaking.Reward": ["account"],
   "DappsStaking.RewardDestination": ["account"],
-  "DappsStaking.StaleRewardBurned": ["developer", "contract"],
-  "DappsStaking.UnbondAndUnstake": ["account", "contract"],
-  "DappsStaking.UnbondUnstakeAndWithdraw": ["account", "contract"],
-  "DappsStaking.WithdrawFromUnregistered": ["account", "contract"],
+  "DappsStaking.StaleRewardBurned": ["developer"],
+  "DappsStaking.UnbondAndUnstake": ["account"],
+  "DappsStaking.UnbondUnstakeAndWithdraw": ["account"],
+  "DappsStaking.WithdrawFromUnregistered": ["account"],
   "DappsStaking.Withdrawn": ["account"],
 };
 
