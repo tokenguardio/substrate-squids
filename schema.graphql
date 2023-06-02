@@ -1,5 +1,6 @@
 type EventNorm @entity {
   id: ID!
+  call: CallNorm
   blockHash: String!
   timestamp: DateTime! @index
   name: String! @index

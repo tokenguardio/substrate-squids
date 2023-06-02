@@ -78,8 +78,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     }
   }
 
-  await ctx.store.save(events);
   await ctx.store.save(calls);
+  await ctx.store.save(events);
   await ctx.store.save(Array.from(addressMappings.values()));
 });
 
@@ -88,8 +88,16 @@ function createEventNorm(
   event: any,
   args: any
 ): EventNorm {
+  let call_id = null;
+  if (event.call) {
+    const pallet = event.call.name.split(".")[0];
+    if (callNormalizationHandlers[pallet]) {
+      call_id = event.call.id;
+    }
+  }
   return new EventNorm({
     id: event.id,
+    call: call_id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     name: event.name,
