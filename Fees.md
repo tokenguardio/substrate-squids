@@ -64,7 +64,7 @@ inclusion_fee = base_fee + length_fee + [targeted_fee_adjustment * weight_fee];
 final_fee = inclusion_fee + tip;
 ```
 
-For more information on specific components of _inclusion_fee_ formula see [Substrate docs on fees](<[fdfd](https://docs.substrate.io/build/tx-weights-fees/)>)
+For more information on specific components of _inclusion_fee_ formula see [Substrate docs on fees](https://docs.substrate.io/build/tx-weights-fees/)
 
 For our use case we can focus only on _final_fee_
 
