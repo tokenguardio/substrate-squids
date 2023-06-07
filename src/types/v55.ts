@@ -206,6 +206,40 @@ export interface OriginCaller_Void {
     value: Void
 }
 
+export interface PrefabWasmModule {
+    instructionWeightsVersion: number
+    initial: number
+    maximum: number
+    code: Uint8Array
+    determinism: Determinism
+}
+
+export interface ContractInfo {
+    trieId: Uint8Array
+    codeHash: Uint8Array
+    storageBytes: number
+    storageItems: number
+    storageByteDeposit: bigint
+    storageItemDeposit: bigint
+    storageBaseDeposit: bigint
+}
+
+export interface DeletedContract {
+    trieId: Uint8Array
+}
+
+export interface OwnerInfo {
+    owner: Uint8Array
+    deposit: bigint
+    refcount: bigint
+}
+
+export interface EventRecord {
+    phase: Phase
+    event: Event
+    topics: Uint8Array[]
+}
+
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
@@ -3039,6 +3073,143 @@ export interface Type_274_EthereumTransaction {
 
 export type Void = never
 
+export type Phase = Phase_ApplyExtrinsic | Phase_Finalization | Phase_Initialization
+
+export interface Phase_ApplyExtrinsic {
+    __kind: 'ApplyExtrinsic'
+    value: number
+}
+
+export interface Phase_Finalization {
+    __kind: 'Finalization'
+}
+
+export interface Phase_Initialization {
+    __kind: 'Initialization'
+}
+
+export type Event = Event_System | Event_Utility | Event_Identity | Event_Multisig | Event_ParachainSystem | Event_TransactionPayment | Event_Balances | Event_Vesting | Event_DappsStaking | Event_BlockReward | Event_Assets | Event_CollatorSelection | Event_Session | Event_XcmpQueue | Event_PolkadotXcm | Event_CumulusXcm | Event_DmpQueue | Event_XcAssetConfig | Event_EVM | Event_Ethereum | Event_EthCall | Event_BaseFee | Event_Contracts | Event_Sudo
+
+export interface Event_System {
+    __kind: 'System'
+    value: SystemEvent
+}
+
+export interface Event_Utility {
+    __kind: 'Utility'
+    value: UtilityEvent
+}
+
+export interface Event_Identity {
+    __kind: 'Identity'
+    value: IdentityEvent
+}
+
+export interface Event_Multisig {
+    __kind: 'Multisig'
+    value: MultisigEvent
+}
+
+export interface Event_ParachainSystem {
+    __kind: 'ParachainSystem'
+    value: ParachainSystemEvent
+}
+
+export interface Event_TransactionPayment {
+    __kind: 'TransactionPayment'
+    value: TransactionPaymentEvent
+}
+
+export interface Event_Balances {
+    __kind: 'Balances'
+    value: BalancesEvent
+}
+
+export interface Event_Vesting {
+    __kind: 'Vesting'
+    value: VestingEvent
+}
+
+export interface Event_DappsStaking {
+    __kind: 'DappsStaking'
+    value: DappsStakingEvent
+}
+
+export interface Event_BlockReward {
+    __kind: 'BlockReward'
+    value: BlockRewardEvent
+}
+
+export interface Event_Assets {
+    __kind: 'Assets'
+    value: AssetsEvent
+}
+
+export interface Event_CollatorSelection {
+    __kind: 'CollatorSelection'
+    value: CollatorSelectionEvent
+}
+
+export interface Event_Session {
+    __kind: 'Session'
+    value: SessionEvent
+}
+
+export interface Event_XcmpQueue {
+    __kind: 'XcmpQueue'
+    value: XcmpQueueEvent
+}
+
+export interface Event_PolkadotXcm {
+    __kind: 'PolkadotXcm'
+    value: PolkadotXcmEvent
+}
+
+export interface Event_CumulusXcm {
+    __kind: 'CumulusXcm'
+    value: CumulusXcmEvent
+}
+
+export interface Event_DmpQueue {
+    __kind: 'DmpQueue'
+    value: DmpQueueEvent
+}
+
+export interface Event_XcAssetConfig {
+    __kind: 'XcAssetConfig'
+    value: XcAssetConfigEvent
+}
+
+export interface Event_EVM {
+    __kind: 'EVM'
+    value: EVMEvent
+}
+
+export interface Event_Ethereum {
+    __kind: 'Ethereum'
+    value: EthereumEvent
+}
+
+export interface Event_EthCall {
+    __kind: 'EthCall'
+    value: EthCallEvent
+}
+
+export interface Event_BaseFee {
+    __kind: 'BaseFee'
+    value: BaseFeeEvent
+}
+
+export interface Event_Contracts {
+    __kind: 'Contracts'
+    value: ContractsEvent
+}
+
+export interface Event_Sudo {
+    __kind: 'Sudo'
+    value: SudoEvent
+}
+
 export interface IdentityInfo {
     additional: [Data, Data][]
     display: Data
@@ -3424,6 +3595,1545 @@ export interface TransactionV2_EIP2930 {
 export interface TransactionV2_EIP1559 {
     __kind: 'EIP1559'
     value: EIP1559Transaction
+}
+
+/**
+ * Event for the System pallet.
+ */
+export type SystemEvent = SystemEvent_ExtrinsicSuccess | SystemEvent_ExtrinsicFailed | SystemEvent_CodeUpdated | SystemEvent_NewAccount | SystemEvent_KilledAccount | SystemEvent_Remarked
+
+/**
+ * An extrinsic completed successfully.
+ */
+export interface SystemEvent_ExtrinsicSuccess {
+    __kind: 'ExtrinsicSuccess'
+    dispatchInfo: DispatchInfo
+}
+
+/**
+ * An extrinsic failed.
+ */
+export interface SystemEvent_ExtrinsicFailed {
+    __kind: 'ExtrinsicFailed'
+    dispatchError: DispatchError
+    dispatchInfo: DispatchInfo
+}
+
+/**
+ * `:code` was updated.
+ */
+export interface SystemEvent_CodeUpdated {
+    __kind: 'CodeUpdated'
+}
+
+/**
+ * A new account was created.
+ */
+export interface SystemEvent_NewAccount {
+    __kind: 'NewAccount'
+    account: Uint8Array
+}
+
+/**
+ * An account was reaped.
+ */
+export interface SystemEvent_KilledAccount {
+    __kind: 'KilledAccount'
+    account: Uint8Array
+}
+
+/**
+ * On on-chain remark happened.
+ */
+export interface SystemEvent_Remarked {
+    __kind: 'Remarked'
+    sender: Uint8Array
+    hash: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type UtilityEvent = UtilityEvent_BatchInterrupted | UtilityEvent_BatchCompleted | UtilityEvent_BatchCompletedWithErrors | UtilityEvent_ItemCompleted | UtilityEvent_ItemFailed | UtilityEvent_DispatchedAs
+
+/**
+ * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+ * well as the error.
+ */
+export interface UtilityEvent_BatchInterrupted {
+    __kind: 'BatchInterrupted'
+    index: number
+    error: DispatchError
+}
+
+/**
+ * Batch of dispatches completed fully with no error.
+ */
+export interface UtilityEvent_BatchCompleted {
+    __kind: 'BatchCompleted'
+}
+
+/**
+ * Batch of dispatches completed but has errors.
+ */
+export interface UtilityEvent_BatchCompletedWithErrors {
+    __kind: 'BatchCompletedWithErrors'
+}
+
+/**
+ * A single item within a Batch of dispatches has completed with no error.
+ */
+export interface UtilityEvent_ItemCompleted {
+    __kind: 'ItemCompleted'
+}
+
+/**
+ * A single item within a Batch of dispatches has completed with error.
+ */
+export interface UtilityEvent_ItemFailed {
+    __kind: 'ItemFailed'
+    error: DispatchError
+}
+
+/**
+ * A call was dispatched.
+ */
+export interface UtilityEvent_DispatchedAs {
+    __kind: 'DispatchedAs'
+    result: Type_30
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type IdentityEvent = IdentityEvent_IdentitySet | IdentityEvent_IdentityCleared | IdentityEvent_IdentityKilled | IdentityEvent_JudgementRequested | IdentityEvent_JudgementUnrequested | IdentityEvent_JudgementGiven | IdentityEvent_RegistrarAdded | IdentityEvent_SubIdentityAdded | IdentityEvent_SubIdentityRemoved | IdentityEvent_SubIdentityRevoked
+
+/**
+ * A name was set or reset (which will remove all judgements).
+ */
+export interface IdentityEvent_IdentitySet {
+    __kind: 'IdentitySet'
+    who: Uint8Array
+}
+
+/**
+ * A name was cleared, and the given balance returned.
+ */
+export interface IdentityEvent_IdentityCleared {
+    __kind: 'IdentityCleared'
+    who: Uint8Array
+    deposit: bigint
+}
+
+/**
+ * A name was removed and the given balance slashed.
+ */
+export interface IdentityEvent_IdentityKilled {
+    __kind: 'IdentityKilled'
+    who: Uint8Array
+    deposit: bigint
+}
+
+/**
+ * A judgement was asked from a registrar.
+ */
+export interface IdentityEvent_JudgementRequested {
+    __kind: 'JudgementRequested'
+    who: Uint8Array
+    registrarIndex: number
+}
+
+/**
+ * A judgement request was retracted.
+ */
+export interface IdentityEvent_JudgementUnrequested {
+    __kind: 'JudgementUnrequested'
+    who: Uint8Array
+    registrarIndex: number
+}
+
+/**
+ * A judgement was given by a registrar.
+ */
+export interface IdentityEvent_JudgementGiven {
+    __kind: 'JudgementGiven'
+    target: Uint8Array
+    registrarIndex: number
+}
+
+/**
+ * A registrar was added.
+ */
+export interface IdentityEvent_RegistrarAdded {
+    __kind: 'RegistrarAdded'
+    registrarIndex: number
+}
+
+/**
+ * A sub-identity was added to an identity and the deposit paid.
+ */
+export interface IdentityEvent_SubIdentityAdded {
+    __kind: 'SubIdentityAdded'
+    sub: Uint8Array
+    main: Uint8Array
+    deposit: bigint
+}
+
+/**
+ * A sub-identity was removed from an identity and the deposit freed.
+ */
+export interface IdentityEvent_SubIdentityRemoved {
+    __kind: 'SubIdentityRemoved'
+    sub: Uint8Array
+    main: Uint8Array
+    deposit: bigint
+}
+
+/**
+ * A sub-identity was cleared, and the given deposit repatriated from the
+ * main identity account to the sub-identity account.
+ */
+export interface IdentityEvent_SubIdentityRevoked {
+    __kind: 'SubIdentityRevoked'
+    sub: Uint8Array
+    main: Uint8Array
+    deposit: bigint
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type MultisigEvent = MultisigEvent_NewMultisig | MultisigEvent_MultisigApproval | MultisigEvent_MultisigExecuted | MultisigEvent_MultisigCancelled
+
+/**
+ * A new multisig operation has begun.
+ */
+export interface MultisigEvent_NewMultisig {
+    __kind: 'NewMultisig'
+    approving: Uint8Array
+    multisig: Uint8Array
+    callHash: Uint8Array
+}
+
+/**
+ * A multisig operation has been approved by someone.
+ */
+export interface MultisigEvent_MultisigApproval {
+    __kind: 'MultisigApproval'
+    approving: Uint8Array
+    timepoint: Timepoint
+    multisig: Uint8Array
+    callHash: Uint8Array
+}
+
+/**
+ * A multisig operation has been executed.
+ */
+export interface MultisigEvent_MultisigExecuted {
+    __kind: 'MultisigExecuted'
+    approving: Uint8Array
+    timepoint: Timepoint
+    multisig: Uint8Array
+    callHash: Uint8Array
+    result: Type_30
+}
+
+/**
+ * A multisig operation has been cancelled.
+ */
+export interface MultisigEvent_MultisigCancelled {
+    __kind: 'MultisigCancelled'
+    cancelling: Uint8Array
+    timepoint: Timepoint
+    multisig: Uint8Array
+    callHash: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type ParachainSystemEvent = ParachainSystemEvent_ValidationFunctionStored | ParachainSystemEvent_ValidationFunctionApplied | ParachainSystemEvent_ValidationFunctionDiscarded | ParachainSystemEvent_UpgradeAuthorized | ParachainSystemEvent_DownwardMessagesReceived | ParachainSystemEvent_DownwardMessagesProcessed
+
+/**
+ * The validation function has been scheduled to apply.
+ */
+export interface ParachainSystemEvent_ValidationFunctionStored {
+    __kind: 'ValidationFunctionStored'
+}
+
+/**
+ * The validation function was applied as of the contained relay chain block number.
+ */
+export interface ParachainSystemEvent_ValidationFunctionApplied {
+    __kind: 'ValidationFunctionApplied'
+    relayChainBlockNum: number
+}
+
+/**
+ * The relay-chain aborted the upgrade process.
+ */
+export interface ParachainSystemEvent_ValidationFunctionDiscarded {
+    __kind: 'ValidationFunctionDiscarded'
+}
+
+/**
+ * An upgrade has been authorized.
+ */
+export interface ParachainSystemEvent_UpgradeAuthorized {
+    __kind: 'UpgradeAuthorized'
+    codeHash: Uint8Array
+}
+
+/**
+ * Some downward messages have been received and will be processed.
+ */
+export interface ParachainSystemEvent_DownwardMessagesReceived {
+    __kind: 'DownwardMessagesReceived'
+    count: number
+}
+
+/**
+ * Downward messages were processed using the given weight.
+ */
+export interface ParachainSystemEvent_DownwardMessagesProcessed {
+    __kind: 'DownwardMessagesProcessed'
+    weightUsed: Weight
+    dmqHead: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type TransactionPaymentEvent = TransactionPaymentEvent_TransactionFeePaid
+
+/**
+ * A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,
+ * has been paid by `who`.
+ */
+export interface TransactionPaymentEvent_TransactionFeePaid {
+    __kind: 'TransactionFeePaid'
+    who: Uint8Array
+    actualFee: bigint
+    tip: bigint
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type BalancesEvent = BalancesEvent_Endowed | BalancesEvent_DustLost | BalancesEvent_Transfer | BalancesEvent_BalanceSet | BalancesEvent_Reserved | BalancesEvent_Unreserved | BalancesEvent_ReserveRepatriated | BalancesEvent_Deposit | BalancesEvent_Withdraw | BalancesEvent_Slashed
+
+/**
+ * An account was created with some free balance.
+ */
+export interface BalancesEvent_Endowed {
+    __kind: 'Endowed'
+    account: Uint8Array
+    freeBalance: bigint
+}
+
+/**
+ * An account was removed whose balance was non-zero but below ExistentialDeposit,
+ * resulting in an outright loss.
+ */
+export interface BalancesEvent_DustLost {
+    __kind: 'DustLost'
+    account: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Transfer succeeded.
+ */
+export interface BalancesEvent_Transfer {
+    __kind: 'Transfer'
+    from: Uint8Array
+    to: Uint8Array
+    amount: bigint
+}
+
+/**
+ * A balance was set by root.
+ */
+export interface BalancesEvent_BalanceSet {
+    __kind: 'BalanceSet'
+    who: Uint8Array
+    free: bigint
+    reserved: bigint
+}
+
+/**
+ * Some balance was reserved (moved from free to reserved).
+ */
+export interface BalancesEvent_Reserved {
+    __kind: 'Reserved'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some balance was unreserved (moved from reserved to free).
+ */
+export interface BalancesEvent_Unreserved {
+    __kind: 'Unreserved'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some balance was moved from the reserve of the first account to the second account.
+ * Final argument indicates the destination balance type.
+ */
+export interface BalancesEvent_ReserveRepatriated {
+    __kind: 'ReserveRepatriated'
+    from: Uint8Array
+    to: Uint8Array
+    amount: bigint
+    destinationStatus: BalanceStatus
+}
+
+/**
+ * Some amount was deposited (e.g. for transaction fees).
+ */
+export interface BalancesEvent_Deposit {
+    __kind: 'Deposit'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some amount was withdrawn from the account (e.g. for transaction fees).
+ */
+export interface BalancesEvent_Withdraw {
+    __kind: 'Withdraw'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some amount was removed from the account (e.g. for misbehavior).
+ */
+export interface BalancesEvent_Slashed {
+    __kind: 'Slashed'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type VestingEvent = VestingEvent_VestingUpdated | VestingEvent_VestingCompleted
+
+/**
+ * The amount vested has been updated. This could indicate a change in funds available.
+ * The balance given is the amount which is left unvested (and thus locked).
+ */
+export interface VestingEvent_VestingUpdated {
+    __kind: 'VestingUpdated'
+    account: Uint8Array
+    unvested: bigint
+}
+
+/**
+ * An \[account\] has become fully vested.
+ */
+export interface VestingEvent_VestingCompleted {
+    __kind: 'VestingCompleted'
+    account: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type DappsStakingEvent = DappsStakingEvent_BondAndStake | DappsStakingEvent_UnbondAndUnstake | DappsStakingEvent_WithdrawFromUnregistered | DappsStakingEvent_Withdrawn | DappsStakingEvent_NewContract | DappsStakingEvent_ContractRemoved | DappsStakingEvent_NewDappStakingEra | DappsStakingEvent_Reward | DappsStakingEvent_MaintenanceMode | DappsStakingEvent_RewardDestination | DappsStakingEvent_NominationTransfer | DappsStakingEvent_StaleRewardBurned
+
+/**
+ * Account has bonded and staked funds on a smart contract.
+ */
+export interface DappsStakingEvent_BondAndStake {
+    __kind: 'BondAndStake'
+    value: [Uint8Array, SmartContract, bigint]
+}
+
+/**
+ * Account has unbonded & unstaked some funds. Unbonding process begins.
+ */
+export interface DappsStakingEvent_UnbondAndUnstake {
+    __kind: 'UnbondAndUnstake'
+    value: [Uint8Array, SmartContract, bigint]
+}
+
+/**
+ * Account has fully withdrawn all staked amount from an unregistered contract.
+ */
+export interface DappsStakingEvent_WithdrawFromUnregistered {
+    __kind: 'WithdrawFromUnregistered'
+    value: [Uint8Array, SmartContract, bigint]
+}
+
+/**
+ * Account has withdrawn unbonded funds.
+ */
+export interface DappsStakingEvent_Withdrawn {
+    __kind: 'Withdrawn'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * New contract added for staking.
+ */
+export interface DappsStakingEvent_NewContract {
+    __kind: 'NewContract'
+    value: [Uint8Array, SmartContract]
+}
+
+/**
+ * Contract removed from dapps staking.
+ */
+export interface DappsStakingEvent_ContractRemoved {
+    __kind: 'ContractRemoved'
+    value: [Uint8Array, SmartContract]
+}
+
+/**
+ * New dapps staking era. Distribute era rewards to contracts.
+ */
+export interface DappsStakingEvent_NewDappStakingEra {
+    __kind: 'NewDappStakingEra'
+    value: number
+}
+
+/**
+ * Reward paid to staker or developer.
+ */
+export interface DappsStakingEvent_Reward {
+    __kind: 'Reward'
+    value: [Uint8Array, SmartContract, number, bigint]
+}
+
+/**
+ * Maintenance mode has been enabled or disabled
+ */
+export interface DappsStakingEvent_MaintenanceMode {
+    __kind: 'MaintenanceMode'
+    value: boolean
+}
+
+/**
+ * Reward handling modified
+ */
+export interface DappsStakingEvent_RewardDestination {
+    __kind: 'RewardDestination'
+    value: [Uint8Array, RewardDestination]
+}
+
+/**
+ * Nomination part has been transfered from one contract to another.
+ * 
+ * \(staker account, origin smart contract, amount, target smart contract\)
+ */
+export interface DappsStakingEvent_NominationTransfer {
+    __kind: 'NominationTransfer'
+    value: [Uint8Array, SmartContract, bigint, SmartContract]
+}
+
+/**
+ * Stale, unclaimed reward from an unregistered contract has been burned.
+ * 
+ * \(developer account, smart contract, era, amount burned\)
+ */
+export interface DappsStakingEvent_StaleRewardBurned {
+    __kind: 'StaleRewardBurned'
+    value: [Uint8Array, SmartContract, number, bigint]
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type BlockRewardEvent = BlockRewardEvent_DistributionConfigurationChanged
+
+/**
+ * Distribution configuration has been updated.
+ */
+export interface BlockRewardEvent_DistributionConfigurationChanged {
+    __kind: 'DistributionConfigurationChanged'
+    value: RewardDistributionConfig
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type AssetsEvent = AssetsEvent_Created | AssetsEvent_Issued | AssetsEvent_Transferred | AssetsEvent_Burned | AssetsEvent_TeamChanged | AssetsEvent_OwnerChanged | AssetsEvent_Frozen | AssetsEvent_Thawed | AssetsEvent_AssetFrozen | AssetsEvent_AssetThawed | AssetsEvent_AccountsDestroyed | AssetsEvent_ApprovalsDestroyed | AssetsEvent_DestructionStarted | AssetsEvent_Destroyed | AssetsEvent_ForceCreated | AssetsEvent_MetadataSet | AssetsEvent_MetadataCleared | AssetsEvent_ApprovedTransfer | AssetsEvent_ApprovalCancelled | AssetsEvent_TransferredApproved | AssetsEvent_AssetStatusChanged
+
+/**
+ * Some asset class was created.
+ */
+export interface AssetsEvent_Created {
+    __kind: 'Created'
+    assetId: bigint
+    creator: Uint8Array
+    owner: Uint8Array
+}
+
+/**
+ * Some assets were issued.
+ */
+export interface AssetsEvent_Issued {
+    __kind: 'Issued'
+    assetId: bigint
+    owner: Uint8Array
+    totalSupply: bigint
+}
+
+/**
+ * Some assets were transferred.
+ */
+export interface AssetsEvent_Transferred {
+    __kind: 'Transferred'
+    assetId: bigint
+    from: Uint8Array
+    to: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some assets were destroyed.
+ */
+export interface AssetsEvent_Burned {
+    __kind: 'Burned'
+    assetId: bigint
+    owner: Uint8Array
+    balance: bigint
+}
+
+/**
+ * The management team changed.
+ */
+export interface AssetsEvent_TeamChanged {
+    __kind: 'TeamChanged'
+    assetId: bigint
+    issuer: Uint8Array
+    admin: Uint8Array
+    freezer: Uint8Array
+}
+
+/**
+ * The owner changed.
+ */
+export interface AssetsEvent_OwnerChanged {
+    __kind: 'OwnerChanged'
+    assetId: bigint
+    owner: Uint8Array
+}
+
+/**
+ * Some account `who` was frozen.
+ */
+export interface AssetsEvent_Frozen {
+    __kind: 'Frozen'
+    assetId: bigint
+    who: Uint8Array
+}
+
+/**
+ * Some account `who` was thawed.
+ */
+export interface AssetsEvent_Thawed {
+    __kind: 'Thawed'
+    assetId: bigint
+    who: Uint8Array
+}
+
+/**
+ * Some asset `asset_id` was frozen.
+ */
+export interface AssetsEvent_AssetFrozen {
+    __kind: 'AssetFrozen'
+    assetId: bigint
+}
+
+/**
+ * Some asset `asset_id` was thawed.
+ */
+export interface AssetsEvent_AssetThawed {
+    __kind: 'AssetThawed'
+    assetId: bigint
+}
+
+/**
+ * Accounts were destroyed for given asset.
+ */
+export interface AssetsEvent_AccountsDestroyed {
+    __kind: 'AccountsDestroyed'
+    assetId: bigint
+    accountsDestroyed: number
+    accountsRemaining: number
+}
+
+/**
+ * Approvals were destroyed for given asset.
+ */
+export interface AssetsEvent_ApprovalsDestroyed {
+    __kind: 'ApprovalsDestroyed'
+    assetId: bigint
+    approvalsDestroyed: number
+    approvalsRemaining: number
+}
+
+/**
+ * An asset class is in the process of being destroyed.
+ */
+export interface AssetsEvent_DestructionStarted {
+    __kind: 'DestructionStarted'
+    assetId: bigint
+}
+
+/**
+ * An asset class was destroyed.
+ */
+export interface AssetsEvent_Destroyed {
+    __kind: 'Destroyed'
+    assetId: bigint
+}
+
+/**
+ * Some asset class was force-created.
+ */
+export interface AssetsEvent_ForceCreated {
+    __kind: 'ForceCreated'
+    assetId: bigint
+    owner: Uint8Array
+}
+
+/**
+ * New metadata has been set for an asset.
+ */
+export interface AssetsEvent_MetadataSet {
+    __kind: 'MetadataSet'
+    assetId: bigint
+    name: Uint8Array
+    symbol: Uint8Array
+    decimals: number
+    isFrozen: boolean
+}
+
+/**
+ * Metadata has been cleared for an asset.
+ */
+export interface AssetsEvent_MetadataCleared {
+    __kind: 'MetadataCleared'
+    assetId: bigint
+}
+
+/**
+ * (Additional) funds have been approved for transfer to a destination account.
+ */
+export interface AssetsEvent_ApprovedTransfer {
+    __kind: 'ApprovedTransfer'
+    assetId: bigint
+    source: Uint8Array
+    delegate: Uint8Array
+    amount: bigint
+}
+
+/**
+ * An approval for account `delegate` was cancelled by `owner`.
+ */
+export interface AssetsEvent_ApprovalCancelled {
+    __kind: 'ApprovalCancelled'
+    assetId: bigint
+    owner: Uint8Array
+    delegate: Uint8Array
+}
+
+/**
+ * An `amount` was transferred in its entirety from `owner` to `destination` by
+ * the approved `delegate`.
+ */
+export interface AssetsEvent_TransferredApproved {
+    __kind: 'TransferredApproved'
+    assetId: bigint
+    owner: Uint8Array
+    delegate: Uint8Array
+    destination: Uint8Array
+    amount: bigint
+}
+
+/**
+ * An asset has had its attributes changed by the `Force` origin.
+ */
+export interface AssetsEvent_AssetStatusChanged {
+    __kind: 'AssetStatusChanged'
+    assetId: bigint
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type CollatorSelectionEvent = CollatorSelectionEvent_NewInvulnerables | CollatorSelectionEvent_NewDesiredCandidates | CollatorSelectionEvent_NewCandidacyBond | CollatorSelectionEvent_CandidateAdded | CollatorSelectionEvent_CandidateRemoved | CollatorSelectionEvent_CandidateSlashed
+
+export interface CollatorSelectionEvent_NewInvulnerables {
+    __kind: 'NewInvulnerables'
+    value: Uint8Array[]
+}
+
+export interface CollatorSelectionEvent_NewDesiredCandidates {
+    __kind: 'NewDesiredCandidates'
+    value: number
+}
+
+export interface CollatorSelectionEvent_NewCandidacyBond {
+    __kind: 'NewCandidacyBond'
+    value: bigint
+}
+
+export interface CollatorSelectionEvent_CandidateAdded {
+    __kind: 'CandidateAdded'
+    value: [Uint8Array, bigint]
+}
+
+export interface CollatorSelectionEvent_CandidateRemoved {
+    __kind: 'CandidateRemoved'
+    value: Uint8Array
+}
+
+export interface CollatorSelectionEvent_CandidateSlashed {
+    __kind: 'CandidateSlashed'
+    value: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type SessionEvent = SessionEvent_NewSession
+
+/**
+ * New session has happened. Note that the argument is the session index, not the
+ * block number as the type might suggest.
+ */
+export interface SessionEvent_NewSession {
+    __kind: 'NewSession'
+    sessionIndex: number
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type XcmpQueueEvent = XcmpQueueEvent_Success | XcmpQueueEvent_Fail | XcmpQueueEvent_BadVersion | XcmpQueueEvent_BadFormat | XcmpQueueEvent_UpwardMessageSent | XcmpQueueEvent_XcmpMessageSent | XcmpQueueEvent_OverweightEnqueued | XcmpQueueEvent_OverweightServiced
+
+/**
+ * Some XCM was executed ok.
+ */
+export interface XcmpQueueEvent_Success {
+    __kind: 'Success'
+    messageHash: (Uint8Array | undefined)
+    weight: Weight
+}
+
+/**
+ * Some XCM failed.
+ */
+export interface XcmpQueueEvent_Fail {
+    __kind: 'Fail'
+    messageHash: (Uint8Array | undefined)
+    error: V2Error
+    weight: Weight
+}
+
+/**
+ * Bad XCM version used.
+ */
+export interface XcmpQueueEvent_BadVersion {
+    __kind: 'BadVersion'
+    messageHash: (Uint8Array | undefined)
+}
+
+/**
+ * Bad XCM format used.
+ */
+export interface XcmpQueueEvent_BadFormat {
+    __kind: 'BadFormat'
+    messageHash: (Uint8Array | undefined)
+}
+
+/**
+ * An upward message was sent to the relay chain.
+ */
+export interface XcmpQueueEvent_UpwardMessageSent {
+    __kind: 'UpwardMessageSent'
+    messageHash: (Uint8Array | undefined)
+}
+
+/**
+ * An HRMP message was sent to a sibling parachain.
+ */
+export interface XcmpQueueEvent_XcmpMessageSent {
+    __kind: 'XcmpMessageSent'
+    messageHash: (Uint8Array | undefined)
+}
+
+/**
+ * An XCM exceeded the individual message weight budget.
+ */
+export interface XcmpQueueEvent_OverweightEnqueued {
+    __kind: 'OverweightEnqueued'
+    sender: number
+    sentAt: number
+    index: bigint
+    required: Weight
+}
+
+/**
+ * An XCM from the overweight queue was executed with the given actual weight used.
+ */
+export interface XcmpQueueEvent_OverweightServiced {
+    __kind: 'OverweightServiced'
+    index: bigint
+    used: Weight
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type PolkadotXcmEvent = PolkadotXcmEvent_Attempted | PolkadotXcmEvent_Sent | PolkadotXcmEvent_UnexpectedResponse | PolkadotXcmEvent_ResponseReady | PolkadotXcmEvent_Notified | PolkadotXcmEvent_NotifyOverweight | PolkadotXcmEvent_NotifyDispatchError | PolkadotXcmEvent_NotifyDecodeFailed | PolkadotXcmEvent_InvalidResponder | PolkadotXcmEvent_InvalidResponderVersion | PolkadotXcmEvent_ResponseTaken | PolkadotXcmEvent_AssetsTrapped | PolkadotXcmEvent_VersionChangeNotified | PolkadotXcmEvent_SupportedVersionChanged | PolkadotXcmEvent_NotifyTargetSendFail | PolkadotXcmEvent_NotifyTargetMigrationFail
+
+/**
+ * Execution of an XCM message was attempted.
+ * 
+ * \[ outcome \]
+ */
+export interface PolkadotXcmEvent_Attempted {
+    __kind: 'Attempted'
+    value: V2Outcome
+}
+
+/**
+ * A XCM message was sent.
+ * 
+ * \[ origin, destination, message \]
+ */
+export interface PolkadotXcmEvent_Sent {
+    __kind: 'Sent'
+    value: [V1MultiLocation, V1MultiLocation, V2Instruction[]]
+}
+
+/**
+ * Query response received which does not match a registered query. This may be because a
+ * matching query was never registered, it may be because it is a duplicate response, or
+ * because the query timed out.
+ * 
+ * \[ origin location, id \]
+ */
+export interface PolkadotXcmEvent_UnexpectedResponse {
+    __kind: 'UnexpectedResponse'
+    value: [V1MultiLocation, bigint]
+}
+
+/**
+ * Query response has been received and is ready for taking with `take_response`. There is
+ * no registered notification call.
+ * 
+ * \[ id, response \]
+ */
+export interface PolkadotXcmEvent_ResponseReady {
+    __kind: 'ResponseReady'
+    value: [bigint, V2Response]
+}
+
+/**
+ * Query response has been received and query is removed. The registered notification has
+ * been dispatched and executed successfully.
+ * 
+ * \[ id, pallet index, call index \]
+ */
+export interface PolkadotXcmEvent_Notified {
+    __kind: 'Notified'
+    value: [bigint, number, number]
+}
+
+/**
+ * Query response has been received and query is removed. The registered notification could
+ * not be dispatched because the dispatch weight is greater than the maximum weight
+ * originally budgeted by this runtime for the query result.
+ * 
+ * \[ id, pallet index, call index, actual weight, max budgeted weight \]
+ */
+export interface PolkadotXcmEvent_NotifyOverweight {
+    __kind: 'NotifyOverweight'
+    value: [bigint, number, number, Weight, Weight]
+}
+
+/**
+ * Query response has been received and query is removed. There was a general error with
+ * dispatching the notification call.
+ * 
+ * \[ id, pallet index, call index \]
+ */
+export interface PolkadotXcmEvent_NotifyDispatchError {
+    __kind: 'NotifyDispatchError'
+    value: [bigint, number, number]
+}
+
+/**
+ * Query response has been received and query is removed. The dispatch was unable to be
+ * decoded into a `Call`; this might be due to dispatch function having a signature which
+ * is not `(origin, QueryId, Response)`.
+ * 
+ * \[ id, pallet index, call index \]
+ */
+export interface PolkadotXcmEvent_NotifyDecodeFailed {
+    __kind: 'NotifyDecodeFailed'
+    value: [bigint, number, number]
+}
+
+/**
+ * Expected query response has been received but the origin location of the response does
+ * not match that expected. The query remains registered for a later, valid, response to
+ * be received and acted upon.
+ * 
+ * \[ origin location, id, expected location \]
+ */
+export interface PolkadotXcmEvent_InvalidResponder {
+    __kind: 'InvalidResponder'
+    value: [V1MultiLocation, bigint, (V1MultiLocation | undefined)]
+}
+
+/**
+ * Expected query response has been received but the expected origin location placed in
+ * storage by this runtime previously cannot be decoded. The query remains registered.
+ * 
+ * This is unexpected (since a location placed in storage in a previously executing
+ * runtime should be readable prior to query timeout) and dangerous since the possibly
+ * valid response will be dropped. Manual governance intervention is probably going to be
+ * needed.
+ * 
+ * \[ origin location, id \]
+ */
+export interface PolkadotXcmEvent_InvalidResponderVersion {
+    __kind: 'InvalidResponderVersion'
+    value: [V1MultiLocation, bigint]
+}
+
+/**
+ * Received query response has been read and removed.
+ * 
+ * \[ id \]
+ */
+export interface PolkadotXcmEvent_ResponseTaken {
+    __kind: 'ResponseTaken'
+    value: bigint
+}
+
+/**
+ * Some assets have been placed in an asset trap.
+ * 
+ * \[ hash, origin, assets \]
+ */
+export interface PolkadotXcmEvent_AssetsTrapped {
+    __kind: 'AssetsTrapped'
+    value: [Uint8Array, V1MultiLocation, VersionedMultiAssets]
+}
+
+/**
+ * An XCM version change notification message has been attempted to be sent.
+ * 
+ * \[ destination, result \]
+ */
+export interface PolkadotXcmEvent_VersionChangeNotified {
+    __kind: 'VersionChangeNotified'
+    value: [V1MultiLocation, number]
+}
+
+/**
+ * The supported version of a location has been changed. This might be through an
+ * automatic notification or a manual intervention.
+ * 
+ * \[ location, XCM version \]
+ */
+export interface PolkadotXcmEvent_SupportedVersionChanged {
+    __kind: 'SupportedVersionChanged'
+    value: [V1MultiLocation, number]
+}
+
+/**
+ * A given location which had a version change subscription was dropped owing to an error
+ * sending the notification to it.
+ * 
+ * \[ location, query ID, error \]
+ */
+export interface PolkadotXcmEvent_NotifyTargetSendFail {
+    __kind: 'NotifyTargetSendFail'
+    value: [V1MultiLocation, bigint, V2Error]
+}
+
+/**
+ * A given location which had a version change subscription was dropped owing to an error
+ * migrating the location to our new XCM format.
+ * 
+ * \[ location, query ID \]
+ */
+export interface PolkadotXcmEvent_NotifyTargetMigrationFail {
+    __kind: 'NotifyTargetMigrationFail'
+    value: [VersionedMultiLocation, bigint]
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type CumulusXcmEvent = CumulusXcmEvent_InvalidFormat | CumulusXcmEvent_UnsupportedVersion | CumulusXcmEvent_ExecutedDownward
+
+/**
+ * Downward message is invalid XCM.
+ * \[ id \]
+ */
+export interface CumulusXcmEvent_InvalidFormat {
+    __kind: 'InvalidFormat'
+    value: Uint8Array
+}
+
+/**
+ * Downward message is unsupported version of XCM.
+ * \[ id \]
+ */
+export interface CumulusXcmEvent_UnsupportedVersion {
+    __kind: 'UnsupportedVersion'
+    value: Uint8Array
+}
+
+/**
+ * Downward message executed with the given outcome.
+ * \[ id, outcome \]
+ */
+export interface CumulusXcmEvent_ExecutedDownward {
+    __kind: 'ExecutedDownward'
+    value: [Uint8Array, V2Outcome]
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type DmpQueueEvent = DmpQueueEvent_InvalidFormat | DmpQueueEvent_UnsupportedVersion | DmpQueueEvent_ExecutedDownward | DmpQueueEvent_WeightExhausted | DmpQueueEvent_OverweightEnqueued | DmpQueueEvent_OverweightServiced
+
+/**
+ * Downward message is invalid XCM.
+ */
+export interface DmpQueueEvent_InvalidFormat {
+    __kind: 'InvalidFormat'
+    messageId: Uint8Array
+}
+
+/**
+ * Downward message is unsupported version of XCM.
+ */
+export interface DmpQueueEvent_UnsupportedVersion {
+    __kind: 'UnsupportedVersion'
+    messageId: Uint8Array
+}
+
+/**
+ * Downward message executed with the given outcome.
+ */
+export interface DmpQueueEvent_ExecutedDownward {
+    __kind: 'ExecutedDownward'
+    messageId: Uint8Array
+    outcome: V2Outcome
+}
+
+/**
+ * The weight limit for handling downward messages was reached.
+ */
+export interface DmpQueueEvent_WeightExhausted {
+    __kind: 'WeightExhausted'
+    messageId: Uint8Array
+    remainingWeight: Weight
+    requiredWeight: Weight
+}
+
+/**
+ * Downward message is overweight and was placed in the overweight queue.
+ */
+export interface DmpQueueEvent_OverweightEnqueued {
+    __kind: 'OverweightEnqueued'
+    messageId: Uint8Array
+    overweightIndex: bigint
+    requiredWeight: Weight
+}
+
+/**
+ * Downward message from the overweight queue was executed.
+ */
+export interface DmpQueueEvent_OverweightServiced {
+    __kind: 'OverweightServiced'
+    overweightIndex: bigint
+    weightUsed: Weight
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type XcAssetConfigEvent = XcAssetConfigEvent_AssetRegistered | XcAssetConfigEvent_UnitsPerSecondChanged | XcAssetConfigEvent_AssetLocationChanged | XcAssetConfigEvent_SupportedAssetRemoved | XcAssetConfigEvent_AssetRemoved
+
+/**
+ * Registed mapping between asset type and asset Id.
+ */
+export interface XcAssetConfigEvent_AssetRegistered {
+    __kind: 'AssetRegistered'
+    assetLocation: VersionedMultiLocation
+    assetId: bigint
+}
+
+/**
+ * Changed the amount of units we are charging per execution second for an asset
+ */
+export interface XcAssetConfigEvent_UnitsPerSecondChanged {
+    __kind: 'UnitsPerSecondChanged'
+    assetLocation: VersionedMultiLocation
+    unitsPerSecond: bigint
+}
+
+/**
+ * Changed the asset type mapping for a given asset id
+ */
+export interface XcAssetConfigEvent_AssetLocationChanged {
+    __kind: 'AssetLocationChanged'
+    previousAssetLocation: VersionedMultiLocation
+    assetId: bigint
+    newAssetLocation: VersionedMultiLocation
+}
+
+/**
+ * Supported asset type for fee payment removed.
+ */
+export interface XcAssetConfigEvent_SupportedAssetRemoved {
+    __kind: 'SupportedAssetRemoved'
+    assetLocation: VersionedMultiLocation
+}
+
+/**
+ * Removed all information related to an asset Id
+ */
+export interface XcAssetConfigEvent_AssetRemoved {
+    __kind: 'AssetRemoved'
+    assetLocation: VersionedMultiLocation
+    assetId: bigint
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type EVMEvent = EVMEvent_Log | EVMEvent_Created | EVMEvent_CreatedFailed | EVMEvent_Executed | EVMEvent_ExecutedFailed
+
+/**
+ * Ethereum events from contracts.
+ */
+export interface EVMEvent_Log {
+    __kind: 'Log'
+    log: Log
+}
+
+/**
+ * A contract has been created at given address.
+ */
+export interface EVMEvent_Created {
+    __kind: 'Created'
+    address: Uint8Array
+}
+
+/**
+ * A contract was attempted to be created, but the execution failed.
+ */
+export interface EVMEvent_CreatedFailed {
+    __kind: 'CreatedFailed'
+    address: Uint8Array
+}
+
+/**
+ * A contract has been executed successfully with states applied.
+ */
+export interface EVMEvent_Executed {
+    __kind: 'Executed'
+    address: Uint8Array
+}
+
+/**
+ * A contract has been executed with errors. States are reverted with only gas fees applied.
+ */
+export interface EVMEvent_ExecutedFailed {
+    __kind: 'ExecutedFailed'
+    address: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type EthereumEvent = EthereumEvent_Executed
+
+/**
+ * An ethereum transaction was successfully executed.
+ */
+export interface EthereumEvent_Executed {
+    __kind: 'Executed'
+    from: Uint8Array
+    to: Uint8Array
+    transactionHash: Uint8Array
+    exitReason: ExitReason
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type EthCallEvent = EthCallEvent_Executed
+
+/**
+ * A call just executed. \[result\]
+ */
+export interface EthCallEvent_Executed {
+    __kind: 'Executed'
+    value: [Uint8Array, Type_30]
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type BaseFeeEvent = BaseFeeEvent_NewBaseFeePerGas | BaseFeeEvent_BaseFeeOverflow | BaseFeeEvent_NewElasticity
+
+export interface BaseFeeEvent_NewBaseFeePerGas {
+    __kind: 'NewBaseFeePerGas'
+    fee: bigint
+}
+
+export interface BaseFeeEvent_BaseFeeOverflow {
+    __kind: 'BaseFeeOverflow'
+}
+
+export interface BaseFeeEvent_NewElasticity {
+    __kind: 'NewElasticity'
+    elasticity: number
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type ContractsEvent = ContractsEvent_Instantiated | ContractsEvent_Terminated | ContractsEvent_CodeStored | ContractsEvent_ContractEmitted | ContractsEvent_CodeRemoved | ContractsEvent_ContractCodeUpdated | ContractsEvent_Called | ContractsEvent_DelegateCalled
+
+/**
+ * Contract deployed by address at the specified address.
+ */
+export interface ContractsEvent_Instantiated {
+    __kind: 'Instantiated'
+    deployer: Uint8Array
+    contract: Uint8Array
+}
+
+/**
+ * Contract has been removed.
+ * 
+ * # Note
+ * 
+ * The only way for a contract to be removed and emitting this event is by calling
+ * `seal_terminate`.
+ */
+export interface ContractsEvent_Terminated {
+    __kind: 'Terminated'
+    /**
+     * The contract that was terminated.
+     */
+    contract: Uint8Array
+    /**
+     * The account that received the contracts remaining balance
+     */
+    beneficiary: Uint8Array
+}
+
+/**
+ * Code with the specified hash has been stored.
+ */
+export interface ContractsEvent_CodeStored {
+    __kind: 'CodeStored'
+    codeHash: Uint8Array
+}
+
+/**
+ * A custom event emitted by the contract.
+ */
+export interface ContractsEvent_ContractEmitted {
+    __kind: 'ContractEmitted'
+    /**
+     * The contract that emitted the event.
+     */
+    contract: Uint8Array
+    /**
+     * Data supplied by the contract. Metadata generated during contract compilation
+     * is needed to decode it.
+     */
+    data: Uint8Array
+}
+
+/**
+ * A code with the specified hash was removed.
+ */
+export interface ContractsEvent_CodeRemoved {
+    __kind: 'CodeRemoved'
+    codeHash: Uint8Array
+}
+
+/**
+ * A contract's code was updated.
+ */
+export interface ContractsEvent_ContractCodeUpdated {
+    __kind: 'ContractCodeUpdated'
+    /**
+     * The contract that has been updated.
+     */
+    contract: Uint8Array
+    /**
+     * New code hash that was set for the contract.
+     */
+    newCodeHash: Uint8Array
+    /**
+     * Previous code hash of the contract.
+     */
+    oldCodeHash: Uint8Array
+}
+
+/**
+ * A contract was called either by a plain account or another contract.
+ * 
+ * # Note
+ * 
+ * Please keep in mind that like all events this is only emitted for successful
+ * calls. This is because on failure all storage changes including events are
+ * rolled back.
+ */
+export interface ContractsEvent_Called {
+    __kind: 'Called'
+    /**
+     * The account that called the `contract`.
+     */
+    caller: Uint8Array
+    /**
+     * The contract that was called.
+     */
+    contract: Uint8Array
+}
+
+/**
+ * A contract delegate called a code hash.
+ * 
+ * # Note
+ * 
+ * Please keep in mind that like all events this is only emitted for successful
+ * calls. This is because on failure all storage changes including events are
+ * rolled back.
+ */
+export interface ContractsEvent_DelegateCalled {
+    __kind: 'DelegateCalled'
+    /**
+     * The contract that performed the delegate call and hence in whose context
+     * the `code_hash` is executed.
+     */
+    contract: Uint8Array
+    /**
+     * The code hash that was delegate called.
+     */
+    codeHash: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoAsDone
+
+/**
+ * A sudo just took place. \[result\]
+ */
+export interface SudoEvent_Sudid {
+    __kind: 'Sudid'
+    sudoResult: Type_30
+}
+
+/**
+ * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+ */
+export interface SudoEvent_KeyChanged {
+    __kind: 'KeyChanged'
+    oldSudoer: (Uint8Array | undefined)
+}
+
+/**
+ * A sudo just took place. \[result\]
+ */
+export interface SudoEvent_SudoAsDone {
+    __kind: 'SudoAsDone'
+    sudoResult: Type_30
 }
 
 export interface V2PersistedValidationData {
@@ -4287,6 +5997,265 @@ export interface EIP1559Transaction {
     s: Uint8Array
 }
 
+export interface DispatchInfo {
+    weight: Weight
+    class: DispatchClass
+    paysFee: Pays
+}
+
+export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional | DispatchError_Exhausted | DispatchError_Corruption | DispatchError_Unavailable
+
+export interface DispatchError_Other {
+    __kind: 'Other'
+}
+
+export interface DispatchError_CannotLookup {
+    __kind: 'CannotLookup'
+}
+
+export interface DispatchError_BadOrigin {
+    __kind: 'BadOrigin'
+}
+
+export interface DispatchError_Module {
+    __kind: 'Module'
+    value: ModuleError
+}
+
+export interface DispatchError_ConsumerRemaining {
+    __kind: 'ConsumerRemaining'
+}
+
+export interface DispatchError_NoProviders {
+    __kind: 'NoProviders'
+}
+
+export interface DispatchError_TooManyConsumers {
+    __kind: 'TooManyConsumers'
+}
+
+export interface DispatchError_Token {
+    __kind: 'Token'
+    value: TokenError
+}
+
+export interface DispatchError_Arithmetic {
+    __kind: 'Arithmetic'
+    value: ArithmeticError
+}
+
+export interface DispatchError_Transactional {
+    __kind: 'Transactional'
+    value: TransactionalError
+}
+
+export interface DispatchError_Exhausted {
+    __kind: 'Exhausted'
+}
+
+export interface DispatchError_Corruption {
+    __kind: 'Corruption'
+}
+
+export interface DispatchError_Unavailable {
+    __kind: 'Unavailable'
+}
+
+export type Type_30 = Type_30_Ok | Type_30_Err
+
+export interface Type_30_Ok {
+    __kind: 'Ok'
+}
+
+export interface Type_30_Err {
+    __kind: 'Err'
+    value: DispatchError
+}
+
+export type BalanceStatus = BalanceStatus_Free | BalanceStatus_Reserved
+
+export interface BalanceStatus_Free {
+    __kind: 'Free'
+}
+
+export interface BalanceStatus_Reserved {
+    __kind: 'Reserved'
+}
+
+export type V2Error = V2Error_Overflow | V2Error_Unimplemented | V2Error_UntrustedReserveLocation | V2Error_UntrustedTeleportLocation | V2Error_MultiLocationFull | V2Error_MultiLocationNotInvertible | V2Error_BadOrigin | V2Error_InvalidLocation | V2Error_AssetNotFound | V2Error_FailedToTransactAsset | V2Error_NotWithdrawable | V2Error_LocationCannotHold | V2Error_ExceedsMaxMessageSize | V2Error_DestinationUnsupported | V2Error_Transport | V2Error_Unroutable | V2Error_UnknownClaim | V2Error_FailedToDecode | V2Error_MaxWeightInvalid | V2Error_NotHoldingFees | V2Error_TooExpensive | V2Error_Trap | V2Error_UnhandledXcmVersion | V2Error_WeightLimitReached | V2Error_Barrier | V2Error_WeightNotComputable
+
+export interface V2Error_Overflow {
+    __kind: 'Overflow'
+}
+
+export interface V2Error_Unimplemented {
+    __kind: 'Unimplemented'
+}
+
+export interface V2Error_UntrustedReserveLocation {
+    __kind: 'UntrustedReserveLocation'
+}
+
+export interface V2Error_UntrustedTeleportLocation {
+    __kind: 'UntrustedTeleportLocation'
+}
+
+export interface V2Error_MultiLocationFull {
+    __kind: 'MultiLocationFull'
+}
+
+export interface V2Error_MultiLocationNotInvertible {
+    __kind: 'MultiLocationNotInvertible'
+}
+
+export interface V2Error_BadOrigin {
+    __kind: 'BadOrigin'
+}
+
+export interface V2Error_InvalidLocation {
+    __kind: 'InvalidLocation'
+}
+
+export interface V2Error_AssetNotFound {
+    __kind: 'AssetNotFound'
+}
+
+export interface V2Error_FailedToTransactAsset {
+    __kind: 'FailedToTransactAsset'
+}
+
+export interface V2Error_NotWithdrawable {
+    __kind: 'NotWithdrawable'
+}
+
+export interface V2Error_LocationCannotHold {
+    __kind: 'LocationCannotHold'
+}
+
+export interface V2Error_ExceedsMaxMessageSize {
+    __kind: 'ExceedsMaxMessageSize'
+}
+
+export interface V2Error_DestinationUnsupported {
+    __kind: 'DestinationUnsupported'
+}
+
+export interface V2Error_Transport {
+    __kind: 'Transport'
+}
+
+export interface V2Error_Unroutable {
+    __kind: 'Unroutable'
+}
+
+export interface V2Error_UnknownClaim {
+    __kind: 'UnknownClaim'
+}
+
+export interface V2Error_FailedToDecode {
+    __kind: 'FailedToDecode'
+}
+
+export interface V2Error_MaxWeightInvalid {
+    __kind: 'MaxWeightInvalid'
+}
+
+export interface V2Error_NotHoldingFees {
+    __kind: 'NotHoldingFees'
+}
+
+export interface V2Error_TooExpensive {
+    __kind: 'TooExpensive'
+}
+
+export interface V2Error_Trap {
+    __kind: 'Trap'
+    value: bigint
+}
+
+export interface V2Error_UnhandledXcmVersion {
+    __kind: 'UnhandledXcmVersion'
+}
+
+export interface V2Error_WeightLimitReached {
+    __kind: 'WeightLimitReached'
+    value: bigint
+}
+
+export interface V2Error_Barrier {
+    __kind: 'Barrier'
+}
+
+export interface V2Error_WeightNotComputable {
+    __kind: 'WeightNotComputable'
+}
+
+export type V2Outcome = V2Outcome_Complete | V2Outcome_Incomplete | V2Outcome_Error
+
+export interface V2Outcome_Complete {
+    __kind: 'Complete'
+    value: bigint
+}
+
+export interface V2Outcome_Incomplete {
+    __kind: 'Incomplete'
+    value: [bigint, V2Error]
+}
+
+export interface V2Outcome_Error {
+    __kind: 'Error'
+    value: V2Error
+}
+
+export type V2Response = V2Response_Null | V2Response_Assets | V2Response_ExecutionResult | V2Response_Version
+
+export interface V2Response_Null {
+    __kind: 'Null'
+}
+
+export interface V2Response_Assets {
+    __kind: 'Assets'
+    value: V1MultiAsset[]
+}
+
+export interface V2Response_ExecutionResult {
+    __kind: 'ExecutionResult'
+    value: ([number, V2Error] | undefined)
+}
+
+export interface V2Response_Version {
+    __kind: 'Version'
+    value: number
+}
+
+export interface Log {
+    address: Uint8Array
+    topics: Uint8Array[]
+    data: Uint8Array
+}
+
+export type ExitReason = ExitReason_Succeed | ExitReason_Error | ExitReason_Revert | ExitReason_Fatal
+
+export interface ExitReason_Succeed {
+    __kind: 'Succeed'
+    value: ExitSucceed
+}
+
+export interface ExitReason_Error {
+    __kind: 'Error'
+    value: ExitError
+}
+
+export interface ExitReason_Revert {
+    __kind: 'Revert'
+    value: ExitRevert
+}
+
+export interface ExitReason_Fatal {
+    __kind: 'Fatal'
+    value: ExitFatal
+}
+
 export type DigestItem = DigestItem_PreRuntime | DigestItem_Consensus | DigestItem_Seal | DigestItem_Other | DigestItem_RuntimeEnvironmentUpdated
 
 export interface DigestItem_PreRuntime {
@@ -4516,27 +6485,6 @@ export interface V1Response_Assets {
 }
 
 export interface V1Response_Version {
-    __kind: 'Version'
-    value: number
-}
-
-export type V2Response = V2Response_Null | V2Response_Assets | V2Response_ExecutionResult | V2Response_Version
-
-export interface V2Response_Null {
-    __kind: 'Null'
-}
-
-export interface V2Response_Assets {
-    __kind: 'Assets'
-    value: V1MultiAsset[]
-}
-
-export interface V2Response_ExecutionResult {
-    __kind: 'ExecutionResult'
-    value: ([number, V2Error] | undefined)
-}
-
-export interface V2Response_Version {
     __kind: 'Version'
     value: number
 }
@@ -4797,6 +6745,193 @@ export interface AccessListItem {
     storageKeys: Uint8Array[]
 }
 
+export type DispatchClass = DispatchClass_Normal | DispatchClass_Operational | DispatchClass_Mandatory
+
+export interface DispatchClass_Normal {
+    __kind: 'Normal'
+}
+
+export interface DispatchClass_Operational {
+    __kind: 'Operational'
+}
+
+export interface DispatchClass_Mandatory {
+    __kind: 'Mandatory'
+}
+
+export type Pays = Pays_Yes | Pays_No
+
+export interface Pays_Yes {
+    __kind: 'Yes'
+}
+
+export interface Pays_No {
+    __kind: 'No'
+}
+
+export interface ModuleError {
+    index: number
+    error: Uint8Array
+}
+
+export type TokenError = TokenError_NoFunds | TokenError_WouldDie | TokenError_BelowMinimum | TokenError_CannotCreate | TokenError_UnknownAsset | TokenError_Frozen | TokenError_Unsupported
+
+export interface TokenError_NoFunds {
+    __kind: 'NoFunds'
+}
+
+export interface TokenError_WouldDie {
+    __kind: 'WouldDie'
+}
+
+export interface TokenError_BelowMinimum {
+    __kind: 'BelowMinimum'
+}
+
+export interface TokenError_CannotCreate {
+    __kind: 'CannotCreate'
+}
+
+export interface TokenError_UnknownAsset {
+    __kind: 'UnknownAsset'
+}
+
+export interface TokenError_Frozen {
+    __kind: 'Frozen'
+}
+
+export interface TokenError_Unsupported {
+    __kind: 'Unsupported'
+}
+
+export type ArithmeticError = ArithmeticError_Underflow | ArithmeticError_Overflow | ArithmeticError_DivisionByZero
+
+export interface ArithmeticError_Underflow {
+    __kind: 'Underflow'
+}
+
+export interface ArithmeticError_Overflow {
+    __kind: 'Overflow'
+}
+
+export interface ArithmeticError_DivisionByZero {
+    __kind: 'DivisionByZero'
+}
+
+export type TransactionalError = TransactionalError_LimitReached | TransactionalError_NoLayer
+
+export interface TransactionalError_LimitReached {
+    __kind: 'LimitReached'
+}
+
+export interface TransactionalError_NoLayer {
+    __kind: 'NoLayer'
+}
+
+export type ExitSucceed = ExitSucceed_Stopped | ExitSucceed_Returned | ExitSucceed_Suicided
+
+export interface ExitSucceed_Stopped {
+    __kind: 'Stopped'
+}
+
+export interface ExitSucceed_Returned {
+    __kind: 'Returned'
+}
+
+export interface ExitSucceed_Suicided {
+    __kind: 'Suicided'
+}
+
+export type ExitError = ExitError_StackUnderflow | ExitError_StackOverflow | ExitError_InvalidJump | ExitError_InvalidRange | ExitError_DesignatedInvalid | ExitError_CallTooDeep | ExitError_CreateCollision | ExitError_CreateContractLimit | ExitError_InvalidCode | ExitError_OutOfOffset | ExitError_OutOfGas | ExitError_OutOfFund | ExitError_PCUnderflow | ExitError_CreateEmpty | ExitError_Other
+
+export interface ExitError_StackUnderflow {
+    __kind: 'StackUnderflow'
+}
+
+export interface ExitError_StackOverflow {
+    __kind: 'StackOverflow'
+}
+
+export interface ExitError_InvalidJump {
+    __kind: 'InvalidJump'
+}
+
+export interface ExitError_InvalidRange {
+    __kind: 'InvalidRange'
+}
+
+export interface ExitError_DesignatedInvalid {
+    __kind: 'DesignatedInvalid'
+}
+
+export interface ExitError_CallTooDeep {
+    __kind: 'CallTooDeep'
+}
+
+export interface ExitError_CreateCollision {
+    __kind: 'CreateCollision'
+}
+
+export interface ExitError_CreateContractLimit {
+    __kind: 'CreateContractLimit'
+}
+
+export interface ExitError_InvalidCode {
+    __kind: 'InvalidCode'
+    value: number
+}
+
+export interface ExitError_OutOfOffset {
+    __kind: 'OutOfOffset'
+}
+
+export interface ExitError_OutOfGas {
+    __kind: 'OutOfGas'
+}
+
+export interface ExitError_OutOfFund {
+    __kind: 'OutOfFund'
+}
+
+export interface ExitError_PCUnderflow {
+    __kind: 'PCUnderflow'
+}
+
+export interface ExitError_CreateEmpty {
+    __kind: 'CreateEmpty'
+}
+
+export interface ExitError_Other {
+    __kind: 'Other'
+    value: string
+}
+
+export type ExitRevert = ExitRevert_Reverted
+
+export interface ExitRevert_Reverted {
+    __kind: 'Reverted'
+}
+
+export type ExitFatal = ExitFatal_NotSupported | ExitFatal_UnhandledInterrupt | ExitFatal_CallErrorAsFatal | ExitFatal_Other
+
+export interface ExitFatal_NotSupported {
+    __kind: 'NotSupported'
+}
+
+export interface ExitFatal_UnhandledInterrupt {
+    __kind: 'UnhandledInterrupt'
+}
+
+export interface ExitFatal_CallErrorAsFatal {
+    __kind: 'CallErrorAsFatal'
+    value: ExitError
+}
+
+export interface ExitFatal_Other {
+    __kind: 'Other'
+    value: string
+}
+
 export type V0NetworkId = V0NetworkId_Any | V0NetworkId_Named | V0NetworkId_Polkadot | V0NetworkId_Kusama
 
 export interface V0NetworkId_Any {
@@ -4887,114 +7022,6 @@ export interface V0BodyPart_MoreThanProportion {
     __kind: 'MoreThanProportion'
     nom: number
     denom: number
-}
-
-export type V2Error = V2Error_Overflow | V2Error_Unimplemented | V2Error_UntrustedReserveLocation | V2Error_UntrustedTeleportLocation | V2Error_MultiLocationFull | V2Error_MultiLocationNotInvertible | V2Error_BadOrigin | V2Error_InvalidLocation | V2Error_AssetNotFound | V2Error_FailedToTransactAsset | V2Error_NotWithdrawable | V2Error_LocationCannotHold | V2Error_ExceedsMaxMessageSize | V2Error_DestinationUnsupported | V2Error_Transport | V2Error_Unroutable | V2Error_UnknownClaim | V2Error_FailedToDecode | V2Error_MaxWeightInvalid | V2Error_NotHoldingFees | V2Error_TooExpensive | V2Error_Trap | V2Error_UnhandledXcmVersion | V2Error_WeightLimitReached | V2Error_Barrier | V2Error_WeightNotComputable
-
-export interface V2Error_Overflow {
-    __kind: 'Overflow'
-}
-
-export interface V2Error_Unimplemented {
-    __kind: 'Unimplemented'
-}
-
-export interface V2Error_UntrustedReserveLocation {
-    __kind: 'UntrustedReserveLocation'
-}
-
-export interface V2Error_UntrustedTeleportLocation {
-    __kind: 'UntrustedTeleportLocation'
-}
-
-export interface V2Error_MultiLocationFull {
-    __kind: 'MultiLocationFull'
-}
-
-export interface V2Error_MultiLocationNotInvertible {
-    __kind: 'MultiLocationNotInvertible'
-}
-
-export interface V2Error_BadOrigin {
-    __kind: 'BadOrigin'
-}
-
-export interface V2Error_InvalidLocation {
-    __kind: 'InvalidLocation'
-}
-
-export interface V2Error_AssetNotFound {
-    __kind: 'AssetNotFound'
-}
-
-export interface V2Error_FailedToTransactAsset {
-    __kind: 'FailedToTransactAsset'
-}
-
-export interface V2Error_NotWithdrawable {
-    __kind: 'NotWithdrawable'
-}
-
-export interface V2Error_LocationCannotHold {
-    __kind: 'LocationCannotHold'
-}
-
-export interface V2Error_ExceedsMaxMessageSize {
-    __kind: 'ExceedsMaxMessageSize'
-}
-
-export interface V2Error_DestinationUnsupported {
-    __kind: 'DestinationUnsupported'
-}
-
-export interface V2Error_Transport {
-    __kind: 'Transport'
-}
-
-export interface V2Error_Unroutable {
-    __kind: 'Unroutable'
-}
-
-export interface V2Error_UnknownClaim {
-    __kind: 'UnknownClaim'
-}
-
-export interface V2Error_FailedToDecode {
-    __kind: 'FailedToDecode'
-}
-
-export interface V2Error_MaxWeightInvalid {
-    __kind: 'MaxWeightInvalid'
-}
-
-export interface V2Error_NotHoldingFees {
-    __kind: 'NotHoldingFees'
-}
-
-export interface V2Error_TooExpensive {
-    __kind: 'TooExpensive'
-}
-
-export interface V2Error_Trap {
-    __kind: 'Trap'
-    value: bigint
-}
-
-export interface V2Error_UnhandledXcmVersion {
-    __kind: 'UnhandledXcmVersion'
-}
-
-export interface V2Error_WeightLimitReached {
-    __kind: 'WeightLimitReached'
-    value: bigint
-}
-
-export interface V2Error_Barrier {
-    __kind: 'Barrier'
-}
-
-export interface V2Error_WeightNotComputable {
-    __kind: 'WeightNotComputable'
 }
 
 export type V1WildMultiAsset = V1WildMultiAsset_All | V1WildMultiAsset_AllOf

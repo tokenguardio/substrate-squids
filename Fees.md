@@ -85,3 +85,7 @@ So like in the formula above:
 ```
 actual_fee = inclusion_fee + tip;
 ```
+
+### References
+
+[Calculating Transaction Fees on Moonbeam](https://docs.moonbeam.network/builders/get-started/eth-compare/tx-fees/)

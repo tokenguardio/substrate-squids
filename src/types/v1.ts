@@ -476,6 +476,188 @@ export interface VestingInfo {
     startingBlock: number
 }
 
+export type UncleEntryItem = UncleEntryItem_InclusionHeight | UncleEntryItem_Uncle
+
+export interface UncleEntryItem_InclusionHeight {
+    __kind: 'InclusionHeight'
+    value: number
+}
+
+export interface UncleEntryItem_Uncle {
+    __kind: 'Uncle'
+    value: [Uint8Array, (Uint8Array | undefined)]
+}
+
+export interface AccountData {
+    free: bigint
+    reserved: bigint
+    miscFrozen: bigint
+    feeFrozen: bigint
+}
+
+export interface BalanceLock {
+    id: Uint8Array
+    amount: bigint
+    reasons: Reasons
+}
+
+export interface ReserveData {
+    id: Uint8Array
+    amount: bigint
+}
+
+export type Type_208 = Type_208_V1_0_0 | Type_208_V2_0_0
+
+export interface Type_208_V1_0_0 {
+    __kind: 'V1_0_0'
+}
+
+export interface Type_208_V2_0_0 {
+    __kind: 'V2_0_0'
+}
+
+export interface CandidateInfo {
+    who: Uint8Array
+    deposit: bigint
+}
+
+export interface Block {
+    header: Type_241
+    transactions: LegacyTransaction[]
+    ommers: Type_241[]
+}
+
+export interface Receipt {
+    stateRoot: Uint8Array
+    usedGas: bigint
+    logsBloom: Uint8Array
+    logs: Log[]
+}
+
+export interface TransactionStatus {
+    transactionHash: Uint8Array
+    transactionIndex: number
+    from: Uint8Array
+    to: (Uint8Array | undefined)
+    contractAddress: (Uint8Array | undefined)
+    logs: Log[]
+    logsBloom: Uint8Array
+}
+
+export interface Registration {
+    judgements: [number, Judgement][]
+    deposit: bigint
+    info: IdentityInfo
+}
+
+export interface RegistrarInfo {
+    account: Uint8Array
+    fee: bigint
+    fields: bigint
+}
+
+export interface Multisig {
+    when: Timepoint
+    deposit: bigint
+    depositor: Uint8Array
+    approvals: Uint8Array[]
+}
+
+export interface V1AbridgedHostConfiguration {
+    maxCodeSize: number
+    maxHeadDataSize: number
+    maxUpwardQueueCount: number
+    maxUpwardQueueSize: number
+    maxUpwardMessageSize: number
+    maxUpwardMessageNumPerCandidate: number
+    hrmpMaxMessageNumPerCandidate: number
+    validationUpgradeFrequency: number
+    validationUpgradeDelay: number
+}
+
+export interface OutboundHrmpMessage {
+    recipient: number
+    data: Uint8Array
+}
+
+export interface MessagingStateSnapshot {
+    dmqMqcHead: Uint8Array
+    relayDispatchQueueSize: [number, number]
+    ingressChannels: [number, V1AbridgedHrmpChannel][]
+    egressChannels: [number, V1AbridgedHrmpChannel][]
+}
+
+export interface V1PersistedValidationData {
+    parentHead: Uint8Array
+    relayParentNumber: number
+    relayParentStorageRoot: Uint8Array
+    maxPovSize: number
+}
+
+export interface AccountInfo {
+    nonce: number
+    consumers: number
+    providers: number
+    sufficients: number
+    data: AccountData
+}
+
+export interface PerDispatchClass {
+    normal: bigint
+    operational: bigint
+    mandatory: bigint
+}
+
+export interface Digest {
+    logs: DigestItem[]
+}
+
+export interface EventRecord {
+    phase: Phase
+    event: Event
+    topics: Uint8Array[]
+}
+
+export type Phase = Phase_ApplyExtrinsic | Phase_Finalization | Phase_Initialization
+
+export interface Phase_ApplyExtrinsic {
+    __kind: 'ApplyExtrinsic'
+    value: number
+}
+
+export interface Phase_Finalization {
+    __kind: 'Finalization'
+}
+
+export interface Phase_Initialization {
+    __kind: 'Initialization'
+}
+
+export interface LastRuntimeUpgradeInfo {
+    specVersion: number
+    specName: string
+}
+
+export type Releases = Releases_V1Ancient | Releases_V2
+
+export interface Releases_V1Ancient {
+    __kind: 'V1Ancient'
+}
+
+export interface Releases_V2 {
+    __kind: 'V2'
+}
+
+export type Type_212 = Type_212_V0 | Type_212_V1
+
+export interface Type_212_V0 {
+    __kind: 'V0'
+}
+
+export interface Type_212_V1 {
+    __kind: 'V1'
+}
+
 export type ExitSucceed = ExitSucceed_Stopped | ExitSucceed_Returned | ExitSucceed_Suicided
 
 export interface ExitSucceed_Stopped {
@@ -641,10 +823,6 @@ export interface Pays_Yes {
 
 export interface Pays_No {
     __kind: 'No'
-}
-
-export interface Digest {
-    logs: DigestItem[]
 }
 
 /**
@@ -1986,13 +2164,6 @@ export interface TransactionSignature {
     s: Uint8Array
 }
 
-export interface V1PersistedValidationData {
-    parentHead: Uint8Array
-    relayParentNumber: number
-    relayParentStorageRoot: Uint8Array
-    maxPovSize: number
-}
-
 export interface StorageProof {
     trieNodes: Uint8Array[]
 }
@@ -2005,6 +2176,47 @@ export interface InboundDownwardMessage {
 export interface InboundHrmpMessage {
     sentAt: number
     data: Uint8Array
+}
+
+export type Reasons = Reasons_Fee | Reasons_Misc | Reasons_All
+
+export interface Reasons_Fee {
+    __kind: 'Fee'
+}
+
+export interface Reasons_Misc {
+    __kind: 'Misc'
+}
+
+export interface Reasons_All {
+    __kind: 'All'
+}
+
+export interface Type_241 {
+    parentHash: Uint8Array
+    ommersHash: Uint8Array
+    beneficiary: Uint8Array
+    stateRoot: Uint8Array
+    transactionsRoot: Uint8Array
+    receiptsRoot: Uint8Array
+    logsBloom: Uint8Array
+    difficulty: bigint
+    number: bigint
+    gasLimit: bigint
+    gasUsed: bigint
+    timestamp: bigint
+    extraData: Uint8Array
+    mixHash: Uint8Array
+    nonce: Uint8Array
+}
+
+export interface V1AbridgedHrmpChannel {
+    maxCapacity: number
+    maxTotalSize: number
+    maxMessageSize: number
+    msgCount: number
+    totalSize: number
+    mqcHead: (Uint8Array | undefined)
 }
 
 export type DigestItem = DigestItem_ChangesTrieRoot | DigestItem_PreRuntime | DigestItem_Consensus | DigestItem_Seal | DigestItem_ChangesTrieSignal | DigestItem_Other | DigestItem_RuntimeEnvironmentUpdated
@@ -2043,9 +2255,620 @@ export interface DigestItem_RuntimeEnvironmentUpdated {
     __kind: 'RuntimeEnvironmentUpdated'
 }
 
+export type Event = Event_System | Event_Utility | Event_Identity | Event_Multisig | Event_ParachainSystem | Event_Balances | Event_Vesting | Event_CollatorSelection | Event_Session | Event_EVM | Event_Ethereum | Event_EthCall | Event_Sudo
+
+export interface Event_System {
+    __kind: 'System'
+    value: SystemEvent
+}
+
+export interface Event_Utility {
+    __kind: 'Utility'
+    value: UtilityEvent
+}
+
+export interface Event_Identity {
+    __kind: 'Identity'
+    value: IdentityEvent
+}
+
+export interface Event_Multisig {
+    __kind: 'Multisig'
+    value: MultisigEvent
+}
+
+export interface Event_ParachainSystem {
+    __kind: 'ParachainSystem'
+    value: ParachainSystemEvent
+}
+
+export interface Event_Balances {
+    __kind: 'Balances'
+    value: BalancesEvent
+}
+
+export interface Event_Vesting {
+    __kind: 'Vesting'
+    value: VestingEvent
+}
+
+export interface Event_CollatorSelection {
+    __kind: 'CollatorSelection'
+    value: CollatorSelectionEvent
+}
+
+export interface Event_Session {
+    __kind: 'Session'
+    value: SessionEvent
+}
+
+export interface Event_EVM {
+    __kind: 'EVM'
+    value: EVMEvent
+}
+
+export interface Event_Ethereum {
+    __kind: 'Ethereum'
+    value: EthereumEvent
+}
+
+export interface Event_EthCall {
+    __kind: 'EthCall'
+    value: EthCallEvent
+}
+
+export interface Event_Sudo {
+    __kind: 'Sudo'
+    value: SudoEvent
+}
+
 export type ChangesTrieSignal = ChangesTrieSignal_NewConfiguration
 
 export interface ChangesTrieSignal_NewConfiguration {
     __kind: 'NewConfiguration'
     value: (ChangesTrieConfiguration | undefined)
+}
+
+/**
+ * Event for the System pallet.
+ */
+export type SystemEvent = SystemEvent_ExtrinsicSuccess | SystemEvent_ExtrinsicFailed | SystemEvent_CodeUpdated | SystemEvent_NewAccount | SystemEvent_KilledAccount | SystemEvent_Remarked
+
+/**
+ * An extrinsic completed successfully. \[info\]
+ */
+export interface SystemEvent_ExtrinsicSuccess {
+    __kind: 'ExtrinsicSuccess'
+    value: DispatchInfo
+}
+
+/**
+ * An extrinsic failed. \[error, info\]
+ */
+export interface SystemEvent_ExtrinsicFailed {
+    __kind: 'ExtrinsicFailed'
+    value: [DispatchError, DispatchInfo]
+}
+
+/**
+ * `:code` was updated.
+ */
+export interface SystemEvent_CodeUpdated {
+    __kind: 'CodeUpdated'
+}
+
+/**
+ * A new \[account\] was created.
+ */
+export interface SystemEvent_NewAccount {
+    __kind: 'NewAccount'
+    value: Uint8Array
+}
+
+/**
+ * An \[account\] was reaped.
+ */
+export interface SystemEvent_KilledAccount {
+    __kind: 'KilledAccount'
+    value: Uint8Array
+}
+
+/**
+ * On on-chain remark happened. \[origin, remark_hash\]
+ */
+export interface SystemEvent_Remarked {
+    __kind: 'Remarked'
+    value: [Uint8Array, Uint8Array]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type UtilityEvent = UtilityEvent_BatchInterrupted | UtilityEvent_BatchCompleted | UtilityEvent_ItemCompleted
+
+/**
+ * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+ * well as the error. \[index, error\]
+ */
+export interface UtilityEvent_BatchInterrupted {
+    __kind: 'BatchInterrupted'
+    value: [number, DispatchError]
+}
+
+/**
+ * Batch of dispatches completed fully with no error.
+ */
+export interface UtilityEvent_BatchCompleted {
+    __kind: 'BatchCompleted'
+}
+
+/**
+ * A single item within a Batch of dispatches has completed with no error.
+ */
+export interface UtilityEvent_ItemCompleted {
+    __kind: 'ItemCompleted'
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type IdentityEvent = IdentityEvent_IdentitySet | IdentityEvent_IdentityCleared | IdentityEvent_IdentityKilled | IdentityEvent_JudgementRequested | IdentityEvent_JudgementUnrequested | IdentityEvent_JudgementGiven | IdentityEvent_RegistrarAdded | IdentityEvent_SubIdentityAdded | IdentityEvent_SubIdentityRemoved | IdentityEvent_SubIdentityRevoked
+
+/**
+ * A name was set or reset (which will remove all judgements). \[who\]
+ */
+export interface IdentityEvent_IdentitySet {
+    __kind: 'IdentitySet'
+    value: Uint8Array
+}
+
+/**
+ * A name was cleared, and the given balance returned. \[who, deposit\]
+ */
+export interface IdentityEvent_IdentityCleared {
+    __kind: 'IdentityCleared'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * A name was removed and the given balance slashed. \[who, deposit\]
+ */
+export interface IdentityEvent_IdentityKilled {
+    __kind: 'IdentityKilled'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * A judgement was asked from a registrar. \[who, registrar_index\]
+ */
+export interface IdentityEvent_JudgementRequested {
+    __kind: 'JudgementRequested'
+    value: [Uint8Array, number]
+}
+
+/**
+ * A judgement request was retracted. \[who, registrar_index\]
+ */
+export interface IdentityEvent_JudgementUnrequested {
+    __kind: 'JudgementUnrequested'
+    value: [Uint8Array, number]
+}
+
+/**
+ * A judgement was given by a registrar. \[target, registrar_index\]
+ */
+export interface IdentityEvent_JudgementGiven {
+    __kind: 'JudgementGiven'
+    value: [Uint8Array, number]
+}
+
+/**
+ * A registrar was added. \[registrar_index\]
+ */
+export interface IdentityEvent_RegistrarAdded {
+    __kind: 'RegistrarAdded'
+    value: number
+}
+
+/**
+ * A sub-identity was added to an identity and the deposit paid. \[sub, main, deposit\]
+ */
+export interface IdentityEvent_SubIdentityAdded {
+    __kind: 'SubIdentityAdded'
+    value: [Uint8Array, Uint8Array, bigint]
+}
+
+/**
+ * A sub-identity was removed from an identity and the deposit freed.
+ * \[sub, main, deposit\]
+ */
+export interface IdentityEvent_SubIdentityRemoved {
+    __kind: 'SubIdentityRemoved'
+    value: [Uint8Array, Uint8Array, bigint]
+}
+
+/**
+ * A sub-identity was cleared, and the given deposit repatriated from the
+ * main identity account to the sub-identity account. \[sub, main, deposit\]
+ */
+export interface IdentityEvent_SubIdentityRevoked {
+    __kind: 'SubIdentityRevoked'
+    value: [Uint8Array, Uint8Array, bigint]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type MultisigEvent = MultisigEvent_NewMultisig | MultisigEvent_MultisigApproval | MultisigEvent_MultisigExecuted | MultisigEvent_MultisigCancelled
+
+/**
+ * A new multisig operation has begun. \[approving, multisig, call_hash\]
+ */
+export interface MultisigEvent_NewMultisig {
+    __kind: 'NewMultisig'
+    value: [Uint8Array, Uint8Array, Uint8Array]
+}
+
+/**
+ * A multisig operation has been approved by someone.
+ * \[approving, timepoint, multisig, call_hash\]
+ */
+export interface MultisigEvent_MultisigApproval {
+    __kind: 'MultisigApproval'
+    value: [Uint8Array, Timepoint, Uint8Array, Uint8Array]
+}
+
+/**
+ * A multisig operation has been executed. \[approving, timepoint, multisig, call_hash\]
+ */
+export interface MultisigEvent_MultisigExecuted {
+    __kind: 'MultisigExecuted'
+    value: [Uint8Array, Timepoint, Uint8Array, Uint8Array, Type_32]
+}
+
+/**
+ * A multisig operation has been cancelled. \[cancelling, timepoint, multisig, call_hash\]
+ */
+export interface MultisigEvent_MultisigCancelled {
+    __kind: 'MultisigCancelled'
+    value: [Uint8Array, Timepoint, Uint8Array, Uint8Array]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type ParachainSystemEvent = ParachainSystemEvent_ValidationFunctionStored | ParachainSystemEvent_ValidationFunctionApplied | ParachainSystemEvent_UpgradeAuthorized | ParachainSystemEvent_DownwardMessagesReceived | ParachainSystemEvent_DownwardMessagesProcessed
+
+/**
+ * The validation function has been scheduled to apply as of the contained relay chain
+ * block number.
+ */
+export interface ParachainSystemEvent_ValidationFunctionStored {
+    __kind: 'ValidationFunctionStored'
+    value: number
+}
+
+/**
+ * The validation function was applied as of the contained relay chain block number.
+ */
+export interface ParachainSystemEvent_ValidationFunctionApplied {
+    __kind: 'ValidationFunctionApplied'
+    value: number
+}
+
+/**
+ * An upgrade has been authorized.
+ */
+export interface ParachainSystemEvent_UpgradeAuthorized {
+    __kind: 'UpgradeAuthorized'
+    value: Uint8Array
+}
+
+/**
+ * Some downward messages have been received and will be processed.
+ * \[ count \]
+ */
+export interface ParachainSystemEvent_DownwardMessagesReceived {
+    __kind: 'DownwardMessagesReceived'
+    value: number
+}
+
+/**
+ * Downward messages were processed using the given weight.
+ * \[ weight_used, result_mqc_head \]
+ */
+export interface ParachainSystemEvent_DownwardMessagesProcessed {
+    __kind: 'DownwardMessagesProcessed'
+    value: [bigint, Uint8Array]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type BalancesEvent = BalancesEvent_Endowed | BalancesEvent_DustLost | BalancesEvent_Transfer | BalancesEvent_BalanceSet | BalancesEvent_Deposit | BalancesEvent_Reserved | BalancesEvent_Unreserved | BalancesEvent_ReserveRepatriated
+
+/**
+ * An account was created with some free balance. \[account, free_balance\]
+ */
+export interface BalancesEvent_Endowed {
+    __kind: 'Endowed'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * An account was removed whose balance was non-zero but below ExistentialDeposit,
+ * resulting in an outright loss. \[account, balance\]
+ */
+export interface BalancesEvent_DustLost {
+    __kind: 'DustLost'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * Transfer succeeded. \[from, to, value\]
+ */
+export interface BalancesEvent_Transfer {
+    __kind: 'Transfer'
+    value: [Uint8Array, Uint8Array, bigint]
+}
+
+/**
+ * A balance was set by root. \[who, free, reserved\]
+ */
+export interface BalancesEvent_BalanceSet {
+    __kind: 'BalanceSet'
+    value: [Uint8Array, bigint, bigint]
+}
+
+/**
+ * Some amount was deposited (e.g. for transaction fees). \[who, deposit\]
+ */
+export interface BalancesEvent_Deposit {
+    __kind: 'Deposit'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * Some balance was reserved (moved from free to reserved). \[who, value\]
+ */
+export interface BalancesEvent_Reserved {
+    __kind: 'Reserved'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * Some balance was unreserved (moved from reserved to free). \[who, value\]
+ */
+export interface BalancesEvent_Unreserved {
+    __kind: 'Unreserved'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * Some balance was moved from the reserve of the first account to the second account.
+ * Final argument indicates the destination balance type.
+ * \[from, to, balance, destination_status\]
+ */
+export interface BalancesEvent_ReserveRepatriated {
+    __kind: 'ReserveRepatriated'
+    value: [Uint8Array, Uint8Array, bigint, BalanceStatus]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type VestingEvent = VestingEvent_VestingUpdated | VestingEvent_VestingCompleted
+
+/**
+ * The amount vested has been updated. This could indicate a change in funds available.
+ * The balance given is the amount which is left unvested (and thus locked).
+ * \[account, unvested\]
+ */
+export interface VestingEvent_VestingUpdated {
+    __kind: 'VestingUpdated'
+    value: [Uint8Array, bigint]
+}
+
+/**
+ * An \[account\] has become fully vested.
+ */
+export interface VestingEvent_VestingCompleted {
+    __kind: 'VestingCompleted'
+    value: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type CollatorSelectionEvent = CollatorSelectionEvent_NewInvulnerables | CollatorSelectionEvent_NewDesiredCandidates | CollatorSelectionEvent_NewCandidacyBond | CollatorSelectionEvent_CandidateAdded | CollatorSelectionEvent_CandidateRemoved
+
+export interface CollatorSelectionEvent_NewInvulnerables {
+    __kind: 'NewInvulnerables'
+    value: Uint8Array[]
+}
+
+export interface CollatorSelectionEvent_NewDesiredCandidates {
+    __kind: 'NewDesiredCandidates'
+    value: number
+}
+
+export interface CollatorSelectionEvent_NewCandidacyBond {
+    __kind: 'NewCandidacyBond'
+    value: bigint
+}
+
+export interface CollatorSelectionEvent_CandidateAdded {
+    __kind: 'CandidateAdded'
+    value: [Uint8Array, bigint]
+}
+
+export interface CollatorSelectionEvent_CandidateRemoved {
+    __kind: 'CandidateRemoved'
+    value: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type SessionEvent = SessionEvent_NewSession
+
+/**
+ * New session has happened. Note that the argument is the \[session_index\], not the
+ * block number as the type might suggest.
+ */
+export interface SessionEvent_NewSession {
+    __kind: 'NewSession'
+    value: number
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type EVMEvent = EVMEvent_Log | EVMEvent_Created | EVMEvent_CreatedFailed | EVMEvent_Executed | EVMEvent_ExecutedFailed | EVMEvent_BalanceDeposit | EVMEvent_BalanceWithdraw
+
+/**
+ * Ethereum events from contracts.
+ */
+export interface EVMEvent_Log {
+    __kind: 'Log'
+    value: Log
+}
+
+/**
+ * A contract has been created at given \[address\].
+ */
+export interface EVMEvent_Created {
+    __kind: 'Created'
+    value: Uint8Array
+}
+
+/**
+ * A \[contract\] was attempted to be created, but the execution failed.
+ */
+export interface EVMEvent_CreatedFailed {
+    __kind: 'CreatedFailed'
+    value: Uint8Array
+}
+
+/**
+ * A \[contract\] has been executed successfully with states applied.
+ */
+export interface EVMEvent_Executed {
+    __kind: 'Executed'
+    value: Uint8Array
+}
+
+/**
+ * A \[contract\] has been executed with errors. States are reverted with only gas fees applied.
+ */
+export interface EVMEvent_ExecutedFailed {
+    __kind: 'ExecutedFailed'
+    value: Uint8Array
+}
+
+/**
+ * A deposit has been made at a given address. \[sender, address, value\]
+ */
+export interface EVMEvent_BalanceDeposit {
+    __kind: 'BalanceDeposit'
+    value: [Uint8Array, Uint8Array, bigint]
+}
+
+/**
+ * A withdrawal has been made from a given address. \[sender, address, value\]
+ */
+export interface EVMEvent_BalanceWithdraw {
+    __kind: 'BalanceWithdraw'
+    value: [Uint8Array, Uint8Array, bigint]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type EthereumEvent = EthereumEvent_Executed
+
+/**
+ * An ethereum transaction was successfully executed. [from, to/contract_address, transaction_hash, exit_reason]
+ */
+export interface EthereumEvent_Executed {
+    __kind: 'Executed'
+    value: [Uint8Array, Uint8Array, Uint8Array, ExitReason]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type EthCallEvent = EthCallEvent_Executed
+
+/**
+ * A call just executed. \[result\]
+ */
+export interface EthCallEvent_Executed {
+    __kind: 'Executed'
+    value: [Uint8Array, Type_32]
+}
+
+/**
+ * 
+			The [event](https://substrate.dev/docs/en/knowledgebase/runtime/events) emitted
+			by this pallet.
+			
+ */
+export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoAsDone
+
+/**
+ * A sudo just took place. \[result\]
+ */
+export interface SudoEvent_Sudid {
+    __kind: 'Sudid'
+    value: Type_32
+}
+
+/**
+ * The \[sudoer\] just switched identity; the old key is supplied.
+ */
+export interface SudoEvent_KeyChanged {
+    __kind: 'KeyChanged'
+    value: Uint8Array
+}
+
+/**
+ * A sudo just took place. \[result\]
+ */
+export interface SudoEvent_SudoAsDone {
+    __kind: 'SudoAsDone'
+    value: Type_32
 }

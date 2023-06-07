@@ -3,5 +3,5 @@
   "specVersions": "https://astar.archive.subsquid.io/graphql",
   "events": true,
   "calls": true,
-  "storage": []
+  "storage": true
 }
