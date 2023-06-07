@@ -14,7 +14,7 @@ After runtime **v9** transaction can be of one of these types:
 
 > **_NOTE:_** Args format of `Ethereum.transact` call changes a bit after runtime **v9**
 
-All successfull extrinsics emit `System.ExtrinsicSuccess` event which holds information about extrinsic weight in its args
+All successful extrinsics emit `System.ExtrinsicSuccess` event which holds information about extrinsic weight in its args
 
 > **_NOTE:_** Args format of `System.ExtrinsicSuccess` event differs in different runtime versions
 
