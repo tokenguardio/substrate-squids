@@ -120,7 +120,7 @@ In other words, you can only authorize transactions within the chain side where 
   <img src="https://docs.moonbeam.network/images/learn/features/unified-accounts/unified-accounts-1.png" />
 </p>
 
-## Address Conversion
+## Address conversion and deposits
 
 As in [Astar article on this subject](https://medium.com/astar-network/using-astar-network-account-between-substrate-and-evm-656643df22a0):
 
@@ -158,6 +158,6 @@ After [calling the function](https://astar.subscan.io/extrinsic/540712-2), the b
 
 ## References
 
-[Using Astar Network Account Between Substrate and EVM by Astar](https://medium.com/astar-network/using-astar-network-account-between-substrate-and-evm-656643df22a0)
+[Using Astar Network Account Between Substrate and EVM by Astar](https://medium.com/astar-network/using-astar-network-account-between-substrate-and-evm-656643df22a0) (for a more detailed understanding of this process, it is highly recommended to read this article)
 
 [Unified Accounts by Moonbeam](https://docs.moonbeam.network/learn/features/unified-accounts/)
