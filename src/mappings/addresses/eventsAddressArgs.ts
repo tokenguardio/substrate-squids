@@ -42,9 +42,14 @@ const DappsStaking: AddressArgs = {
   "DappsStaking.Withdrawn": ["account"],
 };
 
+const EthCall: AddressArgs = {
+  "EthCall.Executed": ["from"],
+};
+
 export const eventsAddressArgs: AddressArgs = {
   ...Balances,
   ...Contracts,
   ...System,
   ...DappsStaking,
+  ...EthCall,
 };

@@ -11,7 +11,7 @@ export function normalizeEthereumCallsArgs(ctx: ChainContext, call: Call) {
     case "Ethereum.transact":
       e = new EthereumTransactCall(ctx, call);
       if (e.isV1) {
-        return call.args;
+        return { transaction: { __kind: "Legacy", value: call.args.transaction } }
       } else if (e.isV9) {
         return call.args;
       } else {

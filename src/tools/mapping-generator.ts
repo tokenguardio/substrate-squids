@@ -180,6 +180,8 @@ const eventMappingGenerator = new MappingGenerator(
     "EVM.",
     "Ethereum.",
     "DappsStaking.",
+    "EthCall.",
+    "BaseFee.",
   ],
   TransactionType.Event
 );
@@ -187,7 +189,15 @@ eventMappingGenerator.generateMappings();
 
 const callMappingGenerator = new MappingGenerator(
   "../types/calls.ts",
-  ["Contracts.", "EVM.", "Ethereum.", "DappsStaking."],
+  [
+    "Balances.",
+    "Contracts.",
+    "EVM.",
+    "Ethereum.",
+    "DappsStaking.",
+    "EthCall.",
+    "BaseFee.",
+  ],
   TransactionType.Call
 );
 callMappingGenerator.generateMappings();

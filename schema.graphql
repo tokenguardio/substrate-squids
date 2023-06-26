@@ -22,3 +22,55 @@ type AddressMapping @entity {
   id: ID! @index
   ss58: String! @index
 }
+
+type EvmTransaction @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  args: JSON
+  transactionType: EvmTransactionType! @index
+  label: EvmLabel! @index
+  fee: BigInt!
+  from: String!
+  to: String!
+  transactionHash: String!
+  status: String!
+  statusReason: String!
+}
+
+enum EvmTransactionType {
+  legacy
+  eip1559
+  eip2390
+}
+
+enum EvmLabel {
+  contract_deploy
+  contract_call
+  native_transfer
+}
+
+type SubstrateTransaction @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  name: String! @index
+  args: JSON
+  label: SubstrateLabel! @index
+  fee: BigInt!
+  tip: BigInt
+  from: String
+  to: String
+}
+
+enum SubstrateLabel {
+  contract_deploy
+  contract_call
+  other
+}
+
+type EvmContract @entity {
+  id: ID! @index
+  creator: String! @index
+  transactionHash: String! @index
+}
