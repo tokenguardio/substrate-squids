@@ -30,9 +30,10 @@ type EvmTransaction @entity {
   args: JSON
   transactionType: EvmTransactionType! @index
   label: EvmLabel! @index
-  fee: BigInt!
   from: String!
   to: String!
+  fee: BigInt!
+  value: BigInt
   transactionHash: String!
   status: String!
   statusReason: String!
