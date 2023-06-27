@@ -19,5 +19,5 @@ export class EvmContract {
 
     @Index_()
     @Column_("timestamp with time zone", {nullable: false})
-    timestamp!: Date
+    createdTimestamp!: Date
 }

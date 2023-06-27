@@ -74,5 +74,5 @@ type EvmContract @entity {
   id: ID! @index
   creator: String! @index
   transactionHash: String! @index
-  timestamp: DateTime! @index
+  createdTimestamp: DateTime! @index
 }

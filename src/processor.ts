@@ -221,7 +221,7 @@ function createEvmContract(
     id: transactionResult.to,
     creator: transactionResult.from,
     transactionHash: transactionResult.transactionHash,
-    timestamp: new Date(block.timestamp),
+    createdTimestamp: new Date(block.timestamp),
   });
 }
 
