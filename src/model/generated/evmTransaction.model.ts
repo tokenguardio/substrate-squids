@@ -30,17 +30,14 @@ export class EvmTransaction {
     @Column_("varchar", {length: 15, nullable: false})
     label!: EvmLabel
 
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    fee!: bigint
+
     @Column_("text", {nullable: false})
     from!: string
 
     @Column_("text", {nullable: false})
     to!: string
-
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-    fee!: bigint
-
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-    value!: bigint | undefined | null
 
     @Column_("text", {nullable: false})
     transactionHash!: string

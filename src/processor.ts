@@ -207,7 +207,6 @@ function createEvmTransaction(
     fee,
     from: transactionResult.from,
     to: transactionResult.to,
-    value: BigInt(ethereumTransactCallArgs.transaction.value.value),
     transactionHash: transactionResult.transactionHash,
     status: transactionResult.status,
     statusReason: transactionResult.statusReason,
