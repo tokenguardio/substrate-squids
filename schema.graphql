@@ -61,6 +61,7 @@ type SubstrateTransaction @entity {
   tip: BigInt
   from: String
   to: String
+  success: Boolean!
 }
 
 enum SubstrateLabel {
@@ -73,4 +74,5 @@ type EvmContract @entity {
   id: ID! @index
   creator: String! @index
   transactionHash: String! @index
+  timestamp: DateTime! @index
 }

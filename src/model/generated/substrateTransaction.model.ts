@@ -40,4 +40,7 @@ export class SubstrateTransaction {
 
     @Column_("text", {nullable: true})
     to!: string | undefined | null
+
+    @Column_("bool", {nullable: false})
+    success!: boolean
 }

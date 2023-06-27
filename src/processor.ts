@@ -67,17 +67,17 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       if (item.kind === "event") {
         if (eventNormalizationHandlers[pallet]) {
           if (
+            item.event.extrinsic?.call.name === "Ethereum.transact" &&
+            item.event.extrinsic?.call.success &&
             ["System.ExtrinsicSuccess", "Ethereum.Executed"].includes(
               item.event.name
             )
           ) {
-            if (item.event.extrinsic?.call.name === "Ethereum.transact") {
-              assignEventToExtrinsic(
-                ethereumTransactEventsPerBlock,
-                item.event.extrinsic.id,
-                item.event
-              );
-            }
+            assignEventToExtrinsic(
+              ethereumTransactEventsPerBlock,
+              item.event.extrinsic.id,
+              item.event
+            );
           }
 
           if (
@@ -213,11 +213,15 @@ function createEvmTransaction(
   });
 }
 
-function createEvmContract(transactionResult: TransactionResult): EvmContract {
+function createEvmContract(
+  transactionResult: TransactionResult,
+  block: any
+): EvmContract {
   return new EvmContract({
     id: transactionResult.to,
     creator: transactionResult.from,
     transactionHash: transactionResult.transactionHash,
+    timestamp: new Date(block.timestamp),
   });
 }
 
@@ -240,6 +244,7 @@ function createSubstrateTransaction(
     tip: extrinsic.tip,
     from: from,
     to: to,
+    success: call.success,
   });
 }
 
@@ -423,7 +428,7 @@ function handleEvmTransactions(
       action === "Create" &&
       normalizedEthereumExecutedEvent.status === "Succeed"
     ) {
-      evmContract = createEvmContract(normalizedEthereumExecutedEvent);
+      evmContract = createEvmContract(normalizedEthereumExecutedEvent, block);
       evmContracts.push(evmContract);
     }
   });
