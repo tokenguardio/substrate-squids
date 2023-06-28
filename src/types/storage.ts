@@ -15,6 +15,7 @@ import * as v43 from './v43'
 import * as v49 from './v49'
 import * as v52 from './v52'
 import * as v55 from './v55'
+import * as v61 from './v61'
 
 export class AssetsAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -2187,6 +2188,38 @@ export interface DmpQueueConfigurationStorageV49 {
     get(): Promise<v49.ConfigData>
 }
 
+export class DmpQueueCounterForOverweightStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DmpQueue'
+    }
+
+    protected getName() {
+        return 'CounterForOverweight'
+    }
+
+    /**
+     * Counter for the related counted storage map
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+    }
+
+    /**
+     * Counter for the related counted storage map
+     */
+    get asV61(): DmpQueueCounterForOverweightStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ * Counter for the related counted storage map
+ */
+export interface DmpQueueCounterForOverweightStorageV61 {
+    get(): Promise<number>
+}
+
 export class DmpQueueOverweightStorage extends StorageBase {
     protected getPrefix() {
         return 'DmpQueue'
@@ -3993,6 +4026,48 @@ export interface PolkadotXcmCurrentMigrationStorageV15 {
     get(): Promise<(v15.VersionMigrationStage | undefined)>
 }
 
+export class PolkadotXcmLockedFungiblesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'PolkadotXcm'
+    }
+
+    protected getName() {
+        return 'LockedFungibles'
+    }
+
+    /**
+     *  Fungible assets which we know are locked on this chain.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '83620d989e5dd77ea5cdf77e62586d64ad0b7ace0ba3b24d7f207643583d77cc'
+    }
+
+    /**
+     *  Fungible assets which we know are locked on this chain.
+     */
+    get asV61(): PolkadotXcmLockedFungiblesStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ *  Fungible assets which we know are locked on this chain.
+ */
+export interface PolkadotXcmLockedFungiblesStorageV61 {
+    get(key: Uint8Array): Promise<([bigint, v61.VersionedMultiLocation][] | undefined)>
+    getAll(): Promise<[bigint, v61.VersionedMultiLocation][][]>
+    getMany(keys: Uint8Array[]): Promise<([bigint, v61.VersionedMultiLocation][] | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: [bigint, v61.VersionedMultiLocation][]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: [bigint, v61.VersionedMultiLocation][]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: [bigint, v61.VersionedMultiLocation][]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: [bigint, v61.VersionedMultiLocation][]][]>
+}
+
 export class PolkadotXcmQueriesStorage extends StorageBase {
     protected getPrefix() {
         return 'PolkadotXcm'
@@ -4031,6 +4106,21 @@ export class PolkadotXcmQueriesStorage extends StorageBase {
         assert(this.isV52)
         return this as any
     }
+
+    /**
+     *  The ongoing queries.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === 'c33614a63099009a42799d8206979c61fd1a7b5d142259a57bdcbc726105e8f1'
+    }
+
+    /**
+     *  The ongoing queries.
+     */
+    get asV61(): PolkadotXcmQueriesStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
 }
 
 /**
@@ -4067,6 +4157,23 @@ export interface PolkadotXcmQueriesStorageV52 {
     getPairsPaged(pageSize: number, key: bigint): AsyncIterable<[k: bigint, v: v52.QueryStatus][]>
 }
 
+/**
+ *  The ongoing queries.
+ */
+export interface PolkadotXcmQueriesStorageV61 {
+    get(key: bigint): Promise<(v61.QueryStatus | undefined)>
+    getAll(): Promise<v61.QueryStatus[]>
+    getMany(keys: bigint[]): Promise<(v61.QueryStatus | undefined)[]>
+    getKeys(): Promise<bigint[]>
+    getKeys(key: bigint): Promise<bigint[]>
+    getKeysPaged(pageSize: number): AsyncIterable<bigint[]>
+    getKeysPaged(pageSize: number, key: bigint): AsyncIterable<bigint[]>
+    getPairs(): Promise<[k: bigint, v: v61.QueryStatus][]>
+    getPairs(key: bigint): Promise<[k: bigint, v: v61.QueryStatus][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: bigint, v: v61.QueryStatus][]>
+    getPairsPaged(pageSize: number, key: bigint): AsyncIterable<[k: bigint, v: v61.QueryStatus][]>
+}
+
 export class PolkadotXcmQueryCounterStorage extends StorageBase {
     protected getPrefix() {
         return 'PolkadotXcm'
@@ -4097,6 +4204,56 @@ export class PolkadotXcmQueryCounterStorage extends StorageBase {
  */
 export interface PolkadotXcmQueryCounterStorageV15 {
     get(): Promise<bigint>
+}
+
+export class PolkadotXcmRemoteLockedFungiblesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'PolkadotXcm'
+    }
+
+    protected getName() {
+        return 'RemoteLockedFungibles'
+    }
+
+    /**
+     *  Fungible assets which we know are locked on a remote chain.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '32350375a3f683ddfbcb5dbc0bc4773d1d5aa9c2f1f2e358dced4492be76a541'
+    }
+
+    /**
+     *  Fungible assets which we know are locked on a remote chain.
+     */
+    get asV61(): PolkadotXcmRemoteLockedFungiblesStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ *  Fungible assets which we know are locked on a remote chain.
+ */
+export interface PolkadotXcmRemoteLockedFungiblesStorageV61 {
+    get(key1: number, key2: Uint8Array, key3: v61.VersionedAssetId): Promise<(v61.RemoteLockedFungibleRecord | undefined)>
+    getAll(): Promise<v61.RemoteLockedFungibleRecord[]>
+    getMany(keys: [number, Uint8Array, v61.VersionedAssetId][]): Promise<(v61.RemoteLockedFungibleRecord | undefined)[]>
+    getKeys(): Promise<[number, Uint8Array, v61.VersionedAssetId][]>
+    getKeys(key1: number): Promise<[number, Uint8Array, v61.VersionedAssetId][]>
+    getKeys(key1: number, key2: Uint8Array): Promise<[number, Uint8Array, v61.VersionedAssetId][]>
+    getKeys(key1: number, key2: Uint8Array, key3: v61.VersionedAssetId): Promise<[number, Uint8Array, v61.VersionedAssetId][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, Uint8Array, v61.VersionedAssetId][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, Uint8Array, v61.VersionedAssetId][]>
+    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[number, Uint8Array, v61.VersionedAssetId][]>
+    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array, key3: v61.VersionedAssetId): AsyncIterable<[number, Uint8Array, v61.VersionedAssetId][]>
+    getPairs(): Promise<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+    getPairs(key1: number): Promise<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+    getPairs(key1: number, key2: Uint8Array): Promise<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+    getPairs(key1: number, key2: Uint8Array, key3: v61.VersionedAssetId): Promise<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array, key3: v61.VersionedAssetId): AsyncIterable<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
 }
 
 export class PolkadotXcmSafeXcmVersionStorage extends StorageBase {
@@ -4172,6 +4329,21 @@ export class PolkadotXcmSupportedVersionStorage extends StorageBase {
         assert(this.isV52)
         return this as any
     }
+
+    /**
+     *  The Latest versions that we know various locations support.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '0e2aec9a2da85831b6c7f06cf2ebb00fa3489433254df2ecc1d89a9f142d7859'
+    }
+
+    /**
+     *  The Latest versions that we know various locations support.
+     */
+    get asV61(): PolkadotXcmSupportedVersionStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
 }
 
 /**
@@ -4214,6 +4386,27 @@ export interface PolkadotXcmSupportedVersionStorageV52 {
     getPairsPaged(pageSize: number): AsyncIterable<[k: [number, v52.VersionedMultiLocation], v: number][]>
     getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, v52.VersionedMultiLocation], v: number][]>
     getPairsPaged(pageSize: number, key1: number, key2: v52.VersionedMultiLocation): AsyncIterable<[k: [number, v52.VersionedMultiLocation], v: number][]>
+}
+
+/**
+ *  The Latest versions that we know various locations support.
+ */
+export interface PolkadotXcmSupportedVersionStorageV61 {
+    get(key1: number, key2: v61.VersionedMultiLocation): Promise<(number | undefined)>
+    getAll(): Promise<number[]>
+    getMany(keys: [number, v61.VersionedMultiLocation][]): Promise<(number | undefined)[]>
+    getKeys(): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeys(key1: number): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeys(key1: number, key2: v61.VersionedMultiLocation): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number, key1: number, key2: v61.VersionedMultiLocation): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getPairs(): Promise<[k: [number, v61.VersionedMultiLocation], v: number][]>
+    getPairs(key1: number): Promise<[k: [number, v61.VersionedMultiLocation], v: number][]>
+    getPairs(key1: number, key2: v61.VersionedMultiLocation): Promise<[k: [number, v61.VersionedMultiLocation], v: number][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: number][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: number][]>
+    getPairsPaged(pageSize: number, key1: number, key2: v61.VersionedMultiLocation): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: number][]>
 }
 
 export class PolkadotXcmVersionDiscoveryQueueStorage extends StorageBase {
@@ -4262,6 +4455,25 @@ export class PolkadotXcmVersionDiscoveryQueueStorage extends StorageBase {
         assert(this.isV52)
         return this as any
     }
+
+    /**
+     *  Destinations whose latest XCM version we would like to know. Duplicates not allowed, and
+     *  the `u32` counter is the number of times that a send to the destination has been attempted,
+     *  which is used as a prioritization.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '1861bd13354557dc519a64b8d53a95cd897ff993484c969af972f15ebe14ed22'
+    }
+
+    /**
+     *  Destinations whose latest XCM version we would like to know. Duplicates not allowed, and
+     *  the `u32` counter is the number of times that a send to the destination has been attempted,
+     *  which is used as a prioritization.
+     */
+    get asV61(): PolkadotXcmVersionDiscoveryQueueStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
 }
 
 /**
@@ -4280,6 +4492,15 @@ export interface PolkadotXcmVersionDiscoveryQueueStorageV15 {
  */
 export interface PolkadotXcmVersionDiscoveryQueueStorageV52 {
     get(): Promise<[v52.VersionedMultiLocation, number][]>
+}
+
+/**
+ *  Destinations whose latest XCM version we would like to know. Duplicates not allowed, and
+ *  the `u32` counter is the number of times that a send to the destination has been attempted,
+ *  which is used as a prioritization.
+ */
+export interface PolkadotXcmVersionDiscoveryQueueStorageV61 {
+    get(): Promise<[v61.VersionedMultiLocation, number][]>
 }
 
 export class PolkadotXcmVersionNotifiersStorage extends StorageBase {
@@ -4318,6 +4539,21 @@ export class PolkadotXcmVersionNotifiersStorage extends StorageBase {
      */
     get asV52(): PolkadotXcmVersionNotifiersStorageV52 {
         assert(this.isV52)
+        return this as any
+    }
+
+    /**
+     *  All locations that we have requested version notifications from.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '2e570d6a39a9644e69bdccf883c25d1723f752493a252d530fc3667560486716'
+    }
+
+    /**
+     *  All locations that we have requested version notifications from.
+     */
+    get asV61(): PolkadotXcmVersionNotifiersStorageV61 {
+        assert(this.isV61)
         return this as any
     }
 }
@@ -4364,6 +4600,27 @@ export interface PolkadotXcmVersionNotifiersStorageV52 {
     getPairsPaged(pageSize: number, key1: number, key2: v52.VersionedMultiLocation): AsyncIterable<[k: [number, v52.VersionedMultiLocation], v: bigint][]>
 }
 
+/**
+ *  All locations that we have requested version notifications from.
+ */
+export interface PolkadotXcmVersionNotifiersStorageV61 {
+    get(key1: number, key2: v61.VersionedMultiLocation): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: [number, v61.VersionedMultiLocation][]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeys(key1: number): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeys(key1: number, key2: v61.VersionedMultiLocation): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number, key1: number, key2: v61.VersionedMultiLocation): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getPairs(): Promise<[k: [number, v61.VersionedMultiLocation], v: bigint][]>
+    getPairs(key1: number): Promise<[k: [number, v61.VersionedMultiLocation], v: bigint][]>
+    getPairs(key1: number, key2: v61.VersionedMultiLocation): Promise<[k: [number, v61.VersionedMultiLocation], v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: number, key2: v61.VersionedMultiLocation): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: bigint][]>
+}
+
 export class PolkadotXcmVersionNotifyTargetsStorage extends StorageBase {
     protected getPrefix() {
         return 'PolkadotXcm'
@@ -4404,6 +4661,23 @@ export class PolkadotXcmVersionNotifyTargetsStorage extends StorageBase {
      */
     get asV52(): PolkadotXcmVersionNotifyTargetsStorageV52 {
         assert(this.isV52)
+        return this as any
+    }
+
+    /**
+     *  The target locations that are subscribed to our version changes, as well as the most recent
+     *  of our versions we informed them of.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '080bdd3fd57ea1cba05e6b46642e4860965e8f150a64cc9d5bafc6eebd6207fb'
+    }
+
+    /**
+     *  The target locations that are subscribed to our version changes, as well as the most recent
+     *  of our versions we informed them of.
+     */
+    get asV61(): PolkadotXcmVersionNotifyTargetsStorageV61 {
+        assert(this.isV61)
         return this as any
     }
 }
@@ -4450,6 +4724,115 @@ export interface PolkadotXcmVersionNotifyTargetsStorageV52 {
     getPairsPaged(pageSize: number): AsyncIterable<[k: [number, v52.VersionedMultiLocation], v: [bigint, bigint, number]][]>
     getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, v52.VersionedMultiLocation], v: [bigint, bigint, number]][]>
     getPairsPaged(pageSize: number, key1: number, key2: v52.VersionedMultiLocation): AsyncIterable<[k: [number, v52.VersionedMultiLocation], v: [bigint, bigint, number]][]>
+}
+
+/**
+ *  The target locations that are subscribed to our version changes, as well as the most recent
+ *  of our versions we informed them of.
+ */
+export interface PolkadotXcmVersionNotifyTargetsStorageV61 {
+    get(key1: number, key2: v61.VersionedMultiLocation): Promise<([bigint, v61.Weight, number] | undefined)>
+    getAll(): Promise<[bigint, v61.Weight, number][]>
+    getMany(keys: [number, v61.VersionedMultiLocation][]): Promise<([bigint, v61.Weight, number] | undefined)[]>
+    getKeys(): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeys(key1: number): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeys(key1: number, key2: v61.VersionedMultiLocation): Promise<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getKeysPaged(pageSize: number, key1: number, key2: v61.VersionedMultiLocation): AsyncIterable<[number, v61.VersionedMultiLocation][]>
+    getPairs(): Promise<[k: [number, v61.VersionedMultiLocation], v: [bigint, v61.Weight, number]][]>
+    getPairs(key1: number): Promise<[k: [number, v61.VersionedMultiLocation], v: [bigint, v61.Weight, number]][]>
+    getPairs(key1: number, key2: v61.VersionedMultiLocation): Promise<[k: [number, v61.VersionedMultiLocation], v: [bigint, v61.Weight, number]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: [bigint, v61.Weight, number]][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: [bigint, v61.Weight, number]][]>
+    getPairsPaged(pageSize: number, key1: number, key2: v61.VersionedMultiLocation): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: [bigint, v61.Weight, number]][]>
+}
+
+export class ProxyAnnouncementsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Proxy'
+    }
+
+    protected getName() {
+        return 'Announcements'
+    }
+
+    /**
+     *  The announcements made by the proxy (key).
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === 'b93d53c53a308d910b0304bf5593bd71084bcf177629ea67da68b9026f4b417c'
+    }
+
+    /**
+     *  The announcements made by the proxy (key).
+     */
+    get asV61(): ProxyAnnouncementsStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ *  The announcements made by the proxy (key).
+ */
+export interface ProxyAnnouncementsStorageV61 {
+    get(key: Uint8Array): Promise<[v61.Announcement[], bigint]>
+    getAll(): Promise<[v61.Announcement[], bigint][]>
+    getMany(keys: Uint8Array[]): Promise<[v61.Announcement[], bigint][]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: [v61.Announcement[], bigint]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: [v61.Announcement[], bigint]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: [v61.Announcement[], bigint]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: [v61.Announcement[], bigint]][]>
+}
+
+export class ProxyProxiesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Proxy'
+    }
+
+    protected getName() {
+        return 'Proxies'
+    }
+
+    /**
+     *  The set of account proxies. Maps the account which has delegated to the accounts
+     *  which are being delegated to, together with the amount held on deposit.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '8683fcd2cf69554750e1024cf69a9e4fe5f828536d7ea56a3b5f2aa3fe47ab0c'
+    }
+
+    /**
+     *  The set of account proxies. Maps the account which has delegated to the accounts
+     *  which are being delegated to, together with the amount held on deposit.
+     */
+    get asV61(): ProxyProxiesStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ *  The set of account proxies. Maps the account which has delegated to the accounts
+ *  which are being delegated to, together with the amount held on deposit.
+ */
+export interface ProxyProxiesStorageV61 {
+    get(key: Uint8Array): Promise<[v61.ProxyDefinition[], bigint]>
+    getAll(): Promise<[v61.ProxyDefinition[], bigint][]>
+    getMany(keys: Uint8Array[]): Promise<[v61.ProxyDefinition[], bigint][]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: [v61.ProxyDefinition[], bigint]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: [v61.ProxyDefinition[], bigint]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: [v61.ProxyDefinition[], bigint]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: [v61.ProxyDefinition[], bigint]][]>
 }
 
 export class SessionCurrentIndexStorage extends StorageBase {
@@ -4706,6 +5089,123 @@ export class SessionValidatorsStorage extends StorageBase {
  */
 export interface SessionValidatorsStorageV1 {
     get(): Promise<Uint8Array[]>
+}
+
+export class StateTrieMigrationAutoLimitsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'StateTrieMigration'
+    }
+
+    protected getName() {
+        return 'AutoLimits'
+    }
+
+    /**
+     *  The limits that are imposed on automatic migrations.
+     * 
+     *  If set to None, then no automatic migration happens.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '3eaf472033cc14766167423d9fb44d1202eff611c3fc5885336f9eae94a2a7b7'
+    }
+
+    /**
+     *  The limits that are imposed on automatic migrations.
+     * 
+     *  If set to None, then no automatic migration happens.
+     */
+    get asV61(): StateTrieMigrationAutoLimitsStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ *  The limits that are imposed on automatic migrations.
+ * 
+ *  If set to None, then no automatic migration happens.
+ */
+export interface StateTrieMigrationAutoLimitsStorageV61 {
+    get(): Promise<(v61.MigrationLimits | undefined)>
+}
+
+export class StateTrieMigrationMigrationProcessStorage extends StorageBase {
+    protected getPrefix() {
+        return 'StateTrieMigration'
+    }
+
+    protected getName() {
+        return 'MigrationProcess'
+    }
+
+    /**
+     *  Migration progress.
+     * 
+     *  This stores the snapshot of the last migrated keys. It can be set into motion and move
+     *  forward by any of the means provided by this pallet.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '1ce4b92753031b4db00767108ab5592b867c62019896dc3acc0f59a422d45e13'
+    }
+
+    /**
+     *  Migration progress.
+     * 
+     *  This stores the snapshot of the last migrated keys. It can be set into motion and move
+     *  forward by any of the means provided by this pallet.
+     */
+    get asV61(): StateTrieMigrationMigrationProcessStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ *  Migration progress.
+ * 
+ *  This stores the snapshot of the last migrated keys. It can be set into motion and move
+ *  forward by any of the means provided by this pallet.
+ */
+export interface StateTrieMigrationMigrationProcessStorageV61 {
+    get(): Promise<v61.MigrationTask>
+}
+
+export class StateTrieMigrationSignedMigrationMaxLimitsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'StateTrieMigration'
+    }
+
+    protected getName() {
+        return 'SignedMigrationMaxLimits'
+    }
+
+    /**
+     *  The maximum limits that the signed migration could use.
+     * 
+     *  If not set, no signed submission is allowed.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '78aa4791340649f5a0be1bc83a67d027e49c6aa0eaa5395fa8f9c2c64c781a61'
+    }
+
+    /**
+     *  The maximum limits that the signed migration could use.
+     * 
+     *  If not set, no signed submission is allowed.
+     */
+    get asV61(): StateTrieMigrationSignedMigrationMaxLimitsStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ *  The maximum limits that the signed migration could use.
+ * 
+ *  If not set, no signed submission is allowed.
+ */
+export interface StateTrieMigrationSignedMigrationMaxLimitsStorageV61 {
+    get(): Promise<(v61.MigrationLimits | undefined)>
 }
 
 export class SudoKeyStorage extends StorageBase {
@@ -5474,6 +5974,33 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV55)
         return this as any
     }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === 'f46bfb4dd880f938c89ff2c216bf08c60c307340ebe94579e7756988f63f701c'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV61(): SystemEventsStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
 }
 
 /**
@@ -5645,6 +6172,19 @@ export interface SystemEventsStorageV52 {
  */
 export interface SystemEventsStorageV55 {
     get(): Promise<v55.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV61 {
+    get(): Promise<v61.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {
@@ -6152,6 +6692,25 @@ export class XcAssetConfigAssetIdToLocationStorage extends StorageBase {
         assert(this.isV52)
         return this as any
     }
+
+    /**
+     *  Mapping from an asset id to asset type.
+     *  Can be used when receiving transaction specifying an asset directly,
+     *  like transferring an asset from this chain to another.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '4e5e966ec07ecbfd6011b50daf7768966f3ad804c4c6722cfded27911d030be5'
+    }
+
+    /**
+     *  Mapping from an asset id to asset type.
+     *  Can be used when receiving transaction specifying an asset directly,
+     *  like transferring an asset from this chain to another.
+     */
+    get asV61(): XcAssetConfigAssetIdToLocationStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
 }
 
 /**
@@ -6190,6 +6749,25 @@ export interface XcAssetConfigAssetIdToLocationStorageV52 {
     getPairs(key: bigint): Promise<[k: bigint, v: v52.VersionedMultiLocation][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: bigint, v: v52.VersionedMultiLocation][]>
     getPairsPaged(pageSize: number, key: bigint): AsyncIterable<[k: bigint, v: v52.VersionedMultiLocation][]>
+}
+
+/**
+ *  Mapping from an asset id to asset type.
+ *  Can be used when receiving transaction specifying an asset directly,
+ *  like transferring an asset from this chain to another.
+ */
+export interface XcAssetConfigAssetIdToLocationStorageV61 {
+    get(key: bigint): Promise<(v61.VersionedMultiLocation | undefined)>
+    getAll(): Promise<v61.VersionedMultiLocation[]>
+    getMany(keys: bigint[]): Promise<(v61.VersionedMultiLocation | undefined)[]>
+    getKeys(): Promise<bigint[]>
+    getKeys(key: bigint): Promise<bigint[]>
+    getKeysPaged(pageSize: number): AsyncIterable<bigint[]>
+    getKeysPaged(pageSize: number, key: bigint): AsyncIterable<bigint[]>
+    getPairs(): Promise<[k: bigint, v: v61.VersionedMultiLocation][]>
+    getPairs(key: bigint): Promise<[k: bigint, v: v61.VersionedMultiLocation][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: bigint, v: v61.VersionedMultiLocation][]>
+    getPairsPaged(pageSize: number, key: bigint): AsyncIterable<[k: bigint, v: v61.VersionedMultiLocation][]>
 }
 
 export class XcAssetConfigAssetLocationToIdStorage extends StorageBase {
@@ -6238,6 +6816,25 @@ export class XcAssetConfigAssetLocationToIdStorage extends StorageBase {
         assert(this.isV52)
         return this as any
     }
+
+    /**
+     *  Mapping from an asset type to an asset id.
+     *  Can be used when receiving a multilocation XCM message to retrieve
+     *  the corresponding asset in which tokens should me minted.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '8066224e1a8529f4d194bac8a89f5ba16f884b4283963e630784208c9cea83bd'
+    }
+
+    /**
+     *  Mapping from an asset type to an asset id.
+     *  Can be used when receiving a multilocation XCM message to retrieve
+     *  the corresponding asset in which tokens should me minted.
+     */
+    get asV61(): XcAssetConfigAssetLocationToIdStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
 }
 
 /**
@@ -6276,6 +6873,25 @@ export interface XcAssetConfigAssetLocationToIdStorageV52 {
     getPairs(key: v52.VersionedMultiLocation): Promise<[k: v52.VersionedMultiLocation, v: bigint][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: v52.VersionedMultiLocation, v: bigint][]>
     getPairsPaged(pageSize: number, key: v52.VersionedMultiLocation): AsyncIterable<[k: v52.VersionedMultiLocation, v: bigint][]>
+}
+
+/**
+ *  Mapping from an asset type to an asset id.
+ *  Can be used when receiving a multilocation XCM message to retrieve
+ *  the corresponding asset in which tokens should me minted.
+ */
+export interface XcAssetConfigAssetLocationToIdStorageV61 {
+    get(key: v61.VersionedMultiLocation): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: v61.VersionedMultiLocation[]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<v61.VersionedMultiLocation[]>
+    getKeys(key: v61.VersionedMultiLocation): Promise<v61.VersionedMultiLocation[]>
+    getKeysPaged(pageSize: number): AsyncIterable<v61.VersionedMultiLocation[]>
+    getKeysPaged(pageSize: number, key: v61.VersionedMultiLocation): AsyncIterable<v61.VersionedMultiLocation[]>
+    getPairs(): Promise<[k: v61.VersionedMultiLocation, v: bigint][]>
+    getPairs(key: v61.VersionedMultiLocation): Promise<[k: v61.VersionedMultiLocation, v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: v61.VersionedMultiLocation, v: bigint][]>
+    getPairsPaged(pageSize: number, key: v61.VersionedMultiLocation): AsyncIterable<[k: v61.VersionedMultiLocation, v: bigint][]>
 }
 
 export class XcAssetConfigAssetLocationUnitsPerSecondStorage extends StorageBase {
@@ -6328,6 +6944,27 @@ export class XcAssetConfigAssetLocationUnitsPerSecondStorage extends StorageBase
         assert(this.isV52)
         return this as any
     }
+
+    /**
+     *  Stores the units per second for local execution for a AssetLocation.
+     *  This is used to know how to charge for XCM execution in a particular asset.
+     * 
+     *  Not all asset types are supported for payment. If value exists here, it means it is supported.
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '8066224e1a8529f4d194bac8a89f5ba16f884b4283963e630784208c9cea83bd'
+    }
+
+    /**
+     *  Stores the units per second for local execution for a AssetLocation.
+     *  This is used to know how to charge for XCM execution in a particular asset.
+     * 
+     *  Not all asset types are supported for payment. If value exists here, it means it is supported.
+     */
+    get asV61(): XcAssetConfigAssetLocationUnitsPerSecondStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
 }
 
 /**
@@ -6368,6 +7005,58 @@ export interface XcAssetConfigAssetLocationUnitsPerSecondStorageV52 {
     getPairs(key: v52.VersionedMultiLocation): Promise<[k: v52.VersionedMultiLocation, v: bigint][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: v52.VersionedMultiLocation, v: bigint][]>
     getPairsPaged(pageSize: number, key: v52.VersionedMultiLocation): AsyncIterable<[k: v52.VersionedMultiLocation, v: bigint][]>
+}
+
+/**
+ *  Stores the units per second for local execution for a AssetLocation.
+ *  This is used to know how to charge for XCM execution in a particular asset.
+ * 
+ *  Not all asset types are supported for payment. If value exists here, it means it is supported.
+ */
+export interface XcAssetConfigAssetLocationUnitsPerSecondStorageV61 {
+    get(key: v61.VersionedMultiLocation): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: v61.VersionedMultiLocation[]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<v61.VersionedMultiLocation[]>
+    getKeys(key: v61.VersionedMultiLocation): Promise<v61.VersionedMultiLocation[]>
+    getKeysPaged(pageSize: number): AsyncIterable<v61.VersionedMultiLocation[]>
+    getKeysPaged(pageSize: number, key: v61.VersionedMultiLocation): AsyncIterable<v61.VersionedMultiLocation[]>
+    getPairs(): Promise<[k: v61.VersionedMultiLocation, v: bigint][]>
+    getPairs(key: v61.VersionedMultiLocation): Promise<[k: v61.VersionedMultiLocation, v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: v61.VersionedMultiLocation, v: bigint][]>
+    getPairsPaged(pageSize: number, key: v61.VersionedMultiLocation): AsyncIterable<[k: v61.VersionedMultiLocation, v: bigint][]>
+}
+
+export class XcmpQueueCounterForOverweightStorage extends StorageBase {
+    protected getPrefix() {
+        return 'XcmpQueue'
+    }
+
+    protected getName() {
+        return 'CounterForOverweight'
+    }
+
+    /**
+     * Counter for the related counted storage map
+     */
+    get isV61(): boolean {
+        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+    }
+
+    /**
+     * Counter for the related counted storage map
+     */
+    get asV61(): XcmpQueueCounterForOverweightStorageV61 {
+        assert(this.isV61)
+        return this as any
+    }
+}
+
+/**
+ * Counter for the related counted storage map
+ */
+export interface XcmpQueueCounterForOverweightStorageV61 {
+    get(): Promise<number>
 }
 
 export class XcmpQueueInboundXcmpMessagesStorage extends StorageBase {

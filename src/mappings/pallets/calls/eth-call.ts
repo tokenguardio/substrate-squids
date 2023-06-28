@@ -42,6 +42,8 @@ export function normalizeEthCallCallsArgs(ctx: ChainContext, call: Call) {
         return call.args;
       } else if (e.isV55) {
         return call.args;
+      } else if (e.isV61) {
+        return call.args;
       } else {
         throw new UnknownCallVersionError(call.name);
       }

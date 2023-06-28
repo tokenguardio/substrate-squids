@@ -16,6 +16,7 @@ import * as v43 from './v43'
 import * as v49 from './v49'
 import * as v52 from './v52'
 import * as v55 from './v55'
+import * as v61 from './v61'
 
 export class AssetsApproveTransferCall {
     private readonly _chain: Chain
@@ -3421,6 +3422,21 @@ export class DmpQueueServiceOverweightCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Service a single overweight message.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('DmpQueue.service_overweight') === '80fae8875bf513efc1e06b7dac547fccfc1e5fc45888cc8afd9b43812cf51bf5'
+    }
+
+    /**
+     * Service a single overweight message.
+     */
+    get asV61(): {index: bigint, weightLimit: v61.Weight} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class EvmCallCall {
@@ -4027,6 +4043,31 @@ export class EthCallCallCall {
      */
     get asV55(): {call: v55.Call, signer: Uint8Array, signature: Uint8Array, nonce: number} {
         assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + read/write + 10_000.
+     * # </weight>
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('EthCall.call') === 'cfd23067f4a80e65e1d5d877e7d8b99bc2feb24459d15bf9f42f008d4dd41b77'
+    }
+
+    /**
+     * # <weight>
+     * - O(1).
+     * - Limited storage reads.
+     * - One DB write (event).
+     * - Weight of derivative `call` execution + read/write + 10_000.
+     * # </weight>
+     */
+    get asV61(): {call: v61.Call, signer: Uint8Array, signature: Uint8Array, nonce: number} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5833,6 +5874,97 @@ export class MultisigAsMultiCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '8c84600e0942f07ed4143ba1c36a83f229cb028eb2a24a7bc03fafea7d754036'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV61(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v61.Timepoint | undefined), call: v61.Call, maxWeight: v61.Weight} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -6567,6 +6699,43 @@ export class MultisigAsMultiThreshold1Call {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'da1086ae18726b0caccf24cffaad4a7221cbf26b44c0d6051eb7564b3f3dadde'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV61(): {otherSignatories: Uint8Array[], call: v61.Call} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigCancelAsMultiCall {
@@ -6953,6 +7122,41 @@ export class PolkadotXcmExecuteCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Execute an XCM message from a local, signed, origin.
+     * 
+     * An event is deposited indicating whether `msg` could be executed completely or only
+     * partially.
+     * 
+     * No more than `max_weight` will be used in its attempted execution. If this is less than the
+     * maximum amount of weight that the message could take to be executed, then no execution
+     * attempt will be made.
+     * 
+     * NOTE: A successful return to this does *not* imply that the `msg` was executed successfully
+     * to completion; only that *some* of it was executed.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.execute') === 'a1da862b5d9db8fd6f3072da00ea4e66052f97b5dcfb87e58d49ca1fd1f1ef90'
+    }
+
+    /**
+     * Execute an XCM message from a local, signed, origin.
+     * 
+     * An event is deposited indicating whether `msg` could be executed completely or only
+     * partially.
+     * 
+     * No more than `max_weight` will be used in its attempted execution. If this is less than the
+     * maximum amount of weight that the message could take to be executed, then no execution
+     * attempt will be made.
+     * 
+     * NOTE: A successful return to this does *not* imply that the `msg` was executed successfully
+     * to completion; only that *some* of it was executed.
+     */
+    get asV61(): {message: v61.Type_251, maxWeight: v61.Weight} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceDefaultXcmVersionCall {
@@ -7046,6 +7250,27 @@ export class PolkadotXcmForceSubscribeVersionNotifyCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Ask a location to notify us regarding their XCM version and any changes to it.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we should subscribe for XCM version notifications.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_subscribe_version_notify') === '0448b7eed1a6d9cd0a489ea792df94cc3ce5a37e203f19b1a5a0c4516a8d696c'
+    }
+
+    /**
+     * Ask a location to notify us regarding their XCM version and any changes to it.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we should subscribe for XCM version notifications.
+     */
+    get asV61(): {location: v61.VersionedMultiLocation} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceUnsubscribeVersionNotifyCall {
@@ -7110,6 +7335,31 @@ export class PolkadotXcmForceUnsubscribeVersionNotifyCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Require that a particular destination should no longer notify us regarding any XCM
+     * version changes.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we are currently subscribed for XCM version
+     *   notifications which we no longer desire.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_unsubscribe_version_notify') === '0448b7eed1a6d9cd0a489ea792df94cc3ce5a37e203f19b1a5a0c4516a8d696c'
+    }
+
+    /**
+     * Require that a particular destination should no longer notify us regarding any XCM
+     * version changes.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The location to which we are currently subscribed for XCM version
+     *   notifications which we no longer desire.
+     */
+    get asV61(): {location: v61.VersionedMultiLocation} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmForceXcmVersionCall {
@@ -7172,6 +7422,31 @@ export class PolkadotXcmForceXcmVersionCall {
      */
     get asV52(): {location: v52.V1MultiLocation, xcmVersion: number} {
         assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Extoll that a particular destination can be communicated with through a particular
+     * version of XCM.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The destination that is being described.
+     * - `xcm_version`: The latest version of XCM that `location` supports.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_xcm_version') === '998b5a56e7662d76955b41c2526c2219fe8304fec6501afa115db1bd705e7ff6'
+    }
+
+    /**
+     * Extoll that a particular destination can be communicated with through a particular
+     * version of XCM.
+     * 
+     * - `origin`: Must be Root.
+     * - `location`: The destination that is being described.
+     * - `xcm_version`: The latest version of XCM that `location` supports.
+     */
+    get asV61(): {location: v61.V3MultiLocation, xcmVersion: number} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -7286,6 +7561,55 @@ export class PolkadotXcmLimitedReserveTransferAssetsCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_reserve_transfer_assets') === 'c5f45c1775bd92c7b425f46c92a6891334f7df5ae2518cd2c0a106447da3bbd9'
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV61(): {dest: v61.VersionedMultiLocation, beneficiary: v61.VersionedMultiLocation, assets: v61.VersionedMultiAssets, feeAssetItem: number, weightLimit: v61.V3WeightLimit} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmLimitedReserveWithdrawAssetsCall {
@@ -7392,6 +7716,53 @@ export class PolkadotXcmLimitedReserveWithdrawAssetsCall {
      */
     get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number, weightLimit: v52.V2WeightLimit} {
         assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_reserve_withdraw_assets') === 'c5f45c1775bd92c7b425f46c92a6891334f7df5ae2518cd2c0a106447da3bbd9'
+    }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV61(): {dest: v61.VersionedMultiLocation, beneficiary: v61.VersionedMultiLocation, assets: v61.VersionedMultiAssets, feeAssetItem: number, weightLimit: v61.V3WeightLimit} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -7502,6 +7873,53 @@ export class PolkadotXcmLimitedTeleportAssetsCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.limited_teleport_assets') === 'c5f45c1775bd92c7b425f46c92a6891334f7df5ae2518cd2c0a106447da3bbd9'
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the assets send may be
+     * at risk.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     */
+    get asV61(): {dest: v61.VersionedMultiLocation, beneficiary: v61.VersionedMultiLocation, assets: v61.VersionedMultiAssets, feeAssetItem: number, weightLimit: v61.V3WeightLimit} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmReserveTransferAssetsCall {
@@ -7604,6 +8022,51 @@ export class PolkadotXcmReserveTransferAssetsCall {
      */
     get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number} {
         assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.reserve_transfer_assets') === 'ebd99cece75c1b0fc48830527bc513cf672b8d0c6c0c505498bba5c8c5e1617c'
+    }
+
+    /**
+     * Transfer some assets from the local chain to the sovereign account of a destination
+     * chain and forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV61(): {dest: v61.VersionedMultiLocation, beneficiary: v61.VersionedMultiLocation, assets: v61.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -7710,6 +8173,51 @@ export class PolkadotXcmReserveWithdrawAssetsCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.reserve_withdraw_assets') === 'ebd99cece75c1b0fc48830527bc513cf672b8d0c6c0c505498bba5c8c5e1617c'
+    }
+
+    /**
+     * Transfer some assets from sovereign account to reserve holder chain and
+     * forward a notification XCM.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+     *   `dest` side.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV61(): {dest: v61.VersionedMultiLocation, beneficiary: v61.VersionedMultiLocation, assets: v61.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class PolkadotXcmSendCall {
@@ -7740,6 +8248,15 @@ export class PolkadotXcmSendCall {
 
     get asV52(): {dest: v52.VersionedMultiLocation, message: v52.VersionedXcm} {
         assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.send') === '9c814457e6c06e355f17d8e2e59924a734ef38dfc7852490ba89fd5b845b6f48'
+    }
+
+    get asV61(): {dest: v61.VersionedMultiLocation, message: v61.VersionedXcm} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -7840,6 +8357,541 @@ export class PolkadotXcmTeleportAssetsCall {
      */
     get asV52(): {dest: v52.VersionedMultiLocation, beneficiary: v52.VersionedMultiLocation, assets: v52.VersionedMultiAssets, feeAssetItem: number} {
         assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.teleport_assets') === 'ebd99cece75c1b0fc48830527bc513cf672b8d0c6c0c505498bba5c8c5e1617c'
+    }
+
+    /**
+     * Teleport some assets from the local chain to some destination chain.
+     * 
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
+     * 
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+     *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+     *   an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+     *   `dest` side. May not be empty.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     *   fees.
+     */
+    get asV61(): {dest: v61.VersionedMultiLocation, beneficiary: v61.VersionedMultiLocation, assets: v61.VersionedMultiAssets, feeAssetItem: number} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyAddProxyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.add_proxy')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Register a proxy account for the sender that is able to make calls on its behalf.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to make a proxy.
+     * - `proxy_type`: The permissions allowed for this proxy account.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.add_proxy') === '80cae686e5fb2cbc74737d0cc0fdb1552d6064d732de9b0bdf195866c6ab7816'
+    }
+
+    /**
+     * Register a proxy account for the sender that is able to make calls on its behalf.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to make a proxy.
+     * - `proxy_type`: The permissions allowed for this proxy account.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     */
+    get asV61(): {delegate: v61.MultiAddress, proxyType: v61.ProxyType, delay: number} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyAnnounceCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.announce')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Publish the hash of a proxy-call that will be made in the future.
+     * 
+     * This must be called some number of blocks before the corresponding `proxy` is attempted
+     * if the delay associated with the proxy relationship is greater than zero.
+     * 
+     * No more than `MaxPending` announcements may be made at any one time.
+     * 
+     * This will take a deposit of `AnnouncementDepositFactor` as well as
+     * `AnnouncementDepositBase` if there are no other pending announcements.
+     * 
+     * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `call_hash`: The hash of the call to be made by the `real` account.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.announce') === '1e2ba1b130bab29ab148202fefa1b526f6d362ed3f3d2aaf35cc706821c5cd49'
+    }
+
+    /**
+     * Publish the hash of a proxy-call that will be made in the future.
+     * 
+     * This must be called some number of blocks before the corresponding `proxy` is attempted
+     * if the delay associated with the proxy relationship is greater than zero.
+     * 
+     * No more than `MaxPending` announcements may be made at any one time.
+     * 
+     * This will take a deposit of `AnnouncementDepositFactor` as well as
+     * `AnnouncementDepositBase` if there are no other pending announcements.
+     * 
+     * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `call_hash`: The hash of the call to be made by the `real` account.
+     */
+    get asV61(): {real: v61.MultiAddress, callHash: Uint8Array} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyCreatePureCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.create_pure')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
+     * 
+     * Requires a `Signed` origin.
+     * 
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     * 
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
+     * 
+     * Fails if there are insufficient funds to pay for deposit.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.create_pure') === '8792a2f5b1fa315978749429bbf4d348da0e4843fa9ae19da9fc7e867448d50c'
+    }
+
+    /**
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
+     * 
+     * Requires a `Signed` origin.
+     * 
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     * 
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
+     * 
+     * Fails if there are insufficient funds to pay for deposit.
+     */
+    get asV61(): {proxyType: v61.ProxyType, delay: number, index: number} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyKillPureCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.kill_pure')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Removes a previously spawned pure proxy.
+     * 
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
+     * 
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
+     * 
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * 
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.kill_pure') === 'b82c99b2e4ffae13cd33af94a30d5018a9373ceded79856a0af44f4dd4825e50'
+    }
+
+    /**
+     * Removes a previously spawned pure proxy.
+     * 
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
+     * 
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
+     * 
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * 
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
+     */
+    get asV61(): {spawner: v61.MultiAddress, proxyType: v61.ProxyType, index: number, height: number, extIndex: number} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyProxyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.proxy')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === 'f25c80fdb2ad6e2f9971fec5d84d5452d5762eba9cbe52a545b97a1f6a4d8223'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV61(): {real: v61.MultiAddress, forceProxyType: (v61.ProxyType | undefined), call: v61.Call} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyProxyAnnouncedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.proxy_announced')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === 'dabf407a7845ebeb4eeb6f205b65954d2f7ad8e889a1e28eb26c08f096ecb012'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV61(): {delegate: v61.MultiAddress, real: v61.MultiAddress, forceProxyType: (v61.ProxyType | undefined), call: v61.Call} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyRejectAnnouncementCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.reject_announcement')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove the given announcement of a delegate.
+     * 
+     * May be called by a target (proxied) account to remove a call that one of their delegates
+     * (`delegate`) has announced they want to execute. The deposit is returned.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `delegate`: The account that previously announced the call.
+     * - `call_hash`: The hash of the call to be made.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.reject_announcement') === 'a1d7c3959dec3e3a68a4ea7b541568e066bd95b7007b052c43ff4736abe9b06b'
+    }
+
+    /**
+     * Remove the given announcement of a delegate.
+     * 
+     * May be called by a target (proxied) account to remove a call that one of their delegates
+     * (`delegate`) has announced they want to execute. The deposit is returned.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `delegate`: The account that previously announced the call.
+     * - `call_hash`: The hash of the call to be made.
+     */
+    get asV61(): {delegate: v61.MultiAddress, callHash: Uint8Array} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyRemoveAnnouncementCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.remove_announcement')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove a given announcement.
+     * 
+     * May be called by a proxy account to remove a call they previously announced and return
+     * the deposit.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `call_hash`: The hash of the call to be made by the `real` account.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.remove_announcement') === '1e2ba1b130bab29ab148202fefa1b526f6d362ed3f3d2aaf35cc706821c5cd49'
+    }
+
+    /**
+     * Remove a given announcement.
+     * 
+     * May be called by a proxy account to remove a call they previously announced and return
+     * the deposit.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `call_hash`: The hash of the call to be made by the `real` account.
+     */
+    get asV61(): {real: v61.MultiAddress, callHash: Uint8Array} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyRemoveProxiesCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.remove_proxies')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Unregister all proxy accounts for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * WARNING: This may be called on accounts created by `pure`, however if done, then
+     * the unreserved fees will be inaccessible. **All access to this account will be lost.**
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.remove_proxies') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Unregister all proxy accounts for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * WARNING: This may be called on accounts created by `pure`, however if done, then
+     * the unreserved fees will be inaccessible. **All access to this account will be lost.**
+     */
+    get asV61(): null {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ProxyRemoveProxyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Proxy.remove_proxy')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Unregister a proxy account for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to remove as a proxy.
+     * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Proxy.remove_proxy') === '80cae686e5fb2cbc74737d0cc0fdb1552d6064d732de9b0bdf195866c6ab7816'
+    }
+
+    /**
+     * Unregister a proxy account for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to remove as a proxy.
+     * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+     */
+    get asV61(): {delegate: v61.MultiAddress, proxyType: v61.ProxyType, delay: number} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -7946,6 +8998,256 @@ export class SessionSetKeysCall {
      */
     get asV1(): {keys: v1.SessionKeys, proof: Uint8Array} {
         assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class StateTrieMigrationContinueMigrateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'StateTrieMigration.continue_migrate')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Continue the migration for the given `limits`.
+     * 
+     * The dispatch origin of this call can be any signed account.
+     * 
+     * This transaction has NO MONETARY INCENTIVES. calling it will not reward anyone. Albeit,
+     * Upon successful execution, the transaction fee is returned.
+     * 
+     * The (potentially over-estimated) of the byte length of all the data read must be
+     * provided for up-front fee-payment and weighing. In essence, the caller is guaranteeing
+     * that executing the current `MigrationTask` with the given `limits` will not exceed
+     * `real_size_upper` bytes of read data.
+     * 
+     * The `witness_task` is merely a helper to prevent the caller from being slashed or
+     * generally trigger a migration that they do not intend. This parameter is just a message
+     * from caller, saying that they believed `witness_task` was the last state of the
+     * migration, and they only wish for their transaction to do anything, if this assumption
+     * holds. In case `witness_task` does not match, the transaction fails.
+     * 
+     * Based on the documentation of [`MigrationTask::migrate_until_exhaustion`], the
+     * recommended way of doing this is to pass a `limit` that only bounds `count`, as the
+     * `size` limit can always be overwritten.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('StateTrieMigration.continue_migrate') === 'b2f02d34da1cfa1cd27ee6c14c8010fb2327197d372a167b1dff344d7c934130'
+    }
+
+    /**
+     * Continue the migration for the given `limits`.
+     * 
+     * The dispatch origin of this call can be any signed account.
+     * 
+     * This transaction has NO MONETARY INCENTIVES. calling it will not reward anyone. Albeit,
+     * Upon successful execution, the transaction fee is returned.
+     * 
+     * The (potentially over-estimated) of the byte length of all the data read must be
+     * provided for up-front fee-payment and weighing. In essence, the caller is guaranteeing
+     * that executing the current `MigrationTask` with the given `limits` will not exceed
+     * `real_size_upper` bytes of read data.
+     * 
+     * The `witness_task` is merely a helper to prevent the caller from being slashed or
+     * generally trigger a migration that they do not intend. This parameter is just a message
+     * from caller, saying that they believed `witness_task` was the last state of the
+     * migration, and they only wish for their transaction to do anything, if this assumption
+     * holds. In case `witness_task` does not match, the transaction fails.
+     * 
+     * Based on the documentation of [`MigrationTask::migrate_until_exhaustion`], the
+     * recommended way of doing this is to pass a `limit` that only bounds `count`, as the
+     * `size` limit can always be overwritten.
+     */
+    get asV61(): {limits: v61.MigrationLimits, realSizeUpper: number, witnessTask: v61.MigrationTask} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class StateTrieMigrationControlAutoMigrationCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'StateTrieMigration.control_auto_migration')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Control the automatic migration.
+     * 
+     * The dispatch origin of this call must be [`Config::ControlOrigin`].
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('StateTrieMigration.control_auto_migration') === '934f71f83c3d30d65f34b1d15aea2aaeb23d94da8797b082432d425da6f8bb95'
+    }
+
+    /**
+     * Control the automatic migration.
+     * 
+     * The dispatch origin of this call must be [`Config::ControlOrigin`].
+     */
+    get asV61(): {maybeConfig: (v61.MigrationLimits | undefined)} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class StateTrieMigrationForceSetProgressCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'StateTrieMigration.force_set_progress')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Forcefully set the progress the running migration.
+     * 
+     * This is only useful in one case: the next key to migrate is too big to be migrated with
+     * a signed account, in a parachain context, and we simply want to skip it. A reasonable
+     * example of this would be `:code:`, which is both very expensive to migrate, and commonly
+     * used, so probably it is already migrated.
+     * 
+     * In case you mess things up, you can also, in principle, use this to reset the migration
+     * process.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('StateTrieMigration.force_set_progress') === '66e944fe95dd27767f5503dcc93c3e72db64c1c21a9b9329d0bfa457a225e8a3'
+    }
+
+    /**
+     * Forcefully set the progress the running migration.
+     * 
+     * This is only useful in one case: the next key to migrate is too big to be migrated with
+     * a signed account, in a parachain context, and we simply want to skip it. A reasonable
+     * example of this would be `:code:`, which is both very expensive to migrate, and commonly
+     * used, so probably it is already migrated.
+     * 
+     * In case you mess things up, you can also, in principle, use this to reset the migration
+     * process.
+     */
+    get asV61(): {progressTop: v61.Progress, progressChild: v61.Progress} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class StateTrieMigrationMigrateCustomChildCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'StateTrieMigration.migrate_custom_child')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Migrate the list of child keys by iterating each of them one by one.
+     * 
+     * All of the given child keys must be present under one `child_root`.
+     * 
+     * This does not affect the global migration process tracker ([`MigrationProcess`]), and
+     * should only be used in case any keys are leftover due to a bug.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('StateTrieMigration.migrate_custom_child') === '517d7428953961fc7fea1fe19c15bc0f7e2b3e28a22d0de760a0a82b88ea31ee'
+    }
+
+    /**
+     * Migrate the list of child keys by iterating each of them one by one.
+     * 
+     * All of the given child keys must be present under one `child_root`.
+     * 
+     * This does not affect the global migration process tracker ([`MigrationProcess`]), and
+     * should only be used in case any keys are leftover due to a bug.
+     */
+    get asV61(): {root: Uint8Array, childKeys: Uint8Array[], totalSize: number} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class StateTrieMigrationMigrateCustomTopCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'StateTrieMigration.migrate_custom_top')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Migrate the list of top keys by iterating each of them one by one.
+     * 
+     * This does not affect the global migration process tracker ([`MigrationProcess`]), and
+     * should only be used in case any keys are leftover due to a bug.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('StateTrieMigration.migrate_custom_top') === 'ed5f519b60946b2923a3b009da16ae71d840d26cb7a9a2b60d9f58514b83d2d2'
+    }
+
+    /**
+     * Migrate the list of top keys by iterating each of them one by one.
+     * 
+     * This does not affect the global migration process tracker ([`MigrationProcess`]), and
+     * should only be used in case any keys are leftover due to a bug.
+     */
+    get asV61(): {keys: Uint8Array[], witnessSize: number} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class StateTrieMigrationSetSignedMaxLimitsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'StateTrieMigration.set_signed_max_limits')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the maximum limit of the signed migration.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('StateTrieMigration.set_signed_max_limits') === 'fbb1ea8c834eda6d60b8135a5aabb387db906b08c352e04e25fc4e50ec44ed65'
+    }
+
+    /**
+     * Set the maximum limit of the signed migration.
+     */
+    get asV61(): {limits: v61.MigrationLimits} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -8537,6 +9839,31 @@ export class SudoSudoCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === 'b41644731dfb2424bf6f61282cf521c6a99eaf832556af9b1fb3f7d97f07559e'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV61(): {call: v61.Call} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoAsCall {
@@ -9111,6 +10438,33 @@ export class SudoSudoAsCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'a685d39826ef28c16688b8172b7234ec65ab96d54c721c4604df0e09141c3a0f'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV61(): {who: v61.MultiAddress, call: v61.Call} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -9651,6 +11005,35 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV55(): {call: v55.Call, weight: v55.Weight} {
         assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '49dd13782465c7651cbe6344a1d0b14fc64993f3177e1b8d70bae64b3c9767b0'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV61(): {call: v61.Call, weight: v61.Weight} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -10778,6 +12161,45 @@ export class UtilityAsDerivativeCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'd0bc8b66dd00938435c5594626e04d00583165be813906602b60498395405764'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV61(): {index: number, call: v61.Call} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -11608,6 +13030,55 @@ export class UtilityBatchCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '2be4436ba340ce260d8405857e879b3162d088a182eede66deab6d619497b80c'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV61(): {calls: v61.Call[]} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -12278,6 +13749,45 @@ export class UtilityBatchAllCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '2be4436ba340ce260d8405857e879b3162d088a182eede66deab6d619497b80c'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV61(): {calls: v61.Call[]} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -12787,6 +14297,31 @@ export class UtilityDispatchAsCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '1dceda002f21bfc23d53ac004518ad74452e8815eb7de76399c17a694e6c896d'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV61(): {asOrigin: v61.OriginCaller, call: v61.Call} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -13088,6 +14623,45 @@ export class UtilityForceBatchCall {
         assert(this.isV55)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '2be4436ba340ce260d8405857e879b3162d088a182eede66deab6d619497b80c'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV61(): {calls: v61.Call[]} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -13150,6 +14724,31 @@ export class UtilityWithWeightCall {
      */
     get asV55(): {call: v55.Call, weight: v55.Weight} {
         assert(this.isV55)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '49dd13782465c7651cbe6344a1d0b14fc64993f3177e1b8d70bae64b3c9767b0'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV61(): {call: v61.Call, weight: v61.Weight} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13554,6 +15153,23 @@ export class XcAssetConfigChangeExistingAssetLocationCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Change the xcm type mapping for a given asset Id.
+     * The new asset type will inherit old `units per second` value.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.change_existing_asset_location') === 'f8acf89641944c7f6bbb8bb4b250f82d285ad8e28b3922bd62f7bfd91ee79f49'
+    }
+
+    /**
+     * Change the xcm type mapping for a given asset Id.
+     * The new asset type will inherit old `units per second` value.
+     */
+    get asV61(): {newAssetLocation: v61.VersionedMultiLocation, assetId: bigint} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcAssetConfigRegisterAssetLocationCall {
@@ -13604,6 +15220,25 @@ export class XcAssetConfigRegisterAssetLocationCall {
      */
     get asV52(): {assetLocation: v52.VersionedMultiLocation, assetId: bigint} {
         assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register new asset location to asset Id mapping.
+     * 
+     * This makes the asset eligible for XCM interaction.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.register_asset_location') === '73798f87f3ed8f7397710c12cb4db0e884a2cea8bdf732632e05e2e4563ca84b'
+    }
+
+    /**
+     * Register new asset location to asset Id mapping.
+     * 
+     * This makes the asset eligible for XCM interaction.
+     */
+    get asV61(): {assetLocation: v61.VersionedMultiLocation, assetId: bigint} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13687,6 +15322,25 @@ export class XcAssetConfigRemovePaymentAssetCall {
         assert(this.isV52)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Removes asset from the set of supported payment assets.
+     * 
+     * The asset can still be interacted with via XCM but it cannot be used to pay for execution time.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.remove_payment_asset') === 'f972f3d7aa1481632a3438c7b2dca85ac510c32c4af5b355aba61e91601bef96'
+    }
+
+    /**
+     * Removes asset from the set of supported payment assets.
+     * 
+     * The asset can still be interacted with via XCM but it cannot be used to pay for execution time.
+     */
+    get asV61(): {assetLocation: v61.VersionedMultiLocation} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcAssetConfigSetAssetUnitsPerSecondCall {
@@ -13733,6 +15387,23 @@ export class XcAssetConfigSetAssetUnitsPerSecondCall {
      */
     get asV52(): {assetLocation: v52.VersionedMultiLocation, unitsPerSecond: bigint} {
         assert(this.isV52)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Change the amount of units we are charging per execution second
+     * for a given AssetLocation.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcAssetConfig.set_asset_units_per_second') === 'fa7181661795d701f7fcfb27673eb0a4e964390417fb2ad460e78723bf877568'
+    }
+
+    /**
+     * Change the amount of units we are charging per execution second
+     * for a given AssetLocation.
+     */
+    get asV61(): {assetLocation: v61.VersionedMultiLocation, unitsPerSecond: bigint} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13901,6 +15572,45 @@ export class XcmpQueueServiceOverweightCall {
      */
     get asV49(): {index: bigint, weightLimit: bigint} {
         assert(this.isV49)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Services a single overweight XCM.
+     * 
+     * - `origin`: Must pass `ExecuteOverweightOrigin`.
+     * - `index`: The index of the overweight XCM to service
+     * - `weight_limit`: The amount of weight that XCM execution may take.
+     * 
+     * Errors:
+     * - `BadOverweightIndex`: XCM under `index` is not found in the `Overweight` storage map.
+     * - `BadXcm`: XCM under `index` cannot be properly decoded into a valid XCM format.
+     * - `WeightOverLimit`: XCM execution may use greater `weight_limit`.
+     * 
+     * Events:
+     * - `OverweightServiced`: On success.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcmpQueue.service_overweight') === '80fae8875bf513efc1e06b7dac547fccfc1e5fc45888cc8afd9b43812cf51bf5'
+    }
+
+    /**
+     * Services a single overweight XCM.
+     * 
+     * - `origin`: Must pass `ExecuteOverweightOrigin`.
+     * - `index`: The index of the overweight XCM to service
+     * - `weight_limit`: The amount of weight that XCM execution may take.
+     * 
+     * Errors:
+     * - `BadOverweightIndex`: XCM under `index` is not found in the `Overweight` storage map.
+     * - `BadXcm`: XCM under `index` cannot be properly decoded into a valid XCM format.
+     * - `WeightOverLimit`: XCM execution may use greater `weight_limit`.
+     * 
+     * Events:
+     * - `OverweightServiced`: On success.
+     */
+    get asV61(): {index: bigint, weightLimit: v61.Weight} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -14124,6 +15834,27 @@ export class XcmpQueueUpdateThresholdWeightCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Overwrites the amount of remaining weight under which we stop processing messages.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.threshold_weight`
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcmpQueue.update_threshold_weight') === '75eef6f2cd3523e44f50db837d1610f4db03539037986ac2704c4a043d58ba81'
+    }
+
+    /**
+     * Overwrites the amount of remaining weight under which we stop processing messages.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.threshold_weight`
+     */
+    get asV61(): {new: v61.Weight} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcmpQueueUpdateWeightRestrictDecayCall {
@@ -14207,6 +15938,29 @@ export class XcmpQueueUpdateWeightRestrictDecayCall {
         assert(this.isV49)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Overwrites the speed to which the available weight approaches the maximum weight.
+     * A lower number results in a faster progression. A value of 1 makes the entire weight available initially.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.weight_restrict_decay`.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcmpQueue.update_weight_restrict_decay') === '75eef6f2cd3523e44f50db837d1610f4db03539037986ac2704c4a043d58ba81'
+    }
+
+    /**
+     * Overwrites the speed to which the available weight approaches the maximum weight.
+     * A lower number results in a faster progression. A value of 1 makes the entire weight available initially.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.weight_restrict_decay`.
+     */
+    get asV61(): {new: v61.Weight} {
+        assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class XcmpQueueUpdateXcmpMaxIndividualWeightCall {
@@ -14288,6 +16042,29 @@ export class XcmpQueueUpdateXcmpMaxIndividualWeightCall {
      */
     get asV49(): {new: bigint} {
         assert(this.isV49)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Overwrite the maximum amount of weight any individual message may consume.
+     * Messages above this weight go into the overweight queue and may only be serviced explicitly.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.xcmp_max_individual_weight`.
+     */
+    get isV61(): boolean {
+        return this._chain.getCallHash('XcmpQueue.update_xcmp_max_individual_weight') === '75eef6f2cd3523e44f50db837d1610f4db03539037986ac2704c4a043d58ba81'
+    }
+
+    /**
+     * Overwrite the maximum amount of weight any individual message may consume.
+     * Messages above this weight go into the overweight queue and may only be serviced explicitly.
+     * 
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.xcmp_max_individual_weight`.
+     */
+    get asV61(): {new: v61.Weight} {
+        assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
 }
