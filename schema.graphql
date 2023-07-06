@@ -77,3 +77,54 @@ type EvmContract @entity {
   transactionHash: String! @index
   createdTimestamp: DateTime! @index
 }
+
+enum TransferType {
+  TRANSFER
+  MINT
+  BURN
+}
+
+enum ContractStandard {
+  ERC20
+  ERC721
+  ERC1155
+}
+
+interface Token {
+  id: ID!
+  name: String
+  symbol: String
+}
+
+type FToken implements Token @entity {
+  id: ID! # Token contract address
+  name: String @index
+  symbol: String @index
+  decimals: Int
+}
+
+interface Transfer {
+  id: ID!
+  blockNumber: BigInt!
+  timestamp: DateTime!
+  eventIndex: Int!
+  txnHash: String!
+  from: String!
+  to: String!
+  amount: BigInt
+  transferType: TransferType
+}
+
+type FtTransfer implements Transfer @entity {
+  id: ID!
+  callId: String
+  blockNumber: BigInt! @index
+  timestamp: DateTime!
+  eventIndex: Int!
+  txnHash: String!
+  from: String!
+  to: String!
+  amount: BigInt @index
+  transferType: TransferType @index
+  token: String!
+}

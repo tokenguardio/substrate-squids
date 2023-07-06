@@ -1,9 +1,12 @@
 import {
   SubstrateBatchProcessor,
   SubstrateBlock,
+  BatchContext,
+  BatchProcessorItem,
+  EvmLogEvent,
 } from "@subsquid/substrate-processor";
 import { getTransactionResult, TransactionResult } from "@subsquid/frontier";
-import { TypeormDatabase } from "@subsquid/typeorm-store";
+import { TypeormDatabase, Store } from "@subsquid/typeorm-store";
 import { In } from "typeorm";
 import {
   EventNorm,
@@ -15,6 +18,9 @@ import {
   SubstrateTransaction,
   SubstrateLabel,
   EvmContract,
+  FToken,
+  FtTransfer,
+  TransferType,
 } from "./model";
 import {
   eventNormalizationHandlers,
@@ -26,16 +32,24 @@ import {
 import { MappedAddress, AddressArgs } from "./interfaces/mappings/specific";
 import * as ss58 from "@subsquid/ss58";
 import { decodeHex } from "@subsquid/util-internal-hex";
+import * as erc20 from "./abi/erc20";
+import { Contract as Erc20Contract } from "./abi/erc20";
+import assert from "assert";
+import { addTimeout } from "@subsquid/util-timeout";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
 
+type Item = BatchProcessorItem<typeof processor>;
+type Context = BatchContext<Store, Item>;
+
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
     archive:
       process.env.GATEWAY_URL ?? "https://astar.archive.subsquid.io/graphql",
+    chain: process.env.CHAIN_NODE ?? "wss://astar.api.onfinality.io/public-ws",
   })
   .addEvent("*", {
     data: {
@@ -47,15 +61,21 @@ const processor = new SubstrateBatchProcessor()
       call: true,
       extrinsic: true,
     },
+  })
+  .addEvmLog("*", {
+    filter: [erc20.events.Transfer.topic],
   });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
   const calls: CallNorm[] = [];
   const evmTransactions: EvmTransaction[] = [];
+
   const substrateTransactions: SubstrateTransaction[] = [];
   const evmContracts: EvmContract[] = [];
   const addressMappings: Map<string, AddressMapping> = new Map();
+  const ftTransfers: FtTransfer[] = [];
+  const fTokens: FToken[] = [];
 
   for (const block of ctx.blocks) {
     const ethereumTransactEventsPerBlock: Map<
@@ -66,6 +86,38 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       const pallet = item.name.split(".")[0];
       if (item.kind === "event") {
         if (eventNormalizationHandlers[pallet]) {
+          if (item.name === "EVM.Log") {
+            switch ((item.event.args.log || item.event.args).topics[0]) {
+              case erc20.events.Transfer.topic:
+                try {
+                  const parsedEvent = parseEvmLog(item.event);
+                  const {
+                    from,
+                    to,
+                    value: amount,
+                  } = erc20.events.Transfer.decode(parsedEvent.args);
+                  const ftTransfer = createFtTransfer(
+                    block.header,
+                    item.event,
+                    from,
+                    to,
+                    amount
+                  );
+                  ftTransfers.push(ftTransfer);
+                } catch (err) {}
+
+                let fToken = await handleFToken(
+                  ctx,
+                  block.header,
+                  item.event.args.address,
+                  fTokens
+                );
+                if (fToken) {
+                  fTokens.push(fToken);
+                }
+                break;
+            }
+          }
           if (
             item.event.extrinsic?.call.name === "Ethereum.transact" &&
             item.event.extrinsic?.call.success &&
@@ -128,6 +180,9 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     );
   }
 
+  await ctx.store.save(ftTransfers);
+  await ctx.store.save(fTokens);
+
   await assignLabelsToEvmTransactions(evmContracts, evmTransactions, ctx);
 
   await ctx.store.save(evmContracts);
@@ -174,6 +229,87 @@ function createAddressMapping(mappedAddress: MappedAddress): AddressMapping {
     id: mappedAddress.hex,
     ss58: mappedAddress.ss58,
   });
+}
+
+function parseEvmLog(event: any): EvmLogEvent {
+  assert(event, "Current event is not available");
+  const eventDecorated = event;
+  if ("log" in eventDecorated.args && !("topics" in eventDecorated.args))
+    eventDecorated.args = {
+      ...event.args,
+      ...event.args.log,
+    };
+  return eventDecorated;
+}
+
+function createFtTransfer(
+  block: SubstrateBlock,
+  event: any,
+  from: any,
+  to: any,
+  amount: any
+): FtTransfer {
+  return new FtTransfer({
+    id: event.id,
+    callId: event.call?.id,
+    blockNumber: BigInt(block.height),
+    timestamp: new Date(block.timestamp),
+    eventIndex: event.indexInBlock,
+    txnHash: event.evmTxHash,
+    from: from,
+    to: to,
+    token: event.args.address,
+    amount: BigInt(amount.toString()),
+    transferType: getTransferType(from, to),
+  });
+}
+
+async function handleFToken(
+  ctx: any,
+  block: any,
+  tokenAddress: string,
+  fTokens: FToken[]
+): Promise<FToken | undefined> {
+  if (!fTokens.some((token) => token.id === tokenAddress)) {
+    let token = await ctx.store.get(FToken, tokenAddress);
+
+    if (!token) {
+      const { name, symbol, decimals } = await getTokenDetails(
+        tokenAddress,
+        "ERC20",
+        ctx,
+        block
+      );
+
+      return new FToken({
+        id: tokenAddress,
+        name,
+        symbol,
+        decimals,
+      });
+    }
+  }
+}
+
+const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+function isMint(from: string, to: string): boolean {
+  return from === EMPTY_ADDRESS && to !== EMPTY_ADDRESS;
+}
+
+function isBurn(from: string, to: string): boolean {
+  return to === EMPTY_ADDRESS && from !== EMPTY_ADDRESS;
+}
+
+function getTransferType(from: string, to: string): TransferType {
+  if (isMint(from, to)) {
+    return TransferType.MINT;
+  }
+  if (isBurn(from, to)) {
+    return TransferType.BURN;
+  }
+
+  return TransferType.TRANSFER;
 }
 
 function addAddressesToMap(
@@ -534,4 +670,96 @@ function addSingleToAddressMapping(
   };
   const addressMapping = createAddressMapping(mappedAddress);
   addressMappings.set(mappedAddress.hex, addressMapping);
+}
+
+export type TokenDetails = {
+  name: string | null;
+  symbol: string | null;
+  decimals: number | null;
+};
+
+function clearNullBytes(rawStr: string): string {
+  /**
+   * We need replace null byte in string value to prevent error:
+   * "QueryFailedError: invalid byte sequence for encoding \"UTF8\": 0x00\n    at PostgresQueryRunner.query ..."
+   */
+  return rawStr ? rawStr.replace(/\0/g, "") : rawStr;
+}
+
+function getDecoratedCallResult(rawValue: string | null): string | null {
+  const decoratedValue: string | null = rawValue;
+
+  if (!rawValue || typeof rawValue !== "string") return null;
+
+  const regex = new RegExp(/^\d{10}\.[\d|\w]{4}$/);
+
+  /**
+   * This test is required for contract call results
+   * like this - "0006648936.1ec7" which must be saved as null
+   */
+  if (regex.test(rawValue)) return null;
+
+  return decoratedValue ? clearNullBytes(decoratedValue) : decoratedValue;
+}
+
+export async function getTokenDetails(
+  contractAddress: string,
+  contractStandard: string,
+  ctx: Context,
+  block: any
+): Promise<TokenDetails> {
+  const contractCallTimeout = 5000;
+  let contractInst = null;
+  switch (contractStandard) {
+    case "ERC20":
+      contractInst = getContractErc20(ctx, contractAddress, block);
+      break;
+  }
+
+  if (!contractInst) throw new Error("contractInst is null");
+
+  let name: string | null = null;
+  let symbol: string | null = null;
+  let decimals: number | null = null;
+
+  try {
+    name =
+      "name" in contractInst
+        ? await addTimeout(contractInst.name(), contractCallTimeout)
+        : null;
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    symbol =
+      "symbol" in contractInst
+        ? await addTimeout(contractInst.symbol(), contractCallTimeout)
+        : null;
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    decimals =
+      "decimals" in contractInst
+        ? await addTimeout(contractInst.decimals(), contractCallTimeout)
+        : null;
+  } catch (e) {
+    console.log(e);
+  }
+  return {
+    symbol: getDecoratedCallResult(symbol),
+    name: getDecoratedCallResult(name),
+    decimals,
+  };
+}
+
+function getContractErc20(
+  ctx: any,
+  contractAddress: any,
+  block: any
+): Erc20Contract {
+  return new Erc20Contract(
+    { _chain: ctx._chain, block: { height: block.height } },
+    contractAddress
+  );
 }
