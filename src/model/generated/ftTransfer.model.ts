@@ -21,11 +21,11 @@ export class FtTransfer {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
-    @Column_("int4", {nullable: false})
-    eventIndex!: number
+    @Column_("int4", {nullable: true})
+    eventIndex!: number | undefined | null
 
-    @Column_("text", {nullable: false})
-    txnHash!: string
+    @Column_("text", {nullable: true})
+    txnHash!: string | undefined | null
 
     @Column_("text", {nullable: false})
     from!: string

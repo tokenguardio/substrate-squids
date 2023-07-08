@@ -107,8 +107,8 @@ interface Transfer {
   id: ID!
   blockNumber: BigInt!
   timestamp: DateTime!
-  eventIndex: Int!
-  txnHash: String!
+  eventIndex: Int
+  txnHash: String
   from: String!
   to: String!
   amount: BigInt
@@ -120,8 +120,8 @@ type FtTransfer implements Transfer @entity {
   callId: String
   blockNumber: BigInt! @index
   timestamp: DateTime!
-  eventIndex: Int!
-  txnHash: String!
+  eventIndex: Int
+  txnHash: String
   from: String!
   to: String!
   amount: BigInt @index

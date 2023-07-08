@@ -61,10 +61,11 @@ const processor = new SubstrateBatchProcessor()
       call: true,
       extrinsic: true,
     },
-  })
-  .addEvmLog("*", {
-    filter: [erc20.events.Transfer.topic],
   });
+// .addEvmLog("*", {
+//   filter: [erc20.events.Transfer.topic],
+// })
+// .setBlockRange({ from: 3000000, to: 3010000 });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
@@ -86,7 +87,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       const pallet = item.name.split(".")[0];
       if (item.kind === "event") {
         if (eventNormalizationHandlers[pallet]) {
-          if (item.name === "EVM.Log") {
+          if (["EVM.Log"].includes(item.event.name)) {
             switch ((item.event.args.log || item.event.args).topics[0]) {
               case erc20.events.Transfer.topic:
                 try {
