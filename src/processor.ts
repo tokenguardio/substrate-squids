@@ -12,10 +12,6 @@ import {
   mapAddresses,
 } from "./mappings";
 import { MappedAddress, AddressArgs } from "./interfaces/mappings/specific";
-import * as flipper from "./abi/flipper";
-import * as erc20 from "./abi/erc20";
-import { toHex } from "@subsquid/substrate-processor";
-import * as ss58 from "@subsquid/ss58";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -40,8 +36,7 @@ const processor = new SubstrateBatchProcessor()
         success: true,
       },
     },
-  })
-  .setBlockRange({ from: 30000000 });
+  });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
@@ -58,34 +53,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             item.event.name
           )
         ) {
-          if (
-            ["Contracts.ContractEmitted"].includes(item.event.name)
-            // &&
-            // item.event.args.contract ===
-            //   "0x37792006014f0566478c7bc33c1f0f8f80dacc715a74670bf9867da5e4db69f0"
-          ) {
-            try {
-              let erc20event = erc20.decodeEvent(item.event.args.data);
-              console.log(block.header.height);
-              // @ts-ignore: Unreachable code error
-              if (erc20event.from) {
-                // @ts-ignore: Unreachable code error
-                console.log(toHex(erc20event.from));
-                // @ts-ignore: Unreachable code error
-                console.log(ss58.codec(42).encode(erc20event.from));
-              }
-              // @ts-ignore: Unreachable code error
-              if (erc20event.to) {
-                // @ts-ignore: Unreachable code error
-                console.log(toHex(erc20event?.to));
-                // @ts-ignore: Unreachable code error
-                console.log(ss58.codec(42).encode(erc20event.to));
-              }
-              console.log(erc20event);
-            } catch (err) {
-              console.error(err);
-            }
-          }
           const args = eventNormalizationHandlers[pallet](ctx, item.event);
           const event = createEventNorm(block.header, item.event, args);
           events.push(event);
@@ -98,21 +65,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         }
       } else if (item.kind === "call") {
         if (callNormalizationHandlers[pallet]) {
-          if (
-            ["Contracts.call"].includes(item.call.name)
-            // &&
-            // item.call.args.dest.value ===
-            //   "0x37792006014f0566478c7bc33c1f0f8f80dacc715a74670bf9867da5e4db69f0"
-          ) {
-            try {
-              console.log(block.header.height);
-              let message = erc20.decodeMessage(item.call.args.data);
-              console.log(block.header.height);
-              console.log(message);
-            } catch (err) {
-              console.error(err);
-            }
-          }
           const args = callNormalizationHandlers[pallet](ctx, item.call);
           const call = createCallNorm(block.header, item.call, args);
           calls.push(call);
