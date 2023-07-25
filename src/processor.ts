@@ -3,24 +3,23 @@ import {
   SubstrateBlock,
 } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm, CallNorm, AddressMapping } from "./model";
 import {
-  eventNormalizationHandlers,
-  callNormalizationHandlers,
-  eventsAddressArgs,
-  callsAddressArgs,
-  mapAddresses,
-} from "./mappings";
-import { MappedAddress, AddressArgs } from "./interfaces/mappings/specific";
-import * as flipper from "./abi/flipper";
-import * as erc20 from "./abi/erc20";
+  WasmContractMessage,
+  WasmContractEvent,
+  WasmContractMetadata,
+} from "./model";
 import { toHex } from "@subsquid/substrate-processor";
-import * as ss58 from "@subsquid/ss58";
+import { Abi as SubsquidAbi } from "@subsquid/ink-abi";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
+const FROM_BLOCK = parseInt(process.env.FROM_BLOCK as string);
+// const FROM_BLOCK = 36067813;
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS as string;
+// const CONTRACT_ADDRESS =
+//   "0x37792006014f0566478c7bc33c1f0f8f80dacc715a74670bf9867da5e4db69f0";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
@@ -28,12 +27,12 @@ const processor = new SubstrateBatchProcessor()
       process.env.GATEWAY_URL ??
       "https://aleph-zero-testnet.archive.subsquid.io/graphql",
   })
-  .addEvent("*", {
+  .addContractsContractEmitted(CONTRACT_ADDRESS, {
     data: {
       event: true,
     },
   })
-  .addCall("*", {
+  .addCall("Contracts.call", {
     data: {
       call: true,
       extrinsic: {
@@ -41,139 +40,111 @@ const processor = new SubstrateBatchProcessor()
       },
     },
   })
-  .setBlockRange({ from: 30000000 });
+  .setBlockRange({
+    // Contracts pallet was added in block 3613802
+    from: isNaN(FROM_BLOCK) ? 3613802 : FROM_BLOCK,
+  });
+
+let abiInit = false;
+let metadata;
+let contractAbi: SubsquidAbi;
 
 processor.run(new TypeormDatabase(), async (ctx) => {
-  const events: EventNorm[] = [];
-  const calls: CallNorm[] = [];
-  const addressMappings: Map<string, AddressMapping> = new Map();
+  if (!abiInit) {
+    try {
+      metadata = await ctx.store.get(WasmContractMetadata, CONTRACT_ADDRESS);
+      if (!metadata) {
+        throw new Error("Could not fetch metadata");
+      }
+    } catch (err) {
+      console.error(`Failed to fetch metadata: ${err}`);
+      throw err;
+    }
+    try {
+      contractAbi = new SubsquidAbi(metadata.metadata);
+      abiInit = true;
+    } catch (err) {
+      console.error(`Failed to create ABI: ${err}`);
+      throw err;
+    }
+  }
+
+  const wasmContractEvents: WasmContractEvent[] = [];
+  const wasmContractMessages: WasmContractMessage[] = [];
 
   for (const block of ctx.blocks) {
     for (const item of block.items) {
-      const pallet = item.name.split(".")[0];
-      if (item.kind === "event") {
-        if (
-          eventNormalizationHandlers[pallet] &&
-          !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
-            item.event.name
-          )
-        ) {
-          if (
-            ["Contracts.ContractEmitted"].includes(item.event.name)
-            // &&
-            // item.event.args.contract ===
-            //   "0x37792006014f0566478c7bc33c1f0f8f80dacc715a74670bf9867da5e4db69f0"
-          ) {
-            try {
-              let erc20event = erc20.decodeEvent(item.event.args.data);
-              console.log(block.header.height);
-              // @ts-ignore: Unreachable code error
-              if (erc20event.from) {
-                // @ts-ignore: Unreachable code error
-                console.log(toHex(erc20event.from));
-                // @ts-ignore: Unreachable code error
-                console.log(ss58.codec(42).encode(erc20event.from));
-              }
-              // @ts-ignore: Unreachable code error
-              if (erc20event.to) {
-                // @ts-ignore: Unreachable code error
-                console.log(toHex(erc20event?.to));
-                // @ts-ignore: Unreachable code error
-                console.log(ss58.codec(42).encode(erc20event.to));
-              }
-              console.log(erc20event);
-            } catch (err) {
-              console.error(err);
-            }
+      if (
+        item.kind === "event" &&
+        item.event.name === "Contracts.ContractEmitted" &&
+        item.event.args.contract === CONTRACT_ADDRESS
+      ) {
+        const contractEvent = contractAbi.decodeEvent(item.event.args.data);
+        for (let prop in contractEvent) {
+          if (contractEvent[prop] instanceof Uint8Array) {
+            contractEvent[prop] = toHex(contractEvent[prop]);
           }
-          const args = eventNormalizationHandlers[pallet](ctx, item.event);
-          const event = createEventNorm(block.header, item.event, args);
-          events.push(event);
-          addAddressesToMap(
-            item.event.name,
-            args,
-            eventsAddressArgs,
-            addressMappings
-          );
         }
-      } else if (item.kind === "call") {
-        if (callNormalizationHandlers[pallet]) {
-          if (
-            ["Contracts.call"].includes(item.call.name)
-            // &&
-            // item.call.args.dest.value ===
-            //   "0x37792006014f0566478c7bc33c1f0f8f80dacc715a74670bf9867da5e4db69f0"
-          ) {
-            try {
-              console.log(block.header.height);
-              let message = erc20.decodeMessage(item.call.args.data);
-              console.log(block.header.height);
-              console.log(message);
-            } catch (err) {
-              console.error(err);
-            }
+        const wasmContractEvent = createWasmContractEvent(
+          block.header,
+          item.event,
+          contractEvent
+        );
+        wasmContractEvents.push(wasmContractEvent);
+      } else if (
+        item.kind === "call" &&
+        item.call.name === "Contracts.call" &&
+        item.call.args.dest.value === CONTRACT_ADDRESS
+      ) {
+        const contractMessage = contractAbi.decodeMessage(item.call.args.data);
+        for (let prop in contractMessage) {
+          if (contractMessage[prop] instanceof Uint8Array) {
+            contractMessage[prop] = toHex(contractMessage[prop]);
           }
-          const args = callNormalizationHandlers[pallet](ctx, item.call);
-          const call = createCallNorm(block.header, item.call, args);
-          calls.push(call);
-          addAddressesToMap(
-            item.call.name,
-            args,
-            callsAddressArgs,
-            addressMappings
-          );
         }
+        const wasmContractMessage = createWasmContractMessage(
+          block.header,
+          item.call,
+          contractMessage
+        );
+        wasmContractMessages.push(wasmContractMessage);
       }
     }
   }
-  await ctx.store.save(events);
-  await ctx.store.save(calls);
-  await ctx.store.save(Array.from(addressMappings.values()));
+  await ctx.store.save(wasmContractEvents);
+  await ctx.store.save(wasmContractMessages);
 });
 
-function createEventNorm(
+function createWasmContractEvent(
   block: SubstrateBlock,
   event: any,
   args: any
-): EventNorm {
-  return new EventNorm({
+): WasmContractEvent {
+  return new WasmContractEvent({
     id: event.id,
+    callId: event.call.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
-    name: event.name,
-    args,
-    extrinsicSuccess: event.extrinsic?.success,
+    contract: event.args.contract,
+    eventName: args.__kind,
+    eventArgs: args,
   });
 }
 
-function createCallNorm(block: SubstrateBlock, call: any, args: any): CallNorm {
-  return new CallNorm({
+function createWasmContractMessage(
+  block: SubstrateBlock,
+  call: any,
+  args: any
+): WasmContractMessage {
+  return new WasmContractMessage({
     id: call.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
-    name: call.name,
-    args,
-    success: call.success,
-    origin: call.origin,
-  });
-}
-
-function createAddressMapping(mappedAddress: MappedAddress): AddressMapping {
-  return new AddressMapping({
-    id: mappedAddress.hex,
-    ss58: mappedAddress.ss58,
-  });
-}
-
-function addAddressesToMap(
-  itemName: string,
-  args: any,
-  addressArgs: AddressArgs,
-  addressMappings: Map<string, AddressMapping>
-): void {
-  const mappedAddresses = mapAddresses(itemName, args, addressArgs);
-  mappedAddresses.forEach((mappedAddress) => {
-    const addressMapping = createAddressMapping(mappedAddress);
-    addressMappings.set(mappedAddress.hex, addressMapping);
+    callArgs: call.args,
+    dest: call.args.dest.value,
+    value: call.args.value,
+    methodName: args.__kind,
+    messageArgs: args,
+    callSuccess: call.success,
   });
 }

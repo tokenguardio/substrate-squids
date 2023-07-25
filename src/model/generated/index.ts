@@ -1,3 +1,3 @@
-export * from "./eventNorm.model"
-export * from "./callNorm.model"
-export * from "./addressMapping.model"
+export * from "./wasmContractMetadata.model"
+export * from "./wasmContractEvent.model"
+export * from "./wasmContractMessage.model"

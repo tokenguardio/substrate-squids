@@ -1,13 +1,16 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
 
 @Entity_()
-export class CallNorm {
-    constructor(props?: Partial<CallNorm>) {
+export class WasmContractEvent {
+    constructor(props?: Partial<WasmContractEvent>) {
         Object.assign(this, props)
     }
 
     @PrimaryColumn_()
     id!: string
+
+    @Column_("text", {nullable: false})
+    callId!: string
 
     @Column_("text", {nullable: false})
     blockHash!: string
@@ -16,16 +19,12 @@ export class CallNorm {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
-    @Index_()
     @Column_("text", {nullable: false})
-    name!: string
+    contract!: string
+
+    @Column_("text", {nullable: false})
+    eventName!: string
 
     @Column_("jsonb", {nullable: true})
-    args!: unknown | undefined | null
-
-    @Column_("bool", {nullable: true})
-    success!: boolean | undefined | null
-
-    @Column_("jsonb", {nullable: true})
-    origin!: unknown | undefined | null
+    eventArgs!: unknown | undefined | null
 }

@@ -1,23 +1,26 @@
-type EventNorm @entity {
+type WasmContractMetadata @entity {
+  id: ID!
+  metadata: JSON!
+}
+
+type WasmContractEvent @entity {
+  id: ID!
+  callId: String!
+  blockHash: String!
+  timestamp: DateTime! @index
+  contract: String!
+  eventName: String!
+  eventArgs: JSON
+}
+
+type WasmContractMessage @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  extrinsicSuccess: Boolean
-}
-
-type CallNorm @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  success: Boolean
-  origin: JSON
-}
-
-type AddressMapping @entity {
-  id: ID! @index
-  ss58: String! @index
+  callArgs: JSON!
+  callSuccess: Boolean!
+  dest: String!
+  value: BigInt!
+  methodName: String!
+  messageArgs: JSON
 }
