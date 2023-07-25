@@ -1,25 +1,26 @@
 import {
   SubstrateBatchProcessor,
   SubstrateBlock,
+  SubstrateCall,
+  SubstrateEvent,
 } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import {
   WasmContractMessage,
   WasmContractEvent,
+  WasmContractConstructor,
   WasmContractMetadata,
 } from "./model";
-import { toHex } from "@subsquid/substrate-processor";
 import { Abi as SubsquidAbi } from "@subsquid/ink-abi";
+import { convertUint8ArrayPropsToHex } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
+
 const FROM_BLOCK = parseInt(process.env.FROM_BLOCK as string);
-// const FROM_BLOCK = 36067813;
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS as string;
-// const CONTRACT_ADDRESS =
-//   "0x37792006014f0566478c7bc33c1f0f8f80dacc715a74670bf9867da5e4db69f0";
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
@@ -32,12 +33,19 @@ const processor = new SubstrateBatchProcessor()
       event: true,
     },
   })
+  .addEvent("Contracts.Instantiated", {
+    data: {
+      event: true,
+    },
+  })
   .addCall("Contracts.call", {
     data: {
       call: true,
-      extrinsic: {
-        success: true,
-      },
+    },
+  })
+  .addCall("Contracts.call_old_weight", {
+    data: {
+      call: true,
     },
   })
   .setBlockRange({
@@ -46,7 +54,7 @@ const processor = new SubstrateBatchProcessor()
   });
 
 let abiInit = false;
-let metadata;
+let metadata: WasmContractMetadata | undefined;
 let contractAbi: SubsquidAbi;
 
 processor.run(new TypeormDatabase(), async (ctx) => {
@@ -71,58 +79,83 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 
   const wasmContractEvents: WasmContractEvent[] = [];
   const wasmContractMessages: WasmContractMessage[] = [];
+  const wasmContractConstructors: WasmContractConstructor[] = [];
 
   for (const block of ctx.blocks) {
     for (const item of block.items) {
-      if (
-        item.kind === "event" &&
-        item.event.name === "Contracts.ContractEmitted" &&
-        item.event.args.contract === CONTRACT_ADDRESS
-      ) {
-        const contractEvent = contractAbi.decodeEvent(item.event.args.data);
-        for (let prop in contractEvent) {
-          if (contractEvent[prop] instanceof Uint8Array) {
-            contractEvent[prop] = toHex(contractEvent[prop]);
+      if (item.kind === "event") {
+        if (
+          item.event.name === "Contracts.ContractEmitted" &&
+          item.event.args.contract === CONTRACT_ADDRESS
+        ) {
+          try {
+            let contractEvent = contractAbi.decodeEvent(item.event.args.data);
+            contractEvent = convertUint8ArrayPropsToHex(contractEvent);
+            const wasmContractEvent = createWasmContractEvent(
+              block.header,
+              item.event,
+              contractEvent
+            );
+            wasmContractEvents.push(wasmContractEvent);
+          } catch (err) {
+            console.error(err);
+          }
+        } else if (
+          item.event.name === "Contracts.Instantiated" &&
+          item.event.args.contract === CONTRACT_ADDRESS &&
+          item.event.call
+        ) {
+          try {
+            const instantiateCall = item.event.call;
+            let contractConstructor = contractAbi.decodeConstructor(
+              instantiateCall.args.data
+            );
+            contractConstructor =
+              convertUint8ArrayPropsToHex(contractConstructor);
+            const wasmContractConstructor = createWasmContractConstructor(
+              block.header,
+              instantiateCall,
+              item.event,
+              contractConstructor
+            );
+            wasmContractConstructors.push(wasmContractConstructor);
+          } catch (err) {
+            console.error(err);
           }
         }
-        const wasmContractEvent = createWasmContractEvent(
-          block.header,
-          item.event,
-          contractEvent
-        );
-        wasmContractEvents.push(wasmContractEvent);
       } else if (
         item.kind === "call" &&
         item.call.name === "Contracts.call" &&
         item.call.args.dest.value === CONTRACT_ADDRESS
       ) {
-        const contractMessage = contractAbi.decodeMessage(item.call.args.data);
-        for (let prop in contractMessage) {
-          if (contractMessage[prop] instanceof Uint8Array) {
-            contractMessage[prop] = toHex(contractMessage[prop]);
-          }
+        try {
+          let contractMessage = contractAbi.decodeMessage(item.call.args.data);
+          contractMessage = convertUint8ArrayPropsToHex(contractMessage);
+          const wasmContractMessage = createWasmContractMessage(
+            block.header,
+            item.call,
+            contractMessage
+          );
+          wasmContractMessages.push(wasmContractMessage);
+        } catch (err) {
+          console.error(err);
         }
-        const wasmContractMessage = createWasmContractMessage(
-          block.header,
-          item.call,
-          contractMessage
-        );
-        wasmContractMessages.push(wasmContractMessage);
       }
     }
   }
   await ctx.store.save(wasmContractEvents);
   await ctx.store.save(wasmContractMessages);
+  await ctx.store.save(wasmContractConstructors);
 });
 
 function createWasmContractEvent(
   block: SubstrateBlock,
-  event: any,
-  args: any
+  event: SubstrateEvent,
+  args: { [key: string]: any }
 ): WasmContractEvent {
   return new WasmContractEvent({
     id: event.id,
-    callId: event.call.id,
+    callId: event.call?.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     contract: event.args.contract,
@@ -133,18 +166,39 @@ function createWasmContractEvent(
 
 function createWasmContractMessage(
   block: SubstrateBlock,
-  call: any,
-  args: any
+  call: SubstrateCall,
+  args: { [key: string]: any }
 ): WasmContractMessage {
   return new WasmContractMessage({
     id: call.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     callArgs: call.args,
+    callSuccess: call.success,
     dest: call.args.dest.value,
     value: call.args.value,
     methodName: args.__kind,
     messageArgs: args,
+  });
+}
+
+function createWasmContractConstructor(
+  block: SubstrateBlock,
+  call: SubstrateCall,
+  event: SubstrateEvent,
+  args: { [key: string]: any }
+): WasmContractConstructor {
+  return new WasmContractConstructor({
+    id: call.id,
+    blockHash: block.hash,
+    timestamp: new Date(block.timestamp),
+    callName: call.name,
+    callArgs: call.args,
     callSuccess: call.success,
+    deployer: event.args.deployer,
+    contract: event.args.contract,
+    value: call.args.value,
+    methodName: args.__kind,
+    constructorArgs: args,
   });
 }

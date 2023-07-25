@@ -1,3 +1,5 @@
+import { toHex } from "@subsquid/substrate-processor";
+
 export function bufferToHex(buffer: Uint8Array): string {
   const hexString =
     "0x" +
@@ -19,4 +21,19 @@ export function removeDuplicates<T>(items: T[], key: keyof T): T[] {
     return !duplicate;
   });
   return filtered;
+}
+
+export function convertUint8ArrayPropsToHex(obj: any): any {
+  if (obj instanceof Uint8Array) {
+    return toHex(obj);
+  } else if (Array.isArray(obj)) {
+    return obj.map(convertUint8ArrayPropsToHex);
+  } else if (typeof obj === "object" && obj !== null) {
+    let newObj: { [key: string]: any } = {};
+    for (let prop in obj) {
+      newObj[prop] = convertUint8ArrayPropsToHex(obj[prop]);
+    }
+    return newObj;
+  }
+  return obj;
 }

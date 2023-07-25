@@ -17,10 +17,24 @@ type WasmContractMessage @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  callArgs: JSON!
-  callSuccess: Boolean!
   dest: String!
   value: BigInt!
   methodName: String!
   messageArgs: JSON
+  callArgs: JSON!
+  callSuccess: Boolean!
+}
+
+type WasmContractConstructor @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  deployer: String!
+  contract: String!
+  value: BigInt!
+  methodName: String!
+  constructorArgs: JSON
+  callName: String!
+  callArgs: JSON!
+  callSuccess: Boolean!
 }

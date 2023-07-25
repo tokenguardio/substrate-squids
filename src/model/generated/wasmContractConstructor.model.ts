@@ -2,8 +2,8 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 
 @Entity_()
-export class WasmContractMessage {
-    constructor(props?: Partial<WasmContractMessage>) {
+export class WasmContractConstructor {
+    constructor(props?: Partial<WasmContractConstructor>) {
         Object.assign(this, props)
     }
 
@@ -18,7 +18,10 @@ export class WasmContractMessage {
     timestamp!: Date
 
     @Column_("text", {nullable: false})
-    dest!: string
+    deployer!: string
+
+    @Column_("text", {nullable: false})
+    contract!: string
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
     value!: bigint
@@ -27,7 +30,10 @@ export class WasmContractMessage {
     methodName!: string
 
     @Column_("jsonb", {nullable: true})
-    messageArgs!: unknown | undefined | null
+    constructorArgs!: unknown | undefined | null
+
+    @Column_("text", {nullable: false})
+    callName!: string
 
     @Column_("jsonb", {nullable: false})
     callArgs!: unknown
