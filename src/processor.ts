@@ -1,9 +1,4 @@
-import {
-  SubstrateBatchProcessor,
-  SubstrateBlock,
-  SubstrateCall,
-  SubstrateEvent,
-} from "@subsquid/substrate-processor";
+import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import {
   WasmContractMessage,
@@ -13,6 +8,11 @@ import {
 } from "./model";
 import { Abi as SubsquidAbi } from "@subsquid/ink-abi";
 import { convertUint8ArrayPropsToHex } from "./utils/utils";
+import {
+  createWasmContractEvent,
+  createWasmContractMessage,
+  createWasmContractConstructor,
+} from "./utils/dbEntityCreators";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -147,58 +147,3 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   await ctx.store.save(wasmContractMessages);
   await ctx.store.save(wasmContractConstructors);
 });
-
-function createWasmContractEvent(
-  block: SubstrateBlock,
-  event: SubstrateEvent,
-  args: { [key: string]: any }
-): WasmContractEvent {
-  return new WasmContractEvent({
-    id: event.id,
-    callId: event.call?.id,
-    blockHash: block.hash,
-    timestamp: new Date(block.timestamp),
-    contract: event.args.contract,
-    eventName: args.__kind,
-    eventArgs: args,
-  });
-}
-
-function createWasmContractMessage(
-  block: SubstrateBlock,
-  call: SubstrateCall,
-  args: { [key: string]: any }
-): WasmContractMessage {
-  return new WasmContractMessage({
-    id: call.id,
-    blockHash: block.hash,
-    timestamp: new Date(block.timestamp),
-    callArgs: call.args,
-    callSuccess: call.success,
-    dest: call.args.dest.value,
-    value: call.args.value,
-    methodName: args.__kind,
-    messageArgs: args,
-  });
-}
-
-function createWasmContractConstructor(
-  block: SubstrateBlock,
-  call: SubstrateCall,
-  event: SubstrateEvent,
-  args: { [key: string]: any }
-): WasmContractConstructor {
-  return new WasmContractConstructor({
-    id: call.id,
-    blockHash: block.hash,
-    timestamp: new Date(block.timestamp),
-    callName: call.name,
-    callArgs: call.args,
-    callSuccess: call.success,
-    deployer: event.args.deployer,
-    contract: event.args.contract,
-    value: call.args.value,
-    methodName: args.__kind,
-    constructorArgs: args,
-  });
-}
