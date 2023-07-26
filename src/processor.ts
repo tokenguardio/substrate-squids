@@ -5,6 +5,8 @@ import {
   WasmContractEvent,
   WasmContractConstructor,
   WasmContractMetadata,
+  WasmContractDecodingError,
+  WasmContractObjectType,
 } from "./model";
 import { Abi as SubsquidAbi } from "@subsquid/ink-abi";
 import { convertUint8ArrayPropsToHex } from "./utils/utils";
@@ -12,6 +14,7 @@ import {
   createWasmContractEvent,
   createWasmContractMessage,
   createWasmContractConstructor,
+  createWasmContractDecodingError,
 } from "./utils/dbEntityCreators";
 
 // Avoid type errors when serializing BigInts
@@ -80,6 +83,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   const wasmContractEvents: WasmContractEvent[] = [];
   const wasmContractMessages: WasmContractMessage[] = [];
   const wasmContractConstructors: WasmContractConstructor[] = [];
+  const wasmContractDecodingErrors: WasmContractDecodingError[] = [];
 
   for (const block of ctx.blocks) {
     for (const item of block.items) {
@@ -99,6 +103,14 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             wasmContractEvents.push(wasmContractEvent);
           } catch (err) {
             console.error(err);
+            const wasmContractDecodingError = createWasmContractDecodingError(
+              block.header,
+              item.event,
+              WasmContractObjectType.event,
+              item.event.args.contract,
+              err instanceof Error ? err.message : "Unknown error"
+            );
+            wasmContractDecodingErrors.push(wasmContractDecodingError);
           }
         } else if (
           item.event.name === "Contracts.Instantiated" &&
@@ -121,6 +133,14 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             wasmContractConstructors.push(wasmContractConstructor);
           } catch (err) {
             console.error(err);
+            const wasmContractDecodingError = createWasmContractDecodingError(
+              block.header,
+              item.event,
+              WasmContractObjectType.constructor,
+              item.event.args.contract,
+              err instanceof Error ? err.message : "Unknown error"
+            );
+            wasmContractDecodingErrors.push(wasmContractDecodingError);
           }
         }
       } else if (
@@ -139,6 +159,14 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           wasmContractMessages.push(wasmContractMessage);
         } catch (err) {
           console.error(err);
+          const wasmContractDecodingError = createWasmContractDecodingError(
+            block.header,
+            item.call,
+            WasmContractObjectType.message,
+            item.call.args.dest.value,
+            err instanceof Error ? err.message : "Unknown error"
+          );
+          wasmContractDecodingErrors.push(wasmContractDecodingError);
         }
       }
     }
@@ -146,4 +174,5 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   await ctx.store.save(wasmContractEvents);
   await ctx.store.save(wasmContractMessages);
   await ctx.store.save(wasmContractConstructors);
+  await ctx.store.save(wasmContractDecodingErrors);
 });

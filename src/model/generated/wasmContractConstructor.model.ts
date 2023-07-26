@@ -17,9 +17,11 @@ export class WasmContractConstructor {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
+    @Index_()
     @Column_("text", {nullable: false})
     deployer!: string
 
+    @Index_()
     @Column_("text", {nullable: false})
     contract!: string
 

@@ -8,8 +8,8 @@ type WasmContractEvent @entity {
   callId: String!
   blockHash: String!
   timestamp: DateTime! @index
-  contract: String!
-  eventName: String!
+  contract: String! @index
+  eventName: String! @index
   eventArgs: JSON
 }
 
@@ -17,9 +17,9 @@ type WasmContractMessage @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  dest: String!
+  dest: String! @index
   value: BigInt!
-  methodName: String!
+  methodName: String! @index
   messageArgs: JSON
   callArgs: JSON!
   callSuccess: Boolean!
@@ -29,12 +29,29 @@ type WasmContractConstructor @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  deployer: String!
-  contract: String!
+  deployer: String! @index
+  contract: String! @index
   value: BigInt!
   methodName: String!
   constructorArgs: JSON
   callName: String!
   callArgs: JSON!
   callSuccess: Boolean!
+}
+
+enum WasmContractObjectType {
+  message
+  event
+  constructor
+}
+
+type WasmContractDecodingError @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  contract: String! @index
+  type: WasmContractObjectType!
+  errorMessage: String!
+  name: String!
+  args: JSON
 }

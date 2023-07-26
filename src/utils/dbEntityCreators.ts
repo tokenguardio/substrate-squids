@@ -7,6 +7,8 @@ import {
   WasmContractMessage,
   WasmContractEvent,
   WasmContractConstructor,
+  WasmContractObjectType,
+  WasmContractDecodingError,
 } from "./../model";
 
 export function createWasmContractEvent(
@@ -61,5 +63,24 @@ export function createWasmContractConstructor(
     value: call.args.value,
     methodName: args.__kind,
     constructorArgs: args,
+  });
+}
+
+export function createWasmContractDecodingError(
+  block: SubstrateBlock,
+  item: SubstrateCall | SubstrateEvent,
+  type: WasmContractObjectType,
+  contract: string,
+  error: string
+): WasmContractDecodingError {
+  return new WasmContractDecodingError({
+    id: item.id,
+    blockHash: block.hash,
+    timestamp: new Date(block.timestamp),
+    contract: contract,
+    type: type,
+    name: item.name,
+    args: item.args,
+    errorMessage: error,
   });
 }

@@ -1,16 +1,14 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {WasmContractObjectType} from "./_wasmContractObjectType"
 
 @Entity_()
-export class WasmContractEvent {
-    constructor(props?: Partial<WasmContractEvent>) {
+export class WasmContractDecodingError {
+    constructor(props?: Partial<WasmContractDecodingError>) {
         Object.assign(this, props)
     }
 
     @PrimaryColumn_()
     id!: string
-
-    @Column_("text", {nullable: false})
-    callId!: string
 
     @Column_("text", {nullable: false})
     blockHash!: string
@@ -23,10 +21,15 @@ export class WasmContractEvent {
     @Column_("text", {nullable: false})
     contract!: string
 
-    @Index_()
+    @Column_("varchar", {length: 11, nullable: false})
+    type!: WasmContractObjectType
+
     @Column_("text", {nullable: false})
-    eventName!: string
+    errorMessage!: string
+
+    @Column_("text", {nullable: false})
+    name!: string
 
     @Column_("jsonb", {nullable: true})
-    eventArgs!: unknown | undefined | null
+    args!: unknown | undefined | null
 }

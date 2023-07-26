@@ -17,12 +17,14 @@ export class WasmContractMessage {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
+    @Index_()
     @Column_("text", {nullable: false})
     dest!: string
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
     value!: bigint
 
+    @Index_()
     @Column_("text", {nullable: false})
     methodName!: string
 
