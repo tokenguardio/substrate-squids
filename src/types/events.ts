@@ -5,6 +5,7 @@ import * as v12 from './v12'
 import * as v39 from './v39'
 import * as v58 from './v58'
 import * as v59 from './v59'
+import * as v64 from './v64'
 
 export class AlephChangeEmergencyFinalizerEvent {
     private readonly _chain: Chain
@@ -518,6 +519,64 @@ export class BalancesWithdrawEvent {
     }
 }
 
+export class CommitteeManagementBanValidatorsEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'CommitteeManagement.BanValidators')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Validators have been banned from the committee
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('CommitteeManagement.BanValidators') === '2d4ebe5608962197c7fa15ca66fd6c5bf319b9760e80914362be9673a78ab01b'
+    }
+
+    /**
+     * Validators have been banned from the committee
+     */
+    get asV64(): [Uint8Array, v64.BanInfo][] {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class CommitteeManagementSetBanConfigEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'CommitteeManagement.SetBanConfig')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Ban thresholds for the next era has changed
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('CommitteeManagement.SetBanConfig') === 'c0f3d74180498815d8c0bd4de7e8a0e01e2a51570a1c3a8c9266ebca6aef2a92'
+    }
+
+    /**
+     * Ban thresholds for the next era has changed
+     */
+    get asV64(): v64.BanConfig {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class ContractsCalledEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -861,6 +920,21 @@ export class ElectionsChangeValidatorsEvent {
      */
     get asV39(): [Uint8Array[], Uint8Array[], v39.CommitteeSeats] {
         assert(this.isV39)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Committee for the next era has changed
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Elections.ChangeValidators') === 'ed459d8e397638f4e565f5826b31099e8a9e74c388f4009961152622d01f14c0'
+    }
+
+    /**
+     * Committee for the next era has changed
+     */
+    get asV64(): [Uint8Array[], Uint8Array[], v64.CommitteeSeats] {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
