@@ -24,8 +24,8 @@ export class WasmContractDecodingError {
     @Column_("varchar", {length: 11, nullable: false})
     type!: WasmContractObjectType
 
-    @Column_("text", {nullable: false})
-    errorMessage!: string
+    @Column_("text", {nullable: true})
+    errorMessage!: string | undefined | null
 
     @Column_("text", {nullable: false})
     name!: string

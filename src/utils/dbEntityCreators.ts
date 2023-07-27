@@ -71,7 +71,7 @@ export function createWasmContractDecodingError(
   item: SubstrateCall | SubstrateEvent,
   type: WasmContractObjectType,
   contract: string,
-  error: string
+  error: string | undefined
 ): WasmContractDecodingError {
   return new WasmContractDecodingError({
     id: item.id,

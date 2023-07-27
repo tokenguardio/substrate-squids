@@ -108,7 +108,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
               item.event,
               WasmContractObjectType.event,
               item.event.args.contract,
-              err instanceof Error ? err.message : "Unknown error"
+              (err as Error)?.message
             );
             wasmContractDecodingErrors.push(wasmContractDecodingError);
           }
@@ -138,7 +138,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
               item.event,
               WasmContractObjectType.constructor,
               item.event.args.contract,
-              err instanceof Error ? err.message : "Unknown error"
+              (err as Error)?.message
             );
             wasmContractDecodingErrors.push(wasmContractDecodingError);
           }
@@ -164,7 +164,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             item.call,
             WasmContractObjectType.message,
             item.call.args.dest.value,
-            err instanceof Error ? err.message : "Unknown error"
+            (err as Error)?.message
           );
           wasmContractDecodingErrors.push(wasmContractDecodingError);
         }

@@ -51,7 +51,7 @@ type WasmContractDecodingError @entity {
   timestamp: DateTime! @index
   contract: String! @index
   type: WasmContractObjectType!
-  errorMessage: String!
+  errorMessage: String
   name: String!
   args: JSON
 }
