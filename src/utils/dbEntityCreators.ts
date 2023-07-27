@@ -17,7 +17,7 @@ export function createWasmContractEvent(
   args: { [key: string]: any }
 ): WasmContractEvent {
   return new WasmContractEvent({
-    id: event.id,
+    id: `${process.env.ID_PREFIX}-${event.id}`,
     callId: event.call?.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
@@ -33,7 +33,7 @@ export function createWasmContractMessage(
   args: { [key: string]: any }
 ): WasmContractMessage {
   return new WasmContractMessage({
-    id: call.id,
+    id: `${process.env.ID_PREFIX}-${call.id}`,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     callArgs: call.args,
@@ -52,7 +52,7 @@ export function createWasmContractConstructor(
   args: { [key: string]: any }
 ): WasmContractConstructor {
   return new WasmContractConstructor({
-    id: call.id,
+    id: `${process.env.ID_PREFIX}-${call.id}`,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     callName: call.name,
@@ -74,7 +74,7 @@ export function createWasmContractDecodingError(
   error: string | undefined
 ): WasmContractDecodingError {
   return new WasmContractDecodingError({
-    id: item.id,
+    id: `${process.env.ID_PREFIX}-${item.id}`,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     contract: contract,

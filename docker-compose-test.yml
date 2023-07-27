@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+  db:
+    container_name: subsquid_db
+    image: postgres:15
+    environment:
+      POSTGRES_DB: squid
+      POSTGRES_PASSWORD: squid
+    shm_size: 1gb
+    ports:
+      - "23798:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  squid_processor_1:
+    container_name: squid_processor_1
+    build:
+      context: .
+      dockerfile: processor.Dockerfile
+    environment:
+      DB_HOST: db
+      DB_NAME: squid
+      DB_PASS: squid
+      STATE_SCHEMA: squid_1
+      DB_PORT: 5432
+      PROCESSOR_PROMETHEUS_PORT: 3001
+      GQL_PORT: 4350
+      ID_PREFIX: squid_1
+    depends_on:
+      - db
+    ports:
+      - 3001:3001
+      - 4351:4350
+
+  squid_processor_2:
+    container_name: squid_processor_2
+    build:
+      context: .
+      dockerfile: processor.Dockerfile
+    environment:
+      DB_HOST: db
+      DB_NAME: squid
+      DB_PASS: squid
+      STATE_SCHEMA: squid_2
+      DB_PORT: 5432
+      PROCESSOR_PROMETHEUS_PORT: 3002
+      GQL_PORT: 4350
+      ID_PREFIX: squid_2
+    depends_on:
+      - db
+    ports:
+      - 3002:3002
+      - 4352:4350
+
+volumes:
+  db_data:
