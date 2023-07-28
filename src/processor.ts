@@ -3,7 +3,13 @@ import {
   SubstrateBlock,
 } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { EventNorm, CallNorm, AddressMapping } from "./model";
+import {
+  EventNorm,
+  CallNorm,
+  AddressMapping,
+  SubstrateTransaction,
+  SubstrateLabel,
+} from "./model";
 import {
   eventNormalizationHandlers,
   callNormalizationHandlers,
@@ -11,7 +17,16 @@ import {
   callsAddressArgs,
   mapAddresses,
 } from "./mappings";
-import { MappedAddress, AddressArgs } from "./interfaces/mappings/specific";
+import {
+  createSubstrateTransaction,
+  createEventNorm,
+  createCallNorm,
+  createAddressMapping,
+} from "./utils/dbEntityCreators";
+import { AddressArgs } from "./interfaces/mappings/specific";
+import * as ss58 from "@subsquid/ss58";
+import { decodeHex } from "@subsquid/util-internal-hex";
+import { nullifyNonexistentCalls } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -32,9 +47,7 @@ const processor = new SubstrateBatchProcessor()
   .addCall("*", {
     data: {
       call: true,
-      extrinsic: {
-        success: true,
-      },
+      extrinsic: true,
     },
   })
   .setTypesBundle(process.env.TYPES_BUNDLE_FILE ?? "typesBundle.json");
@@ -42,6 +55,7 @@ const processor = new SubstrateBatchProcessor()
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
   const calls: CallNorm[] = [];
+  const substrateTransactions: SubstrateTransaction[] = [];
   const addressMappings: Map<string, AddressMapping> = new Map();
 
   for (const block of ctx.blocks) {
@@ -65,6 +79,15 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           );
         }
       } else if (item.kind === "call") {
+        if (item.extrinsic.fee && !item.call.parent) {
+          handleSubstrateTransaction(
+            item.extrinsic,
+            substrateTransactions,
+            ctx,
+            block.header,
+            addressMappings
+          );
+        }
         if (callNormalizationHandlers[pallet]) {
           const args = callNormalizationHandlers[pallet](ctx, item.call);
           const call = createCallNorm(block.header, item.call, args);
@@ -79,44 +102,15 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       }
     }
   }
-  await ctx.store.save(events);
+
+  await ctx.store.save(substrateTransactions);
+
+  nullifyNonexistentCalls(events, calls);
+
   await ctx.store.save(calls);
+  await ctx.store.save(events);
   await ctx.store.save(Array.from(addressMappings.values()));
 });
-
-function createEventNorm(
-  block: SubstrateBlock,
-  event: any,
-  args: any
-): EventNorm {
-  return new EventNorm({
-    id: event.id,
-    blockHash: block.hash,
-    timestamp: new Date(block.timestamp),
-    name: event.name,
-    args,
-    extrinsicSuccess: event.extrinsic?.success,
-  });
-}
-
-function createCallNorm(block: SubstrateBlock, call: any, args: any): CallNorm {
-  return new CallNorm({
-    id: call.id,
-    blockHash: block.hash,
-    timestamp: new Date(block.timestamp),
-    name: call.name,
-    args,
-    success: call.success,
-    origin: call.origin,
-  });
-}
-
-function createAddressMapping(mappedAddress: MappedAddress): AddressMapping {
-  return new AddressMapping({
-    id: mappedAddress.hex,
-    ss58: mappedAddress.ss58,
-  });
-}
 
 export function addAddressesToMap(
   itemName: string,
@@ -129,4 +123,77 @@ export function addAddressesToMap(
     const addressMapping = createAddressMapping(mappedAddress);
     addressMappings.set(mappedAddress.hex, addressMapping);
   });
+}
+
+function addSingleToAddressMapping(
+  address: string,
+  addressMappings: Map<string, AddressMapping>
+) {
+  const mappedAddress = {
+    hex: address,
+    ss58: ss58.codec("astar").encode(decodeHex(address)),
+  };
+  const addressMapping = createAddressMapping(mappedAddress);
+  addressMappings.set(mappedAddress.hex, addressMapping);
+}
+
+function handleSubstrateTransaction(
+  extrinsic: any,
+  substrateTransactions: SubstrateTransaction[],
+  ctx: any,
+  block: SubstrateBlock,
+  addressMappings: Map<string, AddressMapping>
+) {
+  const call = extrinsic.call;
+  let label;
+  let to;
+  let normalizedCallArgs;
+  switch (call.name) {
+    case "Contracts.call":
+    case "Contracts.call_old_weight":
+      normalizedCallArgs = callNormalizationHandlers["Contracts"](ctx, call);
+      if (normalizedCallArgs.dest?.__kind === "Id") {
+        to = normalizedCallArgs.dest.value;
+        addSingleToAddressMapping(to, addressMappings);
+      }
+      label = SubstrateLabel.contract_call;
+      break;
+    case "Contracts.instantiate":
+    case "Contracts.instantiate_old_weight":
+    case "Contracts.instantiate_with_code":
+    case "Contracts.instantiate_with_code_old_weight":
+      to = null;
+      label = SubstrateLabel.contract_deploy;
+      break;
+    case "Balances.transfer":
+    case "Balances.transfer_all":
+    case "Balances.transfer_keep_alive":
+      normalizedCallArgs = callNormalizationHandlers["Balances"](ctx, call);
+      if (normalizedCallArgs.dest?.__kind === "Id") {
+        to = normalizedCallArgs.dest.value;
+        addSingleToAddressMapping(to, addressMappings);
+      }
+      label = SubstrateLabel.other;
+      break;
+    default:
+      to = null;
+      label = SubstrateLabel.other;
+      break;
+  }
+
+  let from = null;
+  if (extrinsic.signature?.address?.__kind === "Id") {
+    from = extrinsic.signature?.address?.value;
+  }
+  addSingleToAddressMapping(from, addressMappings);
+
+  const substrateTransaction = createSubstrateTransaction(
+    call,
+    extrinsic,
+    block,
+    label,
+    from,
+    to
+  );
+  substrateTransactions.push(substrateTransaction);
 }

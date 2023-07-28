@@ -6,6 +6,7 @@ import { normalizeStakingEventsArgs } from "./events/staking";
 
 import { normalizeContractsCallsArgs } from "./calls/contracts";
 import { normalizeNominationPoolsCallsArgs } from "./calls/nomination-pools";
+import { normalizeBalancesCallsArgs } from "./calls/balances";
 
 export const eventNormalizationHandlers: { [key: string]: any } = {
   Balances: normalizeBalancesEventsArgs,
@@ -18,4 +19,5 @@ export const eventNormalizationHandlers: { [key: string]: any } = {
 export const callNormalizationHandlers: { [key: string]: any } = {
   Contracts: normalizeContractsCallsArgs,
   NominationPools: normalizeNominationPoolsCallsArgs,
+  Balances: normalizeBalancesCallsArgs,
 };

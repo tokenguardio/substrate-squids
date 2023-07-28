@@ -177,7 +177,7 @@ eventMappingGenerator.generateMappings();
 
 const callMappingGenerator = new MappingGenerator(
   "../types/calls.ts",
-  ["Contracts.", "NominationPools."],
+  ["Contracts.", "NominationPools.", "Balances."],
   TransactionType.Call
 );
 callMappingGenerator.generateMappings();

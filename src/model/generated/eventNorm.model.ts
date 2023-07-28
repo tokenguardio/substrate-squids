@@ -1,4 +1,5 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {CallNorm} from "./callNorm.model"
 
 @Entity_()
 export class EventNorm {
@@ -8,6 +9,10 @@ export class EventNorm {
 
     @PrimaryColumn_()
     id!: string
+
+    @Index_()
+    @ManyToOne_(() => CallNorm, {nullable: true})
+    call!: CallNorm | undefined | null
 
     @Column_("text", {nullable: false})
     blockHash!: string

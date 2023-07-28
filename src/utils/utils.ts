@@ -1,3 +1,5 @@
+import { EventNorm, CallNorm } from "../model";
+
 export function bufferToHex(buffer: Uint8Array): string {
   const hexString =
     "0x" +
@@ -19,4 +21,18 @@ export function removeDuplicates<T>(items: T[], key: keyof T): T[] {
     return !duplicate;
   });
   return filtered;
+}
+
+export function nullifyNonexistentCalls(
+  events: EventNorm[],
+  calls: CallNorm[]
+): void {
+  let callIds = new Set(calls.map((call) => call.id));
+
+  events.forEach((event) => {
+    let callId = event.call instanceof CallNorm ? event.call.id : event.call;
+    if (callId && !callIds.has(callId)) {
+      event.call = null;
+    }
+  });
 }
