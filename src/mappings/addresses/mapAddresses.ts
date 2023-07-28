@@ -15,7 +15,8 @@ export function mapAddresses(
   return addresses.map((address) => {
     return {
       hex: address,
-      ss58: ss58.codec("moonbeam").encode(decodeHex(address)),
+      // ss58: ss58.codec("moonbeam").encode(decodeHex(address)),
+      ss58: null,
     };
   });
 }

@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
 
 @Entity_()
 export class AddressMapping {
@@ -9,7 +9,6 @@ export class AddressMapping {
     @PrimaryColumn_()
     id!: string
 
-    @Index_()
-    @Column_("text", {nullable: false})
-    ss58!: string
+    @Column_("text", {nullable: true})
+    ss58!: string | undefined | null
 }

@@ -1,6 +1,6 @@
 export interface MappedAddress {
   hex: string;
-  ss58: string;
+  ss58: string | null;
 }
 
 export type AddressArgs = {

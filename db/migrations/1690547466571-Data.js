@@ -1,5 +1,5 @@
-module.exports = class Data1677764492097 {
-    name = 'Data1677764492097'
+module.exports = class Data1690547466571 {
+    name = 'Data1690547466571'
 
     async up(db) {
         await db.query(`CREATE TABLE "event_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "extrinsic_success" boolean, CONSTRAINT "PK_d33300243feb4679ec112a74a03" PRIMARY KEY ("id"))`)
@@ -8,6 +8,7 @@ module.exports = class Data1677764492097 {
         await db.query(`CREATE TABLE "call_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "success" boolean, "origin" jsonb, CONSTRAINT "PK_e6dee5a463d3dd8993668fb913e" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_5fc3745dc44160b5563cf88307" ON "call_norm" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_d069b0512be986815a0a41e601" ON "call_norm" ("name") `)
+        await db.query(`CREATE TABLE "address_mapping" ("id" character varying NOT NULL, "ss58" text, CONSTRAINT "PK_8611a631b9c1187979a08ecb53f" PRIMARY KEY ("id"))`)
     }
 
     async down(db) {
@@ -17,5 +18,6 @@ module.exports = class Data1677764492097 {
         await db.query(`DROP TABLE "call_norm"`)
         await db.query(`DROP INDEX "public"."IDX_5fc3745dc44160b5563cf88307"`)
         await db.query(`DROP INDEX "public"."IDX_d069b0512be986815a0a41e601"`)
+        await db.query(`DROP TABLE "address_mapping"`)
     }
 }
