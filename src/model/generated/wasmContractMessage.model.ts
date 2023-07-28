@@ -18,8 +18,12 @@ export class WasmContractMessage {
     timestamp!: Date
 
     @Index_()
+    @Column_("text", {nullable: true})
+    caller!: string | undefined | null
+
+    @Index_()
     @Column_("text", {nullable: false})
-    dest!: string
+    contract!: string
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
     value!: bigint

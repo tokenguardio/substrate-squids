@@ -36,12 +36,13 @@ export function createWasmContractMessage(
     id: call.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
-    callArgs: call.args,
-    callSuccess: call.success,
-    dest: call.args.dest.value,
+    caller: call.origin?.value?.value,
+    contract: call.args.dest.value,
     value: call.args.value,
     methodName: args.__kind,
     messageArgs: args,
+    callArgs: call.args,
+    callSuccess: call.success,
   });
 }
 

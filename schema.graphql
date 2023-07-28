@@ -17,7 +17,8 @@ type WasmContractMessage @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  dest: String! @index
+  caller: String @index
+  contract: String! @index
   value: BigInt!
   methodName: String! @index
   messageArgs: JSON

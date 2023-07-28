@@ -1,5 +1,5 @@
-module.exports = class Data1690375836415 {
-    name = 'Data1690375836415'
+module.exports = class Data1690538227222 {
+    name = 'Data1690538227222'
 
     async up(db) {
         await db.query(`CREATE TABLE "wasm_contract_metadata" ("id" character varying NOT NULL, "metadata" jsonb NOT NULL, CONSTRAINT "PK_3578515fa2a7b6b1ca17ad5db90" PRIMARY KEY ("id"))`)
@@ -7,9 +7,10 @@ module.exports = class Data1690375836415 {
         await db.query(`CREATE INDEX "IDX_b17866e6a4ed9ec78dce5b1f64" ON "wasm_contract_event" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_a844186a346897f62bd357eb88" ON "wasm_contract_event" ("contract") `)
         await db.query(`CREATE INDEX "IDX_b64887307839013037c849a74b" ON "wasm_contract_event" ("event_name") `)
-        await db.query(`CREATE TABLE "wasm_contract_message" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "dest" text NOT NULL, "value" numeric NOT NULL, "method_name" text NOT NULL, "message_args" jsonb, "call_args" jsonb NOT NULL, "call_success" boolean NOT NULL, CONSTRAINT "PK_e2330990de1a0583be7aad43bae" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "wasm_contract_message" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "caller" text, "contract" text NOT NULL, "value" numeric NOT NULL, "method_name" text NOT NULL, "message_args" jsonb, "call_args" jsonb NOT NULL, "call_success" boolean NOT NULL, CONSTRAINT "PK_e2330990de1a0583be7aad43bae" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_904c0ebc6768d7e3fafb54f41d" ON "wasm_contract_message" ("timestamp") `)
-        await db.query(`CREATE INDEX "IDX_65cde4a7be6843807553ce5347" ON "wasm_contract_message" ("dest") `)
+        await db.query(`CREATE INDEX "IDX_1c80464b093dd9be8541570a8e" ON "wasm_contract_message" ("caller") `)
+        await db.query(`CREATE INDEX "IDX_e37049ca755e51847ad009aac2" ON "wasm_contract_message" ("contract") `)
         await db.query(`CREATE INDEX "IDX_7390ba8a41aac2d9dc1093b5ce" ON "wasm_contract_message" ("method_name") `)
         await db.query(`CREATE TABLE "wasm_contract_constructor" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "deployer" text NOT NULL, "contract" text NOT NULL, "value" numeric NOT NULL, "method_name" text NOT NULL, "constructor_args" jsonb, "call_name" text NOT NULL, "call_args" jsonb NOT NULL, "call_success" boolean NOT NULL, CONSTRAINT "PK_bb5954bdd956d90b944bb21173f" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_1750df1b809a7d284f4b29dc60" ON "wasm_contract_constructor" ("timestamp") `)
@@ -28,7 +29,8 @@ module.exports = class Data1690375836415 {
         await db.query(`DROP INDEX "public"."IDX_b64887307839013037c849a74b"`)
         await db.query(`DROP TABLE "wasm_contract_message"`)
         await db.query(`DROP INDEX "public"."IDX_904c0ebc6768d7e3fafb54f41d"`)
-        await db.query(`DROP INDEX "public"."IDX_65cde4a7be6843807553ce5347"`)
+        await db.query(`DROP INDEX "public"."IDX_1c80464b093dd9be8541570a8e"`)
+        await db.query(`DROP INDEX "public"."IDX_e37049ca755e51847ad009aac2"`)
         await db.query(`DROP INDEX "public"."IDX_7390ba8a41aac2d9dc1093b5ce"`)
         await db.query(`DROP TABLE "wasm_contract_constructor"`)
         await db.query(`DROP INDEX "public"."IDX_1750df1b809a7d284f4b29dc60"`)
