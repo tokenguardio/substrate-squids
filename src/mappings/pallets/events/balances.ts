@@ -1,5 +1,6 @@
 import {
   BalancesBalanceSetEvent,
+  BalancesBurnedEvent,
   BalancesDepositEvent,
   BalancesDustLostEvent,
   BalancesEndowedEvent,
@@ -11,6 +12,16 @@ import {
   BalancesTransferEvent,
   BalancesUnreservedEvent,
   BalancesWithdrawEvent,
+  BalancesFrozenEvent,
+  BalancesIssuedEvent,
+  BalancesLockedEvent,
+  BalancesMintedEvent,
+  BalancesRescindedEvent,
+  BalancesRestoredEvent,
+  BalancesSuspendedEvent,
+  BalancesThawedEvent,
+  BalancesUnlockedEvent,
+  BalancesUpgradedEvent,
 } from "../../../types/events";
 import { ChainContext, Event } from "../../../types/support";
 import { bufferToHex } from "../../../utils/utils";
@@ -32,6 +43,18 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           reserved,
         };
       } else if (e.isV9130) {
+        return event.args;
+      } else if (e.isV9420) {
+        return {
+          ...event.args,
+          reserved: null,
+        };
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Burned":
+      e = new BalancesBurnedEvent(ctx, event);
+      if (e.isV9420) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
@@ -75,6 +98,34 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
       } else {
         throw new UnknownEventVersionError(event.name);
       }
+    case "Balances.Frozen":
+      e = new BalancesFrozenEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Issued":
+      e = new BalancesIssuedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Locked":
+      e = new BalancesLockedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Minted":
+      e = new BalancesMintedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
     case "Balances.NewAccount":
       e = new BalancesNewAccountEvent(ctx, event);
       if (e.isV1020) {
@@ -100,6 +151,13 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           account: bufferToHex(account),
           balance,
         };
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Rescinded":
+      e = new BalancesRescindedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -131,6 +189,13 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
       } else {
         throw new UnknownEventVersionError(event.name);
       }
+    case "Balances.Restored":
+      e = new BalancesRestoredEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
     case "Balances.Slashed":
       e = new BalancesSlashedEvent(ctx, event);
       if (e.isV9122) {
@@ -140,6 +205,20 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           amount: amountSlashed,
         };
       } else if (e.isV9130) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Suspended":
+      e = new BalancesSuspendedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Thawed":
+      e = new BalancesThawedEvent(ctx, event);
+      if (e.isV9420) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
@@ -165,6 +244,13 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
       } else {
         throw new UnknownEventVersionError(event.name);
       }
+    case "Balances.Unlocked":
+      e = new BalancesUnlockedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
     case "Balances.Unreserved":
       e = new BalancesUnreservedEvent(ctx, event);
       if (e.isV2008) {
@@ -174,6 +260,13 @@ export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
           amount: amount,
         };
       } else if (e.isV9130) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Balances.Upgraded":
+      e = new BalancesUpgradedEvent(ctx, event);
+      if (e.isV9420) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);

@@ -10,6 +10,10 @@ import {
   NominationPoolsUnbondedEvent,
   NominationPoolsUnbondingPoolSlashedEvent,
   NominationPoolsWithdrawnEvent,
+  NominationPoolsPoolCommissionChangeRateUpdatedEvent,
+  NominationPoolsPoolCommissionClaimedEvent,
+  NominationPoolsPoolCommissionUpdatedEvent,
+  NominationPoolsPoolMaxCommissionUpdatedEvent,
 } from "../../../types/events";
 import { ChainContext, Event } from "../../../types/support";
 import { bufferToHex } from "../../../utils/utils";
@@ -69,9 +73,11 @@ export function normalizeNominationPoolsEventsArgs(
     case "NominationPools.RolesUpdated":
       e = new NominationPoolsRolesUpdatedEvent(ctx, event);
       if (e.isV9220) {
-        return event.args;
+        return { ...event.args, bouncer: null };
       } else if (e.isV9230) {
-        return event.args;
+        return { ...event.args, bouncer: null };
+      } else if (e.isV9420) {
+        return { ...event.args, stateToggler: null };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -101,6 +107,34 @@ export function normalizeNominationPoolsEventsArgs(
           era: null,
         };
       } else if (e.isV9271) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionChangeRateUpdated":
+      e = new NominationPoolsPoolCommissionChangeRateUpdatedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionClaimed":
+      e = new NominationPoolsPoolCommissionClaimedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionUpdated":
+      e = new NominationPoolsPoolCommissionUpdatedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolMaxCommissionUpdated":
+      e = new NominationPoolsPoolMaxCommissionUpdatedEvent(ctx, event);
+      if (e.isV9420) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);

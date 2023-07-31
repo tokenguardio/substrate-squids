@@ -55,6 +55,8 @@ import * as v9340 from './v9340'
 import * as v9350 from './v9350'
 import * as v9370 from './v9370'
 import * as v9381 from './v9381'
+import * as v9420 from './v9420'
+import * as v9430 from './v9430'
 
 export class AttestationsMoreAttestationsCall {
     private readonly _chain: Chain
@@ -593,6 +595,39 @@ export class BagsListRebagCall {
     }
 }
 
+export class BalancesForceSetBalanceCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.force_set_balance')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the regular balance of a given account.
+     * 
+     * The dispatch origin for this call is `root`.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Balances.force_set_balance') === 'd0f1dc28aeba8805f92a7e983d0fba2621912dc1665264dd9c38cd3c0c912737'
+    }
+
+    /**
+     * Set the regular balance of a given account.
+     * 
+     * The dispatch origin for this call is `root`.
+     */
+    get asV9420(): {who: v9420.MultiAddress, newFree: bigint} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class BalancesForceTransferCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -910,6 +945,45 @@ export class BalancesSetBalanceCall {
      */
     get asV9111(): {who: v9111.MultiAddress, newFree: bigint, newReserved: bigint} {
         assert(this.isV9111)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BalancesSetBalanceDeprecatedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.set_balance_deprecated')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the regular balance of a given account; it also takes a reserved balance but this
+     * must be the same as the account's current reserved balance.
+     * 
+     * The dispatch origin for this call is `root`.
+     * 
+     * WARNING: This call is DEPRECATED! Use `force_set_balance` instead.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Balances.set_balance_deprecated') === 'cd8eaf83a985e64a94900c5c58bbc2bbd20e03f5d571cf6065020f1a4281ff19'
+    }
+
+    /**
+     * Set the regular balance of a given account; it also takes a reserved balance but this
+     * must be the same as the account's current reserved balance.
+     * 
+     * The dispatch origin for this call is `root`.
+     * 
+     * WARNING: This call is DEPRECATED! Use `force_set_balance` instead.
+     */
+    get asV9420(): {who: v9420.MultiAddress, newFree: bigint, oldReserved: bigint} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1298,6 +1372,47 @@ export class BalancesTransferAllCall {
     }
 }
 
+export class BalancesTransferAllowDeathCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.transfer_allow_death')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer some liquid free balance to another account.
+     * 
+     * `transfer_allow_death` will set the `FreeBalance` of the sender and receiver.
+     * If the sender's account is below the existential deposit as a result
+     * of the transfer, the account will be reaped.
+     * 
+     * The dispatch origin for this call must be `Signed` by the transactor.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Balances.transfer_allow_death') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
+    }
+
+    /**
+     * Transfer some liquid free balance to another account.
+     * 
+     * `transfer_allow_death` will set the `FreeBalance` of the sender and receiver.
+     * If the sender's account is below the existential deposit as a result
+     * of the transfer, the account will be reaped.
+     * 
+     * The dispatch origin for this call must be `Signed` by the transactor.
+     */
+    get asV9420(): {dest: v9420.MultiAddress, value: bigint} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class BalancesTransferKeepAliveCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -1428,6 +1543,49 @@ export class BalancesTransferKeepAliveCall {
      */
     get asV9111(): {dest: v9111.MultiAddress, value: bigint} {
         assert(this.isV9111)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BalancesUpgradeAccountsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.upgrade_accounts')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Upgrade a specified account.
+     * 
+     * - `origin`: Must be `Signed`.
+     * - `who`: The account to be upgraded.
+     * 
+     * This will waive the transaction fee if at least all but 10% of the accounts needed to
+     * be upgraded. (We let some not have to be upgraded just in order to allow for the
+     * possibililty of churn).
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Balances.upgrade_accounts') === 'e074d5a93414f189b47fbb5d94c57b62cfb9e63808a3c94665eeb2cfe53be8df'
+    }
+
+    /**
+     * Upgrade a specified account.
+     * 
+     * - `origin`: Must be `Signed`.
+     * - `who`: The account to be upgraded.
+     * 
+     * This will waive the transaction fee if at least all but 10% of the accounts needed to
+     * be upgraded. (We let some not have to be upgraded just in order to allow for the
+     * possibililty of churn).
+     */
+    get asV9420(): {who: Uint8Array[]} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2725,6 +2883,35 @@ export class ClaimsMoveClaimCall {
     }
 }
 
+export class ConfigurationSetAsyncBackingParamsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_async_backing_params')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the asynchronous backing parameters.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Configuration.set_async_backing_params') === '1c1b805cf8e6d6b9ec6baa9c21ef458b772d0077453262792e5f8db8da2706f0'
+    }
+
+    /**
+     * Set the asynchronous backing parameters.
+     */
+    get asV9420(): {new: v9420.AsyncBackingParams} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class ConfigurationSetBypassConsistencyCheckCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -2926,6 +3113,35 @@ export class ConfigurationSetDisputePostConclusionAcceptancePeriodCall {
      */
     get asV9090(): {new: number} {
         assert(this.isV9090)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetExecutorParamsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_executor_params')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set PVF executor parameters.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Configuration.set_executor_params') === '6fe6cd5ffee4adb2a6388dede2294fdfccce64aeee62fd1d114629b18378a1c2'
+    }
+
+    /**
+     * Set PVF executor parameters.
+     */
+    get asV9420(): {new: v9420.V4ExecutorParam[]} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -14078,6 +14294,47 @@ export class FellowshipReferendaRefundSubmissionDepositCall {
     }
 }
 
+export class FellowshipReferendaSetMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'FellowshipReferenda.set_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set or clear metadata of a referendum.
+     * 
+     * Parameters:
+     * - `origin`: Must be `Signed` by a creator of a referendum or by anyone to clear a
+     *   metadata of a finished referendum.
+     * - `index`:  The index of a referendum to set or clear metadata for.
+     * - `maybe_hash`: The hash of an on-chain stored preimage. `None` to clear a metadata.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('FellowshipReferenda.set_metadata') === '3130106e44cfd70dbb871159c7a9caa9e760fbb1b51fd56f1cc4d461eeca38c2'
+    }
+
+    /**
+     * Set or clear metadata of a referendum.
+     * 
+     * Parameters:
+     * - `origin`: Must be `Signed` by a creator of a referendum or by anyone to clear a
+     *   metadata of a finished referendum.
+     * - `index`:  The index of a referendum to set or clear metadata for.
+     * - `maybe_hash`: The hash of an on-chain stored preimage. `None` to clear a metadata.
+     */
+    get asV9420(): {index: number, maybeHash: (Uint8Array | undefined)} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class FellowshipReferendaSubmitCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -14181,6 +14438,37 @@ export class FellowshipReferendaSubmitCall {
      */
     get asV9381(): {proposalOrigin: v9381.OriginCaller, proposal: v9381.Bounded, enactmentMoment: v9381.DispatchTime} {
         assert(this.isV9381)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Propose a referendum on a privileged action.
+     * 
+     * - `origin`: must be `SubmitOrigin` and the account must have `SubmissionDeposit` funds
+     *   available.
+     * - `proposal_origin`: The origin from which the proposal should be executed.
+     * - `proposal`: The proposal.
+     * - `enactment_moment`: The moment that the proposal should be enacted.
+     * 
+     * Emits `Submitted`.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('FellowshipReferenda.submit') === '6fc39edad616514b1ea0274e0bc0475da7d0a53a623be31ef303260500d1be32'
+    }
+
+    /**
+     * Propose a referendum on a privileged action.
+     * 
+     * - `origin`: must be `SubmitOrigin` and the account must have `SubmissionDeposit` funds
+     *   available.
+     * - `proposal_origin`: The origin from which the proposal should be executed.
+     * - `proposal`: The proposal.
+     * - `enactment_moment`: The moment that the proposal should be enacted.
+     * 
+     * Emits `Submitted`.
+     */
+    get asV9420(): {proposalOrigin: v9420.OriginCaller, proposal: v9420.Bounded, enactmentMoment: v9420.DispatchTime} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -16996,6 +17284,88 @@ export class InitializerForceApproveCall {
     }
 }
 
+export class MessageQueueExecuteOverweightCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'MessageQueue.execute_overweight')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Execute an overweight message.
+     * 
+     * Temporary processing errors will be propagated whereas permanent errors are treated
+     * as success condition.
+     * 
+     * - `origin`: Must be `Signed`.
+     * - `message_origin`: The origin from which the message to be executed arrived.
+     * - `page`: The page in the queue in which the message to be executed is sitting.
+     * - `index`: The index into the queue of the message to be executed.
+     * - `weight_limit`: The maximum amount of weight allowed to be consumed in the execution
+     *   of the message.
+     * 
+     * Benchmark complexity considerations: O(index + weight_limit).
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('MessageQueue.execute_overweight') === '46d8a10105a905d92712a02d1910677d98c6b1ec62513f114b52e0d09a7cef49'
+    }
+
+    /**
+     * Execute an overweight message.
+     * 
+     * Temporary processing errors will be propagated whereas permanent errors are treated
+     * as success condition.
+     * 
+     * - `origin`: Must be `Signed`.
+     * - `message_origin`: The origin from which the message to be executed arrived.
+     * - `page`: The page in the queue in which the message to be executed is sitting.
+     * - `index`: The index into the queue of the message to be executed.
+     * - `weight_limit`: The maximum amount of weight allowed to be consumed in the execution
+     *   of the message.
+     * 
+     * Benchmark complexity considerations: O(index + weight_limit).
+     */
+    get asV9430(): {messageOrigin: v9430.AggregateMessageOrigin, page: number, index: number, weightLimit: v9430.Weight} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class MessageQueueReapPageCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'MessageQueue.reap_page')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Remove a page which has no more messages remaining to be processed or is stale.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('MessageQueue.reap_page') === '424d00e6efeb4e7e95572098c7a493b4e070285ee05136974a240634b3741583'
+    }
+
+    /**
+     * Remove a page which has no more messages remaining to be processed or is stale.
+     */
+    get asV9430(): {messageOrigin: v9430.AggregateMessageOrigin, pageIndex: number} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class MultisigApproveAsMultiCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -18331,6 +18701,188 @@ export class MultisigAsMultiCall {
      */
     get asV9381(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v9381.Timepoint | undefined), call: v9381.Call, maxWeight: v9381.Weight} {
         assert(this.isV9381)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === 'b17d348695b9226bf431c0740925408bc3a6c407e62258ddf2bb52b5d12a9b45'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV9420(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v9420.Timepoint | undefined), call: v9420.Call, maxWeight: v9420.Weight} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === 'a06657d50927ab8406910a93df5557b9104d19636612430a8418e8775509d1fc'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV9430(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v9430.Timepoint | undefined), call: v9430.Call, maxWeight: v9430.Weight} {
+        assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -19979,6 +20531,80 @@ export class MultisigAsMultiThreshold1Call {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '5a0c7ded496ad0e1fc5093e7bc9be8418b2c3c2556b865c915de1b2253bacaf8'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV9420(): {otherSignatories: Uint8Array[], call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '649d4f51faa8a7a334873e9de2b28378d57fcc9946fa2a4431d59c0aae476246'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV9430(): {otherSignatories: Uint8Array[], call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigCancelAsMultiCall {
@@ -20578,6 +21204,39 @@ export class NisThawPrivateCall {
     }
 }
 
+export class NisCounterpartBalancesForceSetBalanceCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NisCounterpartBalances.force_set_balance')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the regular balance of a given account.
+     * 
+     * The dispatch origin for this call is `root`.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NisCounterpartBalances.force_set_balance') === 'd0f1dc28aeba8805f92a7e983d0fba2621912dc1665264dd9c38cd3c0c912737'
+    }
+
+    /**
+     * Set the regular balance of a given account.
+     * 
+     * The dispatch origin for this call is `root`.
+     */
+    get asV9420(): {who: v9420.MultiAddress, newFree: bigint} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NisCounterpartBalancesForceTransferCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -20689,6 +21348,45 @@ export class NisCounterpartBalancesSetBalanceCall {
      */
     get asV9340(): {who: v9340.MultiAddress, newFree: bigint, newReserved: bigint} {
         assert(this.isV9340)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NisCounterpartBalancesSetBalanceDeprecatedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NisCounterpartBalances.set_balance_deprecated')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the regular balance of a given account; it also takes a reserved balance but this
+     * must be the same as the account's current reserved balance.
+     * 
+     * The dispatch origin for this call is `root`.
+     * 
+     * WARNING: This call is DEPRECATED! Use `force_set_balance` instead.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NisCounterpartBalances.set_balance_deprecated') === 'cd8eaf83a985e64a94900c5c58bbc2bbd20e03f5d571cf6065020f1a4281ff19'
+    }
+
+    /**
+     * Set the regular balance of a given account; it also takes a reserved balance but this
+     * must be the same as the account's current reserved balance.
+     * 
+     * The dispatch origin for this call is `root`.
+     * 
+     * WARNING: This call is DEPRECATED! Use `force_set_balance` instead.
+     */
+    get asV9420(): {who: v9420.MultiAddress, newFree: bigint, oldReserved: bigint} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -20831,6 +21529,47 @@ export class NisCounterpartBalancesTransferAllCall {
     }
 }
 
+export class NisCounterpartBalancesTransferAllowDeathCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NisCounterpartBalances.transfer_allow_death')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer some liquid free balance to another account.
+     * 
+     * `transfer_allow_death` will set the `FreeBalance` of the sender and receiver.
+     * If the sender's account is below the existential deposit as a result
+     * of the transfer, the account will be reaped.
+     * 
+     * The dispatch origin for this call must be `Signed` by the transactor.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NisCounterpartBalances.transfer_allow_death') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
+    }
+
+    /**
+     * Transfer some liquid free balance to another account.
+     * 
+     * `transfer_allow_death` will set the `FreeBalance` of the sender and receiver.
+     * If the sender's account is below the existential deposit as a result
+     * of the transfer, the account will be reaped.
+     * 
+     * The dispatch origin for this call must be `Signed` by the transactor.
+     */
+    get asV9420(): {dest: v9420.MultiAddress, value: bigint} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NisCounterpartBalancesTransferKeepAliveCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -20870,6 +21609,49 @@ export class NisCounterpartBalancesTransferKeepAliveCall {
     }
 }
 
+export class NisCounterpartBalancesUpgradeAccountsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NisCounterpartBalances.upgrade_accounts')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Upgrade a specified account.
+     * 
+     * - `origin`: Must be `Signed`.
+     * - `who`: The account to be upgraded.
+     * 
+     * This will waive the transaction fee if at least all but 10% of the accounts needed to
+     * be upgraded. (We let some not have to be upgraded just in order to allow for the
+     * possibililty of churn).
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NisCounterpartBalances.upgrade_accounts') === 'e074d5a93414f189b47fbb5d94c57b62cfb9e63808a3c94665eeb2cfe53be8df'
+    }
+
+    /**
+     * Upgrade a specified account.
+     * 
+     * - `origin`: Must be `Signed`.
+     * - `who`: The account to be upgraded.
+     * 
+     * This will waive the transaction fee if at least all but 10% of the accounts needed to
+     * be upgraded. (We let some not have to be upgraded just in order to allow for the
+     * possibililty of churn).
+     */
+    get asV9420(): {who: Uint8Array[]} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NominationPoolsBondExtraCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -20901,6 +21683,51 @@ export class NominationPoolsBondExtraCall {
      */
     get asV9220(): {extra: v9220.BondExtra} {
         assert(this.isV9220)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsBondExtraOtherCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.bond_extra_other')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * `origin` bonds funds from `extra` for some pool member `member` into their respective
+     * pools.
+     * 
+     * `origin` can bond extra funds from free balance or pending rewards when `origin ==
+     * other`.
+     * 
+     * In the case of `origin != other`, `origin` can only bond extra pending rewards of
+     * `other` members assuming set_claim_permission for the given member is
+     * `PermissionlessAll` or `PermissionlessCompound`.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.bond_extra_other') === '443aece4aa181619e8091b0b30fddbda420489ca47278d2461f597e3b4123eea'
+    }
+
+    /**
+     * `origin` bonds funds from `extra` for some pool member `member` into their respective
+     * pools.
+     * 
+     * `origin` can bond extra funds from free balance or pending rewards when `origin ==
+     * other`.
+     * 
+     * In the case of `origin != other`, `origin` can only bond extra pending rewards of
+     * `other` members assuming set_claim_permission for the given member is
+     * `PermissionlessAll` or `PermissionlessCompound`.
+     */
+    get asV9420(): {member: v9420.MultiAddress, extra: v9420.BondExtra} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -20946,6 +21773,43 @@ export class NominationPoolsChillCall {
     }
 }
 
+export class NominationPoolsClaimCommissionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.claim_commission')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Claim pending commission.
+     * 
+     * The dispatch origin of this call must be signed by the `root` role of the pool. Pending
+     * commission is paid out and added to total claimed commission`. Total pending commission
+     * is reset to zero. the current.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.claim_commission') === 'a662258b1bdb045a915972ea29e9ec0b46cdd5598b0da37b0e70ac766e3735a0'
+    }
+
+    /**
+     * Claim pending commission.
+     * 
+     * The dispatch origin of this call must be signed by the `root` role of the pool. Pending
+     * commission is paid out and added to total claimed commission`. Total pending commission
+     * is reset to zero. the current.
+     */
+    get asV9420(): {poolId: number} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NominationPoolsClaimPayoutCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -20981,6 +21845,41 @@ export class NominationPoolsClaimPayoutCall {
      */
     get asV9220(): null {
         assert(this.isV9220)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsClaimPayoutOtherCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.claim_payout_other')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * `origin` can claim payouts on some pool member `other`'s behalf.
+     * 
+     * Pool member `other` must have a `PermissionlessAll` or `PermissionlessWithdraw` in order
+     * for this call to be successful.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.claim_payout_other') === 'cf670d864c552e185d3961da45af55bb3d8a16bdf7b48c7839b62197c0012512'
+    }
+
+    /**
+     * `origin` can claim payouts on some pool member `other`'s behalf.
+     * 
+     * Pool member `other` must have a `PermissionlessAll` or `PermissionlessWithdraw` in order
+     * for this call to be successful.
+     */
+    get asV9420(): {other: Uint8Array} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -21091,6 +21990,53 @@ export class NominationPoolsCreateCall {
         assert(this.isV9291)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Create a new delegation pool.
+     * 
+     * # Arguments
+     * 
+     * * `amount` - The amount of funds to delegate to the pool. This also acts of a sort of
+     *   deposit since the pools creator cannot fully unbond funds until the pool is being
+     *   destroyed.
+     * * `index` - A disambiguation index for creating the account. Likely only useful when
+     *   creating multiple pools in the same extrinsic.
+     * * `root` - The account to set as [`PoolRoles::root`].
+     * * `nominator` - The account to set as the [`PoolRoles::nominator`].
+     * * `bouncer` - The account to set as the [`PoolRoles::bouncer`].
+     * 
+     * # Note
+     * 
+     * In addition to `amount`, the caller will transfer the existential deposit; so the caller
+     * needs at have at least `amount + existential_deposit` transferrable.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.create') === '4dac4956707ba4c015016c87f5798196915c1b93cb3b8fbe99924d4acdd70b9e'
+    }
+
+    /**
+     * Create a new delegation pool.
+     * 
+     * # Arguments
+     * 
+     * * `amount` - The amount of funds to delegate to the pool. This also acts of a sort of
+     *   deposit since the pools creator cannot fully unbond funds until the pool is being
+     *   destroyed.
+     * * `index` - A disambiguation index for creating the account. Likely only useful when
+     *   creating multiple pools in the same extrinsic.
+     * * `root` - The account to set as [`PoolRoles::root`].
+     * * `nominator` - The account to set as the [`PoolRoles::nominator`].
+     * * `bouncer` - The account to set as the [`PoolRoles::bouncer`].
+     * 
+     * # Note
+     * 
+     * In addition to `amount`, the caller will transfer the existential deposit; so the caller
+     * needs at have at least `amount + existential_deposit` transferrable.
+     */
+    get asV9420(): {amount: bigint, root: v9420.MultiAddress, nominator: v9420.MultiAddress, bouncer: v9420.MultiAddress} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class NominationPoolsCreateWithPoolIdCall {
@@ -21128,6 +22074,31 @@ export class NominationPoolsCreateWithPoolIdCall {
      */
     get asV9340(): {amount: bigint, root: v9340.MultiAddress, nominator: v9340.MultiAddress, stateToggler: v9340.MultiAddress, poolId: number} {
         assert(this.isV9340)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Create a new delegation pool with a previously used pool id
+     * 
+     * # Arguments
+     * 
+     * same as `create` with the inclusion of
+     * * `pool_id` - `A valid PoolId.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.create_with_pool_id') === '83e2c5a07bc3ea8d0d0415394797776dd6f7f1fe91413d53870e9a54b3039e32'
+    }
+
+    /**
+     * Create a new delegation pool with a previously used pool id
+     * 
+     * # Arguments
+     * 
+     * same as `create` with the inclusion of
+     * * `pool_id` - `A valid PoolId.
+     */
+    get asV9420(): {amount: bigint, root: v9420.MultiAddress, nominator: v9420.MultiAddress, bouncer: v9420.MultiAddress, poolId: number} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -21241,6 +22212,166 @@ export class NominationPoolsPoolWithdrawUnbondedCall {
     }
 }
 
+export class NominationPoolsSetClaimPermissionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_claim_permission')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Allows a pool member to set a claim permission to allow or disallow permissionless
+     * bonding and withdrawing.
+     * 
+     * By default, this is `Permissioned`, which implies only the pool member themselves can
+     * claim their pending rewards. If a pool member wishes so, they can set this to
+     * `PermissionlessAll` to allow any account to claim their rewards and bond extra to the
+     * pool.
+     * 
+     * # Arguments
+     * 
+     * * `origin` - Member of a pool.
+     * * `actor` - Account to claim reward. // improve this
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.set_claim_permission') === '2f40bfe6dfbefd6a029d40d407c92fbb9e615769e58028c5e2c927b7d78eee55'
+    }
+
+    /**
+     * Allows a pool member to set a claim permission to allow or disallow permissionless
+     * bonding and withdrawing.
+     * 
+     * By default, this is `Permissioned`, which implies only the pool member themselves can
+     * claim their pending rewards. If a pool member wishes so, they can set this to
+     * `PermissionlessAll` to allow any account to claim their rewards and bond extra to the
+     * pool.
+     * 
+     * # Arguments
+     * 
+     * * `origin` - Member of a pool.
+     * * `actor` - Account to claim reward. // improve this
+     */
+    get asV9420(): {permission: v9420.ClaimPermission} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsSetCommissionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_commission')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the commission of a pool.
+     * Both a commission percentage and a commission payee must be provided in the `current`
+     * tuple. Where a `current` of `None` is provided, any current commission will be removed.
+     * 
+     * - If a `None` is supplied to `new_commission`, existing commission will be removed.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.set_commission') === 'c2429f4194f36dda4ecdb7c4fb1f8dd1bd10b0c452d0261492e47eb1f03251dc'
+    }
+
+    /**
+     * Set the commission of a pool.
+     * Both a commission percentage and a commission payee must be provided in the `current`
+     * tuple. Where a `current` of `None` is provided, any current commission will be removed.
+     * 
+     * - If a `None` is supplied to `new_commission`, existing commission will be removed.
+     */
+    get asV9420(): {poolId: number, newCommission: ([number, Uint8Array] | undefined)} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsSetCommissionChangeRateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_commission_change_rate')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the commission change rate for a pool.
+     * 
+     * Initial change rate is not bounded, whereas subsequent updates can only be more
+     * restrictive than the current.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.set_commission_change_rate') === 'bdbe2b8a0dbf004376752ab0b97d12bc46105ff7df04a1d804df35ca9fbc04c1'
+    }
+
+    /**
+     * Set the commission change rate for a pool.
+     * 
+     * Initial change rate is not bounded, whereas subsequent updates can only be more
+     * restrictive than the current.
+     */
+    get asV9420(): {poolId: number, changeRate: v9420.CommissionChangeRate} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsSetCommissionMaxCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_commission_max')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set the maximum commission of a pool.
+     * 
+     * - Initial max can be set to any `Perbill`, and only smaller values thereafter.
+     * - Current commission will be lowered in the event it is higher than a new max
+     *   commission.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.set_commission_max') === '6eb4d2709f88d8a2ee11fbbeaecd1987716bd1b2323a23339e00d70cb343b35b'
+    }
+
+    /**
+     * Set the maximum commission of a pool.
+     * 
+     * - Initial max can be set to any `Perbill`, and only smaller values thereafter.
+     * - Current commission will be lowered in the event it is higher than a new max
+     *   commission.
+     */
+    get asV9420(): {poolId: number, maxCommission: number} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NominationPoolsSetConfigsCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -21284,6 +22415,41 @@ export class NominationPoolsSetConfigsCall {
      */
     get asV9220(): {minJoinBond: v9220.ConfigOp, minCreateBond: v9220.ConfigOp, maxPools: v9220.Type_488, maxMembers: v9220.Type_488, maxMembersPerPool: v9220.Type_488} {
         assert(this.isV9220)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Update configurations for the nomination pools. The origin for this call must be
+     * Root.
+     * 
+     * # Arguments
+     * 
+     * * `min_join_bond` - Set [`MinJoinBond`].
+     * * `min_create_bond` - Set [`MinCreateBond`].
+     * * `max_pools` - Set [`MaxPools`].
+     * * `max_members` - Set [`MaxPoolMembers`].
+     * * `max_members_per_pool` - Set [`MaxPoolMembersPerPool`].
+     * * `global_max_commission` - Set [`GlobalMaxCommission`].
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.set_configs') === '02f4da47d39d2dd9daf70892fca2a1512f019713ff5c6d32b08af9557e83200c'
+    }
+
+    /**
+     * Update configurations for the nomination pools. The origin for this call must be
+     * Root.
+     * 
+     * # Arguments
+     * 
+     * * `min_join_bond` - Set [`MinJoinBond`].
+     * * `min_create_bond` - Set [`MinCreateBond`].
+     * * `max_pools` - Set [`MaxPools`].
+     * * `max_members` - Set [`MaxPoolMembers`].
+     * * `max_members_per_pool` - Set [`MaxPoolMembersPerPool`].
+     * * `global_max_commission` - Set [`GlobalMaxCommission`].
+     */
+    get asV9420(): {minJoinBond: v9420.ConfigOp, minCreateBond: v9420.ConfigOp, maxPools: v9420.Type_310, maxMembers: v9420.Type_310, maxMembersPerPool: v9420.Type_310, globalMaxCommission: v9420.Type_311} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -21550,6 +22716,33 @@ export class NominationPoolsUpdateRolesCall {
      */
     get asV9230(): {poolId: number, newRoot: v9230.Type_487, newNominator: v9230.Type_487, newStateToggler: v9230.Type_487} {
         assert(this.isV9230)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Update the roles of the pool.
+     * 
+     * The root is the only entity that can change any of the roles, including itself,
+     * excluding the depositor, who can never change.
+     * 
+     * It emits an event, notifying UIs of the role change. This event is quite relevant to
+     * most pool members and they should be informed of changes to pool roles.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('NominationPools.update_roles') === 'ff8e2296d9ceeb821add0d72be156237eaf85dd732db0518ea4511d171a120f0'
+    }
+
+    /**
+     * Update the roles of the pool.
+     * 
+     * The root is the only entity that can change any of the roles, including itself,
+     * excluding the depositor, who can never change.
+     * 
+     * It emits an event, notifying UIs of the role change. This event is quite relevant to
+     * most pool members and they should be informed of changes to pool roles.
+     */
+    get asV9420(): {poolId: number, newRoot: v9420.Type_312, newNominator: v9420.Type_312, newBouncer: v9420.Type_312} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -23640,6 +24833,29 @@ export class ParasInitializerForceApproveCall {
     }
 }
 
+export class ParasSlashingReportDisputeLostUnsignedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'ParasSlashing.report_dispute_lost_unsigned')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV9420(): boolean {
+        return this._chain.getCallHash('ParasSlashing.report_dispute_lost_unsigned') === '7ba6f97498e62b4b0aee53d530cb8e51018087d48a0c03cd5bfefe0897be15b6'
+    }
+
+    get asV9420(): {disputeProof: v9420.DisputeProof, keyOwnerProof: v9420.MembershipProof} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class PhragmenElectionCleanDefunctVotersCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -24356,6 +25572,37 @@ export class ProxyAddProxyCall {
         assert(this.isV9291)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register a proxy account for the sender that is able to make calls on its behalf.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to make a proxy.
+     * - `proxy_type`: The permissions allowed for this proxy account.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Proxy.add_proxy') === '4d4acf1486109eba3fe3c5fc2482e205dd36d349376ee1ebb0eaca7c23f5fa54'
+    }
+
+    /**
+     * Register a proxy account for the sender that is able to make calls on its behalf.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to make a proxy.
+     * - `proxy_type`: The permissions allowed for this proxy account.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     */
+    get asV9420(): {delegate: v9420.MultiAddress, proxyType: v9420.ProxyType, delay: number} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyAnnounceCall {
@@ -24732,6 +25979,55 @@ export class ProxyCreatePureCall {
         assert(this.isV9300)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
+     * 
+     * Requires a `Signed` origin.
+     * 
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     * 
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
+     * 
+     * Fails if there are insufficient funds to pay for deposit.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Proxy.create_pure') === '9e6546066c2ebef11a6dc497b3c04cafb6104aa1b91f5916d1959e975497fe12'
+    }
+
+    /**
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
+     * 
+     * Requires a `Signed` origin.
+     * 
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     * 
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
+     * 
+     * Fails if there are insufficient funds to pay for deposit.
+     */
+    get asV9420(): {proxyType: v9420.ProxyType, delay: number, index: number} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyKillAnonymousCall {
@@ -24966,6 +26262,51 @@ export class ProxyKillPureCall {
      */
     get asV9300(): {spawner: v9300.MultiAddress, proxyType: v9300.ProxyType, index: number, height: number, extIndex: number} {
         assert(this.isV9300)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Removes a previously spawned pure proxy.
+     * 
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
+     * 
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
+     * 
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * 
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Proxy.kill_pure') === '22e93ce524198ba27d397dd1d6f3ede164068452bdb1107ddca3485afb03b474'
+    }
+
+    /**
+     * Removes a previously spawned pure proxy.
+     * 
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
+     * 
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
+     * 
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * 
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
+     */
+    get asV9420(): {spawner: v9420.MultiAddress, proxyType: v9420.ProxyType, index: number, height: number, extIndex: number} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -26576,6 +27917,68 @@ export class ProxyProxyCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '2e5c3930f75468a83759644a4bf21a32a87fbe5bfd223db165ec04a4b9722cab'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV9420(): {real: v9420.MultiAddress, forceProxyType: (v9420.ProxyType | undefined), call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '1cd8f8c32c9fee848c2d6766eb82b03c365b8134527a5eea5d4cb5ea286ddb22'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV9430(): {real: v9430.MultiAddress, forceProxyType: (v9430.ProxyType | undefined), call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyProxyAnnouncedCall {
@@ -28022,6 +29425,76 @@ export class ProxyProxyAnnouncedCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === 'e5e837532c3acd74c9a25c07fd555862cdf758976869d13229c685d026fd1687'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV9420(): {delegate: v9420.MultiAddress, real: v9420.MultiAddress, forceProxyType: (v9420.ProxyType | undefined), call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '5ab8dc55ffcd6415276572318d3a447b7eb3c1bd623b2e7444d3fcae40b1b698'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV9430(): {delegate: v9430.MultiAddress, real: v9430.MultiAddress, forceProxyType: (v9430.ProxyType | undefined), call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyRejectAnnouncementCall {
@@ -28437,6 +29910,33 @@ export class ProxyRemoveProxyCall {
      */
     get asV9291(): {delegate: v9291.MultiAddress, proxyType: v9291.ProxyType, delay: number} {
         assert(this.isV9291)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Unregister a proxy account for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to remove as a proxy.
+     * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Proxy.remove_proxy') === '4d4acf1486109eba3fe3c5fc2482e205dd36d349376ee1ebb0eaca7c23f5fa54'
+    }
+
+    /**
+     * Unregister a proxy account for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to remove as a proxy.
+     * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+     */
+    get asV9420(): {delegate: v9420.MultiAddress, proxyType: v9420.ProxyType, delay: number} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -30098,6 +31598,64 @@ export class RecoveryAsRecoveredCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through a recovered account.
+     * 
+     * The dispatch origin for this call must be _Signed_ and registered to
+     * be able to make calls on behalf of the recovered account.
+     * 
+     * Parameters:
+     * - `account`: The recovered account you want to make a call on-behalf-of.
+     * - `call`: The call you want to make with the recovered account.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Recovery.as_recovered') === '6f877ad7fd7676b7a374c8bf812afd070ae89e0993d82b11019d33b0c9a591d9'
+    }
+
+    /**
+     * Send a call through a recovered account.
+     * 
+     * The dispatch origin for this call must be _Signed_ and registered to
+     * be able to make calls on behalf of the recovered account.
+     * 
+     * Parameters:
+     * - `account`: The recovered account you want to make a call on-behalf-of.
+     * - `call`: The call you want to make with the recovered account.
+     */
+    get asV9420(): {account: v9420.MultiAddress, call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through a recovered account.
+     * 
+     * The dispatch origin for this call must be _Signed_ and registered to
+     * be able to make calls on behalf of the recovered account.
+     * 
+     * Parameters:
+     * - `account`: The recovered account you want to make a call on-behalf-of.
+     * - `call`: The call you want to make with the recovered account.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Recovery.as_recovered') === '201567eff85a9b6e8a44b5e6dac894c79b3c1bd73da514a239986494fa223043'
+    }
+
+    /**
+     * Send a call through a recovered account.
+     * 
+     * The dispatch origin for this call must be _Signed_ and registered to
+     * be able to make calls on behalf of the recovered account.
+     * 
+     * Parameters:
+     * - `account`: The recovered account you want to make a call on-behalf-of.
+     * - `call`: The call you want to make with the recovered account.
+     */
+    get asV9430(): {account: v9430.MultiAddress, call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class RecoveryCancelRecoveredCall {
@@ -31111,6 +32669,47 @@ export class ReferendaRefundSubmissionDepositCall {
     }
 }
 
+export class ReferendaSetMetadataCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Referenda.set_metadata')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set or clear metadata of a referendum.
+     * 
+     * Parameters:
+     * - `origin`: Must be `Signed` by a creator of a referendum or by anyone to clear a
+     *   metadata of a finished referendum.
+     * - `index`:  The index of a referendum to set or clear metadata for.
+     * - `maybe_hash`: The hash of an on-chain stored preimage. `None` to clear a metadata.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Referenda.set_metadata') === '3130106e44cfd70dbb871159c7a9caa9e760fbb1b51fd56f1cc4d461eeca38c2'
+    }
+
+    /**
+     * Set or clear metadata of a referendum.
+     * 
+     * Parameters:
+     * - `origin`: Must be `Signed` by a creator of a referendum or by anyone to clear a
+     *   metadata of a finished referendum.
+     * - `index`:  The index of a referendum to set or clear metadata for.
+     * - `maybe_hash`: The hash of an on-chain stored preimage. `None` to clear a metadata.
+     */
+    get asV9420(): {index: number, maybeHash: (Uint8Array | undefined)} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class ReferendaSubmitCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -31214,6 +32813,37 @@ export class ReferendaSubmitCall {
      */
     get asV9381(): {proposalOrigin: v9381.OriginCaller, proposal: v9381.Bounded, enactmentMoment: v9381.DispatchTime} {
         assert(this.isV9381)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Propose a referendum on a privileged action.
+     * 
+     * - `origin`: must be `SubmitOrigin` and the account must have `SubmissionDeposit` funds
+     *   available.
+     * - `proposal_origin`: The origin from which the proposal should be executed.
+     * - `proposal`: The proposal.
+     * - `enactment_moment`: The moment that the proposal should be enacted.
+     * 
+     * Emits `Submitted`.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Referenda.submit') === '6fc39edad616514b1ea0274e0bc0475da7d0a53a623be31ef303260500d1be32'
+    }
+
+    /**
+     * Propose a referendum on a privileged action.
+     * 
+     * - `origin`: must be `SubmitOrigin` and the account must have `SubmissionDeposit` funds
+     *   available.
+     * - `proposal_origin`: The origin from which the proposal should be executed.
+     * - `proposal`: The proposal.
+     * - `enactment_moment`: The moment that the proposal should be enacted.
+     * 
+     * Emits `Submitted`.
+     */
+    get asV9420(): {proposalOrigin: v9420.OriginCaller, proposal: v9420.Bounded, enactmentMoment: v9420.DispatchTime} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -32946,6 +34576,36 @@ export class SchedulerScheduleCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === '113258f7f9712777af44868b62e26d2247407a6cedc3e0c2b8aa4acf0a610bce'
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get asV9420(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === 'dafff69aaa24de1e6d72a9b4db26201ff12b11b21d25bee2cff982219914bd6c'
+    }
+
+    /**
+     * Anonymously schedule a task.
+     */
+    get asV9430(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleAfterCall {
@@ -33740,6 +35400,36 @@ export class SchedulerScheduleAfterCall {
      */
     get asV9381(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9381.Call} {
         assert(this.isV9381)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '86be1ee878e5342a7f861903259741822988db19b847fbbeb6525f0568210085'
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     */
+    get asV9420(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '78e8e62bbc6d83c896116d88778a53d7f73572ec3e9ddd7d436943c2bc642809'
+    }
+
+    /**
+     * Anonymously schedule a task after a delay.
+     */
+    get asV9430(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9430.Call} {
+        assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -34722,6 +36412,36 @@ export class SchedulerScheduleNamedCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Schedule a named task.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '54b2efb883f5c122058e5068326c2bb13fb535dad42d36c04e39f914a83a740f'
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get asV9420(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '88d3d968aa749a28a4eef2436e32881b4671721f7e6914889ee9eddc6741e842'
+    }
+
+    /**
+     * Schedule a named task.
+     */
+    get asV9430(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleNamedAfterCall {
@@ -35516,6 +37236,36 @@ export class SchedulerScheduleNamedAfterCall {
      */
     get asV9381(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9381.Call} {
         assert(this.isV9381)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === 'ac5cade5e727c7cfc75e7bf43ba26a33d131a89f99e8ce760b54c6f44e082ce0'
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     */
+    get asV9420(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === '0041307959b6aff05cd6025fb309393de87a2481d7eccfbf6b1f75f3e9536477'
+    }
+
+    /**
+     * Schedule a named task after a delay.
+     */
+    get asV9430(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9430.Call} {
+        assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -37741,6 +39491,49 @@ export class StakingBondCall {
         assert(this.isV9111)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Take the origin account as a stash and lock up `value` of its balance. `controller` will
+     * be the account that controls it.
+     * 
+     * `value` must be more than the `minimum_balance` specified by `T::Currency`.
+     * 
+     * The dispatch origin for this call must be _Signed_ by the stash account.
+     * 
+     * Emits `Bonded`.
+     * ## Complexity
+     * - Independent of the arguments. Moderate complexity.
+     * - O(1).
+     * - Three extra DB entries.
+     * 
+     * NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+     * unless the `origin` falls below _existential deposit_ and gets removed as dust.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Staking.bond') === 'd97e1d2a9763cae29f7bbb9e429e3692a97bbb00fff8f74190b36013ec990f11'
+    }
+
+    /**
+     * Take the origin account as a stash and lock up `value` of its balance. `controller` will
+     * be the account that controls it.
+     * 
+     * `value` must be more than the `minimum_balance` specified by `T::Currency`.
+     * 
+     * The dispatch origin for this call must be _Signed_ by the stash account.
+     * 
+     * Emits `Bonded`.
+     * ## Complexity
+     * - Independent of the arguments. Moderate complexity.
+     * - O(1).
+     * - Three extra DB entries.
+     * 
+     * NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+     * unless the `origin` falls below _existential deposit_ and gets removed as dust.
+     */
+    get asV9430(): {value: bigint, payee: v9430.RewardDestination} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class StakingBondExtraCall {
@@ -38977,6 +40770,47 @@ export class StakingSetControllerCall {
      */
     get asV9111(): {controller: v9111.MultiAddress} {
         assert(this.isV9111)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * (Re-)sets the controller of a stash to the stash itself. This function previously
+     * accepted a `controller` argument to set the controller to an account other than the
+     * stash itself. This functionality has now been removed, now only setting the controller
+     * to the stash, if it is not already.
+     * 
+     * Effects will be felt instantly (as soon as this function is completed successfully).
+     * 
+     * The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+     * 
+     * ## Complexity
+     * O(1)
+     * - Independent of the arguments. Insignificant complexity.
+     * - Contains a limited number of reads.
+     * - Writes are limited to the `origin` account key.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Staking.set_controller') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * (Re-)sets the controller of a stash to the stash itself. This function previously
+     * accepted a `controller` argument to set the controller to an account other than the
+     * stash itself. This functionality has now been removed, now only setting the controller
+     * to the stash, if it is not already.
+     * 
+     * Effects will be felt instantly (as soon as this function is completed successfully).
+     * 
+     * The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+     * 
+     * ## Complexity
+     * O(1)
+     * - Independent of the arguments. Insignificant complexity.
+     * - Contains a limited number of reads.
+     * - Writes are limited to the `origin` account key.
+     */
+    get asV9430(): null {
+        assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -49721,6 +51555,84 @@ export class UtilityAsDerivativeCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'e9d18f3492cacfb1b59982f9c043794b2d13d9dc187d345d5cdc0dd8553ee4bb'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV9420(): {index: number, call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'f7f01cfa1e026a98a1d8b47e5dffaa0330500991cc6d7d9a36083382a953c608'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV9430(): {index: number, call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityAsLimitedSubCall {
@@ -53695,6 +55607,104 @@ export class UtilityBatchCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '118d40a233ec09f170846bef24870f93c299c3eaad7b4939a81a57e70bc4e0bf'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV9420(): {calls: v9420.Call[]} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'c29e6a84d22abffb51125f8bcd520c7930695be1ecf0c55744991a0cc394d763'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV9430(): {calls: v9430.Call[]} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -54880,6 +56890,84 @@ export class UtilityBatchAllCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '118d40a233ec09f170846bef24870f93c299c3eaad7b4939a81a57e70bc4e0bf'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV9420(): {calls: v9420.Call[]} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'c29e6a84d22abffb51125f8bcd520c7930695be1ecf0c55744991a0cc394d763'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV9430(): {calls: v9430.Call[]} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityCancelAsMultiCall {
@@ -55493,6 +57581,56 @@ export class UtilityDispatchAsCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '09feaae393dae4bb26f5cad7e630a57d3dca97927e84323a4b80c7139ae867e8'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV9420(): {asOrigin: v9420.OriginCaller, call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === 'd08935969b1c06239bf802b23e9e878241a034d552693885248b8943461aea37'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV9430(): {asOrigin: v9430.OriginCaller, call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -55958,6 +58096,84 @@ export class UtilityForceBatchCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '118d40a233ec09f170846bef24870f93c299c3eaad7b4939a81a57e70bc4e0bf'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV9420(): {calls: v9420.Call[]} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'c29e6a84d22abffb51125f8bcd520c7930695be1ecf0c55744991a0cc394d763'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV9430(): {calls: v9430.Call[]} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -56070,6 +58286,56 @@ export class UtilityWithWeightCall {
      */
     get asV9381(): {call: v9381.Call, weight: v9381.Weight} {
         assert(this.isV9381)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === 'd59fb6e149430222c7be3e988d1f853f11e29ad61cbb703eac35a8b28bdc79d9'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV9420(): {call: v9420.Call, weight: v9420.Weight} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === 'c14fd0bf0b51617bd4e3973661fd4f5ed1f7a1c01913bea08b62480c11fb4359'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV9430(): {call: v9430.Call, weight: v9430.Weight} {
+        assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -56890,6 +59156,24 @@ export class WhitelistDispatchWhitelistedCallWithPreimageCall {
         assert(this.isV9381)
         return this._chain.decodeCall(this.call)
     }
+
+    get isV9420(): boolean {
+        return this._chain.getCallHash('Whitelist.dispatch_whitelisted_call_with_preimage') === '72a7bf24aeb69b66085a94883c822d6dbe34c6a8285e353202cf70b1e757e55e'
+    }
+
+    get asV9420(): {call: v9420.Call} {
+        assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    get isV9430(): boolean {
+        return this._chain.getCallHash('Whitelist.dispatch_whitelisted_call_with_preimage') === '5ecfbccbe2b48f0e1e40cb6cd70db2a3c96771262db9f1c34355b4170f036987'
+    }
+
+    get asV9430(): {call: v9430.Call} {
+        assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class WhitelistRemoveWhitelistedCallCall {
@@ -57342,6 +59626,41 @@ export class XcmPalletForceSubscribeVersionNotifyCall {
      */
     get asV9381(): {location: v9381.VersionedMultiLocation} {
         assert(this.isV9381)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class XcmPalletForceSuspensionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'XcmPallet.force_suspension')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Set or unset the global suspension state of the XCM executor.
+     * 
+     * - `origin`: Must be an origin specified by AdminOrigin.
+     * - `suspended`: `true` to suspend, `false` to resume.
+     */
+    get isV9420(): boolean {
+        return this._chain.getCallHash('XcmPallet.force_suspension') === '8ed7e51efeeeccee1e0e2e2dca71da38a9e5bdab470452a56d790711652babc1'
+    }
+
+    /**
+     * Set or unset the global suspension state of the XCM executor.
+     * 
+     * - `origin`: Must be an origin specified by AdminOrigin.
+     * - `suspended`: `true` to suspend, `false` to resume.
+     */
+    get asV9420(): {suspended: boolean} {
+        assert(this.isV9420)
         return this._chain.decodeCall(this.call)
     }
 }
