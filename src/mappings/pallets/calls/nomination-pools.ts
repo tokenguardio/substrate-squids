@@ -1,12 +1,19 @@
 import {
   NominationPoolsBondExtraCall,
+  NominationPoolsBondExtraOtherCall,
   NominationPoolsChillCall,
+  NominationPoolsClaimCommissionCall,
   NominationPoolsClaimPayoutCall,
+  NominationPoolsClaimPayoutOtherCall,
   NominationPoolsCreateCall,
   NominationPoolsCreateWithPoolIdCall,
   NominationPoolsJoinCall,
   NominationPoolsNominateCall,
   NominationPoolsPoolWithdrawUnbondedCall,
+  NominationPoolsSetClaimPermissionCall,
+  NominationPoolsSetCommissionCall,
+  NominationPoolsSetCommissionChangeRateCall,
+  NominationPoolsSetCommissionMaxCall,
   NominationPoolsSetConfigsCall,
   NominationPoolsSetMetadataCall,
   NominationPoolsSetStateCall,
@@ -50,16 +57,20 @@ export function normalizeNominationPoolsCallsArgs(
     case "NominationPools.create":
       e = new NominationPoolsCreateCall(ctx, call);
       if (e.isV9280) {
-        return call.args;
+        return { ...call.args, bouncer: null };
       } else if (e.isV9291) {
-        return call.args;
+        return { ...call.args, bouncer: null };
+      } else if (e.isV9420) {
+        return { ...call.args, stateToggler: null };
       } else {
         throw new UnknownCallVersionError(call.name);
       }
     case "NominationPools.create_with_pool_id":
       e = new NominationPoolsCreateWithPoolIdCall(ctx, call);
       if (e.isV9340) {
-        return call.args;
+        return { ...call.args, bouncer: null };
+      } else if (e.isV9420) {
+        return { ...call.args, stateToggler: null };
       } else {
         throw new UnknownCallVersionError(call.name);
       }
@@ -87,6 +98,8 @@ export function normalizeNominationPoolsCallsArgs(
     case "NominationPools.set_configs":
       e = new NominationPoolsSetConfigsCall(ctx, call);
       if (e.isV9280) {
+        return call.args;
+      } else if (e.isV9420) {
         return call.args;
       } else {
         throw new UnknownCallVersionError(call.name);
@@ -117,7 +130,9 @@ export function normalizeNominationPoolsCallsArgs(
     case "NominationPools.update_roles":
       e = new NominationPoolsUpdateRolesCall(ctx, call);
       if (e.isV9280) {
-        return call.args;
+        return { ...call.args, newBouncer: null };
+      } else if (e.isV9420) {
+        return { ...call.args, newStateToggler: null };
       } else {
         throw new UnknownCallVersionError(call.name);
       }
@@ -126,6 +141,55 @@ export function normalizeNominationPoolsCallsArgs(
       if (e.isV9280) {
         return call.args;
       } else if (e.isV9291) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "NominationPools.bond_extra_other":
+      e = new NominationPoolsBondExtraOtherCall(ctx, call);
+      if (e.isV9420) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "NominationPools.claim_commission":
+      e = new NominationPoolsClaimCommissionCall(ctx, call);
+      if (e.isV9420) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "NominationPools.claim_payout_other":
+      e = new NominationPoolsClaimPayoutOtherCall(ctx, call);
+      if (e.isV9420) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "NominationPools.set_claim_permission":
+      e = new NominationPoolsSetClaimPermissionCall(ctx, call);
+      if (e.isV9420) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "NominationPools.set_commission":
+      e = new NominationPoolsSetCommissionCall(ctx, call);
+      if (e.isV9420) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "NominationPools.set_commission_change_rate":
+      e = new NominationPoolsSetCommissionChangeRateCall(ctx, call);
+      if (e.isV9420) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "NominationPools.set_commission_max":
+      e = new NominationPoolsSetCommissionMaxCall(ctx, call);
+      if (e.isV9420) {
         return call.args;
       } else {
         throw new UnknownCallVersionError(call.name);

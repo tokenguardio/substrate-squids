@@ -45,6 +45,10 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         return event.args;
       } else if (e.isV9340) {
         return event.args;
+      } else if (e.isV9420) {
+        return event.args;
+      } else if (e.isV9430) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }

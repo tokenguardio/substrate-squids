@@ -4,6 +4,10 @@ import {
   NominationPoolsDestroyedEvent,
   NominationPoolsMemberRemovedEvent,
   NominationPoolsPaidOutEvent,
+  NominationPoolsPoolCommissionChangeRateUpdatedEvent,
+  NominationPoolsPoolCommissionClaimedEvent,
+  NominationPoolsPoolCommissionUpdatedEvent,
+  NominationPoolsPoolMaxCommissionUpdatedEvent,
   NominationPoolsPoolSlashedEvent,
   NominationPoolsRolesUpdatedEvent,
   NominationPoolsStateChangedEvent,
@@ -68,7 +72,9 @@ export function normalizeNominationPoolsEventsArgs(
     case "NominationPools.RolesUpdated":
       e = new NominationPoolsRolesUpdatedEvent(ctx, event);
       if (e.isV9280) {
-        return event.args;
+        return { ...event.args, bouncer: null };
+      } else if (e.isV9420) {
+        return { ...event.args, stateToggler: null };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -96,6 +102,34 @@ export function normalizeNominationPoolsEventsArgs(
     case "NominationPools.Withdrawn":
       e = new NominationPoolsWithdrawnEvent(ctx, event);
       if (e.isV9280) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionChangeRateUpdated":
+      e = new NominationPoolsPoolCommissionChangeRateUpdatedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionClaimed":
+      e = new NominationPoolsPoolCommissionClaimedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionUpdated":
+      e = new NominationPoolsPoolCommissionUpdatedEvent(ctx, event);
+      if (e.isV9420) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.PoolMaxCommissionUpdated":
+      e = new NominationPoolsPoolMaxCommissionUpdatedEvent(ctx, event);
+      if (e.isV9420) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
