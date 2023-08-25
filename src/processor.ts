@@ -38,35 +38,35 @@ import { nullifyNonexistentCalls } from "./utils/utils";
   return this.toString();
 };
 
-const client = axios.create({
-  baseURL: process.env.SIDECAR_URL || "http://127.0.0.1:8080",
-  headers: { "Content-Type": "application/json" },
-  httpsAgent: new https.Agent({ keepAlive: true }),
-});
+// const client = axios.create({
+//   baseURL: process.env.SIDECAR_URL || "http://127.0.0.1:8080",
+//   headers: { "Content-Type": "application/json" },
+//   httpsAgent: new https.Agent({ keepAlive: true }),
+// });
 
-axiosRetry(client, {
-  retries: 3,
-  retryDelay: axiosRetry.exponentialDelay,
-});
+// axiosRetry(client, {
+//   retries: 3,
+//   retryDelay: axiosRetry.exponentialDelay,
+// });
 
-client.interceptors.response.use((response) => {
-  if (response.config.url?.startsWith("/blocks/")) {
-    const data = response.data;
-    const transformedData: ExtrinsicResponse = {
-      extrinsics: data.extrinsics.map((e: any) => ({
-        method: e.method,
-        signature: e.signature,
-        tip: e.tip,
-        hash: e.hash,
-        info: e.info,
-        success: e.success,
-        paysFee: e.paysFee,
-      })),
-    };
-    return transformedData;
-  }
-  return response.data;
-});
+// client.interceptors.response.use((response) => {
+//   if (response.config.url?.startsWith("/blocks/")) {
+//     const data = response.data;
+//     const transformedData: ExtrinsicResponse = {
+//       extrinsics: data.extrinsics.map((e: any) => ({
+//         method: e.method,
+//         signature: e.signature,
+//         tip: e.tip,
+//         hash: e.hash,
+//         info: e.info,
+//         success: e.success,
+//         paysFee: e.paysFee,
+//       })),
+//     };
+//     return transformedData;
+//   }
+//   return response.data;
+// });
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
@@ -100,63 +100,61 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     for (const item of block.items) {
       const pallet = item.name.split(".")[0];
       if (item.kind === "event") {
-        if (block.header.height >= 0 && block.header.height < 14505447) {
-          if (
-            ["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
-              item.event.name
-            )
-          ) {
-            const args = eventNormalizationHandlers[pallet](ctx, item.event);
-            if (
-              item.event.extrinsic?.signature &&
-              args.dispatchInfo.paysFee.__kind === "Yes" &&
-              args.dispatchInfo.class.__kind === "Normal"
-            ) {
-              if (fetchedBlockHash !== block.header.hash) {
-                const response: ExtrinsicResponse = await client.get(
-                  `/blocks/${block.header.hash}`
-                );
-                fetchedExtrinsics = response.extrinsics;
-                fetchedBlockHash = block.header.hash;
-              }
-              let currentExtrinsic = fetchedExtrinsics.find(
-                (extrinsic) => extrinsic.hash === item.event.extrinsic?.hash
-              );
+        // if (block.header.height >= 0 && block.header.height < 14505447) {
+        //   if (
+        //     ["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
+        //       item.event.name
+        //     )
+        //   ) {
+        //     const args = eventNormalizationHandlers[pallet](ctx, item.event);
+        //     if (
+        //       item.event.extrinsic?.signature &&
+        //       args.dispatchInfo.paysFee.__kind === "Yes" &&
+        //       args.dispatchInfo.class.__kind === "Normal"
+        //     ) {
+        //       if (fetchedBlockHash !== block.header.hash) {
+        //         const response: ExtrinsicResponse = await client.get(
+        //           `/blocks/${block.header.hash}`
+        //         );
+        //         fetchedExtrinsics = response.extrinsics;
+        //         fetchedBlockHash = block.header.hash;
+        //       }
+        //       let currentExtrinsic = fetchedExtrinsics.find(
+        //         (extrinsic) => extrinsic.hash === item.event.extrinsic?.hash
+        //       );
 
-              if (!currentExtrinsic) {
-                throw new Error(
-                  `Extrinsic ${item.event.extrinsic.indexInBlock} from block ${block.header.height} not found in sidecar response`
-                );
-              }
+        //       if (!currentExtrinsic) {
+        //         throw new Error(
+        //           `Extrinsic ${item.event.extrinsic.indexInBlock} from block ${block.header.height} not found in sidecar response`
+        //         );
+        //       }
 
-              // There are cases when sidecar is unable to fetch information
-              if (!currentExtrinsic.info.partialFee) {
-                console.log(
-                  `Incomplete data on sidecar side for block ${block.header.height}, moving on...`
-                );
-                continue;
-              }
+        //       // There are cases when sidecar is unable to fetch information
+        //       if (!currentExtrinsic.info.partialFee) {
+        //         console.log(
+        //           `Incomplete data on sidecar side for block ${block.header.height}, moving on...`
+        //         );
+        //         continue;
+        //       }
 
-              item.event.extrinsic.fee = BigInt(
-                currentExtrinsic.info.partialFee
-              );
-              item.event.extrinsic.tip = currentExtrinsic.tip
-                ? BigInt(currentExtrinsic.tip)
-                : undefined;
+        //       item.event.extrinsic.fee = BigInt(
+        //         currentExtrinsic.info.partialFee
+        //       );
+        //       item.event.extrinsic.tip = currentExtrinsic.tip
+        //         ? BigInt(currentExtrinsic.tip)
+        //         : undefined;
 
-              handleSubstrateTransaction(
-                item.event.extrinsic,
-                substrateTransactions,
-                ctx,
-                block.header,
-                addressMappings
-              );
-            }
-          }
-        } else if (
-          block.header.height >= 14505447 &&
-          block.header.height < 33235255
-        ) {
+        //       handleSubstrateTransaction(
+        //         item.event.extrinsic,
+        //         substrateTransactions,
+        //         ctx,
+        //         block.header,
+        //         addressMappings
+        //       );
+        //     }
+        //   }
+        // } else
+        if (block.header.height >= 14505447 && block.header.height < 33235255) {
           if (
             ["Treasury.Deposit"].includes(item.event.name) &&
             item.event.extrinsic?.signature
