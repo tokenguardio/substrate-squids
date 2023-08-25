@@ -1,4 +1,8 @@
-import { SubstrateBlock } from "@subsquid/substrate-processor";
+import {
+  SubstrateBlock,
+  SubstrateExtrinsic,
+  SubstrateCall,
+} from "@subsquid/substrate-processor";
 import {
   EventNorm,
   CallNorm,
@@ -9,8 +13,8 @@ import {
 import { MappedAddress } from "../interfaces/mappings/specific";
 
 export function createSubstrateTransaction(
-  call: any,
-  extrinsic: any,
+  call: SubstrateCall,
+  extrinsic: SubstrateExtrinsic,
   block: SubstrateBlock,
   label: SubstrateLabel | undefined,
   from: string | null,
@@ -48,7 +52,7 @@ export function createEventNorm(
 
 export function createCallNorm(
   block: SubstrateBlock,
-  call: any,
+  call: SubstrateCall,
   args: any
 ): CallNorm {
   return new CallNorm({

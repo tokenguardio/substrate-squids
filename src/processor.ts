@@ -1,8 +1,14 @@
+import axios from "axios";
+import https from "https";
+import axiosRetry from "axios-retry";
 import {
   SubstrateBatchProcessor,
   SubstrateBlock,
+  SubstrateExtrinsic,
 } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
+import * as ss58 from "@subsquid/ss58";
+import { decodeHex } from "@subsquid/util-internal-hex";
 import {
   EventNorm,
   CallNorm,
@@ -24,14 +30,43 @@ import {
   createAddressMapping,
 } from "./utils/dbEntityCreators";
 import { AddressArgs } from "./interfaces/mappings/specific";
-import * as ss58 from "@subsquid/ss58";
-import { decodeHex } from "@subsquid/util-internal-hex";
+import { ExtrinsicResponse, Extrinsic } from "./interfaces/sidecar-extrinsic";
 import { nullifyNonexistentCalls } from "./utils/utils";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
+
+const client = axios.create({
+  baseURL: process.env.SIDECAR_URL || "http://127.0.0.1:8080",
+  headers: { "Content-Type": "application/json" },
+  httpsAgent: new https.Agent({ keepAlive: true }),
+});
+
+axiosRetry(client, {
+  retries: 3,
+  retryDelay: axiosRetry.exponentialDelay,
+});
+
+client.interceptors.response.use((response) => {
+  if (response.config.url?.startsWith("/blocks/")) {
+    const data = response.data;
+    const transformedData: ExtrinsicResponse = {
+      extrinsics: data.extrinsics.map((e: any) => ({
+        method: e.method,
+        signature: e.signature,
+        tip: e.tip,
+        hash: e.hash,
+        info: e.info,
+        success: e.success,
+        paysFee: e.paysFee,
+      })),
+    };
+    return transformedData;
+  }
+  return response.data;
+});
 
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
@@ -51,22 +86,118 @@ const processor = new SubstrateBatchProcessor()
     },
   })
   .setTypesBundle(process.env.TYPES_BUNDLE_FILE ?? "typesBundle.json");
+// .setBlockRange({ from: 5 });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
   const calls: CallNorm[] = [];
   const substrateTransactions: SubstrateTransaction[] = [];
   const addressMappings: Map<string, AddressMapping> = new Map();
+  let fetchedBlockHash: string = "";
+  let fetchedExtrinsics: Extrinsic[] = [];
 
   for (const block of ctx.blocks) {
     for (const item of block.items) {
       const pallet = item.name.split(".")[0];
       if (item.kind === "event") {
+        if (block.header.height >= 0 && block.header.height < 14505447) {
+          if (
+            ["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
+              item.event.name
+            )
+          ) {
+            const args = eventNormalizationHandlers[pallet](ctx, item.event);
+            if (
+              item.event.extrinsic?.signature &&
+              args.dispatchInfo.paysFee.__kind === "Yes" &&
+              args.dispatchInfo.class.__kind === "Normal"
+            ) {
+              if (fetchedBlockHash !== block.header.hash) {
+                const response: ExtrinsicResponse = await client.get(
+                  `/blocks/${block.header.hash}`
+                );
+                fetchedExtrinsics = response.extrinsics;
+                fetchedBlockHash = block.header.hash;
+              }
+              let currentExtrinsic = fetchedExtrinsics.find(
+                (extrinsic) => extrinsic.hash === item.event.extrinsic?.hash
+              );
+
+              if (!currentExtrinsic) {
+                throw new Error(
+                  `Extrinsic ${item.event.extrinsic.indexInBlock} from block ${block.header.height} not found in sidecar response`
+                );
+              }
+
+              // There are cases when sidecar is unable to fetch information
+              if (!currentExtrinsic.info.partialFee) {
+                console.log(
+                  `Incomplete data on sidecar side for block ${block.header.height}, moving on...`
+                );
+                continue;
+              }
+
+              item.event.extrinsic.fee = BigInt(
+                currentExtrinsic.info.partialFee
+              );
+              item.event.extrinsic.tip = currentExtrinsic.tip
+                ? BigInt(currentExtrinsic.tip)
+                : undefined;
+
+              handleSubstrateTransaction(
+                item.event.extrinsic,
+                substrateTransactions,
+                ctx,
+                block.header,
+                addressMappings
+              );
+            }
+          }
+        } else if (
+          block.header.height >= 14505447 &&
+          block.header.height < 33235255
+        ) {
+          if (
+            ["Treasury.Deposit"].includes(item.event.name) &&
+            item.event.extrinsic?.signature
+          ) {
+            item.event.extrinsic.fee = BigInt(item.event.args);
+
+            handleSubstrateTransaction(
+              item.event.extrinsic,
+              substrateTransactions,
+              ctx,
+              block.header,
+              addressMappings
+            );
+          }
+        } else if (block.header.height >= 33235255) {
+          if (
+            ["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
+              item.event.name
+            )
+          ) {
+            const args = eventNormalizationHandlers[pallet](ctx, item.event);
+            if (
+              item.event.extrinsic?.signature &&
+              args.dispatchInfo.paysFee.__kind === "Yes" &&
+              args.dispatchInfo.class.__kind === "Normal"
+            ) {
+              handleSubstrateTransaction(
+                item.event.extrinsic,
+                substrateTransactions,
+                ctx,
+                block.header,
+                addressMappings
+              );
+            }
+          }
+        }
         if (
-          eventNormalizationHandlers[pallet] &&
           !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
             item.event.name
-          )
+          ) &&
+          eventNormalizationHandlers[pallet]
         ) {
           const args = eventNormalizationHandlers[pallet](ctx, item.event);
           const event = createEventNorm(block.header, item.event, args);
@@ -79,15 +210,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           );
         }
       } else if (item.kind === "call") {
-        if (item.extrinsic.fee && !item.call.parent) {
-          handleSubstrateTransaction(
-            item.extrinsic,
-            substrateTransactions,
-            ctx,
-            block.header,
-            addressMappings
-          );
-        }
         if (callNormalizationHandlers[pallet]) {
           const args = callNormalizationHandlers[pallet](ctx, item.call);
           const call = createCallNorm(block.header, item.call, args);
@@ -131,14 +253,14 @@ function addSingleToAddressMapping(
 ) {
   const mappedAddress = {
     hex: address,
-    ss58: ss58.codec("astar").encode(decodeHex(address)),
+    ss58: ss58.codec("substrate").encode(decodeHex(address)),
   };
   const addressMapping = createAddressMapping(mappedAddress);
   addressMappings.set(mappedAddress.hex, addressMapping);
 }
 
 function handleSubstrateTransaction(
-  extrinsic: any,
+  extrinsic: SubstrateExtrinsic,
   substrateTransactions: SubstrateTransaction[],
   ctx: any,
   block: SubstrateBlock,
