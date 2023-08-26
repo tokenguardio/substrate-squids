@@ -86,7 +86,7 @@ const processor = new SubstrateBatchProcessor()
     },
   })
   .setTypesBundle(process.env.TYPES_BUNDLE_FILE ?? "typesBundle.json");
-// .setBlockRange({ from: 5 });
+// .setBlockRange({ from: 14508401 });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
@@ -159,7 +159,11 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             ["Treasury.Deposit"].includes(item.event.name) &&
             item.event.extrinsic?.signature
           ) {
-            item.event.extrinsic.fee = BigInt(item.event.args);
+            if (item.event.extrinsic.tip != BigInt(item.event.args)) {
+              item.event.extrinsic.fee = BigInt(item.event.args);
+            } else {
+              continue;
+            }
 
             handleSubstrateTransaction(
               item.event.extrinsic,

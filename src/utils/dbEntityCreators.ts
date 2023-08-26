@@ -21,7 +21,7 @@ export function createSubstrateTransaction(
   to: string | null
 ): SubstrateTransaction {
   return new SubstrateTransaction({
-    id: call.id,
+    id: extrinsic.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     name: call.name,
