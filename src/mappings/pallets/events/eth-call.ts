@@ -34,6 +34,12 @@ export function normalizeEthCallEventsArgs(ctx: ChainContext, event: Event) {
           from,
           result,
         };
+      } else if (e.isV64) {
+        let [from, result] = event.args;
+        return {
+          from,
+          result,
+        };
       } else {
         throw new UnknownEventVersionError(event.name);
       }

@@ -5,6 +5,7 @@ import {
   ContractsInstantiateOldWeightCall,
   ContractsInstantiateWithCodeCall,
   ContractsInstantiateWithCodeOldWeightCall,
+  ContractsMigrateCall,
   ContractsRemoveCodeCall,
   ContractsSetCodeCall,
   ContractsUploadCodeCall,
@@ -60,6 +61,13 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
       } else {
         throw new UnknownCallVersionError(call.name);
       }
+    case "Contracts.migrate":
+      e = new ContractsMigrateCall(ctx, call);
+      if (e.isV64) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
     case "Contracts.remove_code":
       e = new ContractsRemoveCodeCall(ctx, call);
       if (e.isV55) {
@@ -77,6 +85,8 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
     case "Contracts.upload_code":
       e = new ContractsUploadCodeCall(ctx, call);
       if (e.isV55) {
+        return call.args;
+      } else if (e.isV64) {
         return call.args;
       } else {
         throw new UnknownCallVersionError(call.name);

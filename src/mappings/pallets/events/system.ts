@@ -39,6 +39,8 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         return event.args;
       } else if (e.isV49) {
         return event.args;
+      } else if (e.isV64) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -47,19 +49,19 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
       if (e.isV1) {
         let originalWeight = event.args.weight;
         event.args.weight = {
-          'refTime': originalWeight,
-          'proofSize': null
+          refTime: originalWeight,
+          proofSize: null,
         };
         return { dispatchInfo: event.args };
       } else if (e.isV9) {
         let originalWeight = event.args.dispatchInfo.weight;
         event.args.dispatchInfo.weight = {
-          'refTime': originalWeight,
-          'proofSize': null
+          refTime: originalWeight,
+          proofSize: null,
         };
         return event.args;
       } else if (e.isV43) {
-        event.args.dispatchInfo.weight.proofSize = null
+        event.args.dispatchInfo.weight.proofSize = null;
         return event.args;
       } else if (e.isV49) {
         return event.args;

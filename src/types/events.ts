@@ -15,6 +15,7 @@ import * as v43 from './v43'
 import * as v49 from './v49'
 import * as v52 from './v52'
 import * as v61 from './v61'
+import * as v64 from './v64'
 
 export class AssetsAccountsDestroyedEvent {
     private readonly _chain: Chain
@@ -161,6 +162,35 @@ export class AssetsAssetFrozenEvent {
     }
 }
 
+export class AssetsAssetMinBalanceChangedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.AssetMinBalanceChanged')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The min_balance of an asset has been updated by the asset owner.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Assets.AssetMinBalanceChanged') === '62dc5a2aad35ea9b274647a895c2fa0e7f91dedb718b62def83df9965dbfe2e1'
+    }
+
+    /**
+     * The min_balance of an asset has been updated by the asset owner.
+     */
+    get asV64(): {assetId: bigint, newMinBalance: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class AssetsAssetStatusChangedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -215,6 +245,35 @@ export class AssetsAssetThawedEvent {
      */
     get asV15(): {assetId: bigint} {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class AssetsBlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.Blocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some account `who` was blocked.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Assets.Blocked') === 'ae2b5e9551d43bdc9a4ea4b9c1aca51a9aaf969b07e41802a3380a8fb3779350'
+    }
+
+    /**
+     * Some account `who` was blocked.
+     */
+    get asV64(): {assetId: bigint, who: Uint8Array} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -582,6 +641,35 @@ export class AssetsThawedEvent {
     }
 }
 
+export class AssetsTouchedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.Touched')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some account `who` was created with a deposit from `depositor`.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Assets.Touched') === '9155aa251e38cf471f49c96e08ceec4338e8ef1a80cd391942b7a2fa6b209b99'
+    }
+
+    /**
+     * Some account `who` was created with a deposit from `depositor`.
+     */
+    get asV64(): {assetId: bigint, who: Uint8Array, depositor: Uint8Array} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class AssetsTransferredEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -682,6 +770,50 @@ export class BalancesBalanceSetEvent {
      */
     get asV3(): {who: Uint8Array, free: bigint, reserved: bigint} {
         assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A balance was set by root.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.BalanceSet') === '8c52e43e845654720e1db5c5bd166f80eb777baf474e93ce4d20fd385601a8fb'
+    }
+
+    /**
+     * A balance was set by root.
+     */
+    get asV64(): {who: Uint8Array, free: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesBurnedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Burned')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was burned from an account.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Burned') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some amount was burned from an account.
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -822,6 +954,151 @@ export class BalancesEndowedEvent {
     }
 }
 
+export class BalancesFrozenEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Frozen')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was frozen.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Frozen') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was frozen.
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesIssuedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Issued')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Total issuance was increased by `amount`, creating a credit to be balanced.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Issued') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
+    }
+
+    /**
+     * Total issuance was increased by `amount`, creating a credit to be balanced.
+     */
+    get asV64(): {amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesLockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Locked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was locked.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Locked') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was locked.
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesMintedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Minted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was minted into an account.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Minted') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some amount was minted into an account.
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesRescindedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Rescinded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Total issuance was decreased by `amount`, creating a debt to be balanced.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Rescinded') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
+    }
+
+    /**
+     * Total issuance was decreased by `amount`, creating a debt to be balanced.
+     */
+    get asV64(): {amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BalancesReserveRepatriatedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -916,6 +1193,35 @@ export class BalancesReservedEvent {
     }
 }
 
+export class BalancesRestoredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Restored')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was restored into an account.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Restored') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some amount was restored into an account.
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BalancesSlashedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -941,6 +1247,64 @@ export class BalancesSlashedEvent {
      */
     get asV3(): {who: Uint8Array, amount: bigint} {
         assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesSuspendedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Suspended')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was suspended from an account (it can be restored later).
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Suspended') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some amount was suspended from an account (it can be restored later).
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesThawedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Thawed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was thawed.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Thawed') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was thawed.
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -989,6 +1353,35 @@ export class BalancesTransferEvent {
     }
 }
 
+export class BalancesUnlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Unlocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was unlocked.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Unlocked') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was unlocked.
+     */
+    get asV64(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BalancesUnreservedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1029,6 +1422,35 @@ export class BalancesUnreservedEvent {
      */
     get asV3(): {who: Uint8Array, amount: bigint} {
         assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesUpgradedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Upgraded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An account was upgraded.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Balances.Upgraded') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
+    }
+
+    /**
+     * An account was upgraded.
+     */
+    get asV64(): {who: Uint8Array} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1376,6 +1798,33 @@ export class ContractsCalledEvent {
      */
     get asV55(): {caller: Uint8Array, contract: Uint8Array} {
         assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Contracts.Called') === '12f9b2f86a9c936fb436b156179997932d7b2829f21bdf681ae17c4355f7f970'
+    }
+
+    /**
+     * A contract was called either by a plain account or another contract.
+     * 
+     * # Note
+     * 
+     * Please keep in mind that like all events this is only emitted for successful
+     * calls. This is because on failure all storage changes including events are
+     * rolled back.
+     */
+    get asV64(): {caller: v64.Origin, contract: Uint8Array} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2894,6 +3343,21 @@ export class EthCallExecutedEvent {
         assert(this.isV49)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A call just executed. \[result\]
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('EthCall.Executed') === '38620d359dec705867ce615998ee778e6bd07f6298e0a2d2b8f0d9de48f099ad'
+    }
+
+    /**
+     * A call just executed. \[result\]
+     */
+    get asV64(): [Uint8Array, v64.Type_31] {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class EthereumExecutedEvent {
@@ -3011,6 +3475,21 @@ export class EthereumExecutedEvent {
      */
     get asV43(): {from: Uint8Array, to: Uint8Array, transactionHash: Uint8Array, exitReason: v43.ExitReason} {
         assert(this.isV43)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An ethereum transaction was successfully executed.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Ethereum.Executed') === '4da35f3b1cb63c6084839486f6cc44465f31d4dbf24abce9ef5d05b899d9309e'
+    }
+
+    /**
+     * An ethereum transaction was successfully executed.
+     */
+    get asV64(): {from: Uint8Array, to: Uint8Array, transactionHash: Uint8Array, exitReason: v64.ExitReason, extraData: Uint8Array} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3636,6 +4115,21 @@ export class MultisigMultisigExecutedEvent {
      */
     get asV49(): {approving: Uint8Array, timepoint: v49.Timepoint, multisig: Uint8Array, callHash: Uint8Array, result: v49.Type_30} {
         assert(this.isV49)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigExecuted') === '9e0a225fbf5acad3beeb4abfce677050bfccaf660eedf13e97c1c4ecb39cfe13'
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get asV64(): {approving: Uint8Array, timepoint: v64.Timepoint, multisig: Uint8Array, callHash: Uint8Array, result: v64.Type_31} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5405,6 +5899,21 @@ export class ProxyProxyExecutedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A proxy was executed correctly, with the given.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Proxy.ProxyExecuted') === 'ee56f7174dc1a4631da3e5b48f323193771be6a702fb2ff1ff40459869d34a0e'
+    }
+
+    /**
+     * A proxy was executed correctly, with the given.
+     */
+    get asV64(): {result: v64.Type_31} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class ProxyProxyRemovedEvent {
@@ -5779,6 +6288,21 @@ export class SudoSudidEvent {
         assert(this.isV49)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Sudo.Sudid') === '3ecb430e21c76eb720064ac2294a31cf70178245416aa72891f2973dfab55b73'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV64(): {sudoResult: v64.Type_31} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class SudoSudoAsDoneEvent {
@@ -5866,6 +6390,21 @@ export class SudoSudoAsDoneEvent {
      */
     get asV49(): {sudoResult: v49.Type_30} {
         assert(this.isV49)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Sudo.SudoAsDone') === '3ecb430e21c76eb720064ac2294a31cf70178245416aa72891f2973dfab55b73'
+    }
+
+    /**
+     * A sudo just took place. \[result\]
+     */
+    get asV64(): {sudoResult: v64.Type_31} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5984,6 +6523,21 @@ export class SystemExtrinsicFailedEvent {
      */
     get asV49(): {dispatchError: v49.DispatchError, dispatchInfo: v49.DispatchInfo} {
         assert(this.isV49)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An extrinsic failed.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('System.ExtrinsicFailed') === '89ca818f689e3f6e085d8137a961f36cc94819777211c5c11cca985a448944b8'
+    }
+
+    /**
+     * An extrinsic failed.
+     */
+    get asV64(): {dispatchError: v64.DispatchError, dispatchInfo: v64.DispatchInfo} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6380,6 +6934,23 @@ export class UtilityBatchInterruptedEvent {
         assert(this.isV49)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Utility.BatchInterrupted') === '031f8c01ddd9491965bf6e6671d70381e70d55e6028aab52a937d1c3afeecb9f'
+    }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get asV64(): {index: number, error: v64.DispatchError} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class UtilityDispatchedAsEvent {
@@ -6454,6 +7025,21 @@ export class UtilityDispatchedAsEvent {
         assert(this.isV49)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A call was dispatched.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Utility.DispatchedAs') === 'ee56f7174dc1a4631da3e5b48f323193771be6a702fb2ff1ff40459869d34a0e'
+    }
+
+    /**
+     * A call was dispatched.
+     */
+    get asV64(): {result: v64.Type_31} {
+        assert(this.isV64)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class UtilityItemCompletedEvent {
@@ -6525,6 +7111,21 @@ export class UtilityItemFailedEvent {
      */
     get asV49(): {error: v49.DispatchError} {
         assert(this.isV49)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get isV64(): boolean {
+        return this._chain.getEventHash('Utility.ItemFailed') === '4564a5412ce55535234d019dbd1d2999c5a9d6f452a565385d0c43e85d0dbf0b'
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get asV64(): {error: v64.DispatchError} {
+        assert(this.isV64)
         return this._chain.decodeEvent(this.event)
     }
 }

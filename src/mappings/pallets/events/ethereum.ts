@@ -54,6 +54,8 @@ export function normalizeEthereumEventsArgs(ctx: ChainContext, event: Event) {
         return event.args;
       } else if (e.isV43) {
         return event.args;
+      } else if (e.isV64) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }

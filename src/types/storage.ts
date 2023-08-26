@@ -16,6 +16,7 @@ import * as v49 from './v49'
 import * as v52 from './v52'
 import * as v55 from './v55'
 import * as v61 from './v61'
+import * as v64 from './v64'
 
 export class AssetsAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -40,6 +41,21 @@ export class AssetsAccountStorage extends StorageBase {
         assert(this.isV15)
         return this as any
     }
+
+    /**
+     *  The holdings of a specific account for a specific asset.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === 'c101916616470361869ffc454e1716a26043820583af00df688c1a63340d6f00'
+    }
+
+    /**
+     *  The holdings of a specific account for a specific asset.
+     */
+    get asV64(): AssetsAccountStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -61,6 +77,27 @@ export interface AssetsAccountStorageV15 {
     getPairsPaged(pageSize: number): AsyncIterable<[k: [bigint, Uint8Array], v: v15.AssetAccount][]>
     getPairsPaged(pageSize: number, key1: bigint): AsyncIterable<[k: [bigint, Uint8Array], v: v15.AssetAccount][]>
     getPairsPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[k: [bigint, Uint8Array], v: v15.AssetAccount][]>
+}
+
+/**
+ *  The holdings of a specific account for a specific asset.
+ */
+export interface AssetsAccountStorageV64 {
+    get(key1: bigint, key2: Uint8Array): Promise<(v64.AssetAccount | undefined)>
+    getAll(): Promise<v64.AssetAccount[]>
+    getMany(keys: [bigint, Uint8Array][]): Promise<(v64.AssetAccount | undefined)[]>
+    getKeys(): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint, key2: Uint8Array): Promise<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[bigint, Uint8Array][]>
+    getPairs(): Promise<[k: [bigint, Uint8Array], v: v64.AssetAccount][]>
+    getPairs(key1: bigint): Promise<[k: [bigint, Uint8Array], v: v64.AssetAccount][]>
+    getPairs(key1: bigint, key2: Uint8Array): Promise<[k: [bigint, Uint8Array], v: v64.AssetAccount][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [bigint, Uint8Array], v: v64.AssetAccount][]>
+    getPairsPaged(pageSize: number, key1: bigint): AsyncIterable<[k: [bigint, Uint8Array], v: v64.AssetAccount][]>
+    getPairsPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[k: [bigint, Uint8Array], v: v64.AssetAccount][]>
 }
 
 export class AssetsApprovalsStorage extends StorageBase {
@@ -472,6 +509,67 @@ export class BalancesAccountStorage extends StorageBase {
         assert(this.isV1)
         return this as any
     }
+
+    /**
+     *  The Balances pallet example of storing the balance of an account.
+     * 
+     *  # Example
+     * 
+     *  ```nocompile
+     *   impl pallet_balances::Config for Runtime {
+     *     type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
+     *   }
+     *  ```
+     * 
+     *  You can also store the balance of an account in the `System` pallet.
+     * 
+     *  # Example
+     * 
+     *  ```nocompile
+     *   impl pallet_balances::Config for Runtime {
+     *    type AccountStore = System
+     *   }
+     *  ```
+     * 
+     *  But this comes with tradeoffs, storing account balances in the system pallet stores
+     *  `frame_system` data alongside the account data contrary to storing account balances in the
+     *  `Balances` pallet, which uses a `StorageMap` to store balances data only.
+     *  NOTE: This is only used in the case that this pallet is used to store balances.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '12d9e780c790f66e9c340b94cabd98da447e1087819d4acb4b1fe22bbb2783fb'
+    }
+
+    /**
+     *  The Balances pallet example of storing the balance of an account.
+     * 
+     *  # Example
+     * 
+     *  ```nocompile
+     *   impl pallet_balances::Config for Runtime {
+     *     type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
+     *   }
+     *  ```
+     * 
+     *  You can also store the balance of an account in the `System` pallet.
+     * 
+     *  # Example
+     * 
+     *  ```nocompile
+     *   impl pallet_balances::Config for Runtime {
+     *    type AccountStore = System
+     *   }
+     *  ```
+     * 
+     *  But this comes with tradeoffs, storing account balances in the system pallet stores
+     *  `frame_system` data alongside the account data contrary to storing account balances in the
+     *  `Balances` pallet, which uses a `StorageMap` to store balances data only.
+     *  NOTE: This is only used in the case that this pallet is used to store balances.
+     */
+    get asV64(): BalancesAccountStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -491,6 +589,130 @@ export interface BalancesAccountStorageV1 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.AccountData][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.AccountData][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.AccountData][]>
+}
+
+/**
+ *  The Balances pallet example of storing the balance of an account.
+ * 
+ *  # Example
+ * 
+ *  ```nocompile
+ *   impl pallet_balances::Config for Runtime {
+ *     type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
+ *   }
+ *  ```
+ * 
+ *  You can also store the balance of an account in the `System` pallet.
+ * 
+ *  # Example
+ * 
+ *  ```nocompile
+ *   impl pallet_balances::Config for Runtime {
+ *    type AccountStore = System
+ *   }
+ *  ```
+ * 
+ *  But this comes with tradeoffs, storing account balances in the system pallet stores
+ *  `frame_system` data alongside the account data contrary to storing account balances in the
+ *  `Balances` pallet, which uses a `StorageMap` to store balances data only.
+ *  NOTE: This is only used in the case that this pallet is used to store balances.
+ */
+export interface BalancesAccountStorageV64 {
+    get(key: Uint8Array): Promise<v64.AccountData>
+    getAll(): Promise<v64.AccountData[]>
+    getMany(keys: Uint8Array[]): Promise<v64.AccountData[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v64.AccountData][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.AccountData][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.AccountData][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.AccountData][]>
+}
+
+export class BalancesFreezesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Balances'
+    }
+
+    protected getName() {
+        return 'Freezes'
+    }
+
+    /**
+     *  Freeze locks on account balances.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '687d129c824d7b23d1f21a471b19c3fed952e35b64e5de19f549851d1c3f7f91'
+    }
+
+    /**
+     *  Freeze locks on account balances.
+     */
+    get asV64(): BalancesFreezesStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
+}
+
+/**
+ *  Freeze locks on account balances.
+ */
+export interface BalancesFreezesStorageV64 {
+    get(key: Uint8Array): Promise<v64.IdAmount[]>
+    getAll(): Promise<v64.IdAmount[][]>
+    getMany(keys: Uint8Array[]): Promise<v64.IdAmount[][]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v64.IdAmount[]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.IdAmount[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
+}
+
+export class BalancesHoldsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Balances'
+    }
+
+    protected getName() {
+        return 'Holds'
+    }
+
+    /**
+     *  Holds on account balances.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '687d129c824d7b23d1f21a471b19c3fed952e35b64e5de19f549851d1c3f7f91'
+    }
+
+    /**
+     *  Holds on account balances.
+     */
+    get asV64(): BalancesHoldsStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
+}
+
+/**
+ *  Holds on account balances.
+ */
+export interface BalancesHoldsStorageV64 {
+    get(key: Uint8Array): Promise<v64.IdAmount[]>
+    getAll(): Promise<v64.IdAmount[][]>
+    getMany(keys: Uint8Array[]): Promise<v64.IdAmount[][]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v64.IdAmount[]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.IdAmount[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
 }
 
 export class BalancesInactiveIssuanceStorage extends StorageBase {
@@ -1005,6 +1227,21 @@ export class ContractsCodeStorageStorage extends StorageBase {
         assert(this.isV55)
         return this as any
     }
+
+    /**
+     *  A mapping between an original code hash and instrumented wasm code, ready for execution.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === 'a481725ba0babde38b5f0021234024af1dccca9a2371bd58204fc6d8f6b5c6e9'
+    }
+
+    /**
+     *  A mapping between an original code hash and instrumented wasm code, ready for execution.
+     */
+    get asV64(): ContractsCodeStorageStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -1022,6 +1259,23 @@ export interface ContractsCodeStorageStorageV55 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v55.PrefabWasmModule][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v55.PrefabWasmModule][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v55.PrefabWasmModule][]>
+}
+
+/**
+ *  A mapping between an original code hash and instrumented wasm code, ready for execution.
+ */
+export interface ContractsCodeStorageStorageV64 {
+    get(key: Uint8Array): Promise<(v64.PrefabWasmModule | undefined)>
+    getAll(): Promise<v64.PrefabWasmModule[]>
+    getMany(keys: Uint8Array[]): Promise<(v64.PrefabWasmModule | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v64.PrefabWasmModule][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.PrefabWasmModule][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.PrefabWasmModule][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.PrefabWasmModule][]>
 }
 
 export class ContractsContractInfoOfStorage extends StorageBase {
@@ -1051,6 +1305,25 @@ export class ContractsContractInfoOfStorage extends StorageBase {
         assert(this.isV55)
         return this as any
     }
+
+    /**
+     *  The code associated with a given account.
+     * 
+     *  TWOX-NOTE: SAFE since `AccountId` is a secure hash.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '2ed3030a48bdd27968f084078d4be8ce85cf8eb4a02dee5baf25409f96c4aa32'
+    }
+
+    /**
+     *  The code associated with a given account.
+     * 
+     *  TWOX-NOTE: SAFE since `AccountId` is a secure hash.
+     */
+    get asV64(): ContractsContractInfoOfStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -1070,6 +1343,25 @@ export interface ContractsContractInfoOfStorageV55 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v55.ContractInfo][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v55.ContractInfo][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v55.ContractInfo][]>
+}
+
+/**
+ *  The code associated with a given account.
+ * 
+ *  TWOX-NOTE: SAFE since `AccountId` is a secure hash.
+ */
+export interface ContractsContractInfoOfStorageV64 {
+    get(key: Uint8Array): Promise<(v64.ContractInfo | undefined)>
+    getAll(): Promise<v64.ContractInfo[]>
+    getMany(keys: Uint8Array[]): Promise<(v64.ContractInfo | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v64.ContractInfo][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.ContractInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.ContractInfo][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.ContractInfo][]>
 }
 
 export class ContractsDeletionQueueStorage extends StorageBase {
@@ -1101,6 +1393,27 @@ export class ContractsDeletionQueueStorage extends StorageBase {
         assert(this.isV55)
         return this as any
     }
+
+    /**
+     *  Evicted contracts that await child trie deletion.
+     * 
+     *  Child trie deletion is a heavy operation depending on the amount of storage items
+     *  stored in said trie. Therefore this operation is performed lazily in `on_idle`.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '8aa11675e28f46f0e4b233018893c1979e42c43f64a290aecd81221cbc7f6e92'
+    }
+
+    /**
+     *  Evicted contracts that await child trie deletion.
+     * 
+     *  Child trie deletion is a heavy operation depending on the amount of storage items
+     *  stored in said trie. Therefore this operation is performed lazily in `on_idle`.
+     */
+    get asV64(): ContractsDeletionQueueStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -1111,6 +1424,84 @@ export class ContractsDeletionQueueStorage extends StorageBase {
  */
 export interface ContractsDeletionQueueStorageV55 {
     get(): Promise<v55.DeletedContract[]>
+}
+
+/**
+ *  Evicted contracts that await child trie deletion.
+ * 
+ *  Child trie deletion is a heavy operation depending on the amount of storage items
+ *  stored in said trie. Therefore this operation is performed lazily in `on_idle`.
+ */
+export interface ContractsDeletionQueueStorageV64 {
+    get(key: number): Promise<(Uint8Array | undefined)>
+    getAll(): Promise<Uint8Array[]>
+    getMany(keys: number[]): Promise<(Uint8Array | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: Uint8Array][]>
+    getPairs(key: number): Promise<[k: number, v: Uint8Array][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: Uint8Array][]>
+}
+
+export class ContractsDeletionQueueCounterStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Contracts'
+    }
+
+    protected getName() {
+        return 'DeletionQueueCounter'
+    }
+
+    /**
+     *  A pair of monotonic counters used to track the latest contract marked for deletion
+     *  and the latest deleted contract in queue.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '65d5c1dade2675e2cfc8b3bec1aea2c072e986624721f7e36114b12902e231a0'
+    }
+
+    /**
+     *  A pair of monotonic counters used to track the latest contract marked for deletion
+     *  and the latest deleted contract in queue.
+     */
+    get asV64(): ContractsDeletionQueueCounterStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
+}
+
+/**
+ *  A pair of monotonic counters used to track the latest contract marked for deletion
+ *  and the latest deleted contract in queue.
+ */
+export interface ContractsDeletionQueueCounterStorageV64 {
+    get(): Promise<v64.DeletionQueueManager>
+}
+
+export class ContractsMigrationInProgressStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Contracts'
+    }
+
+    protected getName() {
+        return 'MigrationInProgress'
+    }
+
+    get isV64(): boolean {
+        return this.getTypeHash() === '9d37db61fb40fc6c377391f52a7b349395407634d45b47a8943ab5ccf47e31e4'
+    }
+
+    get asV64(): ContractsMigrationInProgressStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
+}
+
+export interface ContractsMigrationInProgressStorageV64 {
+    get(): Promise<(Uint8Array | undefined)>
 }
 
 export class ContractsNonceStorage extends StorageBase {
@@ -2369,6 +2760,39 @@ export interface EVMAccountCodesStorageV1 {
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: Uint8Array][]>
 }
 
+export class EVMAccountCodesMetadataStorage extends StorageBase {
+    protected getPrefix() {
+        return 'EVM'
+    }
+
+    protected getName() {
+        return 'AccountCodesMetadata'
+    }
+
+    get isV64(): boolean {
+        return this.getTypeHash() === '85b2848eb820c708bd1d2c8e96a947d7f7597fba6d42d560a793758fc63f060e'
+    }
+
+    get asV64(): EVMAccountCodesMetadataStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
+}
+
+export interface EVMAccountCodesMetadataStorageV64 {
+    get(key: Uint8Array): Promise<(v64.CodeMetadata | undefined)>
+    getAll(): Promise<v64.CodeMetadata[]>
+    getMany(keys: Uint8Array[]): Promise<(v64.CodeMetadata | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v64.CodeMetadata][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.CodeMetadata][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.CodeMetadata][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.CodeMetadata][]>
+}
+
 export class EVMAccountStoragesStorage extends StorageBase {
     protected getPrefix() {
         return 'EVM'
@@ -2981,6 +3405,21 @@ export class ParachainSystemAuthorizedUpgradeStorage extends StorageBase {
         assert(this.isV1)
         return this as any
     }
+
+    /**
+     *  The next authorized upgrade, if there is one.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '901f6f87c9fafe3d3f61c36b45b24a63a90d51ae151f2b4a361d3c5611ffb723'
+    }
+
+    /**
+     *  The next authorized upgrade, if there is one.
+     */
+    get asV64(): ParachainSystemAuthorizedUpgradeStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -2988,6 +3427,13 @@ export class ParachainSystemAuthorizedUpgradeStorage extends StorageBase {
  */
 export interface ParachainSystemAuthorizedUpgradeStorageV1 {
     get(): Promise<(Uint8Array | undefined)>
+}
+
+/**
+ *  The next authorized upgrade, if there is one.
+ */
+export interface ParachainSystemAuthorizedUpgradeStorageV64 {
+    get(): Promise<(v64.CodeUpgradeAuthorization | undefined)>
 }
 
 export class ParachainSystemCustomValidationHeadDataStorage extends StorageBase {
@@ -3638,6 +4084,33 @@ export class ParachainSystemRelevantMessagingStateStorage extends StorageBase {
         assert(this.isV1)
         return this as any
     }
+
+    /**
+     *  The snapshot of some state related to messaging relevant to the current parachain as per
+     *  the relay parent.
+     * 
+     *  This field is meant to be updated each block with the validation data inherent. Therefore,
+     *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+     * 
+     *  This data is also absent from the genesis.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '2e08e09c21eea176bfd53411112b867efc3c3d71f51431e11288adfb3e3ede6f'
+    }
+
+    /**
+     *  The snapshot of some state related to messaging relevant to the current parachain as per
+     *  the relay parent.
+     * 
+     *  This field is meant to be updated each block with the validation data inherent. Therefore,
+     *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+     * 
+     *  This data is also absent from the genesis.
+     */
+    get asV64(): ParachainSystemRelevantMessagingStateStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -3651,6 +4124,19 @@ export class ParachainSystemRelevantMessagingStateStorage extends StorageBase {
  */
 export interface ParachainSystemRelevantMessagingStateStorageV1 {
     get(): Promise<(v1.MessagingStateSnapshot | undefined)>
+}
+
+/**
+ *  The snapshot of some state related to messaging relevant to the current parachain as per
+ *  the relay parent.
+ * 
+ *  This field is meant to be updated each block with the validation data inherent. Therefore,
+ *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+ * 
+ *  This data is also absent from the genesis.
+ */
+export interface ParachainSystemRelevantMessagingStateStorageV64 {
+    get(): Promise<(v64.MessagingStateSnapshot | undefined)>
 }
 
 export class ParachainSystemReservedDmpWeightOverrideStorage extends StorageBase {
@@ -4748,6 +5234,38 @@ export interface PolkadotXcmVersionNotifyTargetsStorageV61 {
     getPairsPaged(pageSize: number, key1: number, key2: v61.VersionedMultiLocation): AsyncIterable<[k: [number, v61.VersionedMultiLocation], v: [bigint, v61.Weight, number]][]>
 }
 
+export class PolkadotXcmXcmExecutionSuspendedStorage extends StorageBase {
+    protected getPrefix() {
+        return 'PolkadotXcm'
+    }
+
+    protected getName() {
+        return 'XcmExecutionSuspended'
+    }
+
+    /**
+     *  Global suspension state of the XCM executor.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '1b6fbf1674d189f761a7ac63093bf5c755bf073dd9d9f0dbe657289f92575db5'
+    }
+
+    /**
+     *  Global suspension state of the XCM executor.
+     */
+    get asV64(): PolkadotXcmXcmExecutionSuspendedStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
+}
+
+/**
+ *  Global suspension state of the XCM executor.
+ */
+export interface PolkadotXcmXcmExecutionSuspendedStorageV64 {
+    get(): Promise<boolean>
+}
+
 export class ProxyAnnouncementsStorage extends StorageBase {
     protected getPrefix() {
         return 'Proxy'
@@ -5285,6 +5803,21 @@ export class SystemAccountStorage extends StorageBase {
         assert(this.isV1)
         return this as any
     }
+
+    /**
+     *  The full account information for a particular account ID.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === 'd6b7a816e0cf6dc8f60cb2bd55c5c5ae7ad928521a6e98aafbe6e954f5c54878'
+    }
+
+    /**
+     *  The full account information for a particular account ID.
+     */
+    get asV64(): SystemAccountStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -5302,6 +5835,23 @@ export interface SystemAccountStorageV1 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.AccountInfo][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.AccountInfo][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.AccountInfo][]>
+}
+
+/**
+ *  The full account information for a particular account ID.
+ */
+export interface SystemAccountStorageV64 {
+    get(key: Uint8Array): Promise<v64.AccountInfo>
+    getAll(): Promise<v64.AccountInfo[]>
+    getMany(keys: Uint8Array[]): Promise<v64.AccountInfo[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v64.AccountInfo][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.AccountInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.AccountInfo][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.AccountInfo][]>
 }
 
 export class SystemAllExtrinsicsLenStorage extends StorageBase {
@@ -6001,6 +6551,33 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV61)
         return this as any
     }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV64(): boolean {
+        return this.getTypeHash() === '4df386e1cd5fb705d6178df1c626abf118777fe9242e16480ff25f858e13d319'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV64(): SystemEventsStorageV64 {
+        assert(this.isV64)
+        return this as any
+    }
 }
 
 /**
@@ -6185,6 +6762,19 @@ export interface SystemEventsStorageV55 {
  */
 export interface SystemEventsStorageV61 {
     get(): Promise<v61.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV64 {
+    get(): Promise<v64.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {
