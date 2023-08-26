@@ -11,6 +11,15 @@ const Balances: AddressArgs = {
   "Balances.Transfer": ["from", "to"],
   "Balances.Unreserved": ["who"],
   "Balances.Withdraw": ["who"],
+  "Balances.Burned": ["who"],
+  "Balances.Frozen": ["who"],
+  "Balances.Locked": ["who"],
+  "Balances.Minted": ["who"],
+  "Balances.Restored": ["who"],
+  "Balances.Suspended": ["who"],
+  "Balances.Thawed": ["who"],
+  "Balances.Unlocked": ["who"],
+  "Balances.Upgraded": ["who"],
 };
 
 const Contracts: AddressArgs = {

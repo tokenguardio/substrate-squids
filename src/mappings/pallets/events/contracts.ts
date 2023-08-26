@@ -20,9 +20,13 @@ export function normalizeContractsEventsArgs(ctx: ChainContext, event: Event) {
     case "Contracts.Called":
       e = new ContractsCalledEvent(ctx, event);
       if (e.isV55) {
-        return event.args;
+        return { ...event.args, __kind: null };
       } else if (e.isV64) {
-        return event.args;
+        return {
+          caller: event.args.caller?.value,
+          __kind: event.args.caller.__kind,
+          contract: event.args.contract,
+        };
       } else {
         throw new UnknownEventVersionError(event.name);
       }

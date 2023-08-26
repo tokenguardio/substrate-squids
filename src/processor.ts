@@ -65,7 +65,7 @@ const processor = new SubstrateBatchProcessor()
 // .addEvmLog("*", {
 //   filter: [erc20.events.Transfer.topic],
 // })
-// .setBlockRange({ from: 3000000, to: 3010000 });
+// .setBlockRange({ from: 4286145 });
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const events: EventNorm[] = [];
