@@ -45,7 +45,7 @@ const client = axios.create({
 });
 
 axiosRetry(client, {
-  retries: 3,
+  retries: 5,
   retryDelay: axiosRetry.exponentialDelay,
 });
 
