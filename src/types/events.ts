@@ -16,6 +16,7 @@ import * as v49 from './v49'
 import * as v52 from './v52'
 import * as v61 from './v61'
 import * as v64 from './v64'
+import * as v66 from './v66'
 
 export class AssetsAccountsDestroyedEvent {
     private readonly _chain: Chain
@@ -8002,6 +8003,35 @@ export class XcmpQueueXcmpMessageSentEvent {
      */
     get asV30(): {messageHash: (Uint8Array | undefined)} {
         assert(this.isV30)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class XtokensTransferredMultiAssetsEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Xtokens.TransferredMultiAssets')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get isV66(): boolean {
+        return this._chain.getEventHash('Xtokens.TransferredMultiAssets') === '15736a72848dcda33acde4ffd89efcf41166a311cefd45a3ccad9cf54e78a91d'
+    }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get asV66(): {sender: Uint8Array, assets: v66.V3MultiAsset[], fee: v66.V3MultiAsset, dest: v66.V3MultiLocation} {
+        assert(this.isV66)
         return this._chain.decodeEvent(this.event)
     }
 }

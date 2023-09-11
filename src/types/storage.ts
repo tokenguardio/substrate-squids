@@ -17,6 +17,7 @@ import * as v52 from './v52'
 import * as v55 from './v55'
 import * as v61 from './v61'
 import * as v64 from './v64'
+import * as v66 from './v66'
 
 export class AssetsAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -6578,6 +6579,33 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV64)
         return this as any
     }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV66(): boolean {
+        return this.getTypeHash() === 'bfc43c777a3afd25d38bab4d5c20237d59f5b8ec1df09b01963546c6194ae0bd'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV66(): SystemEventsStorageV66 {
+        assert(this.isV66)
+        return this as any
+    }
 }
 
 /**
@@ -6775,6 +6803,19 @@ export interface SystemEventsStorageV61 {
  */
 export interface SystemEventsStorageV64 {
     get(): Promise<v64.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV66 {
+    get(): Promise<v66.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {
