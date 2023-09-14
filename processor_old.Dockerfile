@@ -1,4 +1,4 @@
-FROM node:16-alpine AS node
+FROM node:19-alpine AS node
 
 FROM node AS node-with-gyp
 RUN apk add g++ make python3
@@ -7,9 +7,6 @@ FROM node-with-gyp AS builder
 WORKDIR /squid
 ADD package.json .
 ADD package-lock.json .
-ADD assets assets 
-ADD db db
-ADD schema.graphql .
 RUN npm ci
 ADD tsconfig.json .
 ADD src src
@@ -27,17 +24,14 @@ COPY --from=deps /squid/package.json .
 COPY --from=deps /squid/package-lock.json .
 COPY --from=deps /squid/node_modules node_modules
 COPY --from=builder /squid/lib lib
-# remove if no assets folder
-COPY --from=builder /squid/assets assets
-# remove if no db folder
-COPY --from=builder /squid/db db
-# remove if no schema.graphql is in the root
-COPY --from=builder /squid/schema.graphql schema.graphql
-# remove if no commands.json is in the root
-ADD commands.json .
-RUN echo -e "loglevel=silent\\nupdate-notifier=false" > /squid/.npmrc
-RUN npm i -g @subsquid/commands && mv $(which squid-commands) /usr/local/bin/sqd
+RUN echo -e "loglevel=silent\nupdate-notifier=false" > /squid/.npmrc
+ADD db db
+ADD assets assets
+ADD schema.graphql .
+# TODO: use shorter PROMETHEUS_PORT
 ENV PROCESSOR_PROMETHEUS_PORT 3000
+EXPOSE 3000
+EXPOSE 4000
 
 FROM squid AS processor
-CMD sqd process:prod
+CMD npx squid-typeorm-migration apply;npm run processor:start

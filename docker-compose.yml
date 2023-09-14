@@ -11,3 +11,16 @@ services:
       - "${DB_PORT}:5432"
       # command: ["postgres", "-c", "log_statement=all"]
     shm_size: 1gb
+  processor:
+    image: my-squid
+    environment:
+      - DB_NAME=squid
+      - DB_PORT=5432
+      - DB_HOST=db
+      - DB_PASS=squid
+    ports:
+      # prometheus metrics exposed at port 3000
+      - "3000:3000"
+    command: ["sqd", "process:prod"]
+    depends_on:
+      - db
