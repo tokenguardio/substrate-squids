@@ -1,7 +1,0 @@
-{
-  "outDir": "src/types",
-  "specVersions": "https://astar.archive.subsquid.io/graphql",
-  "events": true,
-  "calls": true,
-  "storage": true
-}

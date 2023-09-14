@@ -11,10 +11,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
-    "paths": {
-      "@src/*": ["./src/*"]
-    }
+    "resolveJsonModule": true
   },
-  "include": ["src", "src/tools", "src/tools/mapping-template-gen.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "exclude": [
+    "node_modules"
+  ]
 }

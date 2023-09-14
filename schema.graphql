@@ -1,130 +1,28 @@
-type EventNorm @entity {
-  id: ID!
-  call: CallNorm
+type Transaction @entity {
+  id: ID! # Matches your 'id: string'
+  transactionIndex: Int! # Matches 'transactionIndex: number'
   blockHash: String!
   timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  extrinsicSuccess: Boolean
-}
-
-type CallNorm @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  success: Boolean
-  origin: JSON
-}
-
-type AddressMapping @entity {
-  id: ID! @index
-  ss58: String! @index
-}
-
-type EvmTransaction @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  args: JSON
-  transactionType: EvmTransactionType! @index
-  label: EvmLabel! @index
-  from: String!
-  to: String!
-  fee: BigInt!
-  value: BigInt
-  transactionHash: String!
-  status: String!
-  statusReason: String!
-}
-
-enum EvmTransactionType {
-  legacy
-  eip1559
-  eip2390
-}
-
-enum EvmLabel {
-  contract_deploy
-  contract_call
-  native_transfer
-}
-
-type SubstrateTransaction @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  label: SubstrateLabel! @index
-  fee: BigInt!
-  tip: BigInt
-  from: String
-  to: String
-  success: Boolean!
-}
-
-enum SubstrateLabel {
-  contract_deploy
-  contract_call
-  other
-}
-
-type EvmContract @entity {
-  id: ID! @index
-  creator: String! @index
-  transactionHash: String! @index
-  createdTimestamp: DateTime! @index
-}
-
-enum TransferType {
-  TRANSFER
-  MINT
-  BURN
-}
-
-enum ContractStandard {
-  ERC20
-  ERC721
-  ERC1155
-}
-
-interface Token {
-  id: ID!
-  name: String
-  symbol: String
-}
-
-type FToken implements Token @entity {
-  id: ID! # Token contract address
-  name: String @index
-  symbol: String @index
-  decimals: Int
-}
-
-interface Transfer {
-  id: ID!
-  blockNumber: BigInt!
-  timestamp: DateTime!
-  eventIndex: Int
-  txnHash: String
-  from: String!
-  to: String!
-  amount: BigInt
-  transferType: TransferType
-}
-
-type FtTransfer implements Transfer @entity {
-  id: ID!
-  callId: String
-  blockNumber: BigInt! @index
-  timestamp: DateTime!
-  eventIndex: Int
-  txnHash: String
-  from: String!
-  to: String!
-  amount: BigInt @index
-  transferType: TransferType @index
-  token: String!
+  from: String! # Matches 'from: string'
+  to: String # Matches 'to?: string'
+  hash: String! # Matches 'hash: string'
+  gas: BigInt! # Matches 'gas: bigint'
+  gasPrice: BigInt! # Matches 'gasPrice: bigint'
+  maxFeePerGas: BigInt # Matches 'maxFeePerGas?: bigint'
+  maxPriorityFeePerGas: BigInt # Matches 'maxPriorityFeePerGas?: bigint'
+  input: String! # Matches 'input: string'
+  nonce: Int! # Matches 'nonce: number'
+  value: BigInt! # Matches 'value: bigint'
+  v: BigInt # Matches 'v?: bigint'
+  r: String # Matches 'r?: string'
+  s: String # Matches 's?: string'
+  yParity: Int # Matches 'yParity?: number'
+  chainId: Int # Matches 'chainId?: number'
+  gasUsed: BigInt # Matches 'gasUsed?: bigint'
+  cumulativeGasUsed: BigInt # Matches 'cumulativeGasUsed?: bigint'
+  effectiveGasPrice: BigInt # Matches 'effectiveGasPrice?: bigint'
+  contractAddress: String # Matches 'contractAddress?: string'
+  type: Int # Matches 'type?: number'
+  status: Int # Matches 'status?: number'
+  sighash: String # Matches 'sighash: string'
 }
