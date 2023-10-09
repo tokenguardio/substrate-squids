@@ -10,11 +10,14 @@ import {
 
 export const processor = new EvmBatchProcessor()
   .setDataSource({
-    archive: lookupArchive("arbitrum"),
-    chain: "https://rpc.ankr.com/arbitrum",
+    archive: lookupArchive("eth-mainnet"),
+    chain: "https://eth.api.onfinality.io/public",
   })
-  .setFinalityConfirmation(50)
-  .addTransaction({})
+  .setBlockRange({ from: 16962349, to: 16962349 })
+  .setFinalityConfirmation(75)
+  .addTransaction({
+    traces: true,
+  })
   .setFields({
     transaction: {
       gas: true,
@@ -24,10 +27,6 @@ export const processor = new EvmBatchProcessor()
       input: true,
       nonce: true,
       value: true,
-      v: true,
-      r: true,
-      s: true,
-      yParity: true,
       chainId: true,
       gasUsed: true,
       cumulativeGasUsed: true,
@@ -36,6 +35,34 @@ export const processor = new EvmBatchProcessor()
       type: true,
       status: true,
       sighash: true,
+    },
+    trace: {
+      subtraces: true,
+      // 'create' type related fields
+      createFrom: true,
+      createValue: true,
+      createGas: true,
+      createInit: true,
+      createResultGasUsed: true,
+      createResultCode: true,
+      createResultAddress: true,
+      // 'call' type related fields
+      callFrom: true,
+      callTo: true,
+      callValue: true,
+      callGas: true,
+      callSighash: true,
+      callInput: true,
+      callResultGasUsed: true,
+      callResultOutput: true,
+      // 'suicide' type related fields
+      suicideAddress: true,
+      suicideRefundAddress: true,
+      suicideBalance: true,
+      // 'reward' type related fields
+      rewardAuthor: true,
+      rewardValue: true,
+      rewardType: true,
     },
   });
 

@@ -1,3 +1,67 @@
+type Trace @entity {
+  id: ID!
+  transaction: Transaction!
+  transactionIndex: Int
+  type: TraceType
+  subtraces: Int
+  error: String
+  action: Action
+  result: Result
+}
+
+enum TraceType {
+  CREATE
+  CALL
+  SUICIDE
+  REWARD
+}
+
+union Action = CreateAction | CallAction | SuicideAction | RewardAction
+union Result = CreateResult | CallResult
+
+# Create type-related fields and result
+type CreateAction {
+  from: String
+  value: BigInt
+  gas: BigInt
+  init: String
+}
+
+type CreateResult {
+  gasUsed: BigInt
+  code: String
+  address: String
+}
+
+# Call type-related fields and result
+type CallAction {
+  from: String
+  to: String
+  value: BigInt
+  gas: BigInt
+  sighash: String
+  input: String
+}
+
+type CallResult {
+  gasUsed: BigInt
+  output: String
+}
+
+# Suicide type-related fields
+type SuicideAction {
+  address: String
+  refundAddress: String
+  balance: BigInt
+}
+
+# Reward type-related fields
+type RewardAction {
+  author: String
+  value: BigInt
+  rewardType: String
+}
+
 type Transaction @entity {
   id: ID! # Matches your 'id: string'
   transactionIndex: Int! # Matches 'transactionIndex: number'
@@ -13,10 +77,6 @@ type Transaction @entity {
   input: String! # Matches 'input: string'
   nonce: Int! # Matches 'nonce: number'
   value: BigInt! # Matches 'value: bigint'
-  v: BigInt # Matches 'v?: bigint'
-  r: String # Matches 'r?: string'
-  s: String # Matches 's?: string'
-  yParity: Int # Matches 'yParity?: number'
   chainId: Int # Matches 'chainId?: number'
   gasUsed: BigInt # Matches 'gasUsed?: bigint'
   cumulativeGasUsed: BigInt # Matches 'cumulativeGasUsed?: bigint'
@@ -25,4 +85,5 @@ type Transaction @entity {
   type: Int # Matches 'type?: number'
   status: Int # Matches 'status?: number'
   sighash: String # Matches 'sighash: string'
+  traces: [Trace!] @derivedFrom(field: "transaction")
 }

@@ -1,5 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
+import {Trace} from "./trace.model"
 
 @Entity_()
 export class Transaction {
@@ -50,18 +51,6 @@ export class Transaction {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
     value!: bigint
 
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-    v!: bigint | undefined | null
-
-    @Column_("text", {nullable: true})
-    r!: string | undefined | null
-
-    @Column_("text", {nullable: true})
-    s!: string | undefined | null
-
-    @Column_("int4", {nullable: true})
-    yParity!: number | undefined | null
-
     @Column_("int4", {nullable: true})
     chainId!: number | undefined | null
 
@@ -85,4 +74,7 @@ export class Transaction {
 
     @Column_("text", {nullable: true})
     sighash!: string | undefined | null
+
+    @OneToMany_(() => Trace, e => e.transaction)
+    traces!: Trace[]
 }
