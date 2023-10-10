@@ -1,3 +1,6 @@
+export * from "./eventNorm.model"
+export * from "./callNorm.model"
+export * from "./addressMapping.model"
 export * from "./trace.model"
 export * from "./_traceType"
 export * from "./_action"
