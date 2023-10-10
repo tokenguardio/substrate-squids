@@ -92,12 +92,13 @@ type Transaction @entity {
   timestamp: DateTime! @index
   hash: String!
   type: EvmTransactionType!
+  label: EvmLabel! @index
   from: String!
   to: String
   fee: BigInt!
   value: BigInt!
   input: String!
-  contractAddress: String
+  deployedAddress: String
   success: Boolean
   sighash: String
   transactionIndex: Int!
@@ -108,4 +109,10 @@ enum EvmTransactionType {
   LEGACY
   EIP1559
   EIP2930
+}
+
+enum EvmLabel {
+  CONTRACT_DEPLOY
+  CONTRACT_CALL
+  NATIVE_TRANSFER
 }
