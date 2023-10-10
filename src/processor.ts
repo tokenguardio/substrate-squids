@@ -39,50 +39,53 @@ const processor = new SubstrateBatchProcessor()
     },
   });
 
-processor.run(new TypeormDatabase(), async (ctx) => {
-  const events: EventNorm[] = [];
-  const calls: CallNorm[] = [];
-  const addressMappings: Map<string, AddressMapping> = new Map();
+processor.run(
+  new TypeormDatabase({ stateSchema: "substrate_processor" }),
+  async (ctx) => {
+    const events: EventNorm[] = [];
+    const calls: CallNorm[] = [];
+    const addressMappings: Map<string, AddressMapping> = new Map();
 
-  for (const block of ctx.blocks) {
-    for (const item of block.items) {
-      const pallet = item.name.split(".")[0];
-      if (item.kind === "event") {
-        if (
-          eventNormalizationHandlers[pallet] &&
-          !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
-            item.event.name
-          )
-        ) {
-          const args = eventNormalizationHandlers[pallet](ctx, item.event);
-          const event = createEventNorm(block.header, item.event, args);
-          events.push(event);
-          addAddressesToMap(
-            item.event.name,
-            args,
-            eventsAddressArgs,
-            addressMappings
-          );
-        }
-      } else if (item.kind === "call") {
-        if (callNormalizationHandlers[pallet]) {
-          const args = callNormalizationHandlers[pallet](ctx, item.call);
-          const call = createCallNorm(block.header, item.call, args);
-          calls.push(call);
-          addAddressesToMap(
-            item.call.name,
-            args,
-            callsAddressArgs,
-            addressMappings
-          );
+    for (const block of ctx.blocks) {
+      for (const item of block.items) {
+        const pallet = item.name.split(".")[0];
+        if (item.kind === "event") {
+          if (
+            eventNormalizationHandlers[pallet] &&
+            !["System.ExtrinsicSuccess", "System.ExtrinsicFailed"].includes(
+              item.event.name
+            )
+          ) {
+            const args = eventNormalizationHandlers[pallet](ctx, item.event);
+            const event = createEventNorm(block.header, item.event, args);
+            events.push(event);
+            addAddressesToMap(
+              item.event.name,
+              args,
+              eventsAddressArgs,
+              addressMappings
+            );
+          }
+        } else if (item.kind === "call") {
+          if (callNormalizationHandlers[pallet]) {
+            const args = callNormalizationHandlers[pallet](ctx, item.call);
+            const call = createCallNorm(block.header, item.call, args);
+            calls.push(call);
+            addAddressesToMap(
+              item.call.name,
+              args,
+              callsAddressArgs,
+              addressMappings
+            );
+          }
         }
       }
     }
+    await ctx.store.save(events);
+    await ctx.store.save(calls);
+    await ctx.store.save(Array.from(addressMappings.values()));
   }
-  await ctx.store.save(events);
-  await ctx.store.save(calls);
-  await ctx.store.save(Array.from(addressMappings.values()));
-});
+);
 
 export function addAddressesToMap(
   itemName: string,
