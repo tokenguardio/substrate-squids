@@ -9,7 +9,7 @@ import {
   CreateResult,
   CallResult,
 } from "./model";
-import { convertToTraceType } from "./utils/utils";
+import { convertToTraceType, convertToTransactionType } from "./utils/utils";
 import { processor } from "./processor";
 
 processor.run(
@@ -22,27 +22,21 @@ processor.run(
         transactions.push(
           new Transaction({
             id: txn.id,
-            transactionIndex: txn.transactionIndex,
             blockHash: block.header.hash,
             timestamp: new Date(block.header.timestamp),
+            hash: txn.hash,
+            type: txn.type ? convertToTransactionType(txn.type) : undefined,
             from: txn.from,
             to: txn.to,
-            hash: txn.hash,
-            gas: txn.gas,
-            gasPrice: txn.gasPrice,
-            maxFeePerGas: txn.maxFeePerGas,
-            maxPriorityFeePerGas: txn.maxPriorityFeePerGas,
-            input: txn.input,
-            nonce: txn.nonce,
+            fee: txn.gasUsed
+              ? calculateFee(txn.gasPrice, txn.gasUsed)
+              : undefined,
             value: txn.value,
-            chainId: txn.chainId,
-            gasUsed: txn.gasUsed,
-            cumulativeGasUsed: txn.cumulativeGasUsed,
-            effectiveGasPrice: txn.effectiveGasPrice,
+            input: txn.input,
             contractAddress: txn.contractAddress,
-            type: txn.type,
-            status: txn.status,
+            success: txn.status ? Boolean(txn.status) : undefined,
             sighash: txn.sighash,
+            transactionIndex: txn.transactionIndex,
           })
         );
       }
@@ -126,3 +120,8 @@ processor.run(
     await ctx.store.upsert(traces);
   }
 );
+
+function calculateFee(gasPrice: bigint, gasUsed: bigint): bigint {
+  const fee = gasPrice * gasUsed;
+  return fee;
+}
