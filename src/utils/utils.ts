@@ -1,4 +1,5 @@
-import { TraceType, EvmTransactionType } from "../model";
+import { TraceType, EvmTransactionType, EvmLabel } from "../model";
+import { Transaction } from "../processor";
 
 export function convertToTraceType(type: string): TraceType {
   switch (type.toUpperCase()) {
@@ -26,4 +27,19 @@ export function convertToTransactionType(type: number): EvmTransactionType {
     default:
       throw new Error(`Unknown transaction type: ${type}`);
   }
+}
+
+export function getEvmLabel(txn: Transaction): EvmLabel {
+  if (txn.sighash && txn.contractAddress) {
+    return EvmLabel.CONTRACT_DEPLOY;
+  } else if (txn.sighash && !txn.contractAddress) {
+    return EvmLabel.CONTRACT_CALL;
+  } else {
+    return EvmLabel.NATIVE_TRANSFER;
+  }
+}
+
+export function calculateFee(gasPrice: bigint, gasUsed: bigint): bigint {
+  const fee = gasPrice * gasUsed;
+  return fee;
 }

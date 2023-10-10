@@ -8,8 +8,14 @@ import {
   RewardAction,
   CreateResult,
   CallResult,
+  EvmLabel,
 } from "./model";
-import { convertToTraceType, convertToTransactionType } from "./utils/utils";
+import {
+  convertToTraceType,
+  convertToTransactionType,
+  getEvmLabel,
+  calculateFee,
+} from "./utils/utils";
 import { processor } from "./processor";
 
 processor.run(
@@ -25,15 +31,20 @@ processor.run(
             blockHash: block.header.hash,
             timestamp: new Date(block.header.timestamp),
             hash: txn.hash,
-            type: txn.type ? convertToTransactionType(txn.type) : undefined,
+            type:
+              txn.type !== undefined
+                ? convertToTransactionType(txn.type)
+                : undefined,
+            label: getEvmLabel(txn),
             from: txn.from,
             to: txn.to,
-            fee: txn.gasUsed
-              ? calculateFee(txn.gasPrice, txn.gasUsed)
-              : undefined,
+            fee:
+              txn.gasUsed !== undefined
+                ? calculateFee(txn.gasPrice, txn.gasUsed)
+                : undefined,
             value: txn.value,
             input: txn.input,
-            contractAddress: txn.contractAddress,
+            deployedAddress: txn.contractAddress,
             success: txn.status ? Boolean(txn.status) : undefined,
             sighash: txn.sighash,
             transactionIndex: txn.transactionIndex,
@@ -120,8 +131,3 @@ processor.run(
     await ctx.store.upsert(traces);
   }
 );
-
-function calculateFee(gasPrice: bigint, gasUsed: bigint): bigint {
-  const fee = gasPrice * gasUsed;
-  return fee;
-}

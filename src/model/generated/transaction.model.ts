@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {EvmTransactionType} from "./_evmTransactionType"
+import {EvmLabel} from "./_evmLabel"
 import {Trace} from "./trace.model"
 
 @Entity_()
@@ -25,6 +26,10 @@ export class Transaction {
     @Column_("varchar", {length: 7, nullable: false})
     type!: EvmTransactionType
 
+    @Index_()
+    @Column_("varchar", {length: 15, nullable: false})
+    label!: EvmLabel
+
     @Column_("text", {nullable: false})
     from!: string
 
@@ -41,7 +46,7 @@ export class Transaction {
     input!: string
 
     @Column_("text", {nullable: true})
-    contractAddress!: string | undefined | null
+    deployedAddress!: string | undefined | null
 
     @Column_("bool", {nullable: true})
     success!: boolean | undefined | null
