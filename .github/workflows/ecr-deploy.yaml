@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["arbitrum-mainnet"]
+    branches: ["moonbeam-mainnet-evm"]
   pull_request:
-    branches: ["arbitrum-mainnet"]
+    branches: ["moonbeam-mainnet-evm"]
   workflow_dispatch:
 
 jobs:
