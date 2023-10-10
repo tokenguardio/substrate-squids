@@ -1,3 +1,27 @@
+type EventNorm @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  name: String! @index
+  args: JSON
+  extrinsicSuccess: Boolean
+}
+
+type CallNorm @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  name: String! @index
+  args: JSON
+  success: Boolean
+  origin: JSON
+}
+
+type AddressMapping @entity {
+  id: ID! @index
+  ss58: String
+}
+
 type Trace @entity {
   id: ID!
   transaction: Transaction!
