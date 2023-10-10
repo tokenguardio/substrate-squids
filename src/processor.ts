@@ -10,10 +10,8 @@ import {
 
 export const processor = new EvmBatchProcessor()
   .setDataSource({
-    archive: lookupArchive("eth-mainnet"),
-    chain: "https://eth.api.onfinality.io/public",
+    archive: lookupArchive("moonbeam", { type: "EVM" }),
   })
-  .setBlockRange({ from: 16962349, to: 16962349 })
   .setFinalityConfirmation(75)
   .addTransaction({
     traces: true,
