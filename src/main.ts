@@ -8,7 +8,6 @@ import {
   RewardAction,
   CreateResult,
   CallResult,
-  EvmLabel,
 } from "./model";
 import {
   convertToTraceType,
