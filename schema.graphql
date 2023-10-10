@@ -87,27 +87,25 @@ type RewardAction {
 }
 
 type Transaction @entity {
-  id: ID! # Matches your 'id: string'
-  transactionIndex: Int! # Matches 'transactionIndex: number'
+  id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  from: String! # Matches 'from: string'
-  to: String # Matches 'to?: string'
-  hash: String! # Matches 'hash: string'
-  gas: BigInt! # Matches 'gas: bigint'
-  gasPrice: BigInt! # Matches 'gasPrice: bigint'
-  maxFeePerGas: BigInt # Matches 'maxFeePerGas?: bigint'
-  maxPriorityFeePerGas: BigInt # Matches 'maxPriorityFeePerGas?: bigint'
-  input: String! # Matches 'input: string'
-  nonce: Int! # Matches 'nonce: number'
-  value: BigInt! # Matches 'value: bigint'
-  chainId: Int # Matches 'chainId?: number'
-  gasUsed: BigInt # Matches 'gasUsed?: bigint'
-  cumulativeGasUsed: BigInt # Matches 'cumulativeGasUsed?: bigint'
-  effectiveGasPrice: BigInt # Matches 'effectiveGasPrice?: bigint'
-  contractAddress: String # Matches 'contractAddress?: string'
-  type: Int # Matches 'type?: number'
-  status: Int # Matches 'status?: number'
-  sighash: String # Matches 'sighash: string'
+  hash: String!
+  type: EvmTransactionType!
+  from: String!
+  to: String
+  fee: BigInt!
+  value: BigInt!
+  input: String!
+  contractAddress: String
+  success: Boolean
+  sighash: String
+  transactionIndex: Int!
   traces: [Trace!] @derivedFrom(field: "transaction")
+}
+
+enum EvmTransactionType {
+  LEGACY
+  EIP1559
+  EIP2930
 }
