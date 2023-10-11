@@ -44,7 +44,8 @@ processor.run(
             value: txn.value,
             input: txn.input,
             deployedAddress: txn.contractAddress,
-            success: txn.status ? Boolean(txn.status) : undefined,
+            success:
+              txn.gasUsed !== undefined ? Boolean(txn.status) : undefined,
             sighash: txn.sighash,
             transactionIndex: txn.transactionIndex,
           })
