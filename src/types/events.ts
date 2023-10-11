@@ -14,6 +14,8 @@ import * as v2000 from './v2000'
 import * as v2100 from './v2100'
 import * as v2201 from './v2201'
 import * as v2302 from './v2302'
+import * as v2403 from './v2403'
+import * as v2501 from './v2501'
 
 export class AssetManagerAssetRegisteredEvent {
     private readonly _chain: Chain
@@ -657,6 +659,35 @@ export class AssetsAssetFrozenEvent {
     }
 }
 
+export class AssetsAssetMinBalanceChangedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.AssetMinBalanceChanged')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The min_balance of an asset has been updated by the asset owner.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Assets.AssetMinBalanceChanged') === '62dc5a2aad35ea9b274647a895c2fa0e7f91dedb718b62def83df9965dbfe2e1'
+    }
+
+    /**
+     * The min_balance of an asset has been updated by the asset owner.
+     */
+    get asV2403(): {assetId: bigint, newMinBalance: bigint} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class AssetsAssetStatusChangedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -711,6 +742,35 @@ export class AssetsAssetThawedEvent {
      */
     get asV1201(): {assetId: bigint} {
         assert(this.isV1201)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class AssetsBlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.Blocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some account `who` was blocked.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Assets.Blocked') === 'a07f176e176af32b351739ea886636ebf9f519994bc0b2ed23bd132216585dae'
+    }
+
+    /**
+     * Some account `who` was blocked.
+     */
+    get asV2501(): {assetId: bigint, who: Uint8Array} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1074,6 +1134,35 @@ export class AssetsThawedEvent {
      */
     get asV1201(): {assetId: bigint, who: Uint8Array} {
         assert(this.isV1201)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class AssetsTouchedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Assets.Touched')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some account `who` was created with a deposit from `depositor`.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Assets.Touched') === '289ff42e5eb91e326060f0e3e60135b00728501f723e5b9fbe1298f1cf70e074'
+    }
+
+    /**
+     * Some account `who` was created with a deposit from `depositor`.
+     */
+    get asV2501(): {assetId: bigint, who: Uint8Array, depositor: Uint8Array} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1536,6 +1625,50 @@ export class BalancesBalanceSetEvent {
         assert(this.isV1201)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A balance was set by root.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.BalanceSet') === '75ce258a2eedf74b36490a9550887771d7c0a07c5c6c0e8c9c9957eb17ff3bd9'
+    }
+
+    /**
+     * A balance was set by root.
+     */
+    get asV2501(): {who: Uint8Array, free: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesBurnedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Burned')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was burned from an account.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Burned') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some amount was burned from an account.
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class BalancesDepositEvent {
@@ -1674,6 +1807,151 @@ export class BalancesEndowedEvent {
     }
 }
 
+export class BalancesFrozenEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Frozen')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was frozen.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Frozen') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some balance was frozen.
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesIssuedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Issued')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Total issuance was increased by `amount`, creating a credit to be balanced.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Issued') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
+    }
+
+    /**
+     * Total issuance was increased by `amount`, creating a credit to be balanced.
+     */
+    get asV2501(): {amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesLockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Locked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was locked.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Locked') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some balance was locked.
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesMintedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Minted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was minted into an account.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Minted') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some amount was minted into an account.
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesRescindedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Rescinded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Total issuance was decreased by `amount`, creating a debt to be balanced.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Rescinded') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
+    }
+
+    /**
+     * Total issuance was decreased by `amount`, creating a debt to be balanced.
+     */
+    get asV2501(): {amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BalancesReserveRepatriatedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1768,6 +2046,35 @@ export class BalancesReservedEvent {
     }
 }
 
+export class BalancesRestoredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Restored')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was restored into an account.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Restored') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some amount was restored into an account.
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BalancesSlashedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1810,6 +2117,64 @@ export class BalancesSlashedEvent {
      */
     get asV1201(): {who: Uint8Array, amount: bigint} {
         assert(this.isV1201)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesSuspendedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Suspended')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some amount was suspended from an account (it can be restored later).
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Suspended') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some amount was suspended from an account (it can be restored later).
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesThawedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Thawed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was thawed.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Thawed') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some balance was thawed.
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1858,6 +2223,35 @@ export class BalancesTransferEvent {
     }
 }
 
+export class BalancesUnlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Unlocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was unlocked.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Unlocked') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * Some balance was unlocked.
+     */
+    get asV2501(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BalancesUnreservedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1898,6 +2292,35 @@ export class BalancesUnreservedEvent {
      */
     get asV1201(): {who: Uint8Array, amount: bigint} {
         assert(this.isV1201)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesUpgradedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Upgraded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An account was upgraded.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Balances.Upgraded') === 'e92c9f723dde51134e2f444b9c6f3d649ad16574a792290c80e904dda6240391'
+    }
+
+    /**
+     * An account was upgraded.
+     */
+    get asV2501(): {who: Uint8Array} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2061,6 +2484,64 @@ export class BaseFeeNewElasticityEvent {
 
     get asV1802(): {elasticity: number} {
         assert(this.isV1802)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ConvictionVotingDelegatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ConvictionVoting.Delegated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An account has delegated their vote to another account. \[who, target\]
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('ConvictionVoting.Delegated') === 'e425676e43dfa0f66531077a677904af26bdb7406850c1a937ed39ce997aebee'
+    }
+
+    /**
+     * An account has delegated their vote to another account. \[who, target\]
+     */
+    get asV2403(): [Uint8Array, Uint8Array] {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ConvictionVotingUndelegatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'ConvictionVoting.Undelegated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An \[account\] has cancelled a previous delegation operation.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('ConvictionVoting.Undelegated') === '15bab564ac60f719121cf1b5dee312d333f0648b54550beefdf79deda6264096'
+    }
+
+    /**
+     * An \[account\] has cancelled a previous delegation operation.
+     */
+    get asV2403(): Uint8Array {
+        assert(this.isV2403)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2307,6 +2788,21 @@ export class CouncilCollectiveExecutedEvent {
         assert(this.isV2000)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('CouncilCollective.Executed') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class CouncilCollectiveMemberExecutedEvent {
@@ -2411,6 +2907,21 @@ export class CouncilCollectiveMemberExecutedEvent {
      */
     get asV2000(): {proposalHash: Uint8Array, result: v2000.Type_50} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('CouncilCollective.MemberExecuted') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3100,6 +3611,93 @@ export class DemocracyExternalTabledEvent {
      */
     get asV900(): null {
         assert(this.isV900)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DemocracyMetadataClearedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Democracy.MetadataCleared')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Metadata for a proposal or a referendum has been cleared.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Democracy.MetadataCleared') === '5973f98e3dfb93077820ad77490dd9fe605110b75a8f006f1565898a599055ab'
+    }
+
+    /**
+     * Metadata for a proposal or a referendum has been cleared.
+     */
+    get asV2403(): {owner: v2403.MetadataOwner, hash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DemocracyMetadataSetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Democracy.MetadataSet')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Metadata for a proposal or a referendum has been set.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Democracy.MetadataSet') === '5973f98e3dfb93077820ad77490dd9fe605110b75a8f006f1565898a599055ab'
+    }
+
+    /**
+     * Metadata for a proposal or a referendum has been set.
+     */
+    get asV2403(): {owner: v2403.MetadataOwner, hash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DemocracyMetadataTransferredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Democracy.MetadataTransferred')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Metadata has been transferred to new owner.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Democracy.MetadataTransferred') === '6a30d674b0ce2457e6cff0b5493fa843349fa6b51c1641c1ac02b3f35ebbb927'
+    }
+
+    /**
+     * Metadata has been transferred to new owner.
+     */
+    get asV2403(): {prevOwner: v2403.MetadataOwner, owner: v2403.MetadataOwner, hash: Uint8Array} {
+        assert(this.isV2403)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4596,6 +5194,21 @@ export class EthereumExecutedEvent {
         assert(this.isV1802)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An ethereum transaction was successfully executed.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Ethereum.Executed') === '4da35f3b1cb63c6084839486f6cc44465f31d4dbf24abce9ef5d05b899d9309e'
+    }
+
+    /**
+     * An ethereum transaction was successfully executed.
+     */
+    get asV2403(): {from: Uint8Array, to: Uint8Array, transactionHash: Uint8Array, exitReason: v2403.ExitReason, extraData: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class IdentityIdentityClearedEvent {
@@ -5189,6 +5802,35 @@ export class LocalAssetsAssetFrozenEvent {
     }
 }
 
+export class LocalAssetsAssetMinBalanceChangedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'LocalAssets.AssetMinBalanceChanged')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The min_balance of an asset has been updated by the asset owner.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('LocalAssets.AssetMinBalanceChanged') === '62dc5a2aad35ea9b274647a895c2fa0e7f91dedb718b62def83df9965dbfe2e1'
+    }
+
+    /**
+     * The min_balance of an asset has been updated by the asset owner.
+     */
+    get asV2403(): {assetId: bigint, newMinBalance: bigint} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class LocalAssetsAssetStatusChangedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -5243,6 +5885,35 @@ export class LocalAssetsAssetThawedEvent {
      */
     get asV1401(): {assetId: bigint} {
         assert(this.isV1401)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class LocalAssetsBlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'LocalAssets.Blocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some account `who` was blocked.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('LocalAssets.Blocked') === 'a07f176e176af32b351739ea886636ebf9f519994bc0b2ed23bd132216585dae'
+    }
+
+    /**
+     * Some account `who` was blocked.
+     */
+    get asV2501(): {assetId: bigint, who: Uint8Array} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5610,6 +6281,35 @@ export class LocalAssetsThawedEvent {
     }
 }
 
+export class LocalAssetsTouchedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'LocalAssets.Touched')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some account `who` was created with a deposit from `depositor`.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('LocalAssets.Touched') === '289ff42e5eb91e326060f0e3e60135b00728501f723e5b9fbe1298f1cf70e074'
+    }
+
+    /**
+     * Some account `who` was created with a deposit from `depositor`.
+     */
+    get asV2501(): {assetId: bigint, who: Uint8Array, depositor: Uint8Array} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class LocalAssetsTransferredEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -5756,6 +6456,21 @@ export class MaintenanceModeFailedToResumeIdleXcmExecutionEvent {
         assert(this.isV2000)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * The call to resume on_idle XCM execution failed with inner error
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('MaintenanceMode.FailedToResumeIdleXcmExecution') === '4564a5412ce55535234d019dbd1d2999c5a9d6f452a565385d0c43e85d0dbf0b'
+    }
+
+    /**
+     * The call to resume on_idle XCM execution failed with inner error
+     */
+    get asV2501(): {error: v2501.DispatchError} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class MaintenanceModeFailedToSuspendIdleXcmExecutionEvent {
@@ -5813,6 +6528,21 @@ export class MaintenanceModeFailedToSuspendIdleXcmExecutionEvent {
      */
     get asV2000(): {error: v2000.DispatchError} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The call to suspend on_idle XCM execution failed with inner error
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('MaintenanceMode.FailedToSuspendIdleXcmExecution') === '4564a5412ce55535234d019dbd1d2999c5a9d6f452a565385d0c43e85d0dbf0b'
+    }
+
+    /**
+     * The call to suspend on_idle XCM execution failed with inner error
+     */
+    get asV2501(): {error: v2501.DispatchError} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5873,6 +6603,21 @@ export class MigrationsFailedToResumeIdleXcmExecutionEvent {
         assert(this.isV2100)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * XCM execution resume failed with inner error
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Migrations.FailedToResumeIdleXcmExecution') === '4564a5412ce55535234d019dbd1d2999c5a9d6f452a565385d0c43e85d0dbf0b'
+    }
+
+    /**
+     * XCM execution resume failed with inner error
+     */
+    get asV2501(): {error: v2501.DispatchError} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class MigrationsFailedToSuspendIdleXcmExecutionEvent {
@@ -5900,6 +6645,21 @@ export class MigrationsFailedToSuspendIdleXcmExecutionEvent {
      */
     get asV2100(): {error: v2100.DispatchError} {
         assert(this.isV2100)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * XCM execution suspension failed with inner error
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Migrations.FailedToSuspendIdleXcmExecution') === '4564a5412ce55535234d019dbd1d2999c5a9d6f452a565385d0c43e85d0dbf0b'
+    }
+
+    /**
+     * XCM execution suspension failed with inner error
+     */
+    get asV2501(): {error: v2501.DispatchError} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6265,6 +7025,374 @@ export class MoonbeamOrbitersOrbiterUnregisteredEvent {
      */
     get asV1606(): {account: Uint8Array} {
         assert(this.isV1606)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class MultisigMultisigApprovalEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Multisig.MultisigApproval')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A multisig operation has been approved by someone.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigApproval') === 'c3a6a03bd006d748864182a77a7fb023dccfc09b9a4c9e3f78af7b64bdb8239c'
+    }
+
+    /**
+     * A multisig operation has been approved by someone.
+     */
+    get asV2403(): {approving: Uint8Array, timepoint: v2403.Timepoint, multisig: Uint8Array, callHash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class MultisigMultisigCancelledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Multisig.MultisigCancelled')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A multisig operation has been cancelled.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigCancelled') === 'ebb1c345e0282422dc6d826e807127c81116ee2e5b4a4e0cda747aac9f10658c'
+    }
+
+    /**
+     * A multisig operation has been cancelled.
+     */
+    get asV2403(): {cancelling: Uint8Array, timepoint: v2403.Timepoint, multisig: Uint8Array, callHash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class MultisigMultisigExecutedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Multisig.MultisigExecuted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigExecuted') === '5e0805b2226d60a1a0573af58aaeecd31f54400dbf487fea359ff382aee0ae2d'
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get asV2403(): {approving: Uint8Array, timepoint: v2403.Timepoint, multisig: Uint8Array, callHash: Uint8Array, result: v2403.Type_51} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Multisig.MultisigExecuted') === '2e5392a68ee1d87d94d7d46a0cbb17e0339227126dfd0824bba9606f90169b99'
+    }
+
+    /**
+     * A multisig operation has been executed.
+     */
+    get asV2501(): {approving: Uint8Array, timepoint: v2501.Timepoint, multisig: Uint8Array, callHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class MultisigNewMultisigEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Multisig.NewMultisig')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A new multisig operation has begun.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Multisig.NewMultisig') === '9d0064659661d79bb7e7c20a099b5c4a60b8773d73945e7a7638c3805f14dd07'
+    }
+
+    /**
+     * A new multisig operation has begun.
+     */
+    get asV2403(): {approving: Uint8Array, multisig: Uint8Array, callHash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class OpenTechCommitteeCollectiveApprovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'OpenTechCommitteeCollective.Approved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A motion was approved by the required threshold.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.Approved') === 'b8668610145a6851ad2d5b7dd4bfc15e29402d9a8558401ab955896007f866a5'
+    }
+
+    /**
+     * A motion was approved by the required threshold.
+     */
+    get asV2403(): {proposalHash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class OpenTechCommitteeCollectiveClosedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'OpenTechCommitteeCollective.Closed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A proposal was closed because its threshold was reached or after its duration was up.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.Closed') === '084e73926c22836c888c17e49053d3b72e2feaa904b8f0175d21fb5b800542f9'
+    }
+
+    /**
+     * A proposal was closed because its threshold was reached or after its duration was up.
+     */
+    get asV2403(): {proposalHash: Uint8Array, yes: number, no: number} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class OpenTechCommitteeCollectiveDisapprovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'OpenTechCommitteeCollective.Disapproved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A motion was not approved by the required threshold.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.Disapproved') === 'b8668610145a6851ad2d5b7dd4bfc15e29402d9a8558401ab955896007f866a5'
+    }
+
+    /**
+     * A motion was not approved by the required threshold.
+     */
+    get asV2403(): {proposalHash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class OpenTechCommitteeCollectiveExecutedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'OpenTechCommitteeCollective.Executed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.Executed') === 'e4ddba6fedfd1d730b14622cc84321978192b87a473c4fee1f401e1a07add330'
+    }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get asV2403(): {proposalHash: Uint8Array, result: v2403.Type_51} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.Executed') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class OpenTechCommitteeCollectiveMemberExecutedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'OpenTechCommitteeCollective.MemberExecuted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.MemberExecuted') === 'e4ddba6fedfd1d730b14622cc84321978192b87a473c4fee1f401e1a07add330'
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get asV2403(): {proposalHash: Uint8Array, result: v2403.Type_51} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.MemberExecuted') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class OpenTechCommitteeCollectiveProposedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'OpenTechCommitteeCollective.Proposed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A motion (given hash) has been proposed (by given account) with a threshold (given
+     * `MemberCount`).
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.Proposed') === '2f562f77da96c6e9d914e5ea299d49ccdf6e5f2ac7298893761b08e64df38909'
+    }
+
+    /**
+     * A motion (given hash) has been proposed (by given account) with a threshold (given
+     * `MemberCount`).
+     */
+    get asV2403(): {account: Uint8Array, proposalIndex: number, proposalHash: Uint8Array, threshold: number} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class OpenTechCommitteeCollectiveVotedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'OpenTechCommitteeCollective.Voted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A motion (given hash) has been voted on by given account, leaving
+     * a tally (yes votes and no votes given respectively as `MemberCount`).
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('OpenTechCommitteeCollective.Voted') === '21c6fc995cdece31f27f75fd29db36311e324efedc01dd968dcf754af1904de9'
+    }
+
+    /**
+     * A motion (given hash) has been voted on by given account, leaving
+     * a tally (yes votes and no votes given respectively as `MemberCount`).
+     */
+    get asV2403(): {account: Uint8Array, proposalHash: Uint8Array, voted: boolean, yes: number, no: number} {
+        assert(this.isV2403)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -10310,6 +11438,21 @@ export class ProxyProxyExecutedEvent {
         assert(this.isV2000)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A proxy was executed correctly, with the given.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Proxy.ProxyExecuted') === 'ee56f7174dc1a4631da3e5b48f323193771be6a702fb2ff1ff40459869d34a0e'
+    }
+
+    /**
+     * A proxy was executed correctly, with the given.
+     */
+    get asV2501(): {result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class ProxyProxyRemovedEvent {
@@ -10502,6 +11645,458 @@ export class RandomnessRequestFulfilledEvent {
     }
 }
 
+export class ReferendaApprovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.Approved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A referendum has been approved and its proposal has been scheduled.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.Approved') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    /**
+     * A referendum has been approved and its proposal has been scheduled.
+     */
+    get asV2403(): {index: number} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaCancelledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.Cancelled')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A referendum has been cancelled.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.Cancelled') === '70d6a902ac9b2bb5bbfe0c144d90f4f6173d5a1789c49a1fde94843431be6f82'
+    }
+
+    /**
+     * A referendum has been cancelled.
+     */
+    get asV2403(): {index: number, tally: v2403.Tally} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaConfirmAbortedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.ConfirmAborted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.ConfirmAborted') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    get asV2403(): {index: number} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaConfirmStartedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.ConfirmStarted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.ConfirmStarted') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    get asV2403(): {index: number} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaConfirmedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.Confirmed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A referendum has ended its confirmation phase and is ready for approval.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.Confirmed') === '70d6a902ac9b2bb5bbfe0c144d90f4f6173d5a1789c49a1fde94843431be6f82'
+    }
+
+    /**
+     * A referendum has ended its confirmation phase and is ready for approval.
+     */
+    get asV2403(): {index: number, tally: v2403.Tally} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaDecisionDepositPlacedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.DecisionDepositPlaced')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The decision deposit has been placed.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.DecisionDepositPlaced') === '5f4efdfb06509d37b98e33824ae6590ba8b3edb296ad4f18a1153ccb231b91e1'
+    }
+
+    /**
+     * The decision deposit has been placed.
+     */
+    get asV2403(): {index: number, who: Uint8Array, amount: bigint} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaDecisionDepositRefundedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.DecisionDepositRefunded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The decision deposit has been refunded.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.DecisionDepositRefunded') === '5f4efdfb06509d37b98e33824ae6590ba8b3edb296ad4f18a1153ccb231b91e1'
+    }
+
+    /**
+     * The decision deposit has been refunded.
+     */
+    get asV2403(): {index: number, who: Uint8Array, amount: bigint} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaDecisionStartedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.DecisionStarted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A referendum has moved into the deciding phase.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.DecisionStarted') === '93e86498f68feebf124dad7a87010c14ba0e2cc07333331054e866079ff834a5'
+    }
+
+    /**
+     * A referendum has moved into the deciding phase.
+     */
+    get asV2403(): {index: number, track: number, proposal: v2403.Bounded, tally: v2403.Tally} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaDepositSlashedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.DepositSlashed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A deposit has been slashaed.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.DepositSlashed') === '43e3321e3408ebd2b7d4c70d42ffa076463495043e47ddb0fb1fbe3e105f5b2f'
+    }
+
+    /**
+     * A deposit has been slashaed.
+     */
+    get asV2403(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaKilledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.Killed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A referendum has been killed.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.Killed') === '70d6a902ac9b2bb5bbfe0c144d90f4f6173d5a1789c49a1fde94843431be6f82'
+    }
+
+    /**
+     * A referendum has been killed.
+     */
+    get asV2403(): {index: number, tally: v2403.Tally} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaMetadataClearedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.MetadataCleared')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Metadata for a referendum has been cleared.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.MetadataCleared') === 'bcccfeca753f71fa9a69022a68c8a101a4dcc752e055426850d08a4ccc07337d'
+    }
+
+    /**
+     * Metadata for a referendum has been cleared.
+     */
+    get asV2403(): {index: number, hash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaMetadataSetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.MetadataSet')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Metadata for a referendum has been set.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.MetadataSet') === 'bcccfeca753f71fa9a69022a68c8a101a4dcc752e055426850d08a4ccc07337d'
+    }
+
+    /**
+     * Metadata for a referendum has been set.
+     */
+    get asV2403(): {index: number, hash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaRejectedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.Rejected')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A proposal has been rejected by referendum.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.Rejected') === '70d6a902ac9b2bb5bbfe0c144d90f4f6173d5a1789c49a1fde94843431be6f82'
+    }
+
+    /**
+     * A proposal has been rejected by referendum.
+     */
+    get asV2403(): {index: number, tally: v2403.Tally} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaSubmissionDepositRefundedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.SubmissionDepositRefunded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The submission deposit has been refunded.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.SubmissionDepositRefunded') === '5f4efdfb06509d37b98e33824ae6590ba8b3edb296ad4f18a1153ccb231b91e1'
+    }
+
+    /**
+     * The submission deposit has been refunded.
+     */
+    get asV2403(): {index: number, who: Uint8Array, amount: bigint} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaSubmittedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.Submitted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A referendum has been submitted.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.Submitted') === 'dd1db40cab9e2e0c54e203f9c60347029a08160d5930b550604e5378d4c502df'
+    }
+
+    /**
+     * A referendum has been submitted.
+     */
+    get asV2403(): {index: number, track: number, proposal: v2403.Bounded} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReferendaTimedOutEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Referenda.TimedOut')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A referendum has been timed out without being decided.
+     */
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Referenda.TimedOut') === '70d6a902ac9b2bb5bbfe0c144d90f4f6173d5a1789c49a1fde94843431be6f82'
+    }
+
+    /**
+     * A referendum has been timed out without being decided.
+     */
+    get asV2403(): {index: number, tally: v2403.Tally} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class SchedulerCallLookupFailedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -10689,6 +12284,21 @@ export class SchedulerDispatchedEvent {
      */
     get asV2000(): {task: [number, number], id: (Uint8Array | undefined), result: v2000.Type_50} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Dispatched some task.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Scheduler.Dispatched') === '6eb5580f3023aa9d8b919b2e4d4c348b6d18e7b61b4d3362b70f19480d1767fc'
+    }
+
+    /**
+     * Dispatched some task.
+     */
+    get asV2501(): {task: [number, number], id: (Uint8Array | undefined), result: v2501.Type_52} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -11011,6 +12621,21 @@ export class SystemExtrinsicFailedEvent {
      */
     get asV2000(): {dispatchError: v2000.DispatchError, dispatchInfo: v2000.DispatchInfo} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An extrinsic failed.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('System.ExtrinsicFailed') === '89ca818f689e3f6e085d8137a961f36cc94819777211c5c11cca985a448944b8'
+    }
+
+    /**
+     * An extrinsic failed.
+     */
+    get asV2501(): {dispatchError: v2501.DispatchError, dispatchInfo: v2501.DispatchInfo} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -11463,6 +13088,21 @@ export class TechCommitteeCollectiveExecutedEvent {
         assert(this.isV2000)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('TechCommitteeCollective.Executed') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TechCommitteeCollectiveMemberExecutedEvent {
@@ -11567,6 +13207,21 @@ export class TechCommitteeCollectiveMemberExecutedEvent {
      */
     get asV2000(): {proposalHash: Uint8Array, result: v2000.Type_50} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('TechCommitteeCollective.MemberExecuted') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12199,6 +13854,21 @@ export class TreasuryCouncilCollectiveExecutedEvent {
         assert(this.isV2000)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('TreasuryCouncilCollective.Executed') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A motion was executed; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class TreasuryCouncilCollectiveMemberExecutedEvent {
@@ -12241,6 +13911,21 @@ export class TreasuryCouncilCollectiveMemberExecutedEvent {
      */
     get asV2000(): {proposalHash: Uint8Array, result: v2000.Type_50} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('TreasuryCouncilCollective.MemberExecuted') === '6820679ab2706380fa3eaa694e707b2dd6bcd901fb46cdcafbea7b2f05d8feba'
+    }
+
+    /**
+     * A single member did some action; result will be `Ok` if it returned without error.
+     */
+    get asV2501(): {proposalHash: Uint8Array, result: v2501.Type_52} {
+        assert(this.isV2501)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -12479,6 +14164,23 @@ export class UtilityBatchInterruptedEvent {
         assert(this.isV2000)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Utility.BatchInterrupted') === '031f8c01ddd9491965bf6e6671d70381e70d55e6028aab52a937d1c3afeecb9f'
+    }
+
+    /**
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
+     */
+    get asV2501(): {index: number, error: v2501.DispatchError} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class UtilityDispatchedAsEvent {
@@ -12568,6 +14270,21 @@ export class UtilityDispatchedAsEvent {
         assert(this.isV2000)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A call was dispatched.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Utility.DispatchedAs') === 'ee56f7174dc1a4631da3e5b48f323193771be6a702fb2ff1ff40459869d34a0e'
+    }
+
+    /**
+     * A call was dispatched.
+     */
+    get asV2501(): {result: v2501.Type_52} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class UtilityItemCompletedEvent {
@@ -12639,6 +14356,99 @@ export class UtilityItemFailedEvent {
      */
     get asV2000(): {error: v2000.DispatchError} {
         assert(this.isV2000)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Utility.ItemFailed') === '4564a5412ce55535234d019dbd1d2999c5a9d6f452a565385d0c43e85d0dbf0b'
+    }
+
+    /**
+     * A single item within a Batch of dispatches has completed with error.
+     */
+    get asV2501(): {error: v2501.DispatchError} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class WhitelistCallWhitelistedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Whitelist.CallWhitelisted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Whitelist.CallWhitelisted') === 'b44e90452a13e65d907b0cefbea166547546a12683e4c0df57032f38a10e78b3'
+    }
+
+    get asV2403(): {callHash: Uint8Array} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class WhitelistWhitelistedCallDispatchedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Whitelist.WhitelistedCallDispatched')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Whitelist.WhitelistedCallDispatched') === 'f3cf1e680982a29643501f0efe5ea31d9996c644bf575968d233190a4d28c85f'
+    }
+
+    get asV2403(): {callHash: Uint8Array, result: Result<v2403.PostDispatchInfo, v2403.DispatchErrorWithPostInfo>} {
+        assert(this.isV2403)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    get isV2501(): boolean {
+        return this._chain.getEventHash('Whitelist.WhitelistedCallDispatched') === '872efdfca137d9329d409f26057af1369b9a71eb023c2bc2c0a793d4d9dfca2e'
+    }
+
+    get asV2501(): {callHash: Uint8Array, result: Result<v2501.PostDispatchInfo, v2501.DispatchErrorWithPostInfo>} {
+        assert(this.isV2501)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class WhitelistWhitelistedCallRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Whitelist.WhitelistedCallRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV2403(): boolean {
+        return this._chain.getEventHash('Whitelist.WhitelistedCallRemoved') === 'b44e90452a13e65d907b0cefbea166547546a12683e4c0df57032f38a10e78b3'
+    }
+
+    get asV2403(): {callHash: Uint8Array} {
+        assert(this.isV2403)
         return this._chain.decodeEvent(this.event)
     }
 }

@@ -41,6 +41,8 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         return event.args;
       } else if (e.isV2000) {
         return event.args;
+      } else if (e.isV2501) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
