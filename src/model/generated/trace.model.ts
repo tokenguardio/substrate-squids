@@ -21,6 +21,7 @@ export class Trace {
     @Column_("int4", {nullable: true})
     transactionIndex!: number | undefined | null
 
+    @Index_()
     @Column_("varchar", {length: 7, nullable: true})
     type!: TraceType | undefined | null
 
