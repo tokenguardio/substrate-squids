@@ -26,7 +26,7 @@ type Trace @entity {
   id: ID!
   transaction: Transaction!
   transactionIndex: Int
-  type: TraceType
+  type: TraceType @index
   subtraces: Int
   error: String
   action: Action
@@ -59,12 +59,19 @@ type CreateResult {
 
 # Call type-related fields and result
 type CallAction {
-  from: String
-  to: String
+  from: String!
+  fromType: AddressType
+  to: String!
+  toType: AddressType
   value: BigInt
   gas: BigInt
   sighash: String
   input: String
+}
+
+enum AddressType {
+  EOA
+  CONTRACT
 }
 
 type CallResult {
@@ -91,7 +98,7 @@ type Transaction @entity {
   blockHash: String!
   timestamp: DateTime! @index
   hash: String!
-  type: EvmTransactionType!
+  type: EvmTransactionType! @index
   label: EvmLabel! @index
   from: String!
   to: String
@@ -99,7 +106,7 @@ type Transaction @entity {
   value: BigInt!
   input: String!
   deployedAddress: String
-  success: Boolean
+  success: Boolean @index
   sighash: String
   transactionIndex: Int!
   traces: [Trace!] @derivedFrom(field: "transaction")
@@ -115,4 +122,11 @@ enum EvmLabel {
   CONTRACT_DEPLOY
   CONTRACT_CALL
   NATIVE_TRANSFER
+}
+
+type Contract @entity {
+  id: ID! @index
+  createdBy: String @index
+  transactionHash: String @index
+  createdTimestamp: DateTime @index
 }

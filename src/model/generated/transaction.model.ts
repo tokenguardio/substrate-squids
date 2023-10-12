@@ -23,6 +23,7 @@ export class Transaction {
     @Column_("text", {nullable: false})
     hash!: string
 
+    @Index_()
     @Column_("varchar", {length: 7, nullable: false})
     type!: EvmTransactionType
 
@@ -48,6 +49,7 @@ export class Transaction {
     @Column_("text", {nullable: true})
     deployedAddress!: string | undefined | null
 
+    @Index_()
     @Column_("bool", {nullable: true})
     success!: boolean | undefined | null
 
