@@ -20,10 +20,14 @@ import {
   convertToTransactionType,
   calculateFee,
 } from "./utils/utils";
+import { TraceTree } from "./utils/trace";
 import { processor } from "./processor";
 
 const precompiles = JSON.parse(readFileSync("assets/precompiles.json", "utf8"));
 let precompilesAdded = false;
+
+let currentTransactionId: string | null = null;
+let traceTree: TraceTree | null = null;
 
 processor.run(
   new TypeormDatabase({ stateSchema: "evm_processor" }),
@@ -77,13 +81,23 @@ processor.run(
           | null = null;
         let result: CreateResult | CallResult | null = null;
 
+        if (currentTransactionId !== trc.transaction?.id) {
+          traceTree = new TraceTree(trc.transaction?.id || "");
+          currentTransactionId = trc.transaction?.id || null;
+        }
+
+        if (traceTree) {
+          traceTree.addTrace(trc);
+        }
+
         switch (trc.type) {
           case "create":
             if (
               trc.result?.address != null &&
               trc.transaction?.hash !== undefined &&
               trc.transaction?.status !== 0 &&
-              trc.error === null
+              trc.error === null &&
+              !traceTree?.parentHasError(trc)
             ) {
               contracts.push(
                 new Contract({
