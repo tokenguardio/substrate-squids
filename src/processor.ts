@@ -16,20 +16,14 @@ export const processor = new EvmBatchProcessor()
   .setFinalityConfirmation(75)
   .addTransaction({
     traces: true,
+    logs: true,
   })
   .setFields({
     transaction: {
-      gas: true,
       gasPrice: true,
-      maxFeePerGas: true,
-      maxPriorityFeePerGas: true,
       input: true,
-      nonce: true,
       value: true,
-      chainId: true,
       gasUsed: true,
-      cumulativeGasUsed: true,
-      effectiveGasPrice: true,
       contractAddress: true,
       type: true,
       status: true,
