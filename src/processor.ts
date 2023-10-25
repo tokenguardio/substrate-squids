@@ -16,7 +16,6 @@ export const processor = new EvmBatchProcessor()
   .setFinalityConfirmation(75)
   .addTransaction({
     traces: true,
-    logs: true,
   })
   .setFields({
     transaction: {
