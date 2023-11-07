@@ -26,7 +26,6 @@ export class Transaction {
     @Column_("text", {nullable: false})
     hash!: string
 
-    @Index_()
     @Column_("varchar", {length: 7, nullable: false})
     type!: EvmTransactionType
 
