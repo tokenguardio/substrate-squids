@@ -2,25 +2,18 @@ import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { readFileSync } from "fs";
 import { In } from "typeorm";
 import {
-  Trace,
+  TraceCreate,
+  TraceReward,
+  TraceCall,
+  TraceSuicide,
   Transaction,
-  CreateAction,
-  CallAction,
-  SuicideAction,
-  RewardAction,
-  CreateResult,
-  CallResult,
   Contract,
-  TraceType,
   EvmLabel,
   AddressType,
 } from "./model";
-import {
-  convertToTraceType,
-  convertToTransactionType,
-  calculateFee,
-} from "./utils/utils";
+import { convertToTransactionType, calculateFee } from "./utils/utils";
 import { TraceTree } from "./utils/trace";
+import { CommonTraceFields } from "./interfaces/main";
 import { processor } from "./processor";
 
 const precompiles = JSON.parse(readFileSync("assets/precompiles.json", "utf8"));
@@ -33,7 +26,10 @@ processor.run(
   new TypeormDatabase({ stateSchema: "evm_processor" }),
   async (ctx) => {
     const transactions: Transaction[] = [];
-    const traces: Trace[] = [];
+    const traceCreates: TraceCreate[] = [];
+    const traceCalls: TraceCall[] = [];
+    const traceSuicides: TraceSuicide[] = [];
+    const traceRewards: TraceReward[] = [];
     const contracts: Contract[] = [];
 
     if (!precompilesAdded) {
@@ -73,14 +69,6 @@ processor.run(
         );
       }
       for (let trc of block.traces) {
-        let action:
-          | CreateAction
-          | CallAction
-          | SuicideAction
-          | RewardAction
-          | null = null;
-        let result: CreateResult | CallResult | null = null;
-
         if (currentTransactionId !== trc.transaction?.id) {
           traceTree = new TraceTree(trc.transaction?.id || "");
           currentTransactionId = trc.transaction?.id || null;
@@ -89,6 +77,19 @@ processor.run(
         if (traceTree) {
           traceTree.addTrace(trc);
         }
+
+        const commonTraceFields: CommonTraceFields = {
+          id: trc.transaction
+            ? `${trc.transaction.id}_${trc.traceAddress.join("_")}`
+            : "",
+          transaction: trc.transaction
+            ? new Transaction({ id: trc.transaction.id })
+            : undefined,
+          timestamp: new Date(block.header.timestamp),
+          transactionIndex: trc.transactionIndex,
+          subtraces: trc.subtraces,
+          error: trc.error,
+        };
 
         switch (trc.type) {
           case "create":
@@ -103,86 +104,82 @@ processor.run(
                 new Contract({
                   id: trc.result.address,
                   createdBy: trc.action.from,
-                  transactionHash: trc.transaction?.hash,
+                  transaction: trc.transaction
+                    ? new Transaction({ id: trc.transaction.id })
+                    : undefined,
                   createdTimestamp: new Date(block.header.timestamp),
                 })
               );
             }
-            action = new CreateAction({
+            const createTrace = new TraceCreate({
+              ...commonTraceFields,
               from: trc.action.from,
               value: trc.action.value,
               gas: trc.action.gas,
               init: trc.action.init,
+              gasUsed: trc.result?.gasUsed,
+              code: trc.result?.code,
+              address: trc.result?.address,
             });
-            if (trc.result) {
-              result = new CreateResult({
-                gasUsed: trc.result.gasUsed,
-                code: trc.result.code,
-                address: trc.result.address || null,
-              });
-            }
+            traceCreates.push(createTrace);
             break;
           case "call":
-            action = new CallAction({
+            const callTrace = new TraceCall({
+              ...commonTraceFields,
               from: trc.action.from,
               to: trc.action.to,
               value: trc.action.value,
               gas: trc.action.gas,
               sighash: trc.action.sighash,
               input: trc.action.input,
+              gasUsed: trc.result?.gasUsed,
+              output: trc.result?.output,
             });
-            if (trc.result) {
-              result = new CallResult({
-                gasUsed: trc.result.gasUsed,
-                output: trc.result.output,
-              });
-            }
+            traceCalls.push(callTrace);
             break;
           case "suicide":
-            action = new SuicideAction({
+            const suicideTrace = new TraceSuicide({
+              ...commonTraceFields,
               address: trc.action.address,
               refundAddress: trc.action.refundAddress,
               balance: trc.action.balance,
             });
+            traceSuicides.push(suicideTrace);
             break;
           case "reward":
-            action = new RewardAction({
+            const traceReward = new TraceReward({
+              ...commonTraceFields,
               author: trc.action.author,
               value: trc.action.value,
               rewardType: trc.action.type,
             });
+            traceRewards.push(traceReward);
             break;
         }
-
-        traces.push(
-          new Trace({
-            id: trc.transaction
-              ? `${trc.transaction.id}_${trc.traceAddress.join("_")}`
-              : trc.traceAddress.join("_"),
-            transaction: trc.transaction
-              ? new Transaction({ id: trc.transaction.id })
-              : undefined,
-            transactionIndex: trc.transactionIndex,
-            type: convertToTraceType(trc.type),
-            subtraces: trc.subtraces,
-            error: trc.error,
-            action: action,
-            result: result,
-          })
-        );
       }
     }
 
-    await ctx.store.upsert(contracts);
-    await assignAddressLabels(transactions, traces, ctx);
+    await assignAddressLabels(
+      contracts,
+      transactions,
+      traceCreates,
+      traceCalls,
+      ctx
+    );
     await ctx.store.upsert(transactions);
-    await ctx.store.upsert(traces);
+    await ctx.store.upsert(contracts);
+    await ctx.store.upsert(traceCreates);
+    await ctx.store.upsert(traceCalls);
+    await ctx.store.upsert(traceSuicides);
+    await ctx.store.upsert(traceRewards);
   }
 );
 
 async function assignAddressLabels(
+  newContracts: Contract[],
   transactions: Transaction[],
-  traces: Trace[],
+  traceCreates: TraceCreate[],
+  traceCalls: TraceCall[],
   ctx: any
 ): Promise<void> {
   const allAddresses: Set<string> = new Set();
@@ -193,20 +190,28 @@ async function assignAddressLabels(
     }
   });
 
-  traces.forEach((trace) => {
-    if (trace.type === TraceType.CALL && trace.action instanceof CallAction) {
-      allAddresses.add(trace.action.to);
-      allAddresses.add(trace.action.from);
-    }
+  traceCalls.forEach((trace) => {
+    allAddresses.add(trace.to);
+    allAddresses.add(trace.from);
+  });
+
+  traceCreates.forEach((trace) => {
+    allAddresses.add(trace.from);
   });
 
   const contractObjectsInDb: Contract[] = await ctx.store.findBy(Contract, {
     id: In([...allAddresses]),
   });
 
-  const contractAddressSet: Set<string> = new Set(
-    contractObjectsInDb.map((contract) => contract.id)
+  const contractIdsFromDb = contractObjectsInDb.map((contract) => contract.id);
+  const contractIdsFromNewContracts = newContracts.map(
+    (contract) => contract.id
   );
+  const combinedContractIds = [
+    ...contractIdsFromDb,
+    ...contractIdsFromNewContracts,
+  ];
+  const contractAddressSet: Set<string> = new Set(combinedContractIds);
 
   transactions.forEach((txn) => {
     if (!txn.to && txn.deployedAddress) {
@@ -218,14 +223,18 @@ async function assignAddressLabels(
     }
   });
 
-  traces.forEach((trace) => {
-    if (trace.type === TraceType.CALL && trace.action instanceof CallAction) {
-      trace.action.fromType = contractAddressSet.has(trace.action.from)
-        ? AddressType.CONTRACT
-        : AddressType.EOA;
-      trace.action.toType = contractAddressSet.has(trace.action.to)
-        ? AddressType.CONTRACT
-        : AddressType.EOA;
-    }
+  traceCalls.forEach((trace) => {
+    trace.fromType = contractAddressSet.has(trace.from)
+      ? AddressType.CONTRACT
+      : AddressType.EOA;
+    trace.toType = contractAddressSet.has(trace.to)
+      ? AddressType.CONTRACT
+      : AddressType.EOA;
+  });
+
+  traceCreates.forEach((trace) => {
+    trace.fromType = contractAddressSet.has(trace.from)
+      ? AddressType.CONTRACT
+      : AddressType.EOA;
   });
 }

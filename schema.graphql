@@ -22,86 +22,15 @@ type AddressMapping @entity {
   ss58: String
 }
 
-type Trace @entity {
-  id: ID!
-  transaction: Transaction!
-  transactionIndex: Int
-  type: TraceType @index
-  subtraces: Int
-  error: String
-  action: Action
-  result: Result
-}
-
-enum TraceType {
-  CREATE
-  CALL
-  SUICIDE
-  REWARD
-}
-
-union Action = CreateAction | CallAction | SuicideAction | RewardAction
-union Result = CreateResult | CallResult
-
-# Create type-related fields and result
-type CreateAction {
-  from: String
-  value: BigInt
-  gas: BigInt
-  init: String
-}
-
-type CreateResult {
-  gasUsed: BigInt
-  code: String
-  address: String
-}
-
-# Call type-related fields and result
-type CallAction {
-  from: String!
-  fromType: AddressType
-  to: String!
-  toType: AddressType
-  value: BigInt
-  gas: BigInt
-  sighash: String
-  input: String
-}
-
-enum AddressType {
-  EOA
-  CONTRACT
-}
-
-type CallResult {
-  gasUsed: BigInt
-  output: String
-}
-
-# Suicide type-related fields
-type SuicideAction {
-  address: String
-  refundAddress: String
-  balance: BigInt
-}
-
-# Reward type-related fields
-type RewardAction {
-  author: String
-  value: BigInt
-  rewardType: String
-}
-
 type Transaction @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
   hash: String!
-  type: EvmTransactionType! @index
+  type: EvmTransactionType!
   label: EvmLabel! @index
-  from: String!
-  to: String
+  from: String! @index
+  to: String @index
   fee: BigInt!
   value: BigInt!
   input: String!
@@ -109,7 +38,10 @@ type Transaction @entity {
   success: Boolean @index
   sighash: String
   transactionIndex: Int!
-  traces: [Trace!] @derivedFrom(field: "transaction")
+  traceCreates: [TraceCreate!] @derivedFrom(field: "transaction")
+  traceCalls: [TraceCall!] @derivedFrom(field: "transaction")
+  traceSuicides: [TraceSuicide!] @derivedFrom(field: "transaction")
+  traceRewards: [TraceReward!] @derivedFrom(field: "transaction")
 }
 
 enum EvmTransactionType {
@@ -125,8 +57,69 @@ enum EvmLabel {
 }
 
 type Contract @entity {
-  id: ID! @index
+  id: ID!
   createdBy: String @index
-  transactionHash: String @index
+  transaction: Transaction
   createdTimestamp: DateTime @index
+}
+
+type TraceCreate @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  from: String! @index
+  fromType: AddressType
+  value: BigInt
+  gas: BigInt
+  init: String
+  gasUsed: BigInt
+  code: String
+  address: String
+}
+
+type TraceCall @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  from: String! @index
+  fromType: AddressType
+  to: String! @index
+  toType: AddressType
+  value: BigInt
+  gas: BigInt
+  sighash: String
+  input: String
+  gasUsed: BigInt
+  output: String
+}
+
+type TraceSuicide @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  address: String
+  refundAddress: String
+  balance: BigInt
+}
+
+type TraceReward @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  author: String
+  value: BigInt
+  rewardType: String
+}
+
+enum AddressType {
+  EOA
+  CONTRACT
 }

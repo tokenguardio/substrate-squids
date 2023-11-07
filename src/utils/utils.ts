@@ -1,20 +1,5 @@
-import { TraceType, EvmTransactionType, EvmLabel } from "../model";
+import { EvmTransactionType, EvmLabel } from "../model";
 import { Transaction } from "../processor";
-
-export function convertToTraceType(type: string): TraceType {
-  switch (type.toUpperCase()) {
-    case "CREATE":
-      return TraceType.CREATE;
-    case "CALL":
-      return TraceType.CALL;
-    case "SUICIDE":
-      return TraceType.SUICIDE;
-    case "REWARD":
-      return TraceType.REWARD;
-    default:
-      throw new Error(`Unknown trace type: ${type}`);
-  }
-}
 
 export function convertToTransactionType(type: number): EvmTransactionType {
   switch (type) {

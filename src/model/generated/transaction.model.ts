@@ -2,7 +2,10 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {EvmTransactionType} from "./_evmTransactionType"
 import {EvmLabel} from "./_evmLabel"
-import {Trace} from "./trace.model"
+import {TraceCreate} from "./traceCreate.model"
+import {TraceCall} from "./traceCall.model"
+import {TraceSuicide} from "./traceSuicide.model"
+import {TraceReward} from "./traceReward.model"
 
 @Entity_()
 export class Transaction {
@@ -31,9 +34,11 @@ export class Transaction {
     @Column_("varchar", {length: 15, nullable: false})
     label!: EvmLabel
 
+    @Index_()
     @Column_("text", {nullable: false})
     from!: string
 
+    @Index_()
     @Column_("text", {nullable: true})
     to!: string | undefined | null
 
@@ -59,6 +64,15 @@ export class Transaction {
     @Column_("int4", {nullable: false})
     transactionIndex!: number
 
-    @OneToMany_(() => Trace, e => e.transaction)
-    traces!: Trace[]
+    @OneToMany_(() => TraceCreate, e => e.transaction)
+    traceCreates!: TraceCreate[]
+
+    @OneToMany_(() => TraceCall, e => e.transaction)
+    traceCalls!: TraceCall[]
+
+    @OneToMany_(() => TraceSuicide, e => e.transaction)
+    traceSuicides!: TraceSuicide[]
+
+    @OneToMany_(() => TraceReward, e => e.transaction)
+    traceRewards!: TraceReward[]
 }

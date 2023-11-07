@@ -1,4 +1,5 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
+import {Transaction} from "./transaction.model"
 
 @Entity_()
 export class Contract {
@@ -14,8 +15,8 @@ export class Contract {
     createdBy!: string | undefined | null
 
     @Index_()
-    @Column_("text", {nullable: true})
-    transactionHash!: string | undefined | null
+    @ManyToOne_(() => Transaction, {nullable: true})
+    transaction!: Transaction | undefined | null
 
     @Index_()
     @Column_("timestamp with time zone", {nullable: true})
