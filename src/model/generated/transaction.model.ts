@@ -26,12 +26,12 @@ export class Transaction {
     @Column_("text", {nullable: false})
     hash!: string
 
-    @Column_("varchar", {length: 25, nullable: false})
+    @Column_("varchar", {length: 16, nullable: false})
     type!: EvmTransactionType
 
     @Index_()
-    @Column_("varchar", {length: 15, nullable: true})
-    label!: EvmLabel | undefined | null
+    @Column_("varchar", {length: 15, nullable: false})
+    label!: EvmLabel
 
     @Index_()
     @Column_("text", {nullable: false})

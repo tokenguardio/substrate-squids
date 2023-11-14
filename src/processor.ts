@@ -11,7 +11,7 @@ import {
 
 export const processor = new EvmBatchProcessor()
   .setDataSource({
-    archive: lookupArchive("arbitrum"),
+    archive: lookupArchive("arbitrum-nova"),
   })
   .setFinalityConfirmation(75)
   .addTransaction({
