@@ -1,26 +1,23 @@
-import { EvmTransactionType, EvmLabel } from "../model";
-import { Transaction } from "../processor";
+import { EvmTransactionType } from "../model";
 
 export function convertToTransactionType(type: number): EvmTransactionType {
   switch (type) {
-    case 0:
-      return EvmTransactionType.LEGACY;
-    case 1:
-      return EvmTransactionType.EIP2930;
-    case 2:
-      return EvmTransactionType.EIP1559;
+    case 100:
+      return EvmTransactionType.ARBITRUM_DEPOSIT;
+    case 101:
+      return EvmTransactionType.ARBITRUM_UNSIGNED;
+    case 102:
+      return EvmTransactionType.ARBITRUM_CONTRACT;
+    case 104:
+      return EvmTransactionType.ARBITRUM_RETRY;
+    case 105:
+      return EvmTransactionType.ARBITRUM_SUBMIT_RETRYABLE;
+    case 106:
+      return EvmTransactionType.ARBITRUM_INTERNAL;
+    case 120:
+      return EvmTransactionType.ARBITRUM_LEGACY;
     default:
       throw new Error(`Unknown transaction type: ${type}`);
-  }
-}
-
-export function getEvmLabel(txn: Transaction): EvmLabel {
-  if (txn.sighash && txn.contractAddress) {
-    return EvmLabel.CONTRACT_DEPLOY;
-  } else if (txn.sighash && !txn.contractAddress) {
-    return EvmLabel.CONTRACT_CALL;
-  } else {
-    return EvmLabel.NATIVE_TRANSFER;
   }
 }
 

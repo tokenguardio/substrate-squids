@@ -56,8 +56,8 @@ processor.run(
             from: txn.from,
             to: txn.to,
             fee:
-              txn.gasUsed !== undefined
-                ? calculateFee(txn.gasPrice, txn.gasUsed)
+              txn.gasUsed !== undefined && txn.effectiveGasPrice !== undefined
+                ? calculateFee(txn.effectiveGasPrice, txn.gasUsed)
                 : undefined,
             value: txn.value,
             input: txn.input,
@@ -214,7 +214,7 @@ async function assignAddressLabels(
   const contractAddressSet: Set<string> = new Set(combinedContractIds);
 
   transactions.forEach((txn) => {
-    if (!txn.to && txn.deployedAddress) {
+    if (!txn.to) {
       txn.label = EvmLabel.CONTRACT_DEPLOY;
     } else if (txn.to) {
       txn.label = contractAddressSet.has(txn.to)

@@ -11,7 +11,7 @@ import {
 
 export const processor = new EvmBatchProcessor()
   .setDataSource({
-    archive: lookupArchive("moonbeam", { type: "EVM" }),
+    archive: lookupArchive("arbitrum"),
   })
   .setFinalityConfirmation(75)
   .addTransaction({
@@ -19,7 +19,6 @@ export const processor = new EvmBatchProcessor()
   })
   .setFields({
     transaction: {
-      gasPrice: true,
       input: true,
       value: true,
       gasUsed: true,
@@ -27,6 +26,7 @@ export const processor = new EvmBatchProcessor()
       type: true,
       status: true,
       sighash: true,
+      effectiveGasPrice: true,
     },
     trace: {
       subtraces: true,
