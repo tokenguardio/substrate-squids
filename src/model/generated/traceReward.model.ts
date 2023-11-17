@@ -25,6 +25,9 @@ export class TraceReward {
     @Column_("text", {nullable: true})
     error!: string | undefined | null
 
+    @Column_("bool", {nullable: true})
+    parentHasError!: boolean | undefined | null
+
     @Column_("text", {nullable: true})
     author!: string | undefined | null
 

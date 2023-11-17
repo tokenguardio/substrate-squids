@@ -20,7 +20,7 @@ const precompiles = JSON.parse(readFileSync("assets/precompiles.json", "utf8"));
 let precompilesAdded = false;
 
 let currentTransactionId: string | null = null;
-let traceTree: TraceTree | null = null;
+let traceTree: TraceTree = new TraceTree("");
 
 processor.run(
   new TypeormDatabase({ stateSchema: "evm_processor" }),
@@ -89,6 +89,10 @@ processor.run(
           transactionIndex: trc.transactionIndex,
           subtraces: trc.subtraces,
           error: trc.error,
+          parentHasError:
+            trc.traceAddress.length === 0
+              ? null // means it's root trace
+              : traceTree.parentHasError(trc),
         };
 
         switch (trc.type) {
@@ -98,7 +102,7 @@ processor.run(
               trc.transaction?.hash !== undefined &&
               trc.transaction?.status !== 0 &&
               trc.error === null &&
-              !traceTree?.parentHasError(trc)
+              !traceTree.parentHasError(trc)
             ) {
               contracts.push(
                 new Contract({

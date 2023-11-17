@@ -26,6 +26,9 @@ export class TraceCall {
     @Column_("text", {nullable: true})
     error!: string | undefined | null
 
+    @Column_("bool", {nullable: true})
+    parentHasError!: boolean | undefined | null
+
     @Index_()
     @Column_("text", {nullable: false})
     from!: string

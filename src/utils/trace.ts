@@ -39,10 +39,22 @@ export class TraceTree {
   }
 
   parentHasError(trace: Trace): boolean {
-    const parent = this.getParentOfTrace(trace);
-    if (parent) {
-      return parent.error !== null;
+    let currentTrace = trace;
+    while (true) {
+      const parentAddress = this.getParentAddressOfTrace(currentTrace);
+      if (parentAddress === null) {
+        return false; // Reached the root node without finding an error
+      }
+      const parent = this.getTraceByAddress(parentAddress);
+      if (!parent) {
+        throw new Error(
+          "Parent trace not found in the tree - unexpected state"
+        );
+      }
+      if (parent.error !== null) {
+        return true; // An error was found in one of the parents
+      }
+      currentTrace = parent; // Move up to the next parent
     }
-    return false; // Root node or node not found in the tree
   }
 }

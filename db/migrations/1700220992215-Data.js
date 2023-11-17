@@ -1,5 +1,5 @@
-module.exports = class Data1699369740440 {
-    name = 'Data1699369740440'
+module.exports = class Data1700220992215 {
+    name = 'Data1700220992215'
 
     async up(db) {
         await db.query(`CREATE TABLE "event_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "extrinsic_success" boolean, CONSTRAINT "PK_d33300243feb4679ec112a74a03" PRIMARY KEY ("id"))`)
@@ -9,19 +9,19 @@ module.exports = class Data1699369740440 {
         await db.query(`CREATE INDEX "IDX_5fc3745dc44160b5563cf88307" ON "call_norm" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_d069b0512be986815a0a41e601" ON "call_norm" ("name") `)
         await db.query(`CREATE TABLE "address_mapping" ("id" character varying NOT NULL, "ss58" text, CONSTRAINT "PK_8611a631b9c1187979a08ecb53f" PRIMARY KEY ("id"))`)
-        await db.query(`CREATE TABLE "trace_create" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "from" text NOT NULL, "from_type" character varying(8), "value" numeric, "gas" numeric, "init" text, "gas_used" numeric, "code" text, "address" text, "transaction_id" character varying, CONSTRAINT "PK_d9815d6da7ab247cd74a2b7fc4f" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "trace_create" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "parent_has_error" boolean, "from" text NOT NULL, "from_type" character varying(8), "value" numeric, "gas" numeric, "init" text, "gas_used" numeric, "code" text, "address" text, "transaction_id" character varying, CONSTRAINT "PK_d9815d6da7ab247cd74a2b7fc4f" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_5c1fec96d7d34607a2425d8767" ON "trace_create" ("transaction_id") `)
         await db.query(`CREATE INDEX "IDX_a26c98eae28add5bba9700a122" ON "trace_create" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_059f1db390092ee9d873bacc94" ON "trace_create" ("from") `)
-        await db.query(`CREATE TABLE "trace_call" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "from" text NOT NULL, "from_type" character varying(8), "to" text NOT NULL, "to_type" character varying(8), "value" numeric, "gas" numeric, "sighash" text, "input" text, "gas_used" numeric, "output" text, "transaction_id" character varying, CONSTRAINT "PK_48ca419caa8d0f3b583bf81a4d2" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "trace_call" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "parent_has_error" boolean, "from" text NOT NULL, "from_type" character varying(8), "to" text NOT NULL, "to_type" character varying(8), "value" numeric, "gas" numeric, "sighash" text, "input" text, "gas_used" numeric, "output" text, "transaction_id" character varying, CONSTRAINT "PK_48ca419caa8d0f3b583bf81a4d2" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_897da4a3d4140de4916bda223c" ON "trace_call" ("transaction_id") `)
         await db.query(`CREATE INDEX "IDX_d99ab4f0eee3a59e2ff4a276cf" ON "trace_call" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_a76ccbe37385f8f7e6c8693ece" ON "trace_call" ("from") `)
         await db.query(`CREATE INDEX "IDX_416b90f8085b25edf5a474b8f0" ON "trace_call" ("to") `)
-        await db.query(`CREATE TABLE "trace_suicide" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "address" text, "refund_address" text, "balance" numeric, "transaction_id" character varying, CONSTRAINT "PK_136db8ae87025a99046dd41ca39" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "trace_suicide" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "parent_has_error" boolean, "address" text, "refund_address" text, "balance" numeric, "transaction_id" character varying, CONSTRAINT "PK_136db8ae87025a99046dd41ca39" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_3e8e3ecbccef2bf410966a4a14" ON "trace_suicide" ("transaction_id") `)
         await db.query(`CREATE INDEX "IDX_f5c8528200dad71292adc85f4c" ON "trace_suicide" ("timestamp") `)
-        await db.query(`CREATE TABLE "trace_reward" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "author" text, "value" numeric, "reward_type" text, "transaction_id" character varying, CONSTRAINT "PK_209c7b262d64259efb68dd0ec7f" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "trace_reward" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "parent_has_error" boolean, "author" text, "value" numeric, "reward_type" text, "transaction_id" character varying, CONSTRAINT "PK_209c7b262d64259efb68dd0ec7f" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_d074e14ed2fa4f803472e203d2" ON "trace_reward" ("transaction_id") `)
         await db.query(`CREATE INDEX "IDX_69d8e60e183d3d45d609f03322" ON "trace_reward" ("timestamp") `)
         await db.query(`CREATE TABLE "transaction" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "hash" text NOT NULL, "type" character varying(7) NOT NULL, "label" character varying(15) NOT NULL, "from" text NOT NULL, "to" text, "fee" numeric NOT NULL, "value" numeric NOT NULL, "input" text NOT NULL, "deployed_address" text, "success" boolean, "sighash" text, "transaction_index" integer NOT NULL, CONSTRAINT "PK_89eadb93a89810556e1cbcd6ab9" PRIMARY KEY ("id"))`)
