@@ -1,5 +1,4 @@
-import { EvmTransactionType, EvmLabel } from "../model";
-import { Transaction } from "../processor";
+import { EvmTransactionType } from "../model";
 
 export function convertToTransactionType(type: number): EvmTransactionType {
   switch (type) {
@@ -11,16 +10,6 @@ export function convertToTransactionType(type: number): EvmTransactionType {
       return EvmTransactionType.EIP1559;
     default:
       throw new Error(`Unknown transaction type: ${type}`);
-  }
-}
-
-export function getEvmLabel(txn: Transaction): EvmLabel {
-  if (txn.sighash && txn.contractAddress) {
-    return EvmLabel.CONTRACT_DEPLOY;
-  } else if (txn.sighash && !txn.contractAddress) {
-    return EvmLabel.CONTRACT_CALL;
-  } else {
-    return EvmLabel.NATIVE_TRANSFER;
   }
 }
 
