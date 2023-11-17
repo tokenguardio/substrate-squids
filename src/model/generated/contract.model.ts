@@ -16,9 +16,17 @@ export class Contract {
 
     @Index_()
     @ManyToOne_(() => Transaction, {nullable: true})
-    transaction!: Transaction | undefined | null
+    createTransaction!: Transaction | undefined | null
 
     @Index_()
     @Column_("timestamp with time zone", {nullable: true})
-    createdTimestamp!: Date | undefined | null
+    createTimestamp!: Date | undefined | null
+
+    @Index_()
+    @ManyToOne_(() => Transaction, {nullable: true})
+    destroyTransaction!: Transaction | undefined | null
+
+    @Index_()
+    @Column_("timestamp with time zone", {nullable: true})
+    destroyTimestamp!: Date | undefined | null
 }

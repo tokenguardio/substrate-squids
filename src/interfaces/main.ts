@@ -7,4 +7,5 @@ export interface CommonTraceFields {
   transactionIndex: number | undefined;
   subtraces: number | undefined;
   error: string | null;
+  parentHasError: boolean | null;
 }

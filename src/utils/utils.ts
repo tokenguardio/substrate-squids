@@ -9,17 +9,17 @@ export function convertToTransactionType(type: number): EvmTransactionType {
     case 2:
       return EvmTransactionType.EIP1559;
     case 100:
-      return EvmTransactionType.DEPOSIT;
+      return EvmTransactionType.ARBITRUM_DEPOSIT;
     case 101:
-      return EvmTransactionType.UNSIGNED;
+      return EvmTransactionType.ARBITRUM_UNSIGNED;
     case 102:
-      return EvmTransactionType.CONTRACT;
+      return EvmTransactionType.ARBITRUM_CONTRACT;
     case 104:
-      return EvmTransactionType.RETRY;
+      return EvmTransactionType.ARBITRUM_RETRY;
     case 105:
-      return EvmTransactionType.SUBMIT_RETRYABLE;
+      return EvmTransactionType.ARBITRUM_SUBMIT_RETRYABLE;
     case 106:
-      return EvmTransactionType.INTERNAL;
+      return EvmTransactionType.ARBITRUM_INTERNAL;
     default:
       throw new Error(`Unknown transaction type: ${type}`);
   }

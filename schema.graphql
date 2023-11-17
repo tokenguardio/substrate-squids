@@ -24,12 +24,12 @@ enum EvmTransactionType {
   LEGACY
   EIP1559
   EIP2930
-  DEPOSIT
-  UNSIGNED
-  CONTRACT
-  RETRY
-  SUBMIT_RETRYABLE
-  INTERNAL
+  ARBITRUM_DEPOSIT
+  ARBITRUM_UNSIGNED
+  ARBITRUM_CONTRACT
+  ARBITRUM_RETRY
+  ARBITRUM_SUBMIT_RETRYABLE
+  ARBITRUM_INTERNAL
 }
 
 enum EvmLabel {
@@ -41,8 +41,10 @@ enum EvmLabel {
 type Contract @entity {
   id: ID!
   createdBy: String @index
-  transaction: Transaction
-  createdTimestamp: DateTime @index
+  createTransaction: Transaction
+  createTimestamp: DateTime @index
+  destroyTransaction: Transaction
+  destroyTimestamp: DateTime @index
 }
 
 type TraceCreate @entity {
@@ -51,6 +53,7 @@ type TraceCreate @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   from: String! @index
   fromType: AddressType
   value: BigInt
@@ -67,6 +70,7 @@ type TraceCall @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   from: String! @index
   fromType: AddressType
   to: String! @index
@@ -85,6 +89,7 @@ type TraceSuicide @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   address: String
   refundAddress: String
   balance: BigInt
@@ -96,6 +101,7 @@ type TraceReward @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   author: String
   value: BigInt
   rewardType: String
