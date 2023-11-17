@@ -59,8 +59,10 @@ enum EvmLabel {
 type Contract @entity {
   id: ID!
   createdBy: String @index
-  transaction: Transaction
-  createdTimestamp: DateTime @index
+  createTransaction: Transaction
+  createTimestamp: DateTime @index
+  destroyTransaction: Transaction
+  destroyTimestamp: DateTime @index
 }
 
 type TraceCreate @entity {

@@ -31,6 +31,7 @@ processor.run(
     const traceSuicides: TraceSuicide[] = [];
     const traceRewards: TraceReward[] = [];
     const contracts: Contract[] = [];
+    const destroyedContracts: Contract[] = [];
 
     if (!precompilesAdded) {
       contracts.push(
@@ -108,10 +109,10 @@ processor.run(
                 new Contract({
                   id: trc.result.address,
                   createdBy: trc.action.from,
-                  transaction: trc.transaction
+                  createTransaction: trc.transaction
                     ? new Transaction({ id: trc.transaction.id })
                     : undefined,
-                  createdTimestamp: new Date(block.header.timestamp),
+                  createTimestamp: new Date(block.header.timestamp),
                 })
               );
             }
@@ -142,6 +143,22 @@ processor.run(
             traceCalls.push(callTrace);
             break;
           case "suicide":
+            if (
+              trc.transaction?.hash !== undefined &&
+              trc.transaction?.status !== 0 &&
+              trc.error === null &&
+              !traceTree.parentHasError(trc)
+            ) {
+              destroyedContracts.push(
+                new Contract({
+                  id: trc.action.address,
+                  destroyTransaction: trc.transaction
+                    ? new Transaction({ id: trc.transaction.id })
+                    : undefined,
+                  destroyTimestamp: new Date(block.header.timestamp),
+                })
+              );
+            }
             const suicideTrace = new TraceSuicide({
               ...commonTraceFields,
               address: trc.action.address,
@@ -172,6 +189,7 @@ processor.run(
     );
     await ctx.store.upsert(transactions);
     await ctx.store.upsert(contracts);
+    await ctx.store.upsert(destroyedContracts);
     await ctx.store.upsert(traceCreates);
     await ctx.store.upsert(traceCalls);
     await ctx.store.upsert(traceSuicides);
