@@ -113,6 +113,8 @@ processor.run(
                     ? new Transaction({ id: trc.transaction.id })
                     : undefined,
                   createTimestamp: new Date(block.header.timestamp),
+                  destroyTimestamp: null,
+                  destroyTransaction: null,
                 })
               );
             }
