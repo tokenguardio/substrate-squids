@@ -8,14 +8,19 @@ import {
   Transaction as _Transaction,
   Trace as _Trace,
 } from "@subsquid/evm-processor";
+import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
   .setDataSource({
     archive: lookupArchive("arbitrum-nova"),
+    chain: process.env.RPC_ETH_HTTP,
   })
   .setFinalityConfirmation(75)
   .addTransaction({
     traces: true,
+  })
+  .addLog({
+    topic0: [erc20Abi.events.Transfer.topic],
   })
   .setFields({
     transaction: {
