@@ -26,7 +26,7 @@ type Transaction @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  hash: String!
+  hash: String! @index
   type: EvmTransactionType!
   label: EvmLabel! @index
   from: String! @index
