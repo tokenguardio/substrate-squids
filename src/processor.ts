@@ -13,7 +13,8 @@ import * as erc20Abi from "./abi/erc20";
 export const processor = new EvmBatchProcessor()
   .setDataSource({
     archive: lookupArchive("arbitrum-nova"),
-    chain: process.env.RPC_ETH_HTTP,
+    chain:
+      process.env.RPC_ETH_HTTP ?? "https://arbitrum-nova.public.blastapi.io",
   })
   .setFinalityConfirmation(75)
   .addTransaction({

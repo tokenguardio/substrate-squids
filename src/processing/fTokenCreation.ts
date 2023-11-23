@@ -59,11 +59,16 @@ async function performMulticall(
   addresses: string[]
 ): Promise<any[]> {
   const lastBlock = ctx.blocks[ctx.blocks.length - 1];
-  const multicall = new Multicall(ctx, lastBlock.header, MULTICALL_CONTRACT);
+  const multicall = new Multicall(
+    ctx,
+    lastBlock.header,
+    process.env.MULTICALL_CONTRACT ??
+      "0x5e1ee626420a354bbc9a95fea1bad4492e3bcb86"
+  );
   return await multicall.tryAggregate(
     contractFunction,
     addresses.map((address) => [address, [] as any[]] as [string, any[]]),
-    MULTICALL_BATCH_SIZE
+    parseInt(process.env.MULTICALL_BATCH_SIZE ?? "100")
   );
 }
 
