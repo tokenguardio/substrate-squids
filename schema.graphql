@@ -42,6 +42,7 @@ type Transaction @entity {
   traceCalls: [TraceCall!] @derivedFrom(field: "transaction")
   traceSuicides: [TraceSuicide!] @derivedFrom(field: "transaction")
   traceRewards: [TraceReward!] @derivedFrom(field: "transaction")
+  ftTransfers: [FtTransfer!] @derivedFrom(field: "transaction")
 }
 
 enum EvmTransactionType {
@@ -128,4 +129,31 @@ type TraceReward @entity {
 enum AddressType {
   EOA
   CONTRACT
+}
+
+type FToken @entity {
+  id: ID!
+  name: String @index
+  symbol: String @index
+  decimals: Int
+  ftTransfers: [FtTransfer!] @derivedFrom(field: "token")
+}
+
+type FtTransfer @entity {
+  id: ID!
+  transaction: Transaction!
+  blockHash: String!
+  timestamp: DateTime! @index
+  eventIndex: Int
+  from: String! @index
+  to: String! @index
+  value: BigInt!
+  transferType: TransferType @index
+  token: FToken
+}
+
+enum TransferType {
+  TRANSFER
+  MINT
+  BURN
 }

@@ -6,6 +6,7 @@ import {TraceCreate} from "./traceCreate.model"
 import {TraceCall} from "./traceCall.model"
 import {TraceSuicide} from "./traceSuicide.model"
 import {TraceReward} from "./traceReward.model"
+import {FtTransfer} from "./ftTransfer.model"
 
 @Entity_()
 export class Transaction {
@@ -23,6 +24,7 @@ export class Transaction {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
+    @Index_()
     @Column_("text", {nullable: false})
     hash!: string
 
@@ -74,4 +76,7 @@ export class Transaction {
 
     @OneToMany_(() => TraceReward, e => e.transaction)
     traceRewards!: TraceReward[]
+
+    @OneToMany_(() => FtTransfer, e => e.transaction)
+    ftTransfers!: FtTransfer[]
 }

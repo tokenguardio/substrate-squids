@@ -1,4 +1,6 @@
-import { EvmTransactionType } from "../model";
+import { EvmTransactionType, TransferType } from "../model";
+
+const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export function convertToTransactionType(type: number): EvmTransactionType {
   switch (type) {
@@ -16,4 +18,23 @@ export function convertToTransactionType(type: number): EvmTransactionType {
 export function calculateFee(gasPrice: bigint, gasUsed: bigint): bigint {
   const fee = gasPrice * gasUsed;
   return fee;
+}
+
+export function getTransferType(from: string, to: string): TransferType {
+  if (isMint(from, to)) {
+    return TransferType.MINT;
+  }
+  if (isBurn(from, to)) {
+    return TransferType.BURN;
+  }
+
+  return TransferType.TRANSFER;
+}
+
+function isMint(from: string, to: string): boolean {
+  return from === EMPTY_ADDRESS && to !== EMPTY_ADDRESS;
+}
+
+function isBurn(from: string, to: string): boolean {
+  return to === EMPTY_ADDRESS && from !== EMPTY_ADDRESS;
 }
