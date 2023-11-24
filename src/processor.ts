@@ -1,5 +1,6 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
+import { lookupArchive } from "@subsquid/archive-registry";
 import { EventNorm, CallNorm, AddressMapping } from "./model";
 import {
   eventNormalizationHandlers,
@@ -23,7 +24,8 @@ import {
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
     archive:
-      process.env.GATEWAY_URL ?? "https://moonbeam.archive.subsquid.io/graphql",
+      process.env.GATEWAY_URL ??
+      lookupArchive("moonbeam", { type: "Substrate" }),
   })
   .addEvent("*", {
     data: {
