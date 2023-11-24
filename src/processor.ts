@@ -24,7 +24,7 @@ import {
 const processor = new SubstrateBatchProcessor()
   .setDataSource({
     archive:
-      process.env.GATEWAY_URL ??
+      // process.env.GATEWAY_URL ??
       lookupArchive("moonbeam", { type: "Substrate" }),
   })
   .addEvent("*", {
