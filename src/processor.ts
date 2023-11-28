@@ -61,7 +61,8 @@ export const processor = new EvmBatchProcessor()
       rewardValue: true,
       rewardType: true,
     },
-  });
+  })
+  .useArchiveOnly(true);
 
 export type Fields = EvmBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
