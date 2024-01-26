@@ -19,7 +19,10 @@ export function normalizeContractsEventsArgs(ctx: ChainContext, event: Event) {
       if (e.isV59) {
         return event.args;
       } else if (e.isV68) {
-        return event.args;
+        return {
+          contract: event.args.contract,
+          caller: event.args.caller.value,
+        };
       } else {
         throw new UnknownVersionError(event.name);
       }
