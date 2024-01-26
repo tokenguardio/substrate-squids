@@ -38,6 +38,8 @@ export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
         return event.args;
       } else if (e.isV58) {
         return event.args;
+      } else if (event.args) {
+        return event.args;
       } else {
         throw new UnknownVersionError(event.name);
       }

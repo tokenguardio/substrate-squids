@@ -1,12 +1,19 @@
 import {
   NominationPoolsBondExtraCall,
+  NominationPoolsBondExtraOtherCall,
   NominationPoolsChillCall,
+  NominationPoolsClaimCommissionCall,
   NominationPoolsClaimPayoutCall,
+  NominationPoolsClaimPayoutOtherCall,
   NominationPoolsCreateCall,
   NominationPoolsCreateWithPoolIdCall,
   NominationPoolsJoinCall,
   NominationPoolsNominateCall,
   NominationPoolsPoolWithdrawUnbondedCall,
+  NominationPoolsSetClaimPermissionCall,
+  NominationPoolsSetCommissionCall,
+  NominationPoolsSetCommissionChangeRateCall,
+  NominationPoolsSetCommissionMaxCall,
   NominationPoolsSetConfigsCall,
   NominationPoolsSetMetadataCall,
   NominationPoolsSetStateCall,
@@ -30,9 +37,23 @@ export function normalizeNominationPoolsCallsArgs(
       } else {
         throw new UnknownVersionError(call.name);
       }
+    case "NominationPools.bond_extra_other":
+      e = new NominationPoolsBondExtraOtherCall(ctx, call);
+      if (e.isV68) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
     case "NominationPools.chill":
       e = new NominationPoolsChillCall(ctx, call);
       if (e.isV39) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
+    case "NominationPools.claim_commission":
+      e = new NominationPoolsClaimCommissionCall(ctx, call);
+      if (e.isV68) {
         return call.args;
       } else {
         throw new UnknownVersionError(call.name);
@@ -44,11 +65,20 @@ export function normalizeNominationPoolsCallsArgs(
       } else {
         throw new UnknownVersionError(call.name);
       }
+    case "NominationPools.claim_payout_other":
+      e = new NominationPoolsClaimPayoutOtherCall(ctx, call);
+      if (e.isV68) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
     case "NominationPools.create":
       e = new NominationPoolsCreateCall(ctx, call);
       if (e.isV39) {
         return call.args;
       } else if (e.isV58) {
+        return call.args;
+      } else if (e.isV68) {
         return call.args;
       } else {
         throw new UnknownVersionError(call.name);
@@ -56,6 +86,8 @@ export function normalizeNominationPoolsCallsArgs(
     case "NominationPools.create_with_pool_id":
       e = new NominationPoolsCreateWithPoolIdCall(ctx, call);
       if (e.isV59) {
+        return call.args;
+      } else if (e.isV68) {
         return call.args;
       } else {
         throw new UnknownVersionError(call.name);
@@ -81,9 +113,39 @@ export function normalizeNominationPoolsCallsArgs(
       } else {
         throw new UnknownVersionError(call.name);
       }
+    case "NominationPools.set_claim_permission":
+      e = new NominationPoolsSetClaimPermissionCall(ctx, call);
+      if (e.isV68) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
+    case "NominationPools.set_commission":
+      e = new NominationPoolsSetCommissionCall(ctx, call);
+      if (e.isV68) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
+    case "NominationPools.set_commission_change_rate":
+      e = new NominationPoolsSetCommissionChangeRateCall(ctx, call);
+      if (e.isV68) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
+    case "NominationPools.set_commission_max":
+      e = new NominationPoolsSetCommissionMaxCall(ctx, call);
+      if (e.isV68) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
     case "NominationPools.set_configs":
       e = new NominationPoolsSetConfigsCall(ctx, call);
       if (e.isV39) {
+        return call.args;
+      } else if (e.isV68) {
         return call.args;
       } else {
         throw new UnknownVersionError(call.name);
@@ -114,6 +176,8 @@ export function normalizeNominationPoolsCallsArgs(
     case "NominationPools.update_roles":
       e = new NominationPoolsUpdateRolesCall(ctx, call);
       if (e.isV39) {
+        return call.args;
+      } else if (e.isV68) {
         return call.args;
       } else {
         throw new UnknownVersionError(call.name);

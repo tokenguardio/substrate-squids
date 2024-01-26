@@ -5,6 +5,7 @@ import {
   ContractsInstantiateOldWeightCall,
   ContractsInstantiateWithCodeCall,
   ContractsInstantiateWithCodeOldWeightCall,
+  ContractsMigrateCall,
   ContractsRemoveCodeCall,
   ContractsSetCodeCall,
   ContractsUploadCodeCall,
@@ -53,6 +54,13 @@ export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
     case "Contracts.instantiate_with_code_old_weight":
       e = new ContractsInstantiateWithCodeOldWeightCall(ctx, call);
       if (e.isV59) {
+        return call.args;
+      } else {
+        throw new UnknownVersionError(call.name);
+      }
+    case "Contracts.migrate":
+      e = new ContractsMigrateCall(ctx, call);
+      if (e.isV68) {
         return call.args;
       } else {
         throw new UnknownVersionError(call.name);

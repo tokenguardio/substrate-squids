@@ -4,6 +4,10 @@ import {
   NominationPoolsDestroyedEvent,
   NominationPoolsMemberRemovedEvent,
   NominationPoolsPaidOutEvent,
+  NominationPoolsPoolCommissionChangeRateUpdatedEvent,
+  NominationPoolsPoolCommissionClaimedEvent,
+  NominationPoolsPoolCommissionUpdatedEvent,
+  NominationPoolsPoolMaxCommissionUpdatedEvent,
   NominationPoolsPoolSlashedEvent,
   NominationPoolsRolesUpdatedEvent,
   NominationPoolsStateChangedEvent,
@@ -55,6 +59,34 @@ export function normalizeNominationPoolsEventsArgs(
       } else {
         throw new UnknownVersionError(event.name);
       }
+    case "NominationPools.PoolCommissionChangeRateUpdated":
+      e = new NominationPoolsPoolCommissionChangeRateUpdatedEvent(ctx, event);
+      if (e.isV68) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionClaimed":
+      e = new NominationPoolsPoolCommissionClaimedEvent(ctx, event);
+      if (e.isV68) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "NominationPools.PoolCommissionUpdated":
+      e = new NominationPoolsPoolCommissionUpdatedEvent(ctx, event);
+      if (e.isV68) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
+    case "NominationPools.PoolMaxCommissionUpdated":
+      e = new NominationPoolsPoolMaxCommissionUpdatedEvent(ctx, event);
+      if (e.isV68) {
+        return event.args;
+      } else {
+        throw new UnknownVersionError(event.name);
+      }
     case "NominationPools.PoolSlashed":
       e = new NominationPoolsPoolSlashedEvent(ctx, event);
       if (e.isV39) {
@@ -65,6 +97,8 @@ export function normalizeNominationPoolsEventsArgs(
     case "NominationPools.RolesUpdated":
       e = new NominationPoolsRolesUpdatedEvent(ctx, event);
       if (e.isV39) {
+        return event.args;
+      } else if (e.isV68) {
         return event.args;
       } else {
         throw new UnknownVersionError(event.name);

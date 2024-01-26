@@ -6,6 +6,7 @@ import * as v39 from './v39'
 import * as v58 from './v58'
 import * as v59 from './v59'
 import * as v64 from './v64'
+import * as v68 from './v68'
 
 export class AlephChangeValidatorsCall {
     private readonly _chain: Chain
@@ -125,6 +126,35 @@ export class AuthorshipSetUnclesCall {
      */
     get asV12(): {newUncles: v12.Header[]} {
         assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BalancesForceSetBalanceCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.force_set_balance')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::force_set_balance`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Balances.force_set_balance') === 'd0f1dc28aeba8805f92a7e983d0fba2621912dc1665264dd9c38cd3c0c912737'
+    }
+
+    /**
+     * See [`Pallet::force_set_balance`].
+     */
+    get asV68(): {who: v68.MultiAddress, newFree: bigint} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -314,6 +344,35 @@ export class BalancesSetBalanceCall {
      */
     get asV12(): {who: v12.MultiAddress, newFree: bigint, newReserved: bigint} {
         assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BalancesSetBalanceDeprecatedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.set_balance_deprecated')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_balance_deprecated`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Balances.set_balance_deprecated') === 'cd8eaf83a985e64a94900c5c58bbc2bbd20e03f5d571cf6065020f1a4281ff19'
+    }
+
+    /**
+     * See [`Pallet::set_balance_deprecated`].
+     */
+    get asV68(): {who: v68.MultiAddress, newFree: bigint, oldReserved: bigint} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -574,6 +633,35 @@ export class BalancesTransferAllCall {
     }
 }
 
+export class BalancesTransferAllowDeathCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.transfer_allow_death')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::transfer_allow_death`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Balances.transfer_allow_death') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
+    }
+
+    /**
+     * See [`Pallet::transfer_allow_death`].
+     */
+    get asV68(): {dest: v68.MultiAddress, value: bigint} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class BalancesTransferKeepAliveCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -644,6 +732,35 @@ export class BalancesTransferKeepAliveCall {
      */
     get asV12(): {dest: v12.MultiAddress, value: bigint} {
         assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BalancesUpgradeAccountsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Balances.upgrade_accounts')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::upgrade_accounts`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Balances.upgrade_accounts') === 'e074d5a93414f189b47fbb5d94c57b62cfb9e63808a3c94665eeb2cfe53be8df'
+    }
+
+    /**
+     * See [`Pallet::upgrade_accounts`].
+     */
+    get asV68(): {who: Uint8Array[]} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1026,6 +1143,35 @@ export class ContractsInstantiateWithCodeOldWeightCall {
     }
 }
 
+export class ContractsMigrateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Contracts.migrate')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::migrate`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Contracts.migrate') === '5c8ebc7220b8a4f4173e1be1f728bbf12e95d6ae2f1cd0f219f8e89eb183b93f'
+    }
+
+    /**
+     * See [`Pallet::migrate`].
+     */
+    get asV68(): {weightLimit: v68.Weight} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class ContractsRemoveCodeCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -1171,6 +1317,21 @@ export class ContractsUploadCodeCall {
      */
     get asV59(): {code: Uint8Array, storageDepositLimit: (bigint | undefined), determinism: v59.Determinism} {
         assert(this.isV59)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::upload_code`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Contracts.upload_code') === '663f57b6c8020f1dc4aec4d53be131605bcef013028b5e44987c285a13f1c649'
+    }
+
+    /**
+     * See [`Pallet::upload_code`].
+     */
+    get asV68(): {code: Uint8Array, storageDepositLimit: (bigint | undefined), determinism: v68.Determinism} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -2922,6 +3083,21 @@ export class MultisigAsMultiCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '69124f085133effd606a31d315467272817e3177055adf1d633d12ac931df61f'
+    }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get asV68(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v68.Timepoint | undefined), call: v68.Call, maxWeight: v68.Weight} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -3206,6 +3382,21 @@ export class MultisigAsMultiThreshold1Call {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'f6d65d7664509be37a62ac4ac6730749ea207ce4f96b708fd6e56eb1fccba0bd'
+    }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get asV68(): {otherSignatories: Uint8Array[], call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigCancelAsMultiCall {
@@ -3326,6 +3517,35 @@ export class NominationPoolsBondExtraCall {
     }
 }
 
+export class NominationPoolsBondExtraOtherCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.bond_extra_other')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::bond_extra_other`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.bond_extra_other') === '443aece4aa181619e8091b0b30fddbda420489ca47278d2461f597e3b4123eea'
+    }
+
+    /**
+     * See [`Pallet::bond_extra_other`].
+     */
+    get asV68(): {member: v68.MultiAddress, extra: v68.BondExtra} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NominationPoolsChillCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -3367,6 +3587,35 @@ export class NominationPoolsChillCall {
     }
 }
 
+export class NominationPoolsClaimCommissionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.claim_commission')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::claim_commission`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.claim_commission') === 'a662258b1bdb045a915972ea29e9ec0b46cdd5598b0da37b0e70ac766e3735a0'
+    }
+
+    /**
+     * See [`Pallet::claim_commission`].
+     */
+    get asV68(): {poolId: number} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NominationPoolsClaimPayoutCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -3402,6 +3651,35 @@ export class NominationPoolsClaimPayoutCall {
      */
     get asV39(): null {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsClaimPayoutOtherCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.claim_payout_other')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::claim_payout_other`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.claim_payout_other') === 'cf670d864c552e185d3961da45af55bb3d8a16bdf7b48c7839b62197c0012512'
+    }
+
+    /**
+     * See [`Pallet::claim_payout_other`].
+     */
+    get asV68(): {other: Uint8Array} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3512,6 +3790,21 @@ export class NominationPoolsCreateCall {
         assert(this.isV58)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::create`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.create') === '4dac4956707ba4c015016c87f5798196915c1b93cb3b8fbe99924d4acdd70b9e'
+    }
+
+    /**
+     * See [`Pallet::create`].
+     */
+    get asV68(): {amount: bigint, root: v68.MultiAddress, nominator: v68.MultiAddress, bouncer: v68.MultiAddress} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class NominationPoolsCreateWithPoolIdCall {
@@ -3549,6 +3842,21 @@ export class NominationPoolsCreateWithPoolIdCall {
      */
     get asV59(): {amount: bigint, root: v59.MultiAddress, nominator: v59.MultiAddress, stateToggler: v59.MultiAddress, poolId: number} {
         assert(this.isV59)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::create_with_pool_id`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.create_with_pool_id') === '83e2c5a07bc3ea8d0d0415394797776dd6f7f1fe91413d53870e9a54b3039e32'
+    }
+
+    /**
+     * See [`Pallet::create_with_pool_id`].
+     */
+    get asV68(): {amount: bigint, root: v68.MultiAddress, nominator: v68.MultiAddress, bouncer: v68.MultiAddress, poolId: number} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3680,6 +3988,122 @@ export class NominationPoolsPoolWithdrawUnbondedCall {
     }
 }
 
+export class NominationPoolsSetClaimPermissionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_claim_permission')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_claim_permission`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.set_claim_permission') === '2f40bfe6dfbefd6a029d40d407c92fbb9e615769e58028c5e2c927b7d78eee55'
+    }
+
+    /**
+     * See [`Pallet::set_claim_permission`].
+     */
+    get asV68(): {permission: v68.ClaimPermission} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsSetCommissionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_commission')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_commission`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.set_commission') === 'c2429f4194f36dda4ecdb7c4fb1f8dd1bd10b0c452d0261492e47eb1f03251dc'
+    }
+
+    /**
+     * See [`Pallet::set_commission`].
+     */
+    get asV68(): {poolId: number, newCommission: ([number, Uint8Array] | undefined)} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsSetCommissionChangeRateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_commission_change_rate')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_commission_change_rate`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.set_commission_change_rate') === 'bdbe2b8a0dbf004376752ab0b97d12bc46105ff7df04a1d804df35ca9fbc04c1'
+    }
+
+    /**
+     * See [`Pallet::set_commission_change_rate`].
+     */
+    get asV68(): {poolId: number, changeRate: v68.CommissionChangeRate} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsSetCommissionMaxCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.set_commission_max')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_commission_max`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.set_commission_max') === '6eb4d2709f88d8a2ee11fbbeaecd1987716bd1b2323a23339e00d70cb343b35b'
+    }
+
+    /**
+     * See [`Pallet::set_commission_max`].
+     */
+    get asV68(): {poolId: number, maxCommission: number} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class NominationPoolsSetConfigsCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -3723,6 +4147,21 @@ export class NominationPoolsSetConfigsCall {
      */
     get asV39(): {minJoinBond: v39.ConfigOp, minCreateBond: v39.ConfigOp, maxPools: v39.Type_143, maxMembers: v39.Type_143, maxMembersPerPool: v39.Type_143} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::set_configs`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.set_configs') === '02f4da47d39d2dd9daf70892fca2a1512f019713ff5c6d32b08af9557e83200c'
+    }
+
+    /**
+     * See [`Pallet::set_configs`].
+     */
+    get asV68(): {minJoinBond: v68.ConfigOp, minCreateBond: v68.ConfigOp, maxPools: v68.Type_148, maxMembers: v68.Type_148, maxMembersPerPool: v68.Type_148, globalMaxCommission: v68.Type_149} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3998,6 +4437,21 @@ export class NominationPoolsUpdateRolesCall {
      */
     get asV39(): {poolId: number, newRoot: v39.Type_144, newNominator: v39.Type_144, newStateToggler: v39.Type_144} {
         assert(this.isV39)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::update_roles`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('NominationPools.update_roles') === 'ff8e2296d9ceeb821add0d72be156237eaf85dd732db0518ea4511d171a120f0'
+    }
+
+    /**
+     * See [`Pallet::update_roles`].
+     */
+    get asV68(): {poolId: number, newRoot: v68.Type_150, newNominator: v68.Type_150, newBouncer: v68.Type_150} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -4347,6 +4801,21 @@ export class SchedulerScheduleCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::schedule`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === '1ccd1a03c7d199fd569bf04df4323049056acf9a5ab649f2258af2c61b44813f'
+    }
+
+    /**
+     * See [`Pallet::schedule`].
+     */
+    get asV68(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleAfterCall {
@@ -4499,6 +4968,21 @@ export class SchedulerScheduleAfterCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::schedule_after`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '9c237b42afbf530c766fffe32a005ccb065c3f23f5ea2ead58cd4530c5f09d68'
+    }
+
+    /**
+     * See [`Pallet::schedule_after`].
+     */
+    get asV68(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleNamedCall {
@@ -4619,6 +5103,21 @@ export class SchedulerScheduleNamedCall {
      */
     get asV64(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v64.Call} {
         assert(this.isV64)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::schedule_named`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '96efec5e20362137966cdc6abaad22d652dd1afbe4d530350b0c05f4b98baf9d'
+    }
+
+    /**
+     * See [`Pallet::schedule_named`].
+     */
+    get asV68(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v68.Call} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -4771,6 +5270,21 @@ export class SchedulerScheduleNamedAfterCall {
      */
     get asV64(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v64.Call} {
         assert(this.isV64)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::schedule_named_after`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === 'bc5742c5cac188c5e5641f502702d5e70fde2a3b4a9afc087fc1ecc44b693d88'
+    }
+
+    /**
+     * See [`Pallet::schedule_named_after`].
+     */
+    get asV68(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v68.Call} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -4979,6 +5493,21 @@ export class StakingBondCall {
      */
     get asV12(): {controller: v12.MultiAddress, value: bigint, payee: v12.RewardDestination} {
         assert(this.isV12)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::bond`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Staking.bond') === 'd97e1d2a9763cae29f7bbb9e429e3692a97bbb00fff8f74190b36013ec990f11'
+    }
+
+    /**
+     * See [`Pallet::bond`].
+     */
+    get asV68(): {value: bigint, payee: v68.RewardDestination} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -5864,6 +6393,21 @@ export class StakingSetControllerCall {
         assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::set_controller`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Staking.set_controller') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * See [`Pallet::set_controller`].
+     */
+    get asV68(): null {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class StakingSetHistoryDepthCall {
@@ -6678,6 +7222,21 @@ export class SudoSudoCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::sudo`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '5b7ff9c5518ff81b0bea9e6b1d21f430c592c15cd762771fd7ac69403bd85798'
+    }
+
+    /**
+     * See [`Pallet::sudo`].
+     */
+    get asV68(): {call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoAsCall {
@@ -6902,6 +7461,21 @@ export class SudoSudoAsCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::sudo_as`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '996bd6e615c61192c39af0f6cb59c53bbc6c1d42215856fbe35d347545a7c8e2'
+    }
+
+    /**
+     * See [`Pallet::sudo_as`].
+     */
+    get asV68(): {who: v68.MultiAddress, call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -7112,6 +7686,21 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV64(): {call: v64.Call, weight: v64.Weight} {
         assert(this.isV64)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::sudo_unchecked_weight`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '6ab6b2684d223f6d9532cc4ffc737c8611feaeef3c10a6da4e238a5de7842336'
+    }
+
+    /**
+     * See [`Pallet::sudo_unchecked_weight`].
+     */
+    get asV68(): {call: v68.Call, weight: v68.Weight} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -8037,6 +8626,21 @@ export class UtilityAsDerivativeCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === '7b3979e462e268e875b6f92f56ba6cc1e5234e328da64ec7afe658bde7203ccf'
+    }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get asV68(): {index: number, call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -8306,6 +8910,21 @@ export class UtilityBatchCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '44d3c5d17eaff12e3a66aac8073bd5fd43b225c3eec2b761a1f0ddb5b9235012'
+    }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get asV68(): {calls: v68.Call[]} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -8525,6 +9144,21 @@ export class UtilityBatchAllCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '44d3c5d17eaff12e3a66aac8073bd5fd43b225c3eec2b761a1f0ddb5b9235012'
+    }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get asV68(): {calls: v68.Call[]} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -8702,6 +9336,21 @@ export class UtilityDispatchAsCall {
      */
     get asV64(): {asOrigin: v64.OriginCaller, call: v64.Call} {
         assert(this.isV64)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '34103af5161629f690af51afcc278c302d967d736e8e054c05840af1d0b10dc0'
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get asV68(): {asOrigin: v68.OriginCaller, call: v68.Call} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -8882,6 +9531,21 @@ export class UtilityForceBatchCall {
         assert(this.isV64)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '44d3c5d17eaff12e3a66aac8073bd5fd43b225c3eec2b761a1f0ddb5b9235012'
+    }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get asV68(): {calls: v68.Call[]} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -8944,6 +9608,21 @@ export class UtilityWithWeightCall {
      */
     get asV64(): {call: v64.Call, weight: v64.Weight} {
         assert(this.isV64)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '6ab6b2684d223f6d9532cc4ffc737c8611feaeef3c10a6da4e238a5de7842336'
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get asV68(): {call: v68.Call, weight: v68.Weight} {
+        assert(this.isV68)
         return this._chain.decodeCall(this.call)
     }
 }
