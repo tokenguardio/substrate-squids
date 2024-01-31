@@ -1,14 +1,7 @@
-module.exports = class Data1700826287103 {
-    name = 'Data1700826287103'
+module.exports = class Data1706698026053 {
+    name = 'Data1706698026053'
 
     async up(db) {
-        await db.query(`CREATE TABLE "event_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "extrinsic_success" boolean, CONSTRAINT "PK_d33300243feb4679ec112a74a03" PRIMARY KEY ("id"))`)
-        await db.query(`CREATE INDEX "IDX_9399a1351b92b17b633f2a4d88" ON "event_norm" ("timestamp") `)
-        await db.query(`CREATE INDEX "IDX_815deac0945f896227f308f346" ON "event_norm" ("name") `)
-        await db.query(`CREATE TABLE "call_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "success" boolean, "origin" jsonb, CONSTRAINT "PK_e6dee5a463d3dd8993668fb913e" PRIMARY KEY ("id"))`)
-        await db.query(`CREATE INDEX "IDX_5fc3745dc44160b5563cf88307" ON "call_norm" ("timestamp") `)
-        await db.query(`CREATE INDEX "IDX_d069b0512be986815a0a41e601" ON "call_norm" ("name") `)
-        await db.query(`CREATE TABLE "address_mapping" ("id" character varying NOT NULL, "ss58" text, CONSTRAINT "PK_8611a631b9c1187979a08ecb53f" PRIMARY KEY ("id"))`)
         await db.query(`CREATE TABLE "trace_create" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "parent_has_error" boolean, "from" text NOT NULL, "from_type" character varying(8), "value" numeric, "gas" numeric, "init" text, "gas_used" numeric, "code" text, "address" text, "transaction_id" character varying, CONSTRAINT "PK_d9815d6da7ab247cd74a2b7fc4f" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_5c1fec96d7d34607a2425d8767" ON "trace_create" ("transaction_id") `)
         await db.query(`CREATE INDEX "IDX_a26c98eae28add5bba9700a122" ON "trace_create" ("timestamp") `)
@@ -58,13 +51,6 @@ module.exports = class Data1700826287103 {
     }
 
     async down(db) {
-        await db.query(`DROP TABLE "event_norm"`)
-        await db.query(`DROP INDEX "public"."IDX_9399a1351b92b17b633f2a4d88"`)
-        await db.query(`DROP INDEX "public"."IDX_815deac0945f896227f308f346"`)
-        await db.query(`DROP TABLE "call_norm"`)
-        await db.query(`DROP INDEX "public"."IDX_5fc3745dc44160b5563cf88307"`)
-        await db.query(`DROP INDEX "public"."IDX_d069b0512be986815a0a41e601"`)
-        await db.query(`DROP TABLE "address_mapping"`)
         await db.query(`DROP TABLE "trace_create"`)
         await db.query(`DROP INDEX "public"."IDX_5c1fec96d7d34607a2425d8767"`)
         await db.query(`DROP INDEX "public"."IDX_a26c98eae28add5bba9700a122"`)

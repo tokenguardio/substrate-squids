@@ -10,6 +10,8 @@ export function convertToTransactionType(type: number): EvmTransactionType {
       return EvmTransactionType.EIP2930;
     case 2:
       return EvmTransactionType.EIP1559;
+    case 3:
+      return EvmTransactionType.EIP4844;
     default:
       throw new Error(`Unknown transaction type: ${type}`);
   }

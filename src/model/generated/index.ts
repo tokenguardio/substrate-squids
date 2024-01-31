@@ -1,6 +1,3 @@
-export * from "./eventNorm.model"
-export * from "./callNorm.model"
-export * from "./addressMapping.model"
 export * from "./transaction.model"
 export * from "./_evmTransactionType"
 export * from "./_evmLabel"

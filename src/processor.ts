@@ -12,8 +12,8 @@ import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
   .setDataSource({
-    archive: lookupArchive("moonbeam", { type: "EVM" }),
-    chain: process.env.RPC_ETH_HTTP ?? "https://rpc.api.moonbeam.network",
+    archive: lookupArchive("avalanche"),
+    chain: process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc",
   })
   .setFinalityConfirmation(75)
   .addTransaction({
@@ -31,6 +31,7 @@ export const processor = new EvmBatchProcessor()
       type: true,
       status: true,
       sighash: true,
+      gasPrice: true,
       effectiveGasPrice: true,
     },
     trace: {
@@ -62,7 +63,8 @@ export const processor = new EvmBatchProcessor()
       rewardType: true,
     },
   })
-  .useArchiveOnly(true);
+  .useArchiveOnly(true)
+  .setBlockRange({ from: 0 });
 
 export type Fields = EvmBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
