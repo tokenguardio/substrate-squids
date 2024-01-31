@@ -31,7 +31,6 @@ export const processor = new EvmBatchProcessor()
       type: true,
       status: true,
       sighash: true,
-      gasPrice: true,
       effectiveGasPrice: true,
     },
     trace: {
