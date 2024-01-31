@@ -76,7 +76,7 @@ sqd migration:generate
 
 See [docs on database migrations](https://docs.subsquid.io/basics/db-migrations) for more details.
 
-### 4. Import ABI contract and generate interfaces to decode events
+### 4. Import ABI contract and generate interfaces to decode events 
 
 It is necessary to import the respective ABI definition to decode EVM logs. One way to generate a type-safe facade class to decode EVM logs is by placing the relevant JSON ABIs to `./abi`, then using `squid-evm-typegen(1)` via an `sqd` script:
 
