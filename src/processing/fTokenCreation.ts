@@ -4,7 +4,7 @@ import { ProcessorContext } from "../processor";
 import { FToken } from "../model";
 import { Multicall } from "../abi/multicall";
 import * as erc20Abi from "../abi/erc20";
-import { getDecoratedCallResult } from "../utils/utils";
+import { createFToken } from "../utils/factories";
 
 export async function createNewFTokens(
   tokenIds: Set<string>,
@@ -85,11 +85,6 @@ function createFTokens(
       ? decimalsResults[index].value
       : null;
 
-    return new FToken({
-      id,
-      name: getDecoratedCallResult(name),
-      symbol: getDecoratedCallResult(symbol),
-      decimals,
-    });
+    return createFToken(id, name, symbol, decimals);
   });
 }

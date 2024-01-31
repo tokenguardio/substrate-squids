@@ -1,3 +1,4 @@
+import * as ethers from "ethers";
 import {
   Block as _BlockHeader,
   Transaction as _Transaction,
@@ -18,6 +19,7 @@ import {
   convertToTransactionType,
   calculateFee,
   getTransferType,
+  getDecoratedCallResult,
 } from "./../utils/utils";
 import { TraceTree } from "./../utils/trace";
 import { CommonTraceFields } from "./../interfaces/main";
@@ -33,15 +35,17 @@ export function createTransaction(
     hash: txn.hash,
     type:
       txn.type !== undefined ? convertToTransactionType(txn.type) : undefined,
-    from: txn.from,
-    to: txn.to,
+    from: ethers.getAddress(txn.from),
+    to: txn.to ? ethers.getAddress(txn.to) : undefined,
     fee:
       txn.gasUsed !== undefined && txn.effectiveGasPrice !== undefined
         ? calculateFee(txn.effectiveGasPrice, txn.gasUsed)
         : undefined,
     value: txn.value,
     input: txn.input,
-    deployedAddress: txn.contractAddress,
+    deployedAddress: txn.contractAddress
+      ? ethers.getAddress(txn.contractAddress)
+      : undefined,
     success: txn.status !== undefined ? Boolean(txn.status) : undefined,
     sighash: txn.sighash,
     transactionIndex: txn.transactionIndex,
@@ -53,13 +57,15 @@ function createCommonTraceFields(
   trc: _Trace,
   traceTree: TraceTree
 ): CommonTraceFields {
+  if (!trc.transaction) {
+    throw new Error(
+      `Transaction is undefined in trace object. trace: ${JSON.stringify(trc)}`
+    );
+  }
+
   return {
-    id: trc.transaction
-      ? `${trc.transaction.id}_${trc.traceAddress.join("_")}`
-      : "",
-    transaction: trc.transaction
-      ? createTransaction(block, trc.transaction)
-      : undefined,
+    id: `${trc.transaction.id}_${trc.traceAddress.join("_")}`,
+    transaction: createTransaction(block, trc.transaction),
     timestamp: new Date(block.timestamp),
     transactionIndex: trc.transactionIndex,
     subtraces: trc.subtraces,
@@ -78,13 +84,15 @@ export function createTraceCreate(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceCreate({
       ...commonFields,
-      from: trc.action.from,
+      from: ethers.getAddress(trc.action.from),
       value: trc.action.value,
       gas: trc.action.gas,
       init: trc.action.init,
       gasUsed: trc.result?.gasUsed,
       code: trc.result?.code,
-      address: trc.result?.address,
+      address: trc.result?.address
+        ? ethers.getAddress(trc.result.address)
+        : undefined,
     });
   } else {
     throw new Error(
@@ -102,8 +110,8 @@ export function createTraceCall(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceCall({
       ...commonFields,
-      from: trc.action.from,
-      to: trc.action.to,
+      from: ethers.getAddress(trc.action.from),
+      to: ethers.getAddress(trc.action.to),
       value: trc.action.value,
       gas: trc.action.gas,
       sighash: trc.action.sighash,
@@ -125,8 +133,8 @@ export function createTraceSuicide(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceSuicide({
       ...commonFields,
-      address: trc.action.address,
-      refundAddress: trc.action.refundAddress,
+      address: ethers.getAddress(trc.action.address),
+      refundAddress: ethers.getAddress(trc.action.refundAddress),
       balance: trc.action.balance,
     });
   } else {
@@ -145,7 +153,7 @@ export function createTraceReward(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceReward({
       ...commonFields,
-      author: trc.action.author,
+      author: ethers.getAddress(trc.action.author),
       value: trc.action.value,
       rewardType: trc.action.type,
     });
@@ -158,11 +166,18 @@ export function createTraceReward(
 
 export function createNewContract(block: _BlockHeader, trc: _Trace): Contract {
   if (trc.type === "create") {
+    if (!trc.result?.address) {
+      throw new Error(
+        `Contract address (id) in create trace is undefined. Unable to create Contract. Trace object: ${JSON.stringify(
+          trc
+        )}`
+      );
+    }
     return new Contract({
-      id: trc.result?.address,
-      createdBy: trc.action.from,
+      id: ethers.getAddress(trc.result.address),
+      createdBy: ethers.getAddress(trc.action.from),
       createTransaction: trc.transaction
-        ? new Transaction({ id: trc.transaction.id })
+        ? createTransaction(block, trc.transaction)
         : undefined,
       createTimestamp: new Date(block.timestamp),
       destroyTimestamp: null,
@@ -181,9 +196,9 @@ export function createDestroyedContract(
 ): Contract {
   if (trc.type === "suicide") {
     return new Contract({
-      id: trc.action.address,
+      id: ethers.getAddress(trc.action.address),
       destroyTransaction: trc.transaction
-        ? new Transaction({ id: trc.transaction.id })
+        ? createTransaction(block, trc.transaction)
         : undefined,
       destroyTimestamp: new Date(block.timestamp),
     });
@@ -204,15 +219,29 @@ export function createFtTransfer(
   return new FtTransfer({
     id: log.id,
     transaction: log.transaction
-      ? new Transaction({ id: log.transaction.id })
+      ? createTransaction(block, log.transaction)
       : undefined,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     eventIndex: log.logIndex,
-    from: from,
-    to: to,
+    from: ethers.getAddress(from),
+    to: ethers.getAddress(to),
     value: value,
     transferType: getTransferType(from, to),
-    token: new FToken({ id: log.address }),
+    token: createFToken(log.address),
+  });
+}
+
+export function createFToken(
+  id: string,
+  name?: string,
+  symbol?: string,
+  decimals?: number
+): FToken {
+  return new FToken({
+    id: ethers.getAddress(id),
+    name: name ? getDecoratedCallResult(name) : null,
+    symbol: symbol ? getDecoratedCallResult(symbol) : null,
+    decimals: decimals ?? null,
   });
 }
