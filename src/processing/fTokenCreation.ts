@@ -4,7 +4,7 @@ import { ProcessorContext } from "../processor";
 import { FToken } from "../model";
 import { Multicall } from "../abi/multicall";
 import * as erc20Abi from "../abi/erc20";
-import { getDecoratedCallResult } from "../utils/utils";
+import { createFToken } from "../utils/factories";
 
 const MULTICALL_CONTRACT = "0x5e1ee626420a354bbc9a95fea1bad4492e3bcb86";
 const MULTICALL_BATCH_SIZE = 100;
@@ -88,11 +88,6 @@ function createFTokens(
       ? decimalsResults[index].value
       : null;
 
-    return new FToken({
-      id,
-      name: getDecoratedCallResult(name),
-      symbol: getDecoratedCallResult(symbol),
-      decimals,
-    });
+    return createFToken(id, name, symbol, decimals);
   });
 }
