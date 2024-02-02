@@ -24,6 +24,10 @@ import {
 import { TraceTree } from "./utils/trace";
 import { createNewFTokens } from "./processing/fTokenCreation";
 import { assignAddressLabels } from "./processing/addressLabeling";
+import {
+  upsertContract,
+  synchronizeContracts,
+} from "./processing/contractCreation";
 
 const precompiles = JSON.parse(readFileSync("assets/precompiles.json", "utf8"));
 let precompilesAdded = false;
@@ -39,13 +43,13 @@ processor.run(
     const traceCalls: TraceCall[] = [];
     const traceSuicides: TraceSuicide[] = [];
     const traceRewards: TraceReward[] = [];
-    const contracts: Contract[] = [];
+    const newContracts: Contract[] = [];
     const destroyedContracts: Contract[] = [];
     const ftTransfers: FtTransfer[] = [];
     const fTokenAddresses: Set<string> = new Set();
 
     if (!precompilesAdded) {
-      contracts.push(
+      newContracts.push(
         ...Object.values(precompiles).map(
           (precompile) => new Contract({ id: precompile as string })
         )
@@ -77,7 +81,10 @@ processor.run(
               trc.error === null &&
               !traceTree.parentHasError(trc)
             ) {
-              contracts.push(createNewContract(block.header, trc));
+              // CREATE2 opcode - contract can be created more than once in one batch
+              // if that's the case take the latest created and remove previous one from newContracts list
+              const newContract = createNewContract(block.header, trc);
+              upsertContract(newContracts, newContract);
             }
             traceCreates.push(createTraceCreate(block.header, trc, traceTree));
             break;
@@ -91,9 +98,13 @@ processor.run(
               trc.error === null &&
               !traceTree.parentHasError(trc)
             ) {
-              destroyedContracts.push(
-                createDestroyedContract(block.header, trc)
+              // CREATE2 opcode - contract can be destroyed more than once in one batch
+              // if that's the case take the latest destroyed contract and remove previous one from destroyedContracts list
+              const destroyedContract = createDestroyedContract(
+                block.header,
+                trc
               );
+              upsertContract(destroyedContracts, destroyedContract);
             }
             traceSuicides.push(
               createTraceSuicide(block.header, trc, traceTree)
@@ -124,15 +135,18 @@ processor.run(
     }
 
     await assignAddressLabels(
-      contracts,
+      newContracts,
       transactions,
       traceCreates,
       traceCalls,
       ctx
     );
 
+    // synchronize contracts created by CREATE2
+    synchronizeContracts(newContracts, destroyedContracts);
+
     await ctx.store.upsert(transactions);
-    await ctx.store.upsert(contracts);
+    await ctx.store.upsert(newContracts);
     await ctx.store.upsert(destroyedContracts);
     await ctx.store.upsert(traceCreates);
     await ctx.store.upsert(traceCalls);
