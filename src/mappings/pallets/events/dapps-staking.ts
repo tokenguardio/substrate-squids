@@ -1,6 +1,7 @@
 import {
   DappsStakingBondAndStakeEvent,
   DappsStakingContractRemovedEvent,
+  DappsStakingDecommissionEvent,
   DappsStakingMaintenanceModeEvent,
   DappsStakingNewContractEvent,
   DappsStakingNewDappStakingEraEvent,
@@ -45,6 +46,13 @@ export function normalizeDappsStakingEventsArgs(
           account,
           contract,
         };
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "DappsStaking.Decommission":
+      e = new DappsStakingDecommissionEvent(ctx, event);
+      if (e.isV77) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }

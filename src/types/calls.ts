@@ -19,6 +19,11 @@ import * as v55 from './v55'
 import * as v61 from './v61'
 import * as v64 from './v64'
 import * as v66 from './v66'
+import * as v68 from './v68'
+import * as v70 from './v70'
+import * as v72 from './v72'
+import * as v74 from './v74'
+import * as v77 from './v77'
 
 export class AssetsApproveTransferCall {
     private readonly _chain: Chain
@@ -2431,6 +2436,37 @@ export class BlockRewardSetConfigurationCall {
         assert(this.isV12)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Sets the reward distribution configuration parameters which will be used from next block reward distribution.
+     * 
+     * It is mandatory that all components of configuration sum up to one whole (**100%**),
+     * otherwise an error `InvalidDistributionConfiguration` will be raised.
+     * 
+     * - `reward_distro_params` - reward distribution params
+     * 
+     * Emits `DistributionConfigurationChanged` with config embeded into event itself.
+     * 
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('BlockReward.set_configuration') === 'c51926d098ae9a044e36a2097402a61cf747436ae7854be71b1c360c81757393'
+    }
+
+    /**
+     * Sets the reward distribution configuration parameters which will be used from next block reward distribution.
+     * 
+     * It is mandatory that all components of configuration sum up to one whole (**100%**),
+     * otherwise an error `InvalidDistributionConfiguration` will be raised.
+     * 
+     * - `reward_distro_params` - reward distribution params
+     * 
+     * Emits `DistributionConfigurationChanged` with config embeded into event itself.
+     * 
+     */
+    get asV74(): {rewardDistroParams: v74.RewardDistributionConfig} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class CollatorSelectionLeaveIntentCall {
@@ -3216,6 +3252,74 @@ export class DappsStakingClaimStakerCall {
     }
 }
 
+export class DappsStakingClaimStakerForCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappsStaking.claim_staker_for')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Claim earned staker rewards for the given staker, and the oldest unclaimed era.
+     * In order to claim multiple eras, this call has to be called multiple times.
+     * 
+     * This call can only be used during the pallet decommission process.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('DappsStaking.claim_staker_for') === '0b991530445fab8295ea868c3f2cf9434b7da547dab6cb616498f84ddc30d070'
+    }
+
+    /**
+     * Claim earned staker rewards for the given staker, and the oldest unclaimed era.
+     * In order to claim multiple eras, this call has to be called multiple times.
+     * 
+     * This call can only be used during the pallet decommission process.
+     */
+    get asV77(): {staker: Uint8Array, contractId: v77.SmartContract} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappsStakingDecommissionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappsStaking.decommission')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Enable the `decommission` flag for the pallet.
+     * 
+     * The dispatch origin must be Root.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('DappsStaking.decommission') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Enable the `decommission` flag for the pallet.
+     * 
+     * The dispatch origin must be Root.
+     */
+    get asV77(): null {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class DappsStakingDeveloperPreApprovalCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -3542,6 +3646,37 @@ export class DappsStakingSetRewardDestinationCall {
      */
     get asV16(): {rewardDestination: v16.RewardDestination} {
         assert(this.isV16)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappsStakingSetRewardDestinationForCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappsStaking.set_reward_destination_for')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to set reward destination for staker rewards, for the given staker
+     * 
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('DappsStaking.set_reward_destination_for') === 'a62d75a00736c9004dfacafc1f14953b0e712049a96ad69998e1e8e8c8a3c92f'
+    }
+
+    /**
+     * Used to set reward destination for staker rewards, for the given staker
+     * 
+     */
+    get asV77(): {staker: Uint8Array, rewardDestination: v77.RewardDestination} {
+        assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3873,6 +4008,37 @@ export class DmpQueueServiceOverweightCall {
      */
     get asV61(): {index: bigint, weightLimit: v61.Weight} {
         assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DynamicEvmBaseFeeSetBaseFeePerGasCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DynamicEvmBaseFee.set_base_fee_per_gas')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * `root-only` extrinsic to set the `base_fee_per_gas` value manually.
+     * The specified value has to respect min & max limits configured in the runtime.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('DynamicEvmBaseFee.set_base_fee_per_gas') === 'df74b0f066943b24c635a19ba2763478ab00f9c0373d74c9a771b1a1047ff6d6'
+    }
+
+    /**
+     * `root-only` extrinsic to set the `base_fee_per_gas` value manually.
+     * The specified value has to respect min & max limits configured in the runtime.
+     */
+    get asV72(): {fee: bigint} {
+        assert(this.isV72)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -6635,6 +6801,461 @@ export class MultisigAsMultiCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === 'efb849e39bc9f3abf0162dbd99304830fc2efebd0dfc0e57a650a1595a2a1e72'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV68(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v68.Timepoint | undefined), call: v68.Call, maxWeight: v68.Weight} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '86fec91b76bbc24a133748c931865177cdaf6a99e2dfe861f6f63acb7017f347'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV70(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v70.Timepoint | undefined), call: v70.Call, maxWeight: v70.Weight} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '6cba3b106ca7c8b8045ddf4990bc576b0fb77a96bcf995401522c294cd23394e'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV72(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v72.Timepoint | undefined), call: v72.Call, maxWeight: v72.Weight} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '33c15da9073d7ce65f6c3932ae8ceee44a5687a91d112ee03e1fb93231e5cec7'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV74(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v74.Timepoint | undefined), call: v74.Call, maxWeight: v74.Weight} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '3fad6498cf0a991f3fe798cea54377bec0b7802f4a8e8539649a0f1db96acc09'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV77(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v77.Timepoint | undefined), call: v77.Call, maxWeight: v77.Weight} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -7478,6 +8099,191 @@ export class MultisigAsMultiThreshold1Call {
      */
     get asV66(): {otherSignatories: Uint8Array[], call: v66.Call} {
         assert(this.isV66)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '14bb270fb9ae48ef1d01f86368bb35ac2e108b14db9178db0cad2c2240b2ad42'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV68(): {otherSignatories: Uint8Array[], call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '3ab7b95750f69a00a72229fd2d3e20a98619619b186fc190e9bc3f477e7d61c7'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV70(): {otherSignatories: Uint8Array[], call: v70.Call} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'e9d88fc453f1e4622065263f89c14044c9653a2e8c826d7517f15acac894cb3e'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV72(): {otherSignatories: Uint8Array[], call: v72.Call} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '7994f5fabd158d8ff169e895c284e332af57d84937636ac378fd69dbc191455d'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV74(): {otherSignatories: Uint8Array[], call: v74.Call} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '6f365fd318b43ad458a7c7e005dde2dc982e24be0953aecb3b5b36b69442c2df'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV77(): {otherSignatories: Uint8Array[], call: v77.Call} {
+        assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -9541,6 +10347,161 @@ export class ProxyProxyCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === 'cab6973826f62456809454e866957235c2c9c83b291b097077fb57892707499a'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV68(): {real: v68.MultiAddress, forceProxyType: (v68.ProxyType | undefined), call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '797e7b0253eb00c5ec0a02d8c0d93464adbfd0fc94f6b781806316431636ce44'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV70(): {real: v70.MultiAddress, forceProxyType: (v70.ProxyType | undefined), call: v70.Call} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === 'b7abc6ed006c315baeeef1dd40035c97972c8a4f5c6b3b66d5e3dedf2d7e7c7d'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV72(): {real: v72.MultiAddress, forceProxyType: (v72.ProxyType | undefined), call: v72.Call} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '4ce59bd3800555836afd108d9000f53e0ee281557d9ef3c8dc3dc6a2ed39296d'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV74(): {real: v74.MultiAddress, forceProxyType: (v74.ProxyType | undefined), call: v74.Call} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === 'ed40c9d409ddab1526a748630fa1eef8e3eef7da3daecc3ec97fef7f5379688e'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV77(): {real: v77.MultiAddress, forceProxyType: (v77.ProxyType | undefined), call: v77.Call} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyProxyAnnouncedCall {
@@ -9658,6 +10619,181 @@ export class ProxyProxyAnnouncedCall {
      */
     get asV66(): {delegate: v66.MultiAddress, real: v66.MultiAddress, forceProxyType: (v66.ProxyType | undefined), call: v66.Call} {
         assert(this.isV66)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === 'df1cf3babd3603a0d6fe1a9c6641b8e1312ee9e5b1ad69d48d400516beab1c87'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV68(): {delegate: v68.MultiAddress, real: v68.MultiAddress, forceProxyType: (v68.ProxyType | undefined), call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '58f2e49c064adc75739a1bc4c5464af2891c22b1b52b3fa971120c1e34cc0e1a'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV70(): {delegate: v70.MultiAddress, real: v70.MultiAddress, forceProxyType: (v70.ProxyType | undefined), call: v70.Call} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '16afabc757fe87cdd84a049b88a516207391dfb9152f623240021edce8c22194'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV72(): {delegate: v72.MultiAddress, real: v72.MultiAddress, forceProxyType: (v72.ProxyType | undefined), call: v72.Call} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '380875e7e72da2ab1ff8b97d45b3f2574e5b9627c37063aa25c29f71b28c5cd2'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV74(): {delegate: v74.MultiAddress, real: v74.MultiAddress, forceProxyType: (v74.ProxyType | undefined), call: v74.Call} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '519e7707535ec0141ff21c3abca9f417bce8c715dba7a0b1fcea883b30ba8007'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV77(): {delegate: v77.MultiAddress, real: v77.MultiAddress, forceProxyType: (v77.ProxyType | undefined), call: v77.Call} {
+        assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -10854,6 +11990,131 @@ export class SudoSudoCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '741794ba6f2299cebfe46964e6a07356485d8d899531ce861bf692a861f885e1'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV68(): {call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '9206ef7bc08f15bd9b7ffeeb630a34524a36f648570cb4d56342e137b4359f4d'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV70(): {call: v70.Call} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === 'ca359d9c2ab98184d47bd772012af113f76cd46f151dfaac167bd70f0a1fe62d'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV72(): {call: v72.Call} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '5a75855b6da15d66bb93765335eeb8c34ad2c4c65419a3b4cbd50b8ed3b1d18c'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV74(): {call: v74.Call} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === 'ae4185647291995c948b84904e1327f9ee264450f714237a0c3813e5fbdd17c5'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV77(): {call: v77.Call} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoAsCall {
@@ -11509,6 +12770,141 @@ export class SudoSudoAsCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '9bbdd8b53a49378d8d29e830aa13c9384ed71c855414064c3555cc339c4a5b1e'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV68(): {who: v68.MultiAddress, call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'c3e69b76b1edd854509f2a53bf9d6304a07553a6c2d43feff5544ad3f011756d'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV70(): {who: v70.MultiAddress, call: v70.Call} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '5f1292665c95603de3768f7685dc5d824328228e3ad2f7045712cbd97a983d60'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV72(): {who: v72.MultiAddress, call: v72.Call} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'da55197f03fff1c6fc774d1a17a9e7bd5247d632e0a143944ab2ee5b337f6e17'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV74(): {who: v74.MultiAddress, call: v74.Call} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'c52b9f6b3a45ccc73d87ecb9a4da79e4bbc5e8f3431ac8f19b450d3389433057'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV77(): {who: v77.MultiAddress, call: v77.Call} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -12136,6 +13532,151 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV66(): {call: v66.Call, weight: v66.Weight} {
         assert(this.isV66)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '6a742e622725b9b9999ce3c892e28cbbae167c26ed8c59df754a1d6bf3818929'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV68(): {call: v68.Call, weight: v68.Weight} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'f7846c44467cbedfa0b01d449b9742e35121b3892542d31239529505c33c66e2'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV70(): {call: v70.Call, weight: v70.Weight} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '8bd03f3bdccd1297f303c0c01f36a76c189ece606fdb6e97ed795af589851c68'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV72(): {call: v72.Call, weight: v72.Weight} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '0656ae61ea154b16384a65bfdbeb855ab253bfac37496d2d7c57e68895614e80'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV74(): {call: v74.Call, weight: v74.Weight} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '8f87bcbe9f1d1e98ee71d8604990a5e6ee39e6f79f16ce8282e27f531452b0d4'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV77(): {call: v77.Call, weight: v77.Weight} {
+        assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13380,6 +14921,201 @@ export class UtilityAsDerivativeCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'ed2feb65557d48f1cf96bb6fa87b1e5457cef35158ad74bbed5db5c6f6589fea'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV68(): {index: number, call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'de012251e0757af9143e41e4fe1647e1b3f4c0247493200ef73ee4a05210f945'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV70(): {index: number, call: v70.Call} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'caed27f477fcd9657ae76cbc03542a7b469d54c94f3dec4ae29787b9aef4dcf1'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV72(): {index: number, call: v72.Call} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'd76ae176c6f7c6ebc9d1326fe12e84aae288717dd5e326fa61956ae5be3faaac'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV74(): {index: number, call: v74.Call} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'e9a3af0ce3f2e176f1fff3fd78c565a7a20d9a5ea7666421e6f01a733391a45c'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV77(): {index: number, call: v77.Call} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -14357,6 +16093,251 @@ export class UtilityBatchCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '9baef8a42d509d6b080cc176b561e929cc65fed1ba1a3f5a0cb1fa24a9027ae3'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV68(): {calls: v68.Call[]} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'd80e228f3c61c0f4ee3b4f00518ba9d2d33b6b4414da789d6f6bae0ef6645e65'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV70(): {calls: v70.Call[]} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'f8b13f8d31de4911df1f328d38b64e7cc6ab15c3f3c53dd76569f1b46f00226b'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV72(): {calls: v72.Call[]} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'f8c80a8fe5dfe938e130b467e5555f02a1e527a8f4cd12db14a0327819a3a0f7'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV74(): {calls: v74.Call[]} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '407a808d1499ee04194571e0728648ad1ce07de446ed75c75c9a4a4e99235d5a'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV77(): {calls: v77.Call[]} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -15144,6 +17125,201 @@ export class UtilityBatchAllCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '9baef8a42d509d6b080cc176b561e929cc65fed1ba1a3f5a0cb1fa24a9027ae3'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV68(): {calls: v68.Call[]} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'd80e228f3c61c0f4ee3b4f00518ba9d2d33b6b4414da789d6f6bae0ef6645e65'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV70(): {calls: v70.Call[]} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'f8b13f8d31de4911df1f328d38b64e7cc6ab15c3f3c53dd76569f1b46f00226b'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV72(): {calls: v72.Call[]} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'f8c80a8fe5dfe938e130b467e5555f02a1e527a8f4cd12db14a0327819a3a0f7'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV74(): {calls: v74.Call[]} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '407a808d1499ee04194571e0728648ad1ce07de446ed75c75c9a4a4e99235d5a'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV77(): {calls: v77.Call[]} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -15728,6 +17904,131 @@ export class UtilityDispatchAsCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '74a69281ba03d222984137fccde4e297122ab697351dc04772ea925f2a75f2f6'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV68(): {asOrigin: v68.OriginCaller, call: v68.Call} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '2b971fe91ba4518e824836b9fea4289d815217d10f544786faa78fe7d90645b3'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV70(): {asOrigin: v70.OriginCaller, call: v70.Call} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '9ffc5055fe587136d2ed49564545fea2cd34e98060a727ae1844df50e4f46300'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV72(): {asOrigin: v72.OriginCaller, call: v72.Call} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === 'ae925d977abd654a03955a36afd54344808b6c2ee465d3faab33c99479a2ece3'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV74(): {asOrigin: v74.OriginCaller, call: v74.Call} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === 'b0524f0c2e0241d426b7862b89ee9b0912e7fee7ae186ab27a8c1c96e4baa003'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV77(): {asOrigin: v77.OriginCaller, call: v77.Call} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -16146,6 +18447,201 @@ export class UtilityForceBatchCall {
         assert(this.isV66)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '9baef8a42d509d6b080cc176b561e929cc65fed1ba1a3f5a0cb1fa24a9027ae3'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV68(): {calls: v68.Call[]} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'd80e228f3c61c0f4ee3b4f00518ba9d2d33b6b4414da789d6f6bae0ef6645e65'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV70(): {calls: v70.Call[]} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'f8b13f8d31de4911df1f328d38b64e7cc6ab15c3f3c53dd76569f1b46f00226b'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV72(): {calls: v72.Call[]} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'f8c80a8fe5dfe938e130b467e5555f02a1e527a8f4cd12db14a0327819a3a0f7'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV74(): {calls: v74.Call[]} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '407a808d1499ee04194571e0728648ad1ce07de446ed75c75c9a4a4e99235d5a'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV77(): {calls: v77.Call[]} {
+        assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -16283,6 +18779,131 @@ export class UtilityWithWeightCall {
      */
     get asV66(): {call: v66.Call, weight: v66.Weight} {
         assert(this.isV66)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV68(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '6a742e622725b9b9999ce3c892e28cbbae167c26ed8c59df754a1d6bf3818929'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV68(): {call: v68.Call, weight: v68.Weight} {
+        assert(this.isV68)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === 'f7846c44467cbedfa0b01d449b9742e35121b3892542d31239529505c33c66e2'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV70(): {call: v70.Call, weight: v70.Weight} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV72(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '8bd03f3bdccd1297f303c0c01f36a76c189ece606fdb6e97ed795af589851c68'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV72(): {call: v72.Call, weight: v72.Weight} {
+        assert(this.isV72)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV74(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '0656ae61ea154b16384a65bfdbeb855ab253bfac37496d2d7c57e68895614e80'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV74(): {call: v74.Call, weight: v74.Weight} {
+        assert(this.isV74)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV77(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '8f87bcbe9f1d1e98ee71d8604990a5e6ee39e6f79f16ce8282e27f531452b0d4'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV77(): {call: v77.Call, weight: v77.Weight} {
+        assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -16637,6 +19258,360 @@ export class VestingVestedTransferCall {
      */
     get asV1(): {target: v1.MultiAddress, schedule: v1.VestingInfo} {
         assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class XTokensTransferCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'XTokens.transfer')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer native currencies.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('XTokens.transfer') === '97bc2d9f512a6f81e88bd8cfc479e786e8ecdc310765af7b2065b603a6ccbb65'
+    }
+
+    /**
+     * Transfer native currencies.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV70(): {currencyId: bigint, amount: bigint, dest: v70.VersionedMultiLocation, destWeightLimit: v70.V3WeightLimit} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class XTokensTransferMultiassetCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'XTokens.transfer_multiasset')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer `MultiAsset`.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multiasset') === 'a87b2931a2da31f4548173df0d164afbd7f9413f0b0a9373582011906fdc8ac9'
+    }
+
+    /**
+     * Transfer `MultiAsset`.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV70(): {asset: v70.VersionedMultiAsset, dest: v70.VersionedMultiLocation, destWeightLimit: v70.V3WeightLimit} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class XTokensTransferMultiassetWithFeeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'XTokens.transfer_multiasset_with_fee')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer `MultiAsset` specifying the fee and amount as separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the multiasset to be spent to pay for execution in
+     * destination chain. Both fee and amount will be subtracted form the
+     * callers balance For now we only accept fee and asset having the same
+     * `MultiLocation` id.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multiasset_with_fee') === 'e1673c048436ca84c1278f4f2f8a12456b25e4911f3ec72d0295b843ed7a4c7f'
+    }
+
+    /**
+     * Transfer `MultiAsset` specifying the fee and amount as separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the multiasset to be spent to pay for execution in
+     * destination chain. Both fee and amount will be subtracted form the
+     * callers balance For now we only accept fee and asset having the same
+     * `MultiLocation` id.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV70(): {asset: v70.VersionedMultiAsset, fee: v70.VersionedMultiAsset, dest: v70.VersionedMultiLocation, destWeightLimit: v70.V3WeightLimit} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class XTokensTransferMultiassetsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'XTokens.transfer_multiassets')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer several `MultiAsset` specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the MultiAssets that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multiassets') === 'b49a1a3bce05ffe02f0ac5efca4907e6bf7f963113419870a760a3013dc86495'
+    }
+
+    /**
+     * Transfer several `MultiAsset` specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the MultiAssets that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV70(): {assets: v70.VersionedMultiAssets, feeItem: number, dest: v70.VersionedMultiLocation, destWeightLimit: v70.V3WeightLimit} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class XTokensTransferMulticurrenciesCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'XTokens.transfer_multicurrencies')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer several currencies specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the currencies tuple that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_multicurrencies') === 'c92ac3edc367bf93a5c89e6f5654f80714242668ab72f1bba060d5173445b812'
+    }
+
+    /**
+     * Transfer several currencies specifying the item to be used as fee
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee_item` is index of the currencies tuple that we want to use for
+     * payment
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV70(): {currencies: [bigint, bigint][], feeItem: number, dest: v70.VersionedMultiLocation, destWeightLimit: v70.V3WeightLimit} {
+        assert(this.isV70)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class XTokensTransferWithFeeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'XTokens.transfer_with_fee')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Transfer native currencies specifying the fee and amount as
+     * separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the amount to be spent to pay for execution in destination
+     * chain. Both fee and amount will be subtracted form the callers
+     * balance.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get isV70(): boolean {
+        return this._chain.getCallHash('XTokens.transfer_with_fee') === '1e8b3d77e2ec3172bc865cbb8b63bb0e57d016c4d5d46ff388c5c6c8207d4099'
+    }
+
+    /**
+     * Transfer native currencies specifying the fee and amount as
+     * separate.
+     * 
+     * `dest_weight_limit` is the weight for XCM execution on the dest
+     * chain, and it would be charged from the transferred assets. If set
+     * below requirements, the execution may fail and assets wouldn't be
+     * received.
+     * 
+     * `fee` is the amount to be spent to pay for execution in destination
+     * chain. Both fee and amount will be subtracted form the callers
+     * balance.
+     * 
+     * If `fee` is not high enough to cover for the execution costs in the
+     * destination chain, then the assets will be trapped in the
+     * destination chain
+     * 
+     * It's a no-op if any error on local XCM execution or message sending.
+     * Note sending assets out per se doesn't guarantee they would be
+     * received. Receiving depends on if the XCM message could be delivered
+     * by the network, and if the receiving chain would handle
+     * messages correctly.
+     */
+    get asV70(): {currencyId: bigint, amount: bigint, fee: bigint, dest: v70.VersionedMultiLocation, destWeightLimit: v70.V3WeightLimit} {
+        assert(this.isV70)
         return this._chain.decodeCall(this.call)
     }
 }

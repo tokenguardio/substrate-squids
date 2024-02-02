@@ -18,6 +18,11 @@ import * as v55 from './v55'
 import * as v61 from './v61'
 import * as v64 from './v64'
 import * as v66 from './v66'
+import * as v68 from './v68'
+import * as v70 from './v70'
+import * as v72 from './v72'
+import * as v74 from './v74'
+import * as v77 from './v77'
 
 export class AssetsAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -991,10 +996,23 @@ export class BlockRewardRewardDistributionConfigStorageStorage extends StorageBa
         assert(this.isV12)
         return this as any
     }
+
+    get isV74(): boolean {
+        return this.getTypeHash() === '97b493e6233aea8fc3393925278a70b0a71f9e9b4dfa7b53e7c5f4e7d2a65fe0'
+    }
+
+    get asV74(): BlockRewardRewardDistributionConfigStorageStorageV74 {
+        assert(this.isV74)
+        return this as any
+    }
 }
 
 export interface BlockRewardRewardDistributionConfigStorageStorageV12 {
     get(): Promise<v12.RewardDistributionConfig>
+}
+
+export interface BlockRewardRewardDistributionConfigStorageStorageV74 {
+    get(): Promise<v74.RewardDistributionConfig>
 }
 
 export class CollatorSelectionCandidacyBondStorage extends StorageBase {
@@ -1850,6 +1868,38 @@ export class DappsStakingCurrentEraStorage extends StorageBase {
  */
 export interface DappsStakingCurrentEraStorageV4 {
     get(): Promise<number>
+}
+
+export class DappsStakingDecommissionStartedStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappsStaking'
+    }
+
+    protected getName() {
+        return 'DecommissionStarted'
+    }
+
+    /**
+     *  Denotes whether pallet decommissioning has started or not.
+     */
+    get isV77(): boolean {
+        return this.getTypeHash() === '1b6fbf1674d189f761a7ac63093bf5c755bf073dd9d9f0dbe657289f92575db5'
+    }
+
+    /**
+     *  Denotes whether pallet decommissioning has started or not.
+     */
+    get asV77(): DappsStakingDecommissionStartedStorageV77 {
+        assert(this.isV77)
+        return this as any
+    }
+}
+
+/**
+ *  Denotes whether pallet decommissioning has started or not.
+ */
+export interface DappsStakingDecommissionStartedStorageV77 {
+    get(): Promise<boolean>
 }
 
 export class DappsStakingEraRewardsAndStakesStorage extends StorageBase {
@@ -2726,6 +2776,29 @@ export interface DmpQueuePagesStorageV15 {
     getPairs(key: number): Promise<[k: number, v: [number, Uint8Array][]][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: [number, Uint8Array][]][]>
     getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: [number, Uint8Array][]][]>
+}
+
+export class DynamicEvmBaseFeeBaseFeePerGasStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DynamicEvmBaseFee'
+    }
+
+    protected getName() {
+        return 'BaseFeePerGas'
+    }
+
+    get isV72(): boolean {
+        return this.getTypeHash() === '12f873961beb65950ba33112c0ef55aa5cd3ec2d1e17a439f76a028d6b94ec7b'
+    }
+
+    get asV72(): DynamicEvmBaseFeeBaseFeePerGasStorageV72 {
+        assert(this.isV72)
+        return this as any
+    }
+}
+
+export interface DynamicEvmBaseFeeBaseFeePerGasStorageV72 {
+    get(): Promise<bigint>
 }
 
 export class EVMAccountCodesStorage extends StorageBase {
@@ -4716,6 +4789,21 @@ export class PolkadotXcmRemoteLockedFungiblesStorage extends StorageBase {
         assert(this.isV61)
         return this as any
     }
+
+    /**
+     *  Fungible assets which we know are locked on a remote chain.
+     */
+    get isV68(): boolean {
+        return this.getTypeHash() === '1149837e63a49b75805a12d31afe81a1d8d4392ee13be03404f08d002d1c9928'
+    }
+
+    /**
+     *  Fungible assets which we know are locked on a remote chain.
+     */
+    get asV68(): PolkadotXcmRemoteLockedFungiblesStorageV68 {
+        assert(this.isV68)
+        return this as any
+    }
 }
 
 /**
@@ -4741,6 +4829,31 @@ export interface PolkadotXcmRemoteLockedFungiblesStorageV61 {
     getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
     getPairsPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
     getPairsPaged(pageSize: number, key1: number, key2: Uint8Array, key3: v61.VersionedAssetId): AsyncIterable<[k: [number, Uint8Array, v61.VersionedAssetId], v: v61.RemoteLockedFungibleRecord][]>
+}
+
+/**
+ *  Fungible assets which we know are locked on a remote chain.
+ */
+export interface PolkadotXcmRemoteLockedFungiblesStorageV68 {
+    get(key1: number, key2: Uint8Array, key3: v68.VersionedAssetId): Promise<(v68.RemoteLockedFungibleRecord | undefined)>
+    getAll(): Promise<v68.RemoteLockedFungibleRecord[]>
+    getMany(keys: [number, Uint8Array, v68.VersionedAssetId][]): Promise<(v68.RemoteLockedFungibleRecord | undefined)[]>
+    getKeys(): Promise<[number, Uint8Array, v68.VersionedAssetId][]>
+    getKeys(key1: number): Promise<[number, Uint8Array, v68.VersionedAssetId][]>
+    getKeys(key1: number, key2: Uint8Array): Promise<[number, Uint8Array, v68.VersionedAssetId][]>
+    getKeys(key1: number, key2: Uint8Array, key3: v68.VersionedAssetId): Promise<[number, Uint8Array, v68.VersionedAssetId][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, Uint8Array, v68.VersionedAssetId][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, Uint8Array, v68.VersionedAssetId][]>
+    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[number, Uint8Array, v68.VersionedAssetId][]>
+    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array, key3: v68.VersionedAssetId): AsyncIterable<[number, Uint8Array, v68.VersionedAssetId][]>
+    getPairs(): Promise<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
+    getPairs(key1: number): Promise<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
+    getPairs(key1: number, key2: Uint8Array): Promise<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
+    getPairs(key1: number, key2: Uint8Array, key3: v68.VersionedAssetId): Promise<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
+    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array, key3: v68.VersionedAssetId): AsyncIterable<[k: [number, Uint8Array, v68.VersionedAssetId], v: v68.RemoteLockedFungibleRecord][]>
 }
 
 export class PolkadotXcmSafeXcmVersionStorage extends StorageBase {
@@ -6606,6 +6719,141 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV66)
         return this as any
     }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV68(): boolean {
+        return this.getTypeHash() === '89c911227c2fcaa7f80650e5eb82072564faedbbf138b01889f0815c9c7f12a8'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV68(): SystemEventsStorageV68 {
+        assert(this.isV68)
+        return this as any
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV70(): boolean {
+        return this.getTypeHash() === 'ee6b6a8186b43663b617cadf1bb5c517310ca169c6c19ab7b77c6781c7dd24c5'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV70(): SystemEventsStorageV70 {
+        assert(this.isV70)
+        return this as any
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV72(): boolean {
+        return this.getTypeHash() === 'dc82c2a72cd8ef3f7c20f8c2d25221cea4b5107a532204247d2b483c3451a756'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV72(): SystemEventsStorageV72 {
+        assert(this.isV72)
+        return this as any
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV74(): boolean {
+        return this.getTypeHash() === '5418762b451a669f5839c53ca07c4e8e043adf53f1f9eaa7dc86ab46b1eeca80'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV74(): SystemEventsStorageV74 {
+        assert(this.isV74)
+        return this as any
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV77(): boolean {
+        return this.getTypeHash() === 'fa3751d2b658c032f26caca41272d903255f43e104a97b368d8c4769fa73e5b1'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV77(): SystemEventsStorageV77 {
+        assert(this.isV77)
+        return this as any
+    }
 }
 
 /**
@@ -6816,6 +7064,71 @@ export interface SystemEventsStorageV64 {
  */
 export interface SystemEventsStorageV66 {
     get(): Promise<v66.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV68 {
+    get(): Promise<v68.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV70 {
+    get(): Promise<v70.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV72 {
+    get(): Promise<v72.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV74 {
+    get(): Promise<v74.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV77 {
+    get(): Promise<v77.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {

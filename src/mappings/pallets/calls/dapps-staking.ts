@@ -4,6 +4,8 @@ import {
   DappsStakingClaimCall,
   DappsStakingClaimDappCall,
   DappsStakingClaimStakerCall,
+  DappsStakingClaimStakerForCall,
+  DappsStakingDecommissionCall,
   DappsStakingDeveloperPreApprovalCall,
   DappsStakingDoUpgradeCall,
   DappsStakingEnableDeveloperPreApprovalCall,
@@ -13,6 +15,7 @@ import {
   DappsStakingRegisterCall,
   DappsStakingSetContractStakeInfoCall,
   DappsStakingSetRewardDestinationCall,
+  DappsStakingSetRewardDestinationForCall,
   DappsStakingUnbondAndUnstakeCall,
   DappsStakingUnbondUnstakeAndWithdrawCall,
   DappsStakingUnregisterCall,
@@ -59,6 +62,20 @@ export function normalizeDappsStakingCallsArgs(ctx: ChainContext, call: Call) {
     case "DappsStaking.claim_staker":
       e = new DappsStakingClaimStakerCall(ctx, call);
       if (e.isV12) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "DappsStaking.claim_staker_for":
+      e = new DappsStakingClaimStakerForCall(ctx, call);
+      if (e.isV77) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "DappsStaking.decommission":
+      e = new DappsStakingDecommissionCall(ctx, call);
+      if (e.isV77) {
         return call.args;
       } else {
         throw new UnknownCallVersionError(call.name);
@@ -127,6 +144,13 @@ export function normalizeDappsStakingCallsArgs(ctx: ChainContext, call: Call) {
     case "DappsStaking.set_reward_destination":
       e = new DappsStakingSetRewardDestinationCall(ctx, call);
       if (e.isV16) {
+        return call.args;
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+    case "DappsStaking.set_reward_destination_for":
+      e = new DappsStakingSetRewardDestinationForCall(ctx, call);
+      if (e.isV77) {
         return call.args;
       } else {
         throw new UnknownCallVersionError(call.name);

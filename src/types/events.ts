@@ -17,6 +17,8 @@ import * as v52 from './v52'
 import * as v61 from './v61'
 import * as v64 from './v64'
 import * as v66 from './v66'
+import * as v70 from './v70'
+import * as v74 from './v74'
 
 export class AssetsAccountsDestroyedEvent {
     private readonly _chain: Chain
@@ -1622,6 +1624,21 @@ export class BlockRewardDistributionConfigurationChangedEvent {
         assert(this.isV12)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Distribution configuration has been updated.
+     */
+    get isV74(): boolean {
+        return this._chain.getEventHash('BlockReward.DistributionConfigurationChanged') === 'e5609ca07fbd5bc2bb9abab6e6fa45e15566c457c0568cb38ed092f6f30da7ce'
+    }
+
+    /**
+     * Distribution configuration has been updated.
+     */
+    get asV74(): v74.RewardDistributionConfig {
+        assert(this.isV74)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class CollatorSelectionCandidateAddedEvent {
@@ -2253,6 +2270,35 @@ export class DappsStakingContractRemovedEvent {
      */
     get asV4(): [Uint8Array, v4.SmartContract] {
         assert(this.isV4)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappsStakingDecommissionEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappsStaking.Decommission')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Pallet is being decommissioned.
+     */
+    get isV77(): boolean {
+        return this._chain.getEventHash('DappsStaking.Decommission') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Pallet is being decommissioned.
+     */
+    get asV77(): null {
+        assert(this.isV77)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2990,6 +3036,35 @@ export class DmpQueueWeightExhaustedEvent {
      */
     get asV49(): {messageId: Uint8Array, remainingWeight: v49.Weight, requiredWeight: v49.Weight} {
         assert(this.isV49)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DynamicEvmBaseFeeNewBaseFeePerGasEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DynamicEvmBaseFee.NewBaseFeePerGas')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * New `base fee per gas` value has been force-set.
+     */
+    get isV72(): boolean {
+        return this._chain.getEventHash('DynamicEvmBaseFee.NewBaseFeePerGas') === 'df74b0f066943b24c635a19ba2763478ab00f9c0373d74c9a771b1a1047ff6d6'
+    }
+
+    /**
+     * New `base fee per gas` value has been force-set.
+     */
+    get asV72(): {fee: bigint} {
+        assert(this.isV72)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -7221,6 +7296,35 @@ export class VestingVestingUpdatedEvent {
      */
     get asV3(): {account: Uint8Array, unvested: bigint} {
         assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class XTokensTransferredMultiAssetsEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'XTokens.TransferredMultiAssets')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get isV70(): boolean {
+        return this._chain.getEventHash('XTokens.TransferredMultiAssets') === '15736a72848dcda33acde4ffd89efcf41166a311cefd45a3ccad9cf54e78a91d'
+    }
+
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    get asV70(): {sender: Uint8Array, assets: v70.V3MultiAsset[], fee: v70.V3MultiAsset, dest: v70.V3MultiLocation} {
+        assert(this.isV70)
         return this._chain.decodeEvent(this.event)
     }
 }
