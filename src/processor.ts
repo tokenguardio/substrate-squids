@@ -15,6 +15,7 @@ export const processor = new EvmBatchProcessor()
     archive: lookupArchive("avalanche"),
     chain: process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc",
   })
+  .setBatchSize(parseInt(process.env.BATCH_SIZE) ?? 500)
   .setFinalityConfirmation(75)
   .addTransaction({
     traces: true,
