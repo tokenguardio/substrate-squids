@@ -10,21 +10,23 @@ import {
 } from "@subsquid/evm-processor";
 import * as erc20Abi from "./abi/erc20";
 
-const blockRangeString = process.env.BLOCK_RANGE || "{}";
-const blockRange = JSON.parse(blockRangeString);
-
 export const processor = new EvmBatchProcessor()
   .setDataSource({
     archive: lookupArchive("avalanche"),
     chain: process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc",
   })
-  .setBlockRange(blockRange || { from: 0 })
+  .useArchiveOnly(true)
+  .setBlockRange({
+    from: process.env.BLOCK_RANGE_FROM
+      ? Number(process.env.BLOCK_RANGE_FROM)
+      : 0,
+    to: process.env.BLOCK_RANGE_TO
+      ? Number(process.env.BLOCK_RANGE_TO)
+      : undefined,
+  })
   .setFinalityConfirmation(75)
   .addTransaction({
     traces: true,
-  })
-  .addLog({
-    topic0: [erc20Abi.events.Transfer.topic],
   })
   .setFields({
     transaction: {
@@ -65,9 +67,7 @@ export const processor = new EvmBatchProcessor()
       rewardValue: true,
       rewardType: true,
     },
-  })
-  .useArchiveOnly(true)
-  .setBlockRange({ from: 0 });
+  });
 
 export type Fields = EvmBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
