@@ -25,9 +25,7 @@ export const processor = new EvmBatchProcessor()
       : undefined,
   })
   .setFinalityConfirmation(75)
-  .addTransaction({
-    traces: true,
-  })
+  .addTransaction({})
   .addLog({
     topic0: [erc20Abi.events.Transfer.topic],
   })
