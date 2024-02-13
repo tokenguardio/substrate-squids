@@ -239,7 +239,7 @@ export function createFToken(
   decimals?: number
 ): FToken {
   return new FToken({
-    id: id,
+    id: ethers.getAddress(id),
     name: name ? getDecoratedCallResult(name) : null,
     symbol: symbol ? getDecoratedCallResult(symbol) : null,
     decimals: decimals ?? null,
