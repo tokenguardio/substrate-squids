@@ -36,7 +36,7 @@ let currentTransactionId: string | null = null;
 let traceTree: TraceTree = new TraceTree("");
 
 processor.run(
-  new TypeormDatabase({ stateSchema: "evm_fungible_processor" }),
+  new TypeormDatabase({ stateSchema: "evm_processor" }),
   async (ctx) => {
     const transactions: Transaction[] = [];
     const traceCreates: TraceCreate[] = [];
@@ -145,19 +145,13 @@ processor.run(
     // synchronize contracts created by CREATE2
     synchronizeContracts(newContracts, destroyedContracts);
 
-    try {
-      await ctx.store.upsert(transactions);
-      await ctx.store.upsert(newContracts);
-      await ctx.store.upsert(destroyedContracts);
-      await ctx.store.upsert(traceCreates);
-      await ctx.store.upsert(traceCalls);
-      await ctx.store.upsert(traceSuicides);
-      await ctx.store.upsert(traceRewards);
-      await ctx.store.upsert(ftTransfers);
-    } catch (err) {
-      delete (err as any).query;
-      delete (err as any).parameters;
-      console.log(err);
-    }
+    await ctx.store.upsert(transactions);
+    await ctx.store.upsert(newContracts);
+    await ctx.store.upsert(destroyedContracts);
+    await ctx.store.upsert(traceCreates);
+    await ctx.store.upsert(traceCalls);
+    await ctx.store.upsert(traceSuicides);
+    await ctx.store.upsert(traceRewards);
+    await ctx.store.upsert(ftTransfers);
   }
 );
