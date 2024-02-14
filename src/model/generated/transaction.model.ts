@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {EvmTransactionType} from "./_evmTransactionType"
 import {EvmLabel} from "./_evmLabel"
@@ -20,26 +20,21 @@ export class Transaction {
     @Column_("text", {nullable: false})
     blockHash!: string
 
-    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
-    @Index_()
     @Column_("text", {nullable: false})
     hash!: string
 
     @Column_("varchar", {length: 7, nullable: false})
     type!: EvmTransactionType
 
-    @Index_()
     @Column_("varchar", {length: 15, nullable: false})
     label!: EvmLabel
 
-    @Index_()
     @Column_("text", {nullable: false})
     from!: string
 
-    @Index_()
     @Column_("text", {nullable: true})
     to!: string | undefined | null
 
@@ -55,7 +50,6 @@ export class Transaction {
     @Column_("text", {nullable: true})
     deployedAddress!: string | undefined | null
 
-    @Index_()
     @Column_("bool", {nullable: true})
     success!: boolean | undefined | null
 

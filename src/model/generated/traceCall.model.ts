@@ -16,7 +16,6 @@ export class TraceCall {
     @ManyToOne_(() => Transaction, {nullable: true})
     transaction!: Transaction
 
-    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
@@ -29,14 +28,12 @@ export class TraceCall {
     @Column_("bool", {nullable: true})
     parentHasError!: boolean | undefined | null
 
-    @Index_()
     @Column_("text", {nullable: false})
     from!: string
 
     @Column_("varchar", {length: 8, nullable: true})
     fromType!: AddressType | undefined | null
 
-    @Index_()
     @Column_("text", {nullable: false})
     to!: string
 

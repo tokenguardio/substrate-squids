@@ -20,25 +20,21 @@ export class FtTransfer {
     @Column_("text", {nullable: false})
     blockHash!: string
 
-    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
     @Column_("int4", {nullable: true})
     eventIndex!: number | undefined | null
 
-    @Index_()
     @Column_("text", {nullable: false})
     from!: string
 
-    @Index_()
     @Column_("text", {nullable: false})
     to!: string
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
     value!: bigint
 
-    @Index_()
     @Column_("varchar", {length: 8, nullable: true})
     transferType!: TransferType | undefined | null
 
