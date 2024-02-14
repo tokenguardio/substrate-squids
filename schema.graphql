@@ -1,17 +1,17 @@
 type Transaction @entity {
   id: ID!
   blockHash: String!
-  timestamp: DateTime! @index
-  hash: String! @index
+  timestamp: DateTime! #@index
+  hash: String! #@index
   type: EvmTransactionType!
-  label: EvmLabel! @index
-  from: String! @index
-  to: String @index
+  label: EvmLabel! #@index
+  from: String! #@index
+  to: String #@index
   fee: BigInt!
   value: BigInt!
   input: String!
   deployedAddress: String
-  success: Boolean @index
+  success: Boolean #@index
   sighash: String
   transactionIndex: Int!
   traceCreates: [TraceCreate!] @derivedFrom(field: "transaction")
@@ -36,21 +36,21 @@ enum EvmLabel {
 
 type Contract @entity {
   id: ID!
-  createdBy: String @index
+  createdBy: String #@index
   createTransaction: Transaction
-  createTimestamp: DateTime @index
+  createTimestamp: DateTime #@index
   destroyTransaction: Transaction
-  destroyTimestamp: DateTime @index
+  destroyTimestamp: DateTime #@index
 }
 
 type TraceCreate @entity {
   id: ID!
   transaction: Transaction!
-  timestamp: DateTime! @index
+  timestamp: DateTime! #@index
   subtraces: Int
   error: String
   parentHasError: Boolean
-  from: String! @index
+  from: String! #@index
   fromType: AddressType
   value: BigInt
   gas: BigInt
@@ -63,13 +63,13 @@ type TraceCreate @entity {
 type TraceCall @entity {
   id: ID!
   transaction: Transaction!
-  timestamp: DateTime! @index
+  timestamp: DateTime! #@index
   subtraces: Int
   error: String
   parentHasError: Boolean
-  from: String! @index
+  from: String! #@index
   fromType: AddressType
-  to: String! @index
+  to: String! #@index
   toType: AddressType
   value: BigInt
   gas: BigInt
@@ -82,7 +82,7 @@ type TraceCall @entity {
 type TraceSuicide @entity {
   id: ID!
   transaction: Transaction!
-  timestamp: DateTime! @index
+  timestamp: DateTime! #@index
   subtraces: Int
   error: String
   parentHasError: Boolean
@@ -94,7 +94,7 @@ type TraceSuicide @entity {
 type TraceReward @entity {
   id: ID!
   transaction: Transaction!
-  timestamp: DateTime! @index
+  timestamp: DateTime! #@index
   subtraces: Int
   error: String
   parentHasError: Boolean
@@ -110,8 +110,8 @@ enum AddressType {
 
 type FToken @entity {
   id: ID!
-  name: String @index
-  symbol: String @index
+  name: String #@index
+  symbol: String #@index
   decimals: Int
   ftTransfers: [FtTransfer!] @derivedFrom(field: "token")
 }
@@ -120,12 +120,12 @@ type FtTransfer @entity {
   id: ID!
   transaction: Transaction!
   blockHash: String!
-  timestamp: DateTime! @index
+  timestamp: DateTime! #@index
   eventIndex: Int
-  from: String! @index
-  to: String! @index
+  from: String! #@index
+  to: String! #@index
   value: BigInt!
-  transferType: TransferType @index
+  transferType: TransferType #@index
   token: FToken
 }
 

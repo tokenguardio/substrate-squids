@@ -16,7 +16,6 @@ export class TraceCreate {
     @ManyToOne_(() => Transaction, {nullable: true})
     transaction!: Transaction
 
-    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
@@ -29,7 +28,6 @@ export class TraceCreate {
     @Column_("bool", {nullable: true})
     parentHasError!: boolean | undefined | null
 
-    @Index_()
     @Column_("text", {nullable: false})
     from!: string
 

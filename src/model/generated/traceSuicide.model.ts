@@ -15,7 +15,6 @@ export class TraceSuicide {
     @ManyToOne_(() => Transaction, {nullable: true})
     transaction!: Transaction
 
-    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
