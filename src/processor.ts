@@ -42,7 +42,7 @@ const processor = new SubstrateBatchProcessor()
   });
 
 processor.run(
-  new TypeormDatabase({ stateSchema: "substrate_processor" }),
+  new TypeormDatabase({ stateSchema: "substrate_processor_bis" }),
   async (ctx) => {
     const events: EventNorm[] = [];
     const calls: CallNorm[] = [];
