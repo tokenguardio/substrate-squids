@@ -23,6 +23,7 @@ import * as v70 from './v70'
 import * as v72 from './v72'
 import * as v74 from './v74'
 import * as v77 from './v77'
+import * as v79 from './v79'
 
 export class AssetsAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -660,6 +661,21 @@ export class BalancesFreezesStorage extends StorageBase {
         assert(this.isV64)
         return this as any
     }
+
+    /**
+     *  Freeze locks on account balances.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '56ac14e0a1f659eb52f1f9c056d78a16b87f529addecb7440f738fd4339412ac'
+    }
+
+    /**
+     *  Freeze locks on account balances.
+     */
+    get asV79(): BalancesFreezesStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
 }
 
 /**
@@ -677,6 +693,23 @@ export interface BalancesFreezesStorageV64 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.IdAmount[]][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
+}
+
+/**
+ *  Freeze locks on account balances.
+ */
+export interface BalancesFreezesStorageV79 {
+    get(key: Uint8Array): Promise<v79.Type_356[]>
+    getAll(): Promise<v79.Type_356[][]>
+    getMany(keys: Uint8Array[]): Promise<v79.Type_356[][]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v79.Type_356[]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v79.Type_356[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v79.Type_356[]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v79.Type_356[]][]>
 }
 
 export class BalancesHoldsStorage extends StorageBase {
@@ -1700,6 +1733,631 @@ export interface ContractsPristineCodeStorageV55 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: Uint8Array][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: Uint8Array][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: Uint8Array][]>
+}
+
+export class DappStakingActiveProtocolStateStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'ActiveProtocolState'
+    }
+
+    /**
+     *  General information about dApp staking protocol state.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '68391abd230d2ae297c6b423bafb45c84b7230113818a952ee083f3d807e60df'
+    }
+
+    /**
+     *  General information about dApp staking protocol state.
+     */
+    get asV79(): DappStakingActiveProtocolStateStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  General information about dApp staking protocol state.
+ */
+export interface DappStakingActiveProtocolStateStorageV79 {
+    get(): Promise<v79.ProtocolState>
+}
+
+export class DappStakingContractStakeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'ContractStake'
+    }
+
+    /**
+     *  Information about how much has been staked on a smart contract in some era or period.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '6fb018d3ce9d9bb6bf3091777e6ddacb8eaf9ab827b9adf45435268f9eac3200'
+    }
+
+    /**
+     *  Information about how much has been staked on a smart contract in some era or period.
+     */
+    get asV79(): DappStakingContractStakeStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Information about how much has been staked on a smart contract in some era or period.
+ */
+export interface DappStakingContractStakeStorageV79 {
+    get(key: number): Promise<v79.ContractStakeAmount>
+    getAll(): Promise<v79.ContractStakeAmount[]>
+    getMany(keys: number[]): Promise<v79.ContractStakeAmount[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v79.ContractStakeAmount][]>
+    getPairs(key: number): Promise<[k: number, v: v79.ContractStakeAmount][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v79.ContractStakeAmount][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v79.ContractStakeAmount][]>
+}
+
+export class DappStakingCounterForIntegratedDAppsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'CounterForIntegratedDApps'
+    }
+
+    /**
+     * Counter for the related counted storage map
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+    }
+
+    /**
+     * Counter for the related counted storage map
+     */
+    get asV79(): DappStakingCounterForIntegratedDAppsStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ * Counter for the related counted storage map
+ */
+export interface DappStakingCounterForIntegratedDAppsStorageV79 {
+    get(): Promise<number>
+}
+
+export class DappStakingCurrentEraInfoStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'CurrentEraInfo'
+    }
+
+    /**
+     *  General information about the current era.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '4a7e518b1835b5a8310ff79996a48b6b75ece052cd365b90e277897a6597eb06'
+    }
+
+    /**
+     *  General information about the current era.
+     */
+    get asV79(): DappStakingCurrentEraInfoStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  General information about the current era.
+ */
+export interface DappStakingCurrentEraInfoStorageV79 {
+    get(): Promise<v79.EraInfo>
+}
+
+export class DappStakingDAppTiersStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'DAppTiers'
+    }
+
+    /**
+     *  Information about which tier a dApp belonged to in a specific era.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '72837fef3d87199349c48e9bb0536a8fcc03fb7d91f8110aa98176e83d81835e'
+    }
+
+    /**
+     *  Information about which tier a dApp belonged to in a specific era.
+     */
+    get asV79(): DappStakingDAppTiersStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Information about which tier a dApp belonged to in a specific era.
+ */
+export interface DappStakingDAppTiersStorageV79 {
+    get(key: number): Promise<(v79.DAppTierRewards | undefined)>
+    getAll(): Promise<v79.DAppTierRewards[]>
+    getMany(keys: number[]): Promise<(v79.DAppTierRewards | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v79.DAppTierRewards][]>
+    getPairs(key: number): Promise<[k: number, v: v79.DAppTierRewards][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v79.DAppTierRewards][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v79.DAppTierRewards][]>
+}
+
+export class DappStakingEraRewardsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'EraRewards'
+    }
+
+    /**
+     *  Information about rewards for each era.
+     * 
+     *  Since each entry is a 'span', covering up to `T::EraRewardSpanLength` entries, only certain era value keys can exist in storage.
+     *  For the sake of simplicity, valid `era` keys are calculated as:
+     * 
+     *  era_key = era - (era % T::EraRewardSpanLength)
+     * 
+     *  This means that e.g. in case `EraRewardSpanLength = 8`, only era values 0, 8, 16, 24, etc. can exist in storage.
+     *  Eras 1-7 will be stored in the same entry as era 0, eras 9-15 will be stored in the same entry as era 8, etc.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '1733d7837b5bd0cb26a9317f3d7983f714fd20cfe726c58d3c83cdcd5e16b766'
+    }
+
+    /**
+     *  Information about rewards for each era.
+     * 
+     *  Since each entry is a 'span', covering up to `T::EraRewardSpanLength` entries, only certain era value keys can exist in storage.
+     *  For the sake of simplicity, valid `era` keys are calculated as:
+     * 
+     *  era_key = era - (era % T::EraRewardSpanLength)
+     * 
+     *  This means that e.g. in case `EraRewardSpanLength = 8`, only era values 0, 8, 16, 24, etc. can exist in storage.
+     *  Eras 1-7 will be stored in the same entry as era 0, eras 9-15 will be stored in the same entry as era 8, etc.
+     */
+    get asV79(): DappStakingEraRewardsStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Information about rewards for each era.
+ * 
+ *  Since each entry is a 'span', covering up to `T::EraRewardSpanLength` entries, only certain era value keys can exist in storage.
+ *  For the sake of simplicity, valid `era` keys are calculated as:
+ * 
+ *  era_key = era - (era % T::EraRewardSpanLength)
+ * 
+ *  This means that e.g. in case `EraRewardSpanLength = 8`, only era values 0, 8, 16, 24, etc. can exist in storage.
+ *  Eras 1-7 will be stored in the same entry as era 0, eras 9-15 will be stored in the same entry as era 8, etc.
+ */
+export interface DappStakingEraRewardsStorageV79 {
+    get(key: number): Promise<(v79.EraRewardSpan | undefined)>
+    getAll(): Promise<v79.EraRewardSpan[]>
+    getMany(keys: number[]): Promise<(v79.EraRewardSpan | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v79.EraRewardSpan][]>
+    getPairs(key: number): Promise<[k: number, v: v79.EraRewardSpan][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v79.EraRewardSpan][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v79.EraRewardSpan][]>
+}
+
+export class DappStakingHistoryCleanupMarkerStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'HistoryCleanupMarker'
+    }
+
+    /**
+     *  History cleanup marker - holds information about which DB entries should be cleaned up next, when applicable.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '1a48056420aebdb96376d2af07ab7d609acd277e77b1bffed4bc24e7782c8e4c'
+    }
+
+    /**
+     *  History cleanup marker - holds information about which DB entries should be cleaned up next, when applicable.
+     */
+    get asV79(): DappStakingHistoryCleanupMarkerStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  History cleanup marker - holds information about which DB entries should be cleaned up next, when applicable.
+ */
+export interface DappStakingHistoryCleanupMarkerStorageV79 {
+    get(): Promise<v79.CleanupMarker>
+}
+
+export class DappStakingIntegratedDAppsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'IntegratedDApps'
+    }
+
+    /**
+     *  Map of all dApps integrated into dApp staking protocol.
+     * 
+     *  Even though dApp is integrated, it does not mean it's still actively participating in dApp staking.
+     *  It might have been unregistered at some point in history.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '17cc8fc75f47dc681b0290be936aa60863f65f77715525e20d7be7042490c649'
+    }
+
+    /**
+     *  Map of all dApps integrated into dApp staking protocol.
+     * 
+     *  Even though dApp is integrated, it does not mean it's still actively participating in dApp staking.
+     *  It might have been unregistered at some point in history.
+     */
+    get asV79(): DappStakingIntegratedDAppsStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Map of all dApps integrated into dApp staking protocol.
+ * 
+ *  Even though dApp is integrated, it does not mean it's still actively participating in dApp staking.
+ *  It might have been unregistered at some point in history.
+ */
+export interface DappStakingIntegratedDAppsStorageV79 {
+    get(key: v79.SmartContract): Promise<(v79.DAppInfo | undefined)>
+    getAll(): Promise<v79.DAppInfo[]>
+    getMany(keys: v79.SmartContract[]): Promise<(v79.DAppInfo | undefined)[]>
+    getKeys(): Promise<v79.SmartContract[]>
+    getKeys(key: v79.SmartContract): Promise<v79.SmartContract[]>
+    getKeysPaged(pageSize: number): AsyncIterable<v79.SmartContract[]>
+    getKeysPaged(pageSize: number, key: v79.SmartContract): AsyncIterable<v79.SmartContract[]>
+    getPairs(): Promise<[k: v79.SmartContract, v: v79.DAppInfo][]>
+    getPairs(key: v79.SmartContract): Promise<[k: v79.SmartContract, v: v79.DAppInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: v79.SmartContract, v: v79.DAppInfo][]>
+    getPairsPaged(pageSize: number, key: v79.SmartContract): AsyncIterable<[k: v79.SmartContract, v: v79.DAppInfo][]>
+}
+
+export class DappStakingLedgerStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'Ledger'
+    }
+
+    /**
+     *  General locked/staked information for each account.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '2c5b4ef232bb7b02cad6f412263eadc585dee66e023bc06ee92a4ea09fbf3fc2'
+    }
+
+    /**
+     *  General locked/staked information for each account.
+     */
+    get asV79(): DappStakingLedgerStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  General locked/staked information for each account.
+ */
+export interface DappStakingLedgerStorageV79 {
+    get(key: Uint8Array): Promise<v79.AccountLedger>
+    getAll(): Promise<v79.AccountLedger[]>
+    getMany(keys: Uint8Array[]): Promise<v79.AccountLedger[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v79.AccountLedger][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v79.AccountLedger][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v79.AccountLedger][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v79.AccountLedger][]>
+}
+
+export class DappStakingNextDAppIdStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'NextDAppId'
+    }
+
+    /**
+     *  Counter for unique dApp identifiers.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === 'a863022e4ed74c574d4df8778565bf755f6f88a8279ed05d8097a21bc6ec382e'
+    }
+
+    /**
+     *  Counter for unique dApp identifiers.
+     */
+    get asV79(): DappStakingNextDAppIdStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Counter for unique dApp identifiers.
+ */
+export interface DappStakingNextDAppIdStorageV79 {
+    get(): Promise<number>
+}
+
+export class DappStakingPeriodEndStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'PeriodEnd'
+    }
+
+    /**
+     *  Information about period's end.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '8a1b40811ce206a79c9d0d13d48855cce3fe61ed84a7a39071b6e821a9b6a6a4'
+    }
+
+    /**
+     *  Information about period's end.
+     */
+    get asV79(): DappStakingPeriodEndStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Information about period's end.
+ */
+export interface DappStakingPeriodEndStorageV79 {
+    get(key: number): Promise<(v79.PeriodEndInfo | undefined)>
+    getAll(): Promise<v79.PeriodEndInfo[]>
+    getMany(keys: number[]): Promise<(v79.PeriodEndInfo | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v79.PeriodEndInfo][]>
+    getPairs(key: number): Promise<[k: number, v: v79.PeriodEndInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v79.PeriodEndInfo][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v79.PeriodEndInfo][]>
+}
+
+export class DappStakingSafeguardStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'Safeguard'
+    }
+
+    /**
+     *  Safeguard to prevent unwanted operations in production.
+     *  Kept as a storage without extrinsic setter, so we can still enable it for some
+     *  chain-fork debugging if required.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '1b6fbf1674d189f761a7ac63093bf5c755bf073dd9d9f0dbe657289f92575db5'
+    }
+
+    /**
+     *  Safeguard to prevent unwanted operations in production.
+     *  Kept as a storage without extrinsic setter, so we can still enable it for some
+     *  chain-fork debugging if required.
+     */
+    get asV79(): DappStakingSafeguardStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Safeguard to prevent unwanted operations in production.
+ *  Kept as a storage without extrinsic setter, so we can still enable it for some
+ *  chain-fork debugging if required.
+ */
+export interface DappStakingSafeguardStorageV79 {
+    get(): Promise<boolean>
+}
+
+export class DappStakingStakerInfoStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'StakerInfo'
+    }
+
+    /**
+     *  Information about how much each staker has staked for each smart contract in some period.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '0eac073ffccfb250c7a7280c16f23a3952a196afea0880bca7a91206d87037f6'
+    }
+
+    /**
+     *  Information about how much each staker has staked for each smart contract in some period.
+     */
+    get asV79(): DappStakingStakerInfoStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Information about how much each staker has staked for each smart contract in some period.
+ */
+export interface DappStakingStakerInfoStorageV79 {
+    get(key1: Uint8Array, key2: v79.SmartContract): Promise<(v79.SingularStakingInfo | undefined)>
+    getAll(): Promise<v79.SingularStakingInfo[]>
+    getMany(keys: [Uint8Array, v79.SmartContract][]): Promise<(v79.SingularStakingInfo | undefined)[]>
+    getKeys(): Promise<[Uint8Array, v79.SmartContract][]>
+    getKeys(key1: Uint8Array): Promise<[Uint8Array, v79.SmartContract][]>
+    getKeys(key1: Uint8Array, key2: v79.SmartContract): Promise<[Uint8Array, v79.SmartContract][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[Uint8Array, v79.SmartContract][]>
+    getKeysPaged(pageSize: number, key1: Uint8Array): AsyncIterable<[Uint8Array, v79.SmartContract][]>
+    getKeysPaged(pageSize: number, key1: Uint8Array, key2: v79.SmartContract): AsyncIterable<[Uint8Array, v79.SmartContract][]>
+    getPairs(): Promise<[k: [Uint8Array, v79.SmartContract], v: v79.SingularStakingInfo][]>
+    getPairs(key1: Uint8Array): Promise<[k: [Uint8Array, v79.SmartContract], v: v79.SingularStakingInfo][]>
+    getPairs(key1: Uint8Array, key2: v79.SmartContract): Promise<[k: [Uint8Array, v79.SmartContract], v: v79.SingularStakingInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [Uint8Array, v79.SmartContract], v: v79.SingularStakingInfo][]>
+    getPairsPaged(pageSize: number, key1: Uint8Array): AsyncIterable<[k: [Uint8Array, v79.SmartContract], v: v79.SingularStakingInfo][]>
+    getPairsPaged(pageSize: number, key1: Uint8Array, key2: v79.SmartContract): AsyncIterable<[k: [Uint8Array, v79.SmartContract], v: v79.SingularStakingInfo][]>
+}
+
+export class DappStakingStaticTierParamsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'StaticTierParams'
+    }
+
+    /**
+     *  Static tier parameters used to calculate tier configuration.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === 'e186067a8e14c91cb900cb1e5cd1fff1cfff93af7a8a56a48e33726585144ae5'
+    }
+
+    /**
+     *  Static tier parameters used to calculate tier configuration.
+     */
+    get asV79(): DappStakingStaticTierParamsStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Static tier parameters used to calculate tier configuration.
+ */
+export interface DappStakingStaticTierParamsStorageV79 {
+    get(): Promise<v79.TierParameters>
+}
+
+export class DappStakingTierConfigStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStaking'
+    }
+
+    protected getName() {
+        return 'TierConfig'
+    }
+
+    /**
+     *  Tier configuration user for current & preceding eras.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '7a491a4dc823c17337e32ce880d758ec89bed149725232f462abfdb50b9a4000'
+    }
+
+    /**
+     *  Tier configuration user for current & preceding eras.
+     */
+    get asV79(): DappStakingTierConfigStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Tier configuration user for current & preceding eras.
+ */
+export interface DappStakingTierConfigStorageV79 {
+    get(): Promise<v79.TiersConfiguration>
+}
+
+export class DappStakingMigrationMigrationStateStorageStorage extends StorageBase {
+    protected getPrefix() {
+        return 'DappStakingMigration'
+    }
+
+    protected getName() {
+        return 'MigrationStateStorage'
+    }
+
+    /**
+     *  Used to store the current migration state.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '977777094f153ef6137417692e61cbc7d36d666fc3a4a7d9ce732534bfc8e85b'
+    }
+
+    /**
+     *  Used to store the current migration state.
+     */
+    get asV79(): DappStakingMigrationMigrationStateStorageStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Used to store the current migration state.
+ */
+export interface DappStakingMigrationMigrationStateStorageStorageV79 {
+    get(): Promise<v79.MigrationState>
 }
 
 export class DappsStakingBlockRewardAccumulatorStorage extends StorageBase {
@@ -3317,6 +3975,105 @@ export interface IdentitySuperOfStorageV1 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: [Uint8Array, v1.Data]][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: [Uint8Array, v1.Data]][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: [Uint8Array, v1.Data]][]>
+}
+
+export class InflationActiveInflationConfigStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Inflation'
+    }
+
+    protected getName() {
+        return 'ActiveInflationConfig'
+    }
+
+    /**
+     *  Active inflation configuration parameters.
+     *  They describe current rewards, when inflation needs to be recalculated, etc.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '8bb8ab98793059dd73bdd38a82682ec2352a40ee30699b95ecc2cedfd049fae0'
+    }
+
+    /**
+     *  Active inflation configuration parameters.
+     *  They describe current rewards, when inflation needs to be recalculated, etc.
+     */
+    get asV79(): InflationActiveInflationConfigStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Active inflation configuration parameters.
+ *  They describe current rewards, when inflation needs to be recalculated, etc.
+ */
+export interface InflationActiveInflationConfigStorageV79 {
+    get(): Promise<v79.InflationConfiguration>
+}
+
+export class InflationDoRecalculationStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Inflation'
+    }
+
+    protected getName() {
+        return 'DoRecalculation'
+    }
+
+    /**
+     *  Flag indicating whether on the first possible opportunity, recalculation of the inflation config should be done.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === 'a926ad48d1a07d1162c5fdb99f3f6cef39c7c5a115a92ff9ccf0357bae4bf2ed'
+    }
+
+    /**
+     *  Flag indicating whether on the first possible opportunity, recalculation of the inflation config should be done.
+     */
+    get asV79(): InflationDoRecalculationStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Flag indicating whether on the first possible opportunity, recalculation of the inflation config should be done.
+ */
+export interface InflationDoRecalculationStorageV79 {
+    get(): Promise<(number | undefined)>
+}
+
+export class InflationInflationParamsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Inflation'
+    }
+
+    protected getName() {
+        return 'InflationParams'
+    }
+
+    /**
+     *  Static inflation parameters - used to calculate active inflation configuration at certain points in time.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === 'e943881d3399cf67208e7438cc3c122fe4bf3df1a7a1dcfaa0afb474a4259437'
+    }
+
+    /**
+     *  Static inflation parameters - used to calculate active inflation configuration at certain points in time.
+     */
+    get asV79(): InflationInflationParamsStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Static inflation parameters - used to calculate active inflation configuration at certain points in time.
+ */
+export interface InflationInflationParamsStorageV79 {
+    get(): Promise<v79.InflationParameters>
 }
 
 export class MultisigCallsStorage extends StorageBase {
@@ -5447,6 +6204,23 @@ export class ProxyProxiesStorage extends StorageBase {
         assert(this.isV61)
         return this as any
     }
+
+    /**
+     *  The set of account proxies. Maps the account which has delegated to the accounts
+     *  which are being delegated to, together with the amount held on deposit.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '598c68401dc03cd7da4c4a7831670356fb2f02a24e13fdfada8f518d5585731b'
+    }
+
+    /**
+     *  The set of account proxies. Maps the account which has delegated to the accounts
+     *  which are being delegated to, together with the amount held on deposit.
+     */
+    get asV79(): ProxyProxiesStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
 }
 
 /**
@@ -5465,6 +6239,24 @@ export interface ProxyProxiesStorageV61 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: [v61.ProxyDefinition[], bigint]][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: [v61.ProxyDefinition[], bigint]][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: [v61.ProxyDefinition[], bigint]][]>
+}
+
+/**
+ *  The set of account proxies. Maps the account which has delegated to the accounts
+ *  which are being delegated to, together with the amount held on deposit.
+ */
+export interface ProxyProxiesStorageV79 {
+    get(key: Uint8Array): Promise<[v79.ProxyDefinition[], bigint]>
+    getAll(): Promise<[v79.ProxyDefinition[], bigint][]>
+    getMany(keys: Uint8Array[]): Promise<[v79.ProxyDefinition[], bigint][]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: [v79.ProxyDefinition[], bigint]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: [v79.ProxyDefinition[], bigint]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: [v79.ProxyDefinition[], bigint]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: [v79.ProxyDefinition[], bigint]][]>
 }
 
 export class SessionCurrentIndexStorage extends StorageBase {
@@ -5838,6 +6630,38 @@ export class StateTrieMigrationSignedMigrationMaxLimitsStorage extends StorageBa
  */
 export interface StateTrieMigrationSignedMigrationMaxLimitsStorageV61 {
     get(): Promise<(v61.MigrationLimits | undefined)>
+}
+
+export class StaticPriceProviderActivePriceStorage extends StorageBase {
+    protected getPrefix() {
+        return 'StaticPriceProvider'
+    }
+
+    protected getName() {
+        return 'ActivePrice'
+    }
+
+    /**
+     *  Current active native currency price.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '95ff4f914f08e149ddbe1ae2dcb1743bbf9aaae69d04c486e1a398cacfcca06a'
+    }
+
+    /**
+     *  Current active native currency price.
+     */
+    get asV79(): StaticPriceProviderActivePriceStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
+}
+
+/**
+ *  Current active native currency price.
+ */
+export interface StaticPriceProviderActivePriceStorageV79 {
+    get(): Promise<bigint>
 }
 
 export class SudoKeyStorage extends StorageBase {
@@ -6854,6 +7678,33 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV77)
         return this as any
     }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV79(): boolean {
+        return this.getTypeHash() === '9e8e4bcfe380b6641487b39c9ebc3c0481fcbf6c09987e3fca660780daa21ac0'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV79(): SystemEventsStorageV79 {
+        assert(this.isV79)
+        return this as any
+    }
 }
 
 /**
@@ -7129,6 +7980,19 @@ export interface SystemEventsStorageV74 {
  */
 export interface SystemEventsStorageV77 {
     get(): Promise<v77.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV79 {
+    get(): Promise<v79.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {

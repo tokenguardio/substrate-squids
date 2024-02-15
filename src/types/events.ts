@@ -19,6 +19,7 @@ import * as v64 from './v64'
 import * as v66 from './v66'
 import * as v70 from './v70'
 import * as v74 from './v74'
+import * as v79 from './v79'
 
 export class AssetsAccountsDestroyedEvent {
     private readonly _chain: Chain
@@ -2216,6 +2217,615 @@ export class CumulusXcmUnsupportedVersionEvent {
     }
 }
 
+export class DappStakingBonusRewardEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.BonusReward')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Bonus reward has been paid out to a loyal staker.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.BonusReward') === 'e917f922471878d5f6e45f87a2cb2c37f8f01b1a34386333366e9d6f06094ff3'
+    }
+
+    /**
+     * Bonus reward has been paid out to a loyal staker.
+     */
+    get asV79(): {account: Uint8Array, smartContract: v79.SmartContract, period: number, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingClaimedUnlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.ClaimedUnlocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has claimed unlocked amount, removing the lock from it.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.ClaimedUnlocked') === '504f155afb2789c50df19d1f747fb2dc0e99bf8b7623c30bdb5cf82029fec760'
+    }
+
+    /**
+     * Account has claimed unlocked amount, removing the lock from it.
+     */
+    get asV79(): {account: Uint8Array, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingDAppOwnerChangedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.DAppOwnerChanged')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * dApp owner has been changed.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.DAppOwnerChanged') === 'fd002bfe425604c698dc004568d2d239ae92b7d106501da6a5942b0ffa664563'
+    }
+
+    /**
+     * dApp owner has been changed.
+     */
+    get asV79(): {smartContract: v79.SmartContract, newOwner: Uint8Array} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingDAppRegisteredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.DAppRegistered')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A smart contract has been registered for dApp staking
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.DAppRegistered') === 'c058e64676a8649e196e63b69f6261127d9144a954d17a040256e5306055502c'
+    }
+
+    /**
+     * A smart contract has been registered for dApp staking
+     */
+    get asV79(): {owner: Uint8Array, smartContract: v79.SmartContract, dappId: number} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingDAppRewardEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.DAppReward')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * dApp reward has been paid out to a beneficiary.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.DAppReward') === 'a5b4e1cd91b4f56b728dec38705dd6ed68365e6f4f721b0f301e47a82774356a'
+    }
+
+    /**
+     * dApp reward has been paid out to a beneficiary.
+     */
+    get asV79(): {beneficiary: Uint8Array, smartContract: v79.SmartContract, tierId: number, era: number, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingDAppRewardDestinationUpdatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.DAppRewardDestinationUpdated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * dApp reward destination has been updated.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.DAppRewardDestinationUpdated') === 'd3df932aea489a0dea7d43eb966f3e4bf80d0c641b4e3d4bdae9cd31b4c4c7cf'
+    }
+
+    /**
+     * dApp reward destination has been updated.
+     */
+    get asV79(): {smartContract: v79.SmartContract, beneficiary: (Uint8Array | undefined)} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingDAppUnregisteredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.DAppUnregistered')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * dApp has been unregistered
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.DAppUnregistered') === '40a911ceb3a6829f20faee608a1399c9f867652c081f9e427500b03e16ec5b3f'
+    }
+
+    /**
+     * dApp has been unregistered
+     */
+    get asV79(): {smartContract: v79.SmartContract, era: number} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingExpiredEntriesRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.ExpiredEntriesRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some expired stake entries have been removed from storage.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.ExpiredEntriesRemoved') === 'feaec7ce4289e40dfcb23daa62835e54e6d20f5cc680731d5c89fd35134442f2'
+    }
+
+    /**
+     * Some expired stake entries have been removed from storage.
+     */
+    get asV79(): {account: Uint8Array, count: number} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingForceEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.Force')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Privileged origin has forced a new era and possibly a subperiod to start from next block.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.Force') === 'b4bb985f829be852011cad15454748bd9bfcbf79d4c06711c7dce894c16bfc3f'
+    }
+
+    /**
+     * Privileged origin has forced a new era and possibly a subperiod to start from next block.
+     */
+    get asV79(): {forcingType: v79.ForcingType} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingLockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.Locked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has locked some amount into dApp staking.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.Locked') === '504f155afb2789c50df19d1f747fb2dc0e99bf8b7623c30bdb5cf82029fec760'
+    }
+
+    /**
+     * Account has locked some amount into dApp staking.
+     */
+    get asV79(): {account: Uint8Array, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingMaintenanceModeEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.MaintenanceMode')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Maintenance mode has been either enabled or disabled.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.MaintenanceMode') === '1a4f33b2dfaeb1147a73dad03c7960562e86062414cb8d5283edde6d1400631d'
+    }
+
+    /**
+     * Maintenance mode has been either enabled or disabled.
+     */
+    get asV79(): {enabled: boolean} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingNewEraEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.NewEra')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * New era has started.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.NewEra') === '39115a13c53f2b1968fdc266219c33cc8b971dddad3e2b3c0f3848136e2368b7'
+    }
+
+    /**
+     * New era has started.
+     */
+    get asV79(): {era: number} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingNewSubperiodEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.NewSubperiod')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * New subperiod has started.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.NewSubperiod') === '47cb017f0bcfe63131935bc762422fcf40b7fdd4da31d953d938730a4b11444e'
+    }
+
+    /**
+     * New subperiod has started.
+     */
+    get asV79(): {subperiod: v79.Subperiod, number: number} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingRelockEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.Relock')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has relocked all of the unlocking chunks.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.Relock') === '504f155afb2789c50df19d1f747fb2dc0e99bf8b7623c30bdb5cf82029fec760'
+    }
+
+    /**
+     * Account has relocked all of the unlocking chunks.
+     */
+    get asV79(): {account: Uint8Array, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingRewardEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.Reward')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has claimed some stake rewards.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.Reward') === '6102d1d9d0a122180f60cbf4f27c6cacb5163b7aff6f0fb169fd015161940538'
+    }
+
+    /**
+     * Account has claimed some stake rewards.
+     */
+    get asV79(): {account: Uint8Array, era: number, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingStakeEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.Stake')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has staked some amount on a smart contract.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.Stake') === '7471ff47b274ea1a1a175719f57b6c3071f6673f3ea8ad86ac62454b58f5a797'
+    }
+
+    /**
+     * Account has staked some amount on a smart contract.
+     */
+    get asV79(): {account: Uint8Array, smartContract: v79.SmartContract, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingUnlockingEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.Unlocking')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has started the unlocking process for some amount.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.Unlocking') === '504f155afb2789c50df19d1f747fb2dc0e99bf8b7623c30bdb5cf82029fec760'
+    }
+
+    /**
+     * Account has started the unlocking process for some amount.
+     */
+    get asV79(): {account: Uint8Array, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingUnstakeEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.Unstake')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has unstaked some amount from a smart contract.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.Unstake') === '7471ff47b274ea1a1a175719f57b6c3071f6673f3ea8ad86ac62454b58f5a797'
+    }
+
+    /**
+     * Account has unstaked some amount from a smart contract.
+     */
+    get asV79(): {account: Uint8Array, smartContract: v79.SmartContract, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingUnstakeFromUnregisteredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStaking.UnstakeFromUnregistered')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Account has unstaked funds from an unregistered smart contract
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStaking.UnstakeFromUnregistered') === '7471ff47b274ea1a1a175719f57b6c3071f6673f3ea8ad86ac62454b58f5a797'
+    }
+
+    /**
+     * Account has unstaked funds from an unregistered smart contract
+     */
+    get asV79(): {account: Uint8Array, smartContract: v79.SmartContract, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingMigrationEntriesDeletedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStakingMigration.EntriesDeleted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Number of entries deleted from v2
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStakingMigration.EntriesDeleted') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+    }
+
+    /**
+     * Number of entries deleted from v2
+     */
+    get asV79(): number {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DappStakingMigrationEntriesMigratedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'DappStakingMigration.EntriesMigrated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Number of entries migrated from v2 over to v3
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('DappStakingMigration.EntriesMigrated') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+    }
+
+    /**
+     * Number of entries migrated from v2 over to v3
+     */
+    get asV79(): number {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class DappsStakingBondAndStakeEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -4012,6 +4622,122 @@ export class IdentitySubIdentityRevokedEvent {
      */
     get asV3(): {sub: Uint8Array, main: Uint8Array, deposit: bigint} {
         assert(this.isV3)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class InflationForcedInflationRecalculationEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Inflation.ForcedInflationRecalculation')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Inflation recalculation has been forced.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('Inflation.ForcedInflationRecalculation') === '95fef1755538b99f0d42f82b66d5f06a72efa702266fb44dcd8023332bc17d75'
+    }
+
+    /**
+     * Inflation recalculation has been forced.
+     */
+    get asV79(): {config: v79.InflationConfiguration} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class InflationInflationConfigurationForceChangedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Inflation.InflationConfigurationForceChanged')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Inflation configuration has been force changed. This will have an immediate effect from this block.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('Inflation.InflationConfigurationForceChanged') === '95fef1755538b99f0d42f82b66d5f06a72efa702266fb44dcd8023332bc17d75'
+    }
+
+    /**
+     * Inflation configuration has been force changed. This will have an immediate effect from this block.
+     */
+    get asV79(): {config: v79.InflationConfiguration} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class InflationInflationParametersForceChangedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Inflation.InflationParametersForceChanged')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Inflation parameters have been force changed. This will have effect on the next inflation recalculation.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('Inflation.InflationParametersForceChanged') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Inflation parameters have been force changed. This will have effect on the next inflation recalculation.
+     */
+    get asV79(): null {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class InflationNewInflationConfigurationEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Inflation.NewInflationConfiguration')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * New inflation configuration has been set.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('Inflation.NewInflationConfiguration') === '95fef1755538b99f0d42f82b66d5f06a72efa702266fb44dcd8023332bc17d75'
+    }
+
+    /**
+     * New inflation configuration has been set.
+     */
+    get asV79(): {config: v79.InflationConfiguration} {
+        assert(this.isV79)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5946,6 +6672,21 @@ export class ProxyProxyAddedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A proxy was added.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('Proxy.ProxyAdded') === '1bd4336dd457cea04f97fa79f773ac5f5fc031ee10f1f1e4ac487bcfff4ff4f2'
+    }
+
+    /**
+     * A proxy was added.
+     */
+    get asV79(): {delegator: Uint8Array, delegatee: Uint8Array, proxyType: v79.ProxyType, delay: number} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class ProxyProxyExecutedEvent {
@@ -6019,6 +6760,21 @@ export class ProxyProxyRemovedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A proxy was removed.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('Proxy.ProxyRemoved') === '1bd4336dd457cea04f97fa79f773ac5f5fc031ee10f1f1e4ac487bcfff4ff4f2'
+    }
+
+    /**
+     * A proxy was removed.
+     */
+    get asV79(): {delegator: Uint8Array, delegatee: Uint8Array, proxyType: v79.ProxyType, delay: number} {
+        assert(this.isV79)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class ProxyPureCreatedEvent {
@@ -6048,6 +6804,23 @@ export class ProxyPureCreatedEvent {
      */
     get asV61(): {pure: Uint8Array, who: Uint8Array, proxyType: v61.ProxyType, disambiguationIndex: number} {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A pure account has been created by new proxy with given
+     * disambiguation index and proxy type.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('Proxy.PureCreated') === '48bfc940da125aa29dd44970c922fa2d051d0ece2e69881193277b67b5923ce1'
+    }
+
+    /**
+     * A pure account has been created by new proxy with given
+     * disambiguation index and proxy type.
+     */
+    get asV79(): {pure: Uint8Array, who: Uint8Array, proxyType: v79.ProxyType, disambiguationIndex: number} {
+        assert(this.isV79)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6214,6 +6987,35 @@ export class StateTrieMigrationSlashedEvent {
      */
     get asV61(): {who: Uint8Array, amount: bigint} {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class StaticPriceProviderPriceSetEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'StaticPriceProvider.PriceSet')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * New static native currency price has been set.
+     */
+    get isV79(): boolean {
+        return this._chain.getEventHash('StaticPriceProvider.PriceSet') === '301ba8b7305f6fbc386aa2d1a6e3d36df9b7e914e6804384bb965c1ffa2519fb'
+    }
+
+    /**
+     * New static native currency price has been set.
+     */
+    get asV79(): {price: bigint} {
+        assert(this.isV79)
         return this._chain.decodeEvent(this.event)
     }
 }

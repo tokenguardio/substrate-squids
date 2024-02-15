@@ -182,6 +182,7 @@ const eventMappingGenerator = new MappingGenerator(
     "DappsStaking.",
     "EthCall.",
     "BaseFee.",
+    "DappStaking.",
   ],
   TransactionType.Event
 );
@@ -197,6 +198,7 @@ const callMappingGenerator = new MappingGenerator(
     "DappsStaking.",
     "EthCall.",
     "BaseFee.",
+    "DappStaking.",
   ],
   TransactionType.Call
 );

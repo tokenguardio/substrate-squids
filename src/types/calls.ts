@@ -24,6 +24,7 @@ import * as v70 from './v70'
 import * as v72 from './v72'
 import * as v74 from './v74'
 import * as v77 from './v77'
+import * as v79 from './v79'
 
 export class AssetsApproveTransferCall {
     private readonly _chain: Chain
@@ -3083,6 +3084,704 @@ export class ContractsUploadCodeCall {
     }
 }
 
+export class DappStakingClaimBonusRewardCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.claim_bonus_reward')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to claim bonus reward for a smart contract, if eligible.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.claim_bonus_reward') === 'eb6812a49628bb0ea32f555b1ab0a3f9dea2f290b0ade5a0c88842fce92ebcd2'
+    }
+
+    /**
+     * Used to claim bonus reward for a smart contract, if eligible.
+     */
+    get asV79(): {smartContract: v79.SmartContract} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingClaimDappRewardCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.claim_dapp_reward')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to claim dApp reward for the specified era.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.claim_dapp_reward') === '8984ea692222cd959197c8f8dda6d3bf378441be84c0acbdbd9e063221af56d8'
+    }
+
+    /**
+     * Used to claim dApp reward for the specified era.
+     */
+    get asV79(): {smartContract: v79.SmartContract, era: number} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingClaimStakerRewardsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.claim_staker_rewards')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Claims some staker rewards, if user has any.
+     * In the case of a successful call, at least one era will be claimed, with the possibility of multiple claims happening.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.claim_staker_rewards') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Claims some staker rewards, if user has any.
+     * In the case of a successful call, at least one era will be claimed, with the possibility of multiple claims happening.
+     */
+    get asV79(): null {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingClaimUnlockedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.claim_unlocked')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Claims all of fully unlocked chunks, removing the lock from them.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.claim_unlocked') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Claims all of fully unlocked chunks, removing the lock from them.
+     */
+    get asV79(): null {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingCleanupExpiredEntriesCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.cleanup_expired_entries')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Cleanup expired stake entries for the contract.
+     * 
+     * Entry is considered to be expired if:
+     * 1. It's from a past period & the account wasn't a loyal staker, meaning there's no claimable bonus reward.
+     * 2. It's from a period older than the oldest claimable period, regardless whether the account was loyal or not.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.cleanup_expired_entries') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Cleanup expired stake entries for the contract.
+     * 
+     * Entry is considered to be expired if:
+     * 1. It's from a past period & the account wasn't a loyal staker, meaning there's no claimable bonus reward.
+     * 2. It's from a period older than the oldest claimable period, regardless whether the account was loyal or not.
+     */
+    get asV79(): null {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingForceCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.force')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to force a change of era or subperiod.
+     * The effect isn't immediate but will happen on the next block.
+     * 
+     * Used for testing purposes, when we want to force an era change, or a subperiod change.
+     * Not intended to be used in production, except in case of unforeseen circumstances.
+     * 
+     * Can only be called by manager origin.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.force') === 'b4bb985f829be852011cad15454748bd9bfcbf79d4c06711c7dce894c16bfc3f'
+    }
+
+    /**
+     * Used to force a change of era or subperiod.
+     * The effect isn't immediate but will happen on the next block.
+     * 
+     * Used for testing purposes, when we want to force an era change, or a subperiod change.
+     * Not intended to be used in production, except in case of unforeseen circumstances.
+     * 
+     * Can only be called by manager origin.
+     */
+    get asV79(): {forcingType: v79.ForcingType} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingLockCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.lock')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Locks additional funds into dApp staking.
+     * 
+     * In case caller account doesn't have sufficient balance to cover the specified amount, everything is locked.
+     * After adjustment, lock amount must be greater than zero and in total must be equal or greater than the minimum locked amount.
+     * 
+     * Locked amount can immediately be used for staking.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.lock') === 'cb35b858b85c01f9ef5d7452beae3c3ca00714b5a37136bf969c6aa966f6b740'
+    }
+
+    /**
+     * Locks additional funds into dApp staking.
+     * 
+     * In case caller account doesn't have sufficient balance to cover the specified amount, everything is locked.
+     * After adjustment, lock amount must be greater than zero and in total must be equal or greater than the minimum locked amount.
+     * 
+     * Locked amount can immediately be used for staking.
+     */
+    get asV79(): {amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingMaintenanceModeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.maintenance_mode')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to enable or disable maintenance mode.
+     * Can only be called by manager origin.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.maintenance_mode') === '1a4f33b2dfaeb1147a73dad03c7960562e86062414cb8d5283edde6d1400631d'
+    }
+
+    /**
+     * Used to enable or disable maintenance mode.
+     * Can only be called by manager origin.
+     */
+    get asV79(): {enabled: boolean} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingRegisterCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.register')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to register a new contract for dApp staking.
+     * 
+     * If successful, smart contract will be assigned a simple, unique numerical identifier.
+     * Owner is set to be initial beneficiary & manager of the dApp.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.register') === '7e4b2a0d65f10e1f13d0bf4e1ee0ac766c3e1e2225d4178acade00634485b427'
+    }
+
+    /**
+     * Used to register a new contract for dApp staking.
+     * 
+     * If successful, smart contract will be assigned a simple, unique numerical identifier.
+     * Owner is set to be initial beneficiary & manager of the dApp.
+     */
+    get asV79(): {owner: Uint8Array, smartContract: v79.SmartContract} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingRelockUnlockingCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.relock_unlocking')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.relock_unlocking') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    get asV79(): null {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingSetDappOwnerCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.set_dapp_owner')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to change dApp owner.
+     * 
+     * Can be called by dApp owner or dApp staking manager origin.
+     * This is useful in two cases:
+     * 1. when the dApp owner account is compromised, manager can change the owner to a new account
+     * 2. if project wants to transfer ownership to a new account (DAO, multisig, etc.).
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.set_dapp_owner') === 'fd002bfe425604c698dc004568d2d239ae92b7d106501da6a5942b0ffa664563'
+    }
+
+    /**
+     * Used to change dApp owner.
+     * 
+     * Can be called by dApp owner or dApp staking manager origin.
+     * This is useful in two cases:
+     * 1. when the dApp owner account is compromised, manager can change the owner to a new account
+     * 2. if project wants to transfer ownership to a new account (DAO, multisig, etc.).
+     */
+    get asV79(): {smartContract: v79.SmartContract, newOwner: Uint8Array} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingSetDappRewardBeneficiaryCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.set_dapp_reward_beneficiary')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to modify the reward beneficiary account for a dApp.
+     * 
+     * Caller has to be dApp owner.
+     * If set to `None`, rewards will be deposited to the dApp owner.
+     * After this call, all existing & future rewards will be paid out to the beneficiary.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.set_dapp_reward_beneficiary') === 'd3df932aea489a0dea7d43eb966f3e4bf80d0c641b4e3d4bdae9cd31b4c4c7cf'
+    }
+
+    /**
+     * Used to modify the reward beneficiary account for a dApp.
+     * 
+     * Caller has to be dApp owner.
+     * If set to `None`, rewards will be deposited to the dApp owner.
+     * After this call, all existing & future rewards will be paid out to the beneficiary.
+     */
+    get asV79(): {smartContract: v79.SmartContract, beneficiary: (Uint8Array | undefined)} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingStakeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.stake')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Stake the specified amount on a smart contract.
+     * The precise `amount` specified **must** be available for staking.
+     * The total amount staked on a dApp must be greater than the minimum required value.
+     * 
+     * Depending on the period type, appropriate stake amount will be updated. During `Voting` subperiod, `voting` stake amount is updated,
+     * and same for `Build&Earn` subperiod.
+     * 
+     * Staked amount is only eligible for rewards from the next era onwards.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.stake') === '9ddd052021e1174de5dabdd90b95bd10c17a2a3b379f8314f3eb15648097c775'
+    }
+
+    /**
+     * Stake the specified amount on a smart contract.
+     * The precise `amount` specified **must** be available for staking.
+     * The total amount staked on a dApp must be greater than the minimum required value.
+     * 
+     * Depending on the period type, appropriate stake amount will be updated. During `Voting` subperiod, `voting` stake amount is updated,
+     * and same for `Build&Earn` subperiod.
+     * 
+     * Staked amount is only eligible for rewards from the next era onwards.
+     */
+    get asV79(): {smartContract: v79.SmartContract, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingUnbondAndUnstakeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.unbond_and_unstake')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Wrapper around _legacy-like_ `unbond_and_unstake`.
+     * 
+     * Used to support legacy Ledger users so they can start the unlocking process for their funds.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.unbond_and_unstake') === '6672ecd9402312c35802b77f170edc72a7da0d94f1eba35efb11822174eb6435'
+    }
+
+    /**
+     * Wrapper around _legacy-like_ `unbond_and_unstake`.
+     * 
+     * Used to support legacy Ledger users so they can start the unlocking process for their funds.
+     */
+    get asV79(): {contractId: v79.SmartContract, value: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingUnlockCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.unlock')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Attempts to start the unlocking process for the specified amount.
+     * 
+     * Only the amount that isn't actively used for staking can be unlocked.
+     * If the amount is greater than the available amount for unlocking, everything is unlocked.
+     * If the remaining locked amount would take the account below the minimum locked amount, everything is unlocked.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.unlock') === 'cb35b858b85c01f9ef5d7452beae3c3ca00714b5a37136bf969c6aa966f6b740'
+    }
+
+    /**
+     * Attempts to start the unlocking process for the specified amount.
+     * 
+     * Only the amount that isn't actively used for staking can be unlocked.
+     * If the amount is greater than the available amount for unlocking, everything is unlocked.
+     * If the remaining locked amount would take the account below the minimum locked amount, everything is unlocked.
+     */
+    get asV79(): {amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingUnregisterCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.unregister')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Unregister dApp from dApp staking protocol, making it ineligible for future rewards.
+     * This doesn't remove the dApp completely from the system just yet, but it can no longer be used for staking.
+     * 
+     * Can be called by dApp staking manager origin.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.unregister') === 'eb6812a49628bb0ea32f555b1ab0a3f9dea2f290b0ade5a0c88842fce92ebcd2'
+    }
+
+    /**
+     * Unregister dApp from dApp staking protocol, making it ineligible for future rewards.
+     * This doesn't remove the dApp completely from the system just yet, but it can no longer be used for staking.
+     * 
+     * Can be called by dApp staking manager origin.
+     */
+    get asV79(): {smartContract: v79.SmartContract} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingUnstakeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.unstake')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Unstake the specified amount from a smart contract.
+     * The `amount` specified **must** not exceed what's staked, otherwise the call will fail.
+     * 
+     * If unstaking the specified `amount` would take staker below the minimum stake threshold, everything is unstaked.
+     * 
+     * Depending on the period type, appropriate stake amount will be updated.
+     * In case amount is unstaked during `Voting` subperiod, the `voting` amount is reduced.
+     * In case amount is unstaked during `Build&Earn` subperiod, first the `build_and_earn` is reduced,
+     * and any spillover is subtracted from the `voting` amount.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.unstake') === '9ddd052021e1174de5dabdd90b95bd10c17a2a3b379f8314f3eb15648097c775'
+    }
+
+    /**
+     * Unstake the specified amount from a smart contract.
+     * The `amount` specified **must** not exceed what's staked, otherwise the call will fail.
+     * 
+     * If unstaking the specified `amount` would take staker below the minimum stake threshold, everything is unstaked.
+     * 
+     * Depending on the period type, appropriate stake amount will be updated.
+     * In case amount is unstaked during `Voting` subperiod, the `voting` amount is reduced.
+     * In case amount is unstaked during `Build&Earn` subperiod, first the `build_and_earn` is reduced,
+     * and any spillover is subtracted from the `voting` amount.
+     */
+    get asV79(): {smartContract: v79.SmartContract, amount: bigint} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingUnstakeFromUnregisteredCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.unstake_from_unregistered')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to unstake funds from a contract that was unregistered after an account staked on it.
+     * This is required if staker wants to re-stake these funds on another active contract during the ongoing period.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.unstake_from_unregistered') === 'eb6812a49628bb0ea32f555b1ab0a3f9dea2f290b0ade5a0c88842fce92ebcd2'
+    }
+
+    /**
+     * Used to unstake funds from a contract that was unregistered after an account staked on it.
+     * This is required if staker wants to re-stake these funds on another active contract during the ongoing period.
+     */
+    get asV79(): {smartContract: v79.SmartContract} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingWithdrawUnbondedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStaking.withdraw_unbonded')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Wrapper around _legacy-like_ `withdraw_unbonded`.
+     * 
+     * Used to support legacy Ledger users so they can reclaim unlocked chunks back into
+     * their _transferable_ free balance.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStaking.withdraw_unbonded') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * Wrapper around _legacy-like_ `withdraw_unbonded`.
+     * 
+     * Used to support legacy Ledger users so they can reclaim unlocked chunks back into
+     * their _transferable_ free balance.
+     */
+    get asV79(): null {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DappStakingMigrationMigrateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'DappStakingMigration.migrate')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Attempt to execute migration steps, consuming up to the specified amount of weight.
+     * If no weight is specified, max allowed weight is used.
+     * 
+     * Regardless of the specified weight limit, it will be clamped between the minimum & maximum allowed values.
+     * This means that even if user specifies `Weight::zero()` as the limit,
+     * the call will be charged & executed using the minimum allowed weight.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('DappStakingMigration.migrate') === '665f82c825a1e8499ef71d503ff860d9e4f8a4b6a79c017c1233c483892d2cfa'
+    }
+
+    /**
+     * Attempt to execute migration steps, consuming up to the specified amount of weight.
+     * If no weight is specified, max allowed weight is used.
+     * 
+     * Regardless of the specified weight limit, it will be clamped between the minimum & maximum allowed values.
+     * This means that even if user specifies `Weight::zero()` as the limit,
+     * the call will be charged & executed using the minimum allowed weight.
+     */
+    get asV79(): {weightLimit: (v79.Weight | undefined)} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class DappsStakingBondAndStakeCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -5738,6 +6437,84 @@ export class IdentitySetSubsCall {
     }
 }
 
+export class InflationForceInflationRecalculationCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Inflation.force_inflation_recalculation')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to force inflation recalculation.
+     * This is done in the same way as it would be done in an appropriate block, but this call forces it.
+     * 
+     * Must be called by `root` origin.
+     * 
+     * Purpose of the call is testing & handling unforeseen circumstances.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Inflation.force_inflation_recalculation') === '6b6505085fbd8b0ac4b131fe124fd353b707b7b73109cd2947134ff9875f8038'
+    }
+
+    /**
+     * Used to force inflation recalculation.
+     * This is done in the same way as it would be done in an appropriate block, but this call forces it.
+     * 
+     * Must be called by `root` origin.
+     * 
+     * Purpose of the call is testing & handling unforeseen circumstances.
+     */
+    get asV79(): {nextEra: number} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class InflationForceSetInflationParamsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Inflation.force_set_inflation_params')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Used to force-set the inflation parameters.
+     * The parameters must be valid, all parts summing up to one whole (100%), otherwise the call will fail.
+     * 
+     * Must be called by `root` origin.
+     * 
+     * Purpose of the call is testing & handling unforeseen circumstances.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Inflation.force_set_inflation_params') === 'cd63d8886304564ce8ea7557a863022ea8a8b23e6fb08ff78f5f95316ce7db4e'
+    }
+
+    /**
+     * Used to force-set the inflation parameters.
+     * The parameters must be valid, all parts summing up to one whole (100%), otherwise the call will fail.
+     * 
+     * Must be called by `root` origin.
+     * 
+     * Purpose of the call is testing & handling unforeseen circumstances.
+     */
+    get asV79(): {params: v79.InflationParameters} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class MultisigApproveAsMultiCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -7256,6 +8033,97 @@ export class MultisigAsMultiCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '2473c88e766e32b02527f8c6ffd02a11b86a8ac50f59a60ae77dee3732a62aa8'
+    }
+
+    /**
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
+     * 
+     * If there are enough, then dispatch the call.
+     * 
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
+     * 
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
+     * 
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
+     * 
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     */
+    get asV79(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v79.Timepoint | undefined), call: v79.Call, maxWeight: v79.Weight} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -8284,6 +9152,43 @@ export class MultisigAsMultiThreshold1Call {
      */
     get asV77(): {otherSignatories: Uint8Array[], call: v77.Call} {
         assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '8ecc2945bc5956ff41887087292a3b132ba9632001559674a1a6ee31604efb14'
+    }
+
+    /**
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
+     * 
+     * Result is equivalent to the dispatched result.
+     * 
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
+     */
+    get asV79(): {otherSignatories: Uint8Array[], call: v79.Call} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -10061,6 +10966,37 @@ export class ProxyAddProxyCall {
         assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Register a proxy account for the sender that is able to make calls on its behalf.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to make a proxy.
+     * - `proxy_type`: The permissions allowed for this proxy account.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Proxy.add_proxy') === 'fd59e8fa9e2eec71dedd0e70bf50eb98006eba8d83ecaf55fc8308fb47427e8a'
+    }
+
+    /**
+     * Register a proxy account for the sender that is able to make calls on its behalf.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to make a proxy.
+     * - `proxy_type`: The permissions allowed for this proxy account.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     */
+    get asV79(): {delegate: v79.MultiAddress, proxyType: v79.ProxyType, delay: number} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyAnnounceCall {
@@ -10181,6 +11117,55 @@ export class ProxyCreatePureCall {
         assert(this.isV61)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
+     * 
+     * Requires a `Signed` origin.
+     * 
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     * 
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
+     * 
+     * Fails if there are insufficient funds to pay for deposit.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Proxy.create_pure') === 'b44e248282c92bdd8d48605bca39e9b3557fa4fcfffc6c6b495532cc4e505fb3'
+    }
+
+    /**
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
+     * 
+     * Requires a `Signed` origin.
+     * 
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     * 
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
+     * 
+     * Fails if there are insufficient funds to pay for deposit.
+     */
+    get asV79(): {proxyType: v79.ProxyType, delay: number, index: number} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyKillPureCall {
@@ -10238,6 +11223,51 @@ export class ProxyKillPureCall {
      */
     get asV61(): {spawner: v61.MultiAddress, proxyType: v61.ProxyType, index: number, height: number, extIndex: number} {
         assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Removes a previously spawned pure proxy.
+     * 
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
+     * 
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
+     * 
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * 
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Proxy.kill_pure') === '0cf5d847a17c35565f5a4e96748ee73be8979be0096d93c21600a45b9c7e80b7'
+    }
+
+    /**
+     * Removes a previously spawned pure proxy.
+     * 
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
+     * 
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
+     * 
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * 
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
+     */
+    get asV79(): {spawner: v79.MultiAddress, proxyType: v79.ProxyType, index: number, height: number, extIndex: number} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -10500,6 +11530,37 @@ export class ProxyProxyCall {
      */
     get asV77(): {real: v77.MultiAddress, forceProxyType: (v77.ProxyType | undefined), call: v77.Call} {
         assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '378f8aa694c79793ee2a0a43596433581089620ec264bed464b62381d03be721'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV79(): {real: v79.MultiAddress, forceProxyType: (v79.ProxyType | undefined), call: v79.Call} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -10796,6 +11857,41 @@ export class ProxyProxyAnnouncedCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '553475eba918f489b9dac3b7c0da383fa944eb2ea1d6e0d16ca265aa9046856e'
+    }
+
+    /**
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
+     * 
+     * Removes any corresponding announcement(s).
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    get asV79(): {delegate: v79.MultiAddress, real: v79.MultiAddress, forceProxyType: (v79.ProxyType | undefined), call: v79.Call} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyRejectAnnouncementCall {
@@ -10968,6 +12064,33 @@ export class ProxyRemoveProxyCall {
      */
     get asV61(): {delegate: v61.MultiAddress, proxyType: v61.ProxyType, delay: number} {
         assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Unregister a proxy account for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to remove as a proxy.
+     * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Proxy.remove_proxy') === 'fd59e8fa9e2eec71dedd0e70bf50eb98006eba8d83ecaf55fc8308fb47427e8a'
+    }
+
+    /**
+     * Unregister a proxy account for the sender.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to remove as a proxy.
+     * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+     */
+    get asV79(): {delegate: v79.MultiAddress, proxyType: v79.ProxyType, delay: number} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -11324,6 +12447,39 @@ export class StateTrieMigrationSetSignedMaxLimitsCall {
      */
     get asV61(): {limits: v61.MigrationLimits} {
         assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class StaticPriceProviderForceSetPriceCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'StaticPriceProvider.force_set_price')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * Privileged action used to set the active native currency price.
+     * 
+     * This is a temporary solution before oracle is implemented & operational.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('StaticPriceProvider.force_set_price') === '301ba8b7305f6fbc386aa2d1a6e3d36df9b7e914e6804384bb965c1ffa2519fb'
+    }
+
+    /**
+     * Privileged action used to set the active native currency price.
+     * 
+     * This is a temporary solution before oracle is implemented & operational.
+     */
+    get asV79(): {price: bigint} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -12113,6 +13269,31 @@ export class SudoSudoCall {
      */
     get asV77(): {call: v77.Call} {
         assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '69df362198616be6a61f21ab8647c71e60bb1ac5700ba61838d3993f0c4dc548'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV79(): {call: v79.Call} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -12905,6 +14086,33 @@ export class SudoSudoAsCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '530a5bab88697f68130e34a293fcd0792707063d809b2d150aec56df2405b139'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+     * a given account.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV79(): {who: v79.MultiAddress, call: v79.Call} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -13677,6 +14885,35 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV77(): {call: v77.Call, weight: v77.Weight} {
         assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '3348ceacae08703870a5ceda5d4ca6d7f727a8c88cd7ee8ac2e97e150be5e416'
+    }
+
+    /**
+     * Authenticates the sudo key and dispatches a function call with `Root` origin.
+     * This function does not check the weight of the call, and instead allows the
+     * Sudo user to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV79(): {call: v79.Call, weight: v79.Weight} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -15116,6 +16353,45 @@ export class UtilityAsDerivativeCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'a0da843c3e6ab276cc77185f91d327b04b50cbfa32ff3455234db579799d7bc3'
+    }
+
+    /**
+     * Send a call through an indexed pseudonym of the sender.
+     * 
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
+     * 
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
+     * 
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     */
+    get asV79(): {index: number, call: v79.Call} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -16338,6 +17614,55 @@ export class UtilityBatchCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '0853e60a40bc1a65ed74d7eab1af2985bee1b2629a1616b6ef5729920b82a065'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     * 
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
+     */
+    get asV79(): {calls: v79.Call[]} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -17320,6 +18645,45 @@ export class UtilityBatchAllCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '0853e60a40bc1a65ed74d7eab1af2985bee1b2629a1616b6ef5729920b82a065'
+    }
+
+    /**
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV79(): {calls: v79.Call[]} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -18029,6 +19393,31 @@ export class UtilityDispatchAsCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === 'b85a7c43037befc222da25e57c2387e1e05096d64864ec8a0491b5a1d115c5ec'
+    }
+
+    /**
+     * Dispatches a function call with a provided origin.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     * 
+     * ## Complexity
+     * - O(1).
+     */
+    get asV79(): {asOrigin: v79.OriginCaller, call: v79.Call} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -18642,6 +20031,45 @@ export class UtilityForceBatchCall {
         assert(this.isV77)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '0853e60a40bc1a65ed74d7eab1af2985bee1b2629a1616b6ef5729920b82a065'
+    }
+
+    /**
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
+     * 
+     * May be called from any origin except `None`.
+     * 
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * 
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * 
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
+     */
+    get asV79(): {calls: v79.Call[]} {
+        assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -18904,6 +20332,31 @@ export class UtilityWithWeightCall {
      */
     get asV77(): {call: v77.Call, weight: v77.Weight} {
         assert(this.isV77)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get isV79(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '3348ceacae08703870a5ceda5d4ca6d7f727a8c88cd7ee8ac2e97e150be5e416'
+    }
+
+    /**
+     * Dispatch a function call with a specified weight.
+     * 
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
+     * 
+     * The dispatch origin for this call must be _Root_.
+     */
+    get asV79(): {call: v79.Call, weight: v79.Weight} {
+        assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
 }

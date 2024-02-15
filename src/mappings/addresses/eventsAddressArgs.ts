@@ -51,6 +51,23 @@ const DappsStaking: AddressArgs = {
   "DappsStaking.Withdrawn": ["account"],
 };
 
+const DappStaking: AddressArgs = {
+  "DappStaking.BonusReward": ["account"],
+  "DappStaking.ClaimedUnlocked": ["account"],
+  "DappStaking.DAppOwnerChanged": ["newOwner"],
+  "DappStaking.DAppRegistered": ["owner"],
+  "DappStaking.DAppReward": ["beneficiary"],
+  "DappStaking.DAppRewardDestinationUpdated": ["beneficiary"],
+  "DappStaking.ExpiredEntriesRemoved": ["account"],
+  "DappStaking.Locked": ["account"],
+  "DappStaking.Relock": ["account"],
+  "DappStaking.Reward": ["account"],
+  "DappStaking.Stake": ["account"],
+  "DappStaking.Unlocking": ["account"],
+  "DappStaking.Unstake": ["account"],
+  "DappStaking.UnstakeFromUnregistered": ["account"],
+};
+
 const EthCall: AddressArgs = {
   "EthCall.Executed": ["from"],
 };
@@ -61,4 +78,5 @@ export const eventsAddressArgs: AddressArgs = {
   ...System,
   ...DappsStaking,
   ...EthCall,
+  ...DappStaking,
 };
