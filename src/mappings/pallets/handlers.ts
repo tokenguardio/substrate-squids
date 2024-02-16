@@ -6,6 +6,7 @@ import { normalizeEVMEventsArgs } from "./events/evm";
 import { normalizeDappsStakingEventsArgs } from "./events/dapps-staking";
 import { normalizeBaseFeeEventsArgs } from "./events/base-fee";
 import { normalizeEthCallEventsArgs } from "./events/eth-call";
+import { normalizeDappStakingEventsArgs } from "./events/dapp-staking";
 
 import { normalizeContractsCallsArgs } from "./calls/contracts";
 import { normalizeEthereumCallsArgs } from "./calls/ethereum";
@@ -14,6 +15,7 @@ import { normalizeDappsStakingCallsArgs } from "./calls/dapps-staking";
 import { normalizeBalancesCallsArgs } from "./calls/balances";
 import { normalizeBaseFeeCallsArgs } from "./calls/base-fee";
 import { normalizeEthCallCallsArgs } from "./calls/eth-call";
+import { normalizeDappStakingCallsArgs } from "./calls/dapp-staking";
 
 export const eventNormalizationHandlers: { [key: string]: any } = {
   Balances: normalizeBalancesEventsArgs,
@@ -24,6 +26,7 @@ export const eventNormalizationHandlers: { [key: string]: any } = {
   DappsStaking: normalizeDappsStakingEventsArgs,
   BaseFee: normalizeBaseFeeEventsArgs,
   EthCall: normalizeEthCallEventsArgs,
+  DappStaking: normalizeDappStakingEventsArgs,
 };
 
 export const callNormalizationHandlers: { [key: string]: any } = {
@@ -34,4 +37,5 @@ export const callNormalizationHandlers: { [key: string]: any } = {
   DappsStaking: normalizeDappsStakingCallsArgs,
   BaseFee: normalizeBaseFeeCallsArgs,
   EthCall: normalizeEthCallCallsArgs,
+  DappStaking: normalizeDappStakingCallsArgs,
 };
