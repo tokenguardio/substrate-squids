@@ -35,15 +35,17 @@ export function createTransaction(
     hash: txn.hash,
     type:
       txn.type !== undefined ? convertToTransactionType(txn.type) : undefined,
-    from: txn.from,
-    to: txn.to ? txn.to : undefined,
+    from: ethers.getAddress(txn.from),
+    to: txn.to ? ethers.getAddress(txn.to) : undefined,
     fee:
       txn.gasUsed !== undefined && txn.effectiveGasPrice !== undefined
         ? calculateFee(txn.effectiveGasPrice, txn.gasUsed)
         : undefined,
     value: txn.value,
     input: txn.input,
-    deployedAddress: txn.contractAddress ? txn.contractAddress : undefined,
+    deployedAddress: txn.contractAddress
+      ? ethers.getAddress(txn.contractAddress)
+      : undefined,
     success: txn.status !== undefined ? Boolean(txn.status) : undefined,
     sighash: txn.sighash,
     transactionIndex: txn.transactionIndex,
@@ -82,13 +84,15 @@ export function createTraceCreate(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceCreate({
       ...commonFields,
-      from: trc.action.from,
+      from: ethers.getAddress(trc.action.from),
       value: trc.action.value,
       gas: trc.action.gas,
       init: trc.action.init,
       gasUsed: trc.result?.gasUsed,
       code: trc.result?.code,
-      address: trc.result?.address ? trc.result.address : undefined,
+      address: trc.result?.address
+        ? ethers.getAddress(trc.result.address)
+        : undefined,
     });
   } else {
     throw new Error(
@@ -106,8 +110,8 @@ export function createTraceCall(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceCall({
       ...commonFields,
-      from: trc.action.from,
-      to: trc.action.to,
+      from: ethers.getAddress(trc.action.from),
+      to: ethers.getAddress(trc.action.to),
       value: trc.action.value,
       gas: trc.action.gas,
       sighash: trc.action.sighash,
@@ -129,8 +133,8 @@ export function createTraceSuicide(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceSuicide({
       ...commonFields,
-      address: trc.action.address,
-      refundAddress: trc.action.refundAddress,
+      address: ethers.getAddress(trc.action.address),
+      refundAddress: ethers.getAddress(trc.action.refundAddress),
       balance: trc.action.balance,
     });
   } else {
@@ -149,7 +153,7 @@ export function createTraceReward(
     const commonFields = createCommonTraceFields(block, trc, traceTree);
     return new TraceReward({
       ...commonFields,
-      author: trc.action.author,
+      author: ethers.getAddress(trc.action.author),
       value: trc.action.value,
       rewardType: trc.action.type,
     });
@@ -170,8 +174,8 @@ export function createNewContract(block: _BlockHeader, trc: _Trace): Contract {
       );
     }
     return new Contract({
-      id: trc.result.address,
-      createdBy: trc.action.from,
+      id: ethers.getAddress(trc.result.address),
+      createdBy: ethers.getAddress(trc.action.from),
       createTransaction: trc.transaction
         ? createTransaction(block, trc.transaction)
         : undefined,
@@ -192,7 +196,7 @@ export function createDestroyedContract(
 ): Contract {
   if (trc.type === "suicide") {
     return new Contract({
-      id: trc.action.address,
+      id: ethers.getAddress(trc.action.address),
       destroyTransaction: trc.transaction
         ? createTransaction(block, trc.transaction)
         : undefined,
@@ -220,8 +224,8 @@ export function createFtTransfer(
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     eventIndex: log.logIndex,
-    from: from,
-    to: to,
+    from: ethers.getAddress(from),
+    to: ethers.getAddress(to),
     value: value,
     transferType: getTransferType(from, to),
     token: createFToken(log.address),
@@ -235,7 +239,7 @@ export function createFToken(
   decimals?: number
 ): FToken {
   return new FToken({
-    id: id,
+    id: ethers.getAddress(id),
     name: name ? getDecoratedCallResult(name) : null,
     symbol: symbol ? getDecoratedCallResult(symbol) : null,
     decimals: decimals ?? null,
