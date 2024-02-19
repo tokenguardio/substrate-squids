@@ -3,6 +3,8 @@ import {
   NominationPoolsCreatedEvent,
   NominationPoolsDestroyedEvent,
   NominationPoolsMemberRemovedEvent,
+  NominationPoolsMinBalanceDeficitAdjustedEvent,
+  NominationPoolsMinBalanceExcessAdjustedEvent,
   NominationPoolsPaidOutEvent,
   NominationPoolsPoolCommissionChangeRateUpdatedEvent,
   NominationPoolsPoolCommissionClaimedEvent,
@@ -51,6 +53,20 @@ export function normalizeNominationPoolsEventsArgs(
     case "NominationPools.MemberRemoved":
       e = new NominationPoolsMemberRemovedEvent(ctx, event);
       if (e.isV9280) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.MinBalanceDeficitAdjusted":
+      e = new NominationPoolsMinBalanceDeficitAdjustedEvent(ctx, event);
+      if (e.isV1001002) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "NominationPools.MinBalanceExcessAdjusted":
+      e = new NominationPoolsMinBalanceExcessAdjustedEvent(ctx, event);
+      if (e.isV1001002) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);

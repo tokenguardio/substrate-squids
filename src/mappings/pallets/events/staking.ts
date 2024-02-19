@@ -12,6 +12,8 @@ import {
   StakingSlashEvent,
   StakingSlashReportedEvent,
   StakingSlashedEvent,
+  StakingSnapshotTargetsSizeExceededEvent,
+  StakingSnapshotVotersSizeExceededEvent,
   StakingSolutionStoredEvent,
   StakingStakersElectedEvent,
   StakingStakingElectionEvent,
@@ -147,6 +149,8 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
         };
       } else if (e.isV9300) {
         return event.args;
+      } else if (e.isV1001002) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -177,6 +181,20 @@ export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
           amount,
         };
       } else if (e.isV9300) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Staking.SnapshotTargetsSizeExceeded":
+      e = new StakingSnapshotTargetsSizeExceededEvent(ctx, event);
+      if (e.isV1000001) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Staking.SnapshotVotersSizeExceeded":
+      e = new StakingSnapshotVotersSizeExceededEvent(ctx, event);
+      if (e.isV1000001) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);

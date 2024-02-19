@@ -39,6 +39,95 @@ import * as v9340 from './v9340'
 import * as v9370 from './v9370'
 import * as v9420 from './v9420'
 import * as v9430 from './v9430'
+import * as v1000001 from './v1000001'
+import * as v1001002 from './v1001002'
+
+export class AssetRateCreateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'AssetRate.create')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::create`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('AssetRate.create') === 'dc2879fe8fdc758670d5111e15ab0330e153355407866684bea46db819c91ad7'
+    }
+
+    /**
+     * See [`Pallet::create`].
+     */
+    get asV1001002(): {assetKind: v1001002.VersionedLocatableAsset, rate: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class AssetRateRemoveCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'AssetRate.remove')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::remove`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('AssetRate.remove') === '0d1baf25e245231c5d8fb219a5a51629ccb543120e492a30d16a2d3c6c729334'
+    }
+
+    /**
+     * See [`Pallet::remove`].
+     */
+    get asV1001002(): {assetKind: v1001002.VersionedLocatableAsset} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class AssetRateUpdateCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'AssetRate.update')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::update`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('AssetRate.update') === 'dc2879fe8fdc758670d5111e15ab0330e153355407866684bea46db819c91ad7'
+    }
+
+    /**
+     * See [`Pallet::update`].
+     */
+    get asV1001002(): {assetKind: v1001002.VersionedLocatableAsset, rate: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
 
 export class AttestationsMoreAttestationsCall {
     private readonly _chain: Chain
@@ -1458,6 +1547,93 @@ export class BalancesUpgradeAccountsCall {
      */
     get asV9420(): {who: Uint8Array[]} {
         assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BeefyReportEquivocationCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Beefy.report_equivocation')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::report_equivocation`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Beefy.report_equivocation') === 'c03bafe7cb39484ad7fa83270d39839d184a4213ac79fe3be1e3db28892ff96a'
+    }
+
+    /**
+     * See [`Pallet::report_equivocation`].
+     */
+    get asV1001002(): {equivocationProof: v1001002.Type_421, keyOwnerProof: v1001002.MembershipProof} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BeefyReportEquivocationUnsignedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Beefy.report_equivocation_unsigned')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::report_equivocation_unsigned`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Beefy.report_equivocation_unsigned') === 'c03bafe7cb39484ad7fa83270d39839d184a4213ac79fe3be1e3db28892ff96a'
+    }
+
+    /**
+     * See [`Pallet::report_equivocation_unsigned`].
+     */
+    get asV1001002(): {equivocationProof: v1001002.Type_421, keyOwnerProof: v1001002.MembershipProof} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class BeefySetNewGenesisCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Beefy.set_new_genesis')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_new_genesis`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Beefy.set_new_genesis') === 'd1c1f77972bdc5f0e9d730b185361cfaa16c391747da3e4d45ad970a7149cd48'
+    }
+
+    /**
+     * See [`Pallet::set_new_genesis`].
+     */
+    get asV1001002(): {delayInBlocks: number} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -3702,6 +3878,35 @@ export class ConfigurationSetMaxValidatorsPerCoreCall {
     }
 }
 
+export class ConfigurationSetMinimumBackingVotesCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_minimum_backing_votes')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_minimum_backing_votes`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_minimum_backing_votes') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_minimum_backing_votes`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class ConfigurationSetMinimumValidationUpgradeDelayCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -3822,6 +4027,238 @@ export class ConfigurationSetNoShowSlotsCall {
      */
     get asV9110(): {new: number} {
         assert(this.isV9110)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetOnDemandBaseFeeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_on_demand_base_fee')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_base_fee`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_on_demand_base_fee') === '86d3c70a5efeaca7d1a72b006ed6757b84fb71871eb54ca1d98d6a8fdeb79e3a'
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_base_fee`].
+     */
+    get asV1000001(): {new: bigint} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetOnDemandCoresCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_on_demand_cores')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_cores`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_on_demand_cores') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_cores`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetOnDemandFeeVariabilityCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_on_demand_fee_variability')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_fee_variability`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_on_demand_fee_variability') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_fee_variability`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetOnDemandQueueMaxSizeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_on_demand_queue_max_size')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_queue_max_size`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_on_demand_queue_max_size') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_queue_max_size`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetOnDemandRetriesCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_on_demand_retries')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_retries`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_on_demand_retries') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_retries`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetOnDemandTargetQueueUtilizationCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_on_demand_target_queue_utilization')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_target_queue_utilization`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_on_demand_target_queue_utilization') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_target_queue_utilization`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetOnDemandTtlCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_on_demand_ttl')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_ttl`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_on_demand_ttl') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_on_demand_ttl`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ConfigurationSetParasAvailabilityPeriodCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Configuration.set_paras_availability_period')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_paras_availability_period`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Configuration.set_paras_availability_period') === '56549a8e90ef70438b73ca659a6b72776495b4c60df84463168d148f5c52d05d'
+    }
+
+    /**
+     * See [`Pallet::set_paras_availability_period`].
+     */
+    get asV1000001(): {new: number} {
+        assert(this.isV1000001)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13016,6 +13453,35 @@ export class GrandpaReportEquivocationUnsignedCall {
     }
 }
 
+export class HrmpEstablishSystemChannelCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Hrmp.establish_system_channel')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::establish_system_channel`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Hrmp.establish_system_channel') === '76ea4ea2912278783f0f738af842ab3f70b4d40830132e51dbcd2aed25017b31'
+    }
+
+    /**
+     * See [`Pallet::establish_system_channel`].
+     */
+    get asV1001002(): {sender: number, recipient: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class HrmpForceCleanHrmpCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -13076,6 +13542,21 @@ export class HrmpForceCleanHrmpCall {
      */
     get asV9170(): {para: number, inbound: number, outbound: number} {
         assert(this.isV9170)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::force_clean_hrmp`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Hrmp.force_clean_hrmp') === 'e0d9de1338cc868be8989312a2304d895d2dc8f3ec310f9f10c3af0691e89f54'
+    }
+
+    /**
+     * See [`Pallet::force_clean_hrmp`].
+     */
+    get asV1001002(): {para: number, numInbound: number, numOutbound: number} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13416,6 +13897,35 @@ export class HrmpHrmpInitOpenChannelCall {
      */
     get asV9110(): {recipient: number, proposedMaxCapacity: number, proposedMaxMessageSize: number} {
         assert(this.isV9110)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class HrmpPokeChannelDepositsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Hrmp.poke_channel_deposits')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::poke_channel_deposits`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Hrmp.poke_channel_deposits') === '76ea4ea2912278783f0f738af842ab3f70b4d40830132e51dbcd2aed25017b31'
+    }
+
+    /**
+     * See [`Pallet::poke_channel_deposits`].
+     */
+    get asV1001002(): {sender: number, recipient: number} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -14785,6 +15295,21 @@ export class ImOnlineHeartbeatCall {
      */
     get asV0(): {heartbeat: v0.Heartbeat, signature: Uint8Array} {
         assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::heartbeat`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('ImOnline.heartbeat') === 'f3646c05e9cccd48916cfff77232e963b633b65a0a0741b2b0193bbb1d82c0bb'
+    }
+
+    /**
+     * See [`Pallet::heartbeat`].
+     */
+    get asV1000001(): {heartbeat: v1000001.Heartbeat, signature: Uint8Array} {
+        assert(this.isV1000001)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -16806,6 +17331,36 @@ export class MultisigAsMultiCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === 'e72821199ac649885e947bc6c804c3f47b150a7f96dfd7fd66be7385cd7e7ed5'
+    }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get asV1000001(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v1000001.Timepoint | undefined), call: v1000001.Call, maxWeight: v1000001.Weight} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === 'bc89b923c4dc2faa437a192e70baa00f9eb63b8e198d95e66e21832bcb6926eb'
+    }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get asV1001002(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v1001002.Timepoint | undefined), call: v1001002.Call, maxWeight: v1001002.Weight} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -18352,6 +18907,36 @@ export class MultisigAsMultiThreshold1Call {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '4c5a87fc1cd2edb5f6679307e3f3c66ca7ff08786dad568e6442be323b5b932b'
+    }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get asV1000001(): {otherSignatories: Uint8Array[], call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === 'de51f29ad53068ac81761663575c2ac7fba06302d55081b46a52e761387a279f'
+    }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get asV1001002(): {otherSignatories: Uint8Array[], call: v1001002.Call} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigCancelAsMultiCall {
@@ -18431,6 +19016,35 @@ export class MultisigCancelAsMultiCall {
      */
     get asV5(): {threshold: number, otherSignatories: Uint8Array[], timepoint: v5.Timepoint, callHash: Uint8Array} {
         assert(this.isV5)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class NominationPoolsAdjustPoolDepositCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'NominationPools.adjust_pool_deposit')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::adjust_pool_deposit`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('NominationPools.adjust_pool_deposit') === 'a662258b1bdb045a915972ea29e9ec0b46cdd5598b0da37b0e70ac766e3735a0'
+    }
+
+    /**
+     * See [`Pallet::adjust_pool_deposit`].
+     */
+    get asV1001002(): {poolId: number} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -20049,6 +20663,35 @@ export class ParasForceSetCurrentHeadCall {
     }
 }
 
+export class ParasForceSetMostRecentContextCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Paras.force_set_most_recent_context')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::force_set_most_recent_context`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Paras.force_set_most_recent_context') === '6a3b2aa019677c86bf6f3995961abc80128523b6417e7ec69b04776e72524ad8'
+    }
+
+    /**
+     * See [`Pallet::force_set_most_recent_context`].
+     */
+    get asV1000001(): {para: number, context: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class ParasIncludePvfCheckStatementCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -20608,6 +21251,35 @@ export class PollVoteCall {
      */
     get asV14(): {approvals: boolean[]} {
         assert(this.isV14)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class PreimageEnsureUpdatedCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Preimage.ensure_updated')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::ensure_updated`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Preimage.ensure_updated') === 'f68ee865d71f9767e46d2e7b473ae7201ca55c155220367aa63b3432986f155e'
+    }
+
+    /**
+     * See [`Pallet::ensure_updated`].
+     */
+    get asV1001002(): {hashes: Uint8Array[]} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -23267,6 +23939,36 @@ export class ProxyProxyCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::proxy`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '7b881409b4ecf2e46175c65cb5a72922c037a84f12c637cda7dfac99e448f02a'
+    }
+
+    /**
+     * See [`Pallet::proxy`].
+     */
+    get asV1000001(): {real: v1000001.MultiAddress, forceProxyType: (v1000001.ProxyType | undefined), call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::proxy`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '85544bc7e7f6fed6d71a2c5eebe407c9fcbc6fb7ac78252e7707333063b2be92'
+    }
+
+    /**
+     * See [`Pallet::proxy`].
+     */
+    get asV1001002(): {real: v1001002.MultiAddress, forceProxyType: (v1001002.ProxyType | undefined), call: v1001002.Call} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyProxyAnnouncedCall {
@@ -24490,6 +25192,36 @@ export class ProxyProxyAnnouncedCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::proxy_announced`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '91990ba99b9eadf5f50a7410f45c2a3bc3c812c7f7800d5ccf67d7ce7f7c68fd'
+    }
+
+    /**
+     * See [`Pallet::proxy_announced`].
+     */
+    get asV1000001(): {delegate: v1000001.MultiAddress, real: v1000001.MultiAddress, forceProxyType: (v1000001.ProxyType | undefined), call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::proxy_announced`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === 'bf75f2903a2736c93d3e5fe20b3fc632825b5feb1d36be913378c993b660c452'
+    }
+
+    /**
+     * See [`Pallet::proxy_announced`].
+     */
+    get asV1001002(): {delegate: v1001002.MultiAddress, real: v1001002.MultiAddress, forceProxyType: (v1001002.ProxyType | undefined), call: v1001002.Call} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyRejectAnnouncementCall {
@@ -25550,6 +26282,21 @@ export class ReferendaSubmitCall {
      */
     get asV9420(): {proposalOrigin: v9420.OriginCaller, proposal: v9420.Bounded, enactmentMoment: v9420.DispatchTime} {
         assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::submit`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Referenda.submit') === '716eafcd0a389851088a410cb9388fbbe3d28a232590fec67fc914d7bdeca58b'
+    }
+
+    /**
+     * See [`Pallet::submit`].
+     */
+    get asV1000001(): {proposalOrigin: v1000001.OriginCaller, proposal: v1000001.Bounded, enactmentMoment: v1000001.DispatchTime} {
+        assert(this.isV1000001)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -27347,6 +28094,36 @@ export class SchedulerScheduleCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::schedule`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === 'd0c3f61e39dae58dcf50530b9138c1aa2e0d511a9d029cdc19ea325ef2e4633a'
+    }
+
+    /**
+     * See [`Pallet::schedule`].
+     */
+    get asV1000001(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::schedule`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule') === '0c8ccb9cb0f64963a24815d2a440a8ef233e48570e988f68548f828ed7387865'
+    }
+
+    /**
+     * See [`Pallet::schedule`].
+     */
+    get asV1001002(): {when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1001002.Call} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleAfterCall {
@@ -28033,6 +28810,36 @@ export class SchedulerScheduleAfterCall {
      */
     get asV9430(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v9430.Call} {
         assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::schedule_after`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === 'ffc7244e1824f064b6b9281924de9b7992af5d7508bc6673a6fa9eb25cdb0fb9'
+    }
+
+    /**
+     * See [`Pallet::schedule_after`].
+     */
+    get asV1000001(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::schedule_after`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_after') === '01b57b3afcc431fefb45a15cbdb9f06e505ab3aa64fbf6e0f33eb580569ba8fd'
+    }
+
+    /**
+     * See [`Pallet::schedule_after`].
+     */
+    get asV1001002(): {after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1001002.Call} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -29066,6 +29873,36 @@ export class SchedulerScheduleNamedCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::schedule_named`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === 'ce86dab4bd6cd0ab193006df2527f842f01dc20addef0aa44f5f8cf7fdee4d12'
+    }
+
+    /**
+     * See [`Pallet::schedule_named`].
+     */
+    get asV1000001(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::schedule_named`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named') === '291c684434ee58dc5381d189b8f3861aded80adf3b0afa59829aa675a220327c'
+    }
+
+    /**
+     * See [`Pallet::schedule_named`].
+     */
+    get asV1001002(): {id: Uint8Array, when: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1001002.Call} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SchedulerScheduleNamedAfterCall {
@@ -29754,6 +30591,36 @@ export class SchedulerScheduleNamedAfterCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::schedule_named_after`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === 'd2ed1dc9a3b1b8089f118e7b2d834dd4fa7af4a213483e5e8ab6e28d66f81250'
+    }
+
+    /**
+     * See [`Pallet::schedule_named_after`].
+     */
+    get asV1000001(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::schedule_named_after`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Scheduler.schedule_named_after') === '70e99b55c74d1d57bff87c11b76063319ba37981a63ce3d957f3fdfe45c11734'
+    }
+
+    /**
+     * See [`Pallet::schedule_named_after`].
+     */
+    get asV1001002(): {id: Uint8Array, after: number, maybePeriodic: ([number, number] | undefined), priority: number, call: v1001002.Call} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SessionPurgeKeysCall {
@@ -29940,6 +30807,21 @@ export class SessionSetKeysCall {
      */
     get asV9110(): {keys: v9110.SessionKeys, proof: Uint8Array} {
         assert(this.isV9110)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::set_keys`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Session.set_keys') === '99d3710e29cfd29e764516b99adca998863ac7777749ee999024fa63c2cf1168'
+    }
+
+    /**
+     * See [`Pallet::set_keys`].
+     */
+    get asV1001002(): {keys: v1001002.SessionKeys, proof: Uint8Array} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -40065,6 +40947,35 @@ export class TreasuryAwardBountyCall {
     }
 }
 
+export class TreasuryCheckStatusCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Treasury.check_status')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::check_status`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Treasury.check_status') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    /**
+     * See [`Pallet::check_status`].
+     */
+    get asV1001002(): {index: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class TreasuryClaimBountyCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -40237,6 +41148,35 @@ export class TreasuryExtendBountyExpiryCall {
      */
     get asV25(): {bountyId: number, remark: Uint8Array} {
         assert(this.isV25)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TreasuryPayoutCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Treasury.payout')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::payout`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Treasury.payout') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    /**
+     * See [`Pallet::payout`].
+     */
+    get asV1001002(): {index: number} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -40713,6 +41653,50 @@ export class TreasurySpendCall {
         assert(this.isV9250)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::spend`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Treasury.spend') === '34756e95f7661f25907706eeb0b6e15d9f288416e8ec502023d32580b9757bf9'
+    }
+
+    /**
+     * See [`Pallet::spend`].
+     */
+    get asV1001002(): {assetKind: v1001002.VersionedLocatableAsset, amount: bigint, beneficiary: v1001002.VersionedMultiLocation, validFrom: (number | undefined)} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TreasurySpendLocalCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Treasury.spend_local')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::spend_local`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Treasury.spend_local') === '18a5bcfd718b2b225ac128952f0fc34fff8371520e0ab5bac3a0ab20286b496d'
+    }
+
+    /**
+     * See [`Pallet::spend_local`].
+     */
+    get asV1001002(): {amount: bigint, beneficiary: v1001002.MultiAddress} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class TreasuryTipCall {
@@ -41046,6 +42030,35 @@ export class TreasuryUnassignCuratorCall {
      */
     get asV25(): {bountyId: number} {
         assert(this.isV25)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class TreasuryVoidSpendCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Treasury.void_spend')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::void_spend`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Treasury.void_spend') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    /**
+     * See [`Pallet::void_spend`].
+     */
+    get asV1001002(): {index: number} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -42588,6 +43601,36 @@ export class UtilityAsDerivativeCall {
      */
     get asV9430(): {index: number, call: v9430.Call} {
         assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'ba1c293bcd87b6fb2260ce2d426314e42bdf4f17e1fea4d3489adf8d658a9477'
+    }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get asV1000001(): {index: number, call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'e8cab657831230b602e8bf68ffefb33f7e886ea8da4286de95d5b2f781ff1ad0'
+    }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get asV1001002(): {index: number, call: v1001002.Call} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -45289,6 +46332,36 @@ export class UtilityBatchCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'fba467edb550ee7f926cabb29a64966020109ee99c97549fd974ec2c0c389f86'
+    }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get asV1000001(): {calls: v1000001.Call[]} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '8f70837420233e1fc79c3d71da2d0a7bff8b1317cf59a5e48d7d8bc8810c6d9e'
+    }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get asV1001002(): {calls: v1001002.Call[]} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -46271,6 +47344,36 @@ export class UtilityBatchAllCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'fba467edb550ee7f926cabb29a64966020109ee99c97549fd974ec2c0c389f86'
+    }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get asV1000001(): {calls: v1000001.Call[]} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '8f70837420233e1fc79c3d71da2d0a7bff8b1317cf59a5e48d7d8bc8810c6d9e'
+    }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get asV1001002(): {calls: v1001002.Call[]} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityCancelAsMultiCall {
@@ -46845,6 +47948,36 @@ export class UtilityDispatchAsCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '6c807f69197499a672614e7ae5b29f99194f8073c4b23d56cd383d6e7386deaf'
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get asV1000001(): {asOrigin: v1000001.OriginCaller, call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '13146e5d1d7353e418265ab9a92a2a38ffaa7b6e89e38f8e61c80422f12db061'
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get asV1001002(): {asOrigin: v1001002.OriginCaller, call: v1001002.Call} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -47306,6 +48439,36 @@ export class UtilityForceBatchCall {
         assert(this.isV9430)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'fba467edb550ee7f926cabb29a64966020109ee99c97549fd974ec2c0c389f86'
+    }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get asV1000001(): {calls: v1000001.Call[]} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '8f70837420233e1fc79c3d71da2d0a7bff8b1317cf59a5e48d7d8bc8810c6d9e'
+    }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get asV1001002(): {calls: v1001002.Call[]} {
+        assert(this.isV1001002)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -47418,6 +48581,36 @@ export class UtilityWithWeightCall {
      */
     get asV9430(): {call: v9430.Call, weight: v9430.Weight} {
         assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '78dbc0f150389cd2478c04c4a045088786daa606498b7048fcf2a3e511200f1f'
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get asV1000001(): {call: v1000001.Call, weight: v1000001.Weight} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === 'c3830e4ffbd6a83b4179faeb105d50db3e00bfe7ec5ecf97b5cc450d718b858a'
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get asV1001002(): {call: v1001002.Call, weight: v1001002.Weight} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -48091,6 +49284,35 @@ export class VoterListPutInFrontOfCall {
     }
 }
 
+export class VoterListPutInFrontOfOtherCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'VoterList.put_in_front_of_other')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::put_in_front_of_other`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('VoterList.put_in_front_of_other') === 'd981ee44fa529582aab3bb3e2f4b0c2967a6d65ed224e8177533276383010745'
+    }
+
+    /**
+     * See [`Pallet::put_in_front_of_other`].
+     */
+    get asV1000001(): {heavier: v1000001.MultiAddress, lighter: v1000001.MultiAddress} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class VoterListRebagCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -48222,6 +49444,36 @@ export class WhitelistDispatchWhitelistedCallWithPreimageCall {
 
     get asV9430(): {call: v9430.Call} {
         assert(this.isV9430)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::dispatch_whitelisted_call_with_preimage`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('Whitelist.dispatch_whitelisted_call_with_preimage') === '6a50de74dedff9c48261eb96e9e4ccb9f39e70f4cfe4e33c46fe130057dbcc91'
+    }
+
+    /**
+     * See [`Pallet::dispatch_whitelisted_call_with_preimage`].
+     */
+    get asV1000001(): {call: v1000001.Call} {
+        assert(this.isV1000001)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::dispatch_whitelisted_call_with_preimage`].
+     */
+    get isV1001002(): boolean {
+        return this._chain.getCallHash('Whitelist.dispatch_whitelisted_call_with_preimage') === '0787de3cde9f7506e0287a84070ca5af2cbcedc72a18024e6f41d32243a766d9'
+    }
+
+    /**
+     * See [`Pallet::dispatch_whitelisted_call_with_preimage`].
+     */
+    get asV1001002(): {call: v1001002.Call} {
+        assert(this.isV1001002)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -48819,6 +50071,21 @@ export class XcmPalletForceXcmVersionCall {
      */
     get asV9420(): {location: v9420.V3MultiLocation, xcmVersion: number} {
         assert(this.isV9420)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::force_xcm_version`].
+     */
+    get isV1000001(): boolean {
+        return this._chain.getCallHash('XcmPallet.force_xcm_version') === '33e59692e1de10110f93243ea23af786f87880b56e0ff4d528e142455c6b1bd9'
+    }
+
+    /**
+     * See [`Pallet::force_xcm_version`].
+     */
+    get asV1000001(): {location: v1000001.V3MultiLocation, version: number} {
+        assert(this.isV1000001)
         return this._chain.decodeCall(this.call)
     }
 }

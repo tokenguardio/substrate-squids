@@ -22,6 +22,77 @@ import * as v9340 from './v9340'
 import * as v9370 from './v9370'
 import * as v9420 from './v9420'
 import * as v9430 from './v9430'
+import * as v1000001 from './v1000001'
+import * as v1001002 from './v1001002'
+
+export class AssetRateAssetRateCreatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'AssetRate.AssetRateCreated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('AssetRate.AssetRateCreated') === 'dc2879fe8fdc758670d5111e15ab0330e153355407866684bea46db819c91ad7'
+    }
+
+    get asV1001002(): {assetKind: v1001002.VersionedLocatableAsset, rate: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class AssetRateAssetRateRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'AssetRate.AssetRateRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('AssetRate.AssetRateRemoved') === '0d1baf25e245231c5d8fb219a5a51629ccb543120e492a30d16a2d3c6c729334'
+    }
+
+    get asV1001002(): {assetKind: v1001002.VersionedLocatableAsset} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class AssetRateAssetRateUpdatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'AssetRate.AssetRateUpdated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('AssetRate.AssetRateUpdated') === '35c3c7acb3be83e6e328af7a44f8cbd585f9d0eeed09f959559d54a809a1d10c'
+    }
+
+    get asV1001002(): {assetKind: v1001002.VersionedLocatableAsset, old: bigint, new: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
 
 export class AuctionsAuctionClosedEvent {
     private readonly _chain: Chain
@@ -1164,6 +1235,35 @@ export class BalancesWithdrawEvent {
     }
 }
 
+export class BountiesBountyApprovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Bounties.BountyApproved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A bounty is approved.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Bounties.BountyApproved') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    /**
+     * A bounty is approved.
+     */
+    get asV1001002(): {index: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BountiesBountyAwardedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1468,6 +1568,93 @@ export class BountiesBountyRejectedEvent {
      */
     get asV9140(): {index: number, bond: bigint} {
         assert(this.isV9140)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BountiesCuratorAcceptedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Bounties.CuratorAccepted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A bounty curator is accepted.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Bounties.CuratorAccepted') === 'b6bed4e85cf1f959ac84aa806807124fca71fd7ffb381081311fc6f9c88bb694'
+    }
+
+    /**
+     * A bounty curator is accepted.
+     */
+    get asV1001002(): {bountyId: number, curator: Uint8Array} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BountiesCuratorProposedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Bounties.CuratorProposed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A bounty curator is proposed.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Bounties.CuratorProposed') === 'b6bed4e85cf1f959ac84aa806807124fca71fd7ffb381081311fc6f9c88bb694'
+    }
+
+    /**
+     * A bounty curator is proposed.
+     */
+    get asV1001002(): {bountyId: number, curator: Uint8Array} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BountiesCuratorUnassignedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Bounties.CuratorUnassigned')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A bounty curator is unassigned.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Bounties.CuratorUnassigned') === '0ce670c7823ed5f5367cdf1eca3f3bfa8c091f2aa0cbaf0eba1679394ee42d24'
+    }
+
+    /**
+     * A bounty curator is unassigned.
+     */
+    get asV1001002(): {bountyId: number} {
+        assert(this.isV1001002)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -4978,6 +5165,21 @@ export class HrmpChannelClosedEvent {
         assert(this.isV9110)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * HRMP channel closed.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Hrmp.ChannelClosed') === 'd7a18fb63023184c36e9a84f51283d53917a412fb9e3b256e26f06dd898c2eed'
+    }
+
+    /**
+     * HRMP channel closed.
+     */
+    get asV1001002(): {byParachain: number, channelId: v1001002.HrmpChannelId} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class HrmpHrmpChannelForceOpenedEvent {
@@ -5009,6 +5211,50 @@ export class HrmpHrmpChannelForceOpenedEvent {
         assert(this.isV9340)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An HRMP channel was opened via Root origin.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Hrmp.HrmpChannelForceOpened') === 'f402043bffae3fae642308da58b5d572368b726bad038cc14e7b7e843b8f401e'
+    }
+
+    /**
+     * An HRMP channel was opened via Root origin.
+     */
+    get asV1001002(): {sender: number, recipient: number, proposedMaxCapacity: number, proposedMaxMessageSize: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class HrmpHrmpSystemChannelOpenedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Hrmp.HrmpSystemChannelOpened')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An HRMP channel was opened between two system chains.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Hrmp.HrmpSystemChannelOpened') === 'f402043bffae3fae642308da58b5d572368b726bad038cc14e7b7e843b8f401e'
+    }
+
+    /**
+     * An HRMP channel was opened between two system chains.
+     */
+    get asV1001002(): {sender: number, recipient: number, proposedMaxCapacity: number, proposedMaxMessageSize: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class HrmpOpenChannelAcceptedEvent {
@@ -5036,6 +5282,21 @@ export class HrmpOpenChannelAcceptedEvent {
      */
     get asV9110(): [number, number] {
         assert(this.isV9110)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Open HRMP channel accepted.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Hrmp.OpenChannelAccepted') === '76ea4ea2912278783f0f738af842ab3f70b4d40830132e51dbcd2aed25017b31'
+    }
+
+    /**
+     * Open HRMP channel accepted.
+     */
+    get asV1001002(): {sender: number, recipient: number} {
+        assert(this.isV1001002)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5069,6 +5330,50 @@ export class HrmpOpenChannelCanceledEvent {
         assert(this.isV9110)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An HRMP channel request sent by the receiver was canceled by either party.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Hrmp.OpenChannelCanceled') === 'd7a18fb63023184c36e9a84f51283d53917a412fb9e3b256e26f06dd898c2eed'
+    }
+
+    /**
+     * An HRMP channel request sent by the receiver was canceled by either party.
+     */
+    get asV1001002(): {byParachain: number, channelId: v1001002.HrmpChannelId} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class HrmpOpenChannelDepositsUpdatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Hrmp.OpenChannelDepositsUpdated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An HRMP channel's deposits were updated.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Hrmp.OpenChannelDepositsUpdated') === '76ea4ea2912278783f0f738af842ab3f70b4d40830132e51dbcd2aed25017b31'
+    }
+
+    /**
+     * An HRMP channel's deposits were updated.
+     */
+    get asV1001002(): {sender: number, recipient: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class HrmpOpenChannelRequestedEvent {
@@ -5098,6 +5403,21 @@ export class HrmpOpenChannelRequestedEvent {
      */
     get asV9110(): [number, number, number, number] {
         assert(this.isV9110)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Open HRMP channel requested.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Hrmp.OpenChannelRequested') === 'f402043bffae3fae642308da58b5d572368b726bad038cc14e7b7e843b8f401e'
+    }
+
+    /**
+     * Open HRMP channel requested.
+     */
+    get asV1001002(): {sender: number, recipient: number, proposedMaxCapacity: number, proposedMaxMessageSize: number} {
+        assert(this.isV1001002)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6330,6 +6650,64 @@ export class NominationPoolsMemberRemovedEvent {
      */
     get asV9280(): {poolId: number, member: Uint8Array} {
         assert(this.isV9280)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class NominationPoolsMinBalanceDeficitAdjustedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'NominationPools.MinBalanceDeficitAdjusted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Topped up deficit in frozen ED of the reward pool.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('NominationPools.MinBalanceDeficitAdjusted') === 'e97a940401503c89156c5be028d3653893ac6e357b451b4035127aa329ed53e0'
+    }
+
+    /**
+     * Topped up deficit in frozen ED of the reward pool.
+     */
+    get asV1001002(): {poolId: number, amount: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class NominationPoolsMinBalanceExcessAdjustedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'NominationPools.MinBalanceExcessAdjusted')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Claimed excess frozen ED of af the reward pool.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('NominationPools.MinBalanceExcessAdjusted') === 'e97a940401503c89156c5be028d3653893ac6e357b451b4035127aa329ed53e0'
+    }
+
+    /**
+     * Claimed excess frozen ED of af the reward pool.
+     */
+    get asV1001002(): {poolId: number, amount: bigint} {
+        assert(this.isV1001002)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -9953,6 +10331,21 @@ export class StakingRewardedEvent {
         assert(this.isV9300)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * The nominator has been rewarded by this amount to this destination.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Staking.Rewarded') === 'aa169b460298a3833e89c51c9a8b87e01c995327696f303fd797a6fd1468d9a6'
+    }
+
+    /**
+     * The nominator has been rewarded by this amount to this destination.
+     */
+    get asV1001002(): {stash: Uint8Array, dest: v1001002.RewardDestination, amount: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class StakingSlashEvent {
@@ -10057,6 +10450,64 @@ export class StakingSlashedEvent {
      */
     get asV9300(): {staker: Uint8Array, amount: bigint} {
         assert(this.isV9300)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class StakingSnapshotTargetsSizeExceededEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Staking.SnapshotTargetsSizeExceeded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Targets size limit reached.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('Staking.SnapshotTargetsSizeExceeded') === '6b2494e665e8a59def82afdb4742abd48e4510b4d849a05639376d31dedd68c2'
+    }
+
+    /**
+     * Targets size limit reached.
+     */
+    get asV1000001(): {size: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class StakingSnapshotVotersSizeExceededEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Staking.SnapshotVotersSizeExceeded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Voters size limit reached.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('Staking.SnapshotVotersSizeExceeded') === '6b2494e665e8a59def82afdb4742abd48e4510b4d849a05639376d31dedd68c2'
+    }
+
+    /**
+     * Voters size limit reached.
+     */
+    get asV1000001(): {size: number} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -11709,6 +12160,64 @@ export class TransactionPaymentTransactionFeePaidEvent {
     }
 }
 
+export class TreasuryAssetSpendApprovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Treasury.AssetSpendApproved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A new asset spend proposal has been approved.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Treasury.AssetSpendApproved') === 'c219d4aff532cafc7691d19f9929b86ce2c5ac6a5c5bef633427311056b30630'
+    }
+
+    /**
+     * A new asset spend proposal has been approved.
+     */
+    get asV1001002(): {index: number, assetKind: v1001002.VersionedLocatableAsset, amount: bigint, beneficiary: v1001002.VersionedMultiLocation, validFrom: number, expireAt: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class TreasuryAssetSpendVoidedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Treasury.AssetSpendVoided')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An approved spend was voided.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Treasury.AssetSpendVoided') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    /**
+     * An approved spend was voided.
+     */
+    get asV1001002(): {index: number} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class TreasuryAwardedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -12073,6 +12582,64 @@ export class TreasuryNewTipEvent {
     }
 }
 
+export class TreasuryPaidEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Treasury.Paid')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A payment happened.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Treasury.Paid') === '973ae217fde5763751cfd1f303982b5a8bf92eab5121ba7457bde28a9494be7c'
+    }
+
+    /**
+     * A payment happened.
+     */
+    get asV1001002(): {index: number, paymentId: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class TreasuryPaymentFailedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Treasury.PaymentFailed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A payment failed and can be retried.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Treasury.PaymentFailed') === '973ae217fde5763751cfd1f303982b5a8bf92eab5121ba7457bde28a9494be7c'
+    }
+
+    /**
+     * A payment failed and can be retried.
+     */
+    get asV1001002(): {index: number, paymentId: bigint} {
+        assert(this.isV1001002)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class TreasuryProposedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -12230,6 +12797,37 @@ export class TreasurySpendApprovedEvent {
      */
     get asV9250(): {proposalIndex: number, amount: bigint, beneficiary: Uint8Array} {
         assert(this.isV9250)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class TreasurySpendProcessedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Treasury.SpendProcessed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A spend was processed and removed from the storage. It might have been successfully
+     * paid or it may have expired.
+     */
+    get isV1001002(): boolean {
+        return this._chain.getEventHash('Treasury.SpendProcessed') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+    }
+
+    /**
+     * A spend was processed and removed from the storage. It might have been successfully
+     * paid or it may have expired.
+     */
+    get asV1001002(): {index: number} {
+        assert(this.isV1001002)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13648,6 +14246,21 @@ export class XcmPalletAssetsClaimedEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.AssetsClaimed') === 'd00ea00073f2771dbd949ebc6ee42f5f3310603eab60e504d4562c1c65fd8a66'
+    }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     */
+    get asV1000001(): {hash: Uint8Array, origin: v1000001.V3MultiLocation, assets: v1000001.VersionedMultiAssets} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletAssetsTrappedEvent {
@@ -13717,6 +14330,21 @@ export class XcmPalletAssetsTrappedEvent {
      */
     get asV9420(): [Uint8Array, v9420.V3MultiLocation, v9420.VersionedMultiAssets] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.AssetsTrapped') === 'd00ea00073f2771dbd949ebc6ee42f5f3310603eab60e504d4562c1c65fd8a66'
+    }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     */
+    get asV1000001(): {hash: Uint8Array, origin: v1000001.V3MultiLocation, assets: v1000001.VersionedMultiAssets} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13790,6 +14418,21 @@ export class XcmPalletAttemptedEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Execution of an XCM message was attempted.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.Attempted') === '2422ddc668f3b01819427c84d6396493ee941332f71e202147480df98ef5a892'
+    }
+
+    /**
+     * Execution of an XCM message was attempted.
+     */
+    get asV1000001(): {outcome: v1000001.V3Outcome} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletFeesPaidEvent {
@@ -13821,6 +14464,21 @@ export class XcmPalletFeesPaidEvent {
      */
     get asV9420(): [v9420.V3MultiLocation, v9420.V3MultiAsset[]] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.FeesPaid') === 'ec234f3e15c9f2e59bc1a5758ab00b5eafe775b43e2250bc6610d7270394b3fc'
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     */
+    get asV1000001(): {paying: v1000001.V3MultiLocation, fees: v1000001.V3MultiAsset[]} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13858,6 +14516,25 @@ export class XcmPalletInvalidQuerierEvent {
      */
     get asV9420(): [v9420.V3MultiLocation, bigint, v9420.V3MultiLocation, (v9420.V3MultiLocation | undefined)] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.InvalidQuerier') === 'ba9e747bdc70472315571317b534c044d7863ad9a9c0a617fc7f3919adbb86f5'
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get asV1000001(): {origin: v1000001.V3MultiLocation, queryId: bigint, expectedQuerier: v1000001.V3MultiLocation, maybeActualQuerier: (v1000001.V3MultiLocation | undefined)} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13903,6 +14580,33 @@ export class XcmPalletInvalidQuerierVersionEvent {
      */
     get asV9420(): [v9420.V3MultiLocation, bigint] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.InvalidQuerierVersion') === '63887bfe21639ef69d853381ad1891090e59ad256a542da55cbccec4f21ca0d6'
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get asV1000001(): {origin: v1000001.V3MultiLocation, queryId: bigint} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -13986,6 +14690,25 @@ export class XcmPalletInvalidResponderEvent {
      */
     get asV9420(): [v9420.V3MultiLocation, bigint, (v9420.V3MultiLocation | undefined)] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.InvalidResponder') === 'b48adaaf18722ed367aa74c5b722dc32361abcc6314221eeeac63699129aa138'
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get asV1000001(): {origin: v1000001.V3MultiLocation, queryId: bigint, expectedLocation: (v1000001.V3MultiLocation | undefined)} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14095,6 +14818,33 @@ export class XcmPalletInvalidResponderVersionEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.InvalidResponderVersion') === '63887bfe21639ef69d853381ad1891090e59ad256a542da55cbccec4f21ca0d6'
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get asV1000001(): {origin: v1000001.V3MultiLocation, queryId: bigint} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletNotifiedEvent {
@@ -14128,6 +14878,23 @@ export class XcmPalletNotifiedEvent {
      */
     get asV9140(): [bigint, number, number] {
         assert(this.isV9140)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Query response has been received and query is removed. The registered notification has
+     * been dispatched and executed successfully.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.Notified') === 'b00126ed722ee8cd6f32c2c19b826e10724bb5df92afaa4e65b8fb03dc30ec5b'
+    }
+
+    /**
+     * Query response has been received and query is removed. The registered notification has
+     * been dispatched and executed successfully.
+     */
+    get asV1000001(): {queryId: bigint, palletIndex: number, callIndex: number} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14167,6 +14934,25 @@ export class XcmPalletNotifyDecodeFailedEvent {
         assert(this.isV9140)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response has been received and query is removed. The dispatch was unable to be
+     * decoded into a `Call`; this might be due to dispatch function having a signature which
+     * is not `(origin, QueryId, Response)`.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.NotifyDecodeFailed') === 'b00126ed722ee8cd6f32c2c19b826e10724bb5df92afaa4e65b8fb03dc30ec5b'
+    }
+
+    /**
+     * Query response has been received and query is removed. The dispatch was unable to be
+     * decoded into a `Call`; this might be due to dispatch function having a signature which
+     * is not `(origin, QueryId, Response)`.
+     */
+    get asV1000001(): {queryId: bigint, palletIndex: number, callIndex: number} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletNotifyDispatchErrorEvent {
@@ -14200,6 +14986,23 @@ export class XcmPalletNotifyDispatchErrorEvent {
      */
     get asV9140(): [bigint, number, number] {
         assert(this.isV9140)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Query response has been received and query is removed. There was a general error with
+     * dispatching the notification call.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.NotifyDispatchError') === 'b00126ed722ee8cd6f32c2c19b826e10724bb5df92afaa4e65b8fb03dc30ec5b'
+    }
+
+    /**
+     * Query response has been received and query is removed. There was a general error with
+     * dispatching the notification call.
+     */
+    get asV1000001(): {queryId: bigint, palletIndex: number, callIndex: number} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14285,6 +15088,25 @@ export class XcmPalletNotifyOverweightEvent {
         assert(this.isV9340)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response has been received and query is removed. The registered notification
+     * could not be dispatched because the dispatch weight is greater than the maximum weight
+     * originally budgeted by this runtime for the query result.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.NotifyOverweight') === 'e4fa835bcb3be2b76654c2ff5a50d92f182f262d583882f3df4011d77306af19'
+    }
+
+    /**
+     * Query response has been received and query is removed. The registered notification
+     * could not be dispatched because the dispatch weight is greater than the maximum weight
+     * originally budgeted by this runtime for the query result.
+     */
+    get asV1000001(): {queryId: bigint, palletIndex: number, callIndex: number, actualWeight: v1000001.Weight, maxBudgetedWeight: v1000001.Weight} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletNotifyTargetMigrationFailEvent {
@@ -14360,6 +15182,23 @@ export class XcmPalletNotifyTargetMigrationFailEvent {
      */
     get asV9420(): [v9420.VersionedMultiLocation, bigint] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.NotifyTargetMigrationFail') === 'c4a59eca6ea5772ac1898a87fcc18a8cc29cf303fd03bdfee7b760a8c594e931'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     */
+    get asV1000001(): {location: v1000001.VersionedMultiLocation, queryId: bigint} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14460,6 +15299,23 @@ export class XcmPalletNotifyTargetSendFailEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.NotifyTargetSendFail') === 'edc2d038c8c8204434d1519585109c7a45487752cfa11496a2ec47aae356c556'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     */
+    get asV1000001(): {location: v1000001.V3MultiLocation, queryId: bigint, error: v1000001.V3Error} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletResponseReadyEvent {
@@ -14558,6 +15414,23 @@ export class XcmPalletResponseReadyEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.ResponseReady') === 'bef8f7543dfaf827f16faeecf1ae77b01b3a27a17ca90af1a821e1cb820998fa'
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     */
+    get asV1000001(): {queryId: bigint, response: v1000001.V3Response} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletResponseTakenEvent {
@@ -14589,6 +15462,21 @@ export class XcmPalletResponseTakenEvent {
      */
     get asV9140(): bigint {
         assert(this.isV9140)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Received query response has been read and removed.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.ResponseTaken') === '204a390919b90a6aec91ba9059e3c9f8225c5a3b3ab8f97386879582bc302866'
+    }
+
+    /**
+     * Received query response has been read and removed.
+     */
+    get asV1000001(): {queryId: bigint} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14681,6 +15569,21 @@ export class XcmPalletSentEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A XCM message was sent.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.Sent') === '3d6c8fc6ff3b646a529f145a6f4b4ed06b59ba8e539eba47d55596e67e9b8a2a'
+    }
+
+    /**
+     * A XCM message was sent.
+     */
+    get asV1000001(): {origin: v1000001.V3MultiLocation, destination: v1000001.V3MultiLocation, message: v1000001.V3Instruction[], messageId: Uint8Array} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletSupportedVersionChangedEvent {
@@ -14756,6 +15659,23 @@ export class XcmPalletSupportedVersionChangedEvent {
      */
     get asV9420(): [v9420.V3MultiLocation, number] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.SupportedVersionChanged') === '33e59692e1de10110f93243ea23af786f87880b56e0ff4d528e142455c6b1bd9'
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     */
+    get asV1000001(): {location: v1000001.V3MultiLocation, version: number} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14841,6 +15761,25 @@ export class XcmPalletUnexpectedResponseEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.UnexpectedResponse') === '63887bfe21639ef69d853381ad1891090e59ad256a542da55cbccec4f21ca0d6'
+    }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     */
+    get asV1000001(): {origin: v1000001.V3MultiLocation, queryId: bigint} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletVersionChangeNotifiedEvent {
@@ -14916,6 +15855,25 @@ export class XcmPalletVersionChangeNotifiedEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.VersionChangeNotified') === 'a1bb23627cb55142abf0fb5e3eac2b509eb673050d10fc224a86ebe6199560f1'
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     */
+    get asV1000001(): {destination: v1000001.V3MultiLocation, result: number, cost: v1000001.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletVersionNotifyRequestedEvent {
@@ -14947,6 +15905,21 @@ export class XcmPalletVersionNotifyRequestedEvent {
      */
     get asV9420(): [v9420.V3MultiLocation, v9420.V3MultiAsset[]] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * We have requested that a remote chain send us XCM version change notifications.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.VersionNotifyRequested') === 'a668a90f8752a9ee52d546887e2c4048efb092178a59d4bc13cbce46cb16351c'
+    }
+
+    /**
+     * We have requested that a remote chain send us XCM version change notifications.
+     */
+    get asV1000001(): {destination: v1000001.V3MultiLocation, cost: v1000001.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -14984,6 +15957,23 @@ export class XcmPalletVersionNotifyStartedEvent {
         assert(this.isV9420)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.VersionNotifyStarted') === 'a668a90f8752a9ee52d546887e2c4048efb092178a59d4bc13cbce46cb16351c'
+    }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     */
+    get asV1000001(): {destination: v1000001.V3MultiLocation, cost: v1000001.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV1000001)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmPalletVersionNotifyUnrequestedEvent {
@@ -15015,6 +16005,23 @@ export class XcmPalletVersionNotifyUnrequestedEvent {
      */
     get asV9420(): [v9420.V3MultiLocation, v9420.V3MultiAsset[]] {
         assert(this.isV9420)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change
+     * notifications.
+     */
+    get isV1000001(): boolean {
+        return this._chain.getEventHash('XcmPallet.VersionNotifyUnrequested') === 'a668a90f8752a9ee52d546887e2c4048efb092178a59d4bc13cbce46cb16351c'
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change
+     * notifications.
+     */
+    get asV1000001(): {destination: v1000001.V3MultiLocation, cost: v1000001.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV1000001)
         return this._chain.decodeEvent(this.event)
     }
 }
