@@ -1,5 +1,6 @@
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { readFileSync } from "fs";
+import * as ethers from "ethers";
 import { processor } from "./processor";
 import {
   TraceCreate,
@@ -22,6 +23,7 @@ import {
   createFtTransfer,
 } from "./utils/factories";
 import { TraceTree } from "./utils/trace";
+import { Precompiles } from "./interfaces/main";
 import { createNewFTokens } from "./processing/fTokenCreation";
 import { assignAddressLabels } from "./processing/addressLabeling";
 import {
@@ -29,7 +31,9 @@ import {
   synchronizeContracts,
 } from "./processing/contractCreation";
 
-const precompiles = JSON.parse(readFileSync("assets/precompiles.json", "utf8"));
+const precompiles: Precompiles = JSON.parse(
+  readFileSync("assets/precompiles.json", "utf8")
+);
 let precompilesAdded = false;
 
 let currentTransactionId: string | null = null;
@@ -51,7 +55,7 @@ processor.run(
     if (!precompilesAdded) {
       newContracts.push(
         ...Object.values(precompiles).map(
-          (precompile) => new Contract({ id: precompile as string })
+          (precompile) => new Contract({ id: ethers.getAddress(precompile) })
         )
       );
       precompilesAdded = true;
