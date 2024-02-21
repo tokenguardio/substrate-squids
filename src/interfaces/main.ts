@@ -9,3 +9,7 @@ export interface CommonTraceFields {
   error: string | null;
   parentHasError: boolean | null;
 }
+
+export interface Precompiles {
+  [key: string]: string;
+}
