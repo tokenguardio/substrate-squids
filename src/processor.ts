@@ -1,4 +1,5 @@
 import { lookupArchive } from "@subsquid/archive-registry";
+import { readFileSync } from "fs";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -10,12 +11,15 @@ import {
 } from "@subsquid/evm-processor";
 import * as erc20Abi from "./abi/erc20";
 
+const dapps: string[] = JSON.parse(readFileSync("assets/dapps.json", "utf8"));
+const dappsLower = dapps.map((address) => address.toLowerCase());
+
 export const processor = new EvmBatchProcessor()
-  .setDataSource({
-    archive: lookupArchive("avalanche"),
-    chain: process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc",
-  })
-  .useArchiveOnly(true)
+  .setGateway(lookupArchive("avalanche"))
+  .setRpcEndpoint(
+    process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc"
+  )
+  .setRpcDataIngestionSettings({ disabled: true })
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
       ? Number(process.env.BLOCK_RANGE_FROM)
@@ -25,9 +29,27 @@ export const processor = new EvmBatchProcessor()
       : undefined,
   })
   .setFinalityConfirmation(75)
-  .addTransaction({ traces: true })
-  .addLog({
-    topic0: [erc20Abi.events.Transfer.topic],
+  // .addTransaction({ traces: true })
+  // .addLog({
+  //   topic0: [erc20Abi.events.Transfer.topic],
+  // })
+  .addTrace({
+    callTo: dappsLower,
+    callFrom: dappsLower,
+    type: ["call"],
+    transaction: true,
+    subtraces: false,
+  })
+  .addTrace({
+    // createFrom: dappsLower,
+    type: ["create"],
+    transaction: true,
+    subtraces: false,
+  })
+  .addTrace({
+    type: ["suicide", "reward"],
+    transaction: true,
+    subtraces: false,
   })
   .setFields({
     transaction: {
@@ -41,6 +63,7 @@ export const processor = new EvmBatchProcessor()
       effectiveGasPrice: true,
     },
     trace: {
+      error: true,
       subtraces: true,
       // 'create' type related fields
       createFrom: true,

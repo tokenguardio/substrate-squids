@@ -82,7 +82,7 @@ processor.run(
               trc.result?.address != null &&
               trc.transaction?.hash !== undefined &&
               trc.transaction?.status !== 0 &&
-              trc.error === null &&
+              trc.error == null &&
               !traceTree.parentHasError(trc)
             ) {
               // CREATE2 opcode - contract can be created more than once in one batch
