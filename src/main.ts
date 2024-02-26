@@ -40,7 +40,7 @@ let currentTransactionId: string | null = null;
 let traceTree: TraceTree = new TraceTree("");
 
 processor.run(
-  new TypeormDatabase({ stateSchema: "evm_processor" }),
+  new TypeormDatabase({ stateSchema: process.env.STATE_SCHEMA }),
   async (ctx) => {
     const transactions: Transaction[] = [];
     const traceCreates: TraceCreate[] = [];
