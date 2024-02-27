@@ -34,8 +34,13 @@ export const processor = new EvmBatchProcessor()
   //   topic0: [erc20Abi.events.Transfer.topic],
   // })
   .addTrace({
-    callTo: dappsLower,
     callFrom: dappsLower,
+    type: ["call"],
+    transaction: true,
+    subtraces: false,
+  })
+  .addTrace({
+    callTo: dappsLower,
     type: ["call"],
     transaction: true,
     subtraces: false,
