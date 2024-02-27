@@ -17,6 +17,14 @@ export const processor = new EvmBatchProcessor()
       process.env.RPC_ETH_HTTP ?? "https://arbitrum-nova.public.blastapi.io",
   })
   .setFinalityConfirmation(75)
+  .setBlockRange({
+    from: process.env.BLOCK_RANGE_FROM
+      ? Number(process.env.BLOCK_RANGE_FROM)
+      : 0,
+    to: process.env.BLOCK_RANGE_TO
+      ? Number(process.env.BLOCK_RANGE_TO)
+      : undefined,
+  })
   .addTransaction({
     traces: true,
   })
