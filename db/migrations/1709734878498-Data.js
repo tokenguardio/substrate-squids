@@ -1,5 +1,5 @@
-module.exports = class Data1706698026053 {
-    name = 'Data1706698026053'
+module.exports = class Data1709734878498 {
+    name = 'Data1709734878498'
 
     async up(db) {
         await db.query(`CREATE TABLE "trace_create" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "parent_has_error" boolean, "from" text NOT NULL, "from_type" character varying(8), "value" numeric, "gas" numeric, "init" text, "gas_used" numeric, "code" text, "address" text, "transaction_id" character varying, CONSTRAINT "PK_d9815d6da7ab247cd74a2b7fc4f" PRIMARY KEY ("id"))`)
@@ -27,7 +27,7 @@ module.exports = class Data1706698026053 {
         await db.query(`CREATE INDEX "IDX_2930aa3cebc52be311927fc78d" ON "ft_transfer" ("to") `)
         await db.query(`CREATE INDEX "IDX_3cc72d0b19c7e85d0e64c6da7a" ON "ft_transfer" ("transfer_type") `)
         await db.query(`CREATE INDEX "IDX_41d6913b279f70b31c534bdcc7" ON "ft_transfer" ("token_id") `)
-        await db.query(`CREATE TABLE "transaction" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "hash" text NOT NULL, "type" character varying(7) NOT NULL, "label" character varying(15) NOT NULL, "from" text NOT NULL, "to" text, "fee" numeric NOT NULL, "value" numeric NOT NULL, "input" text NOT NULL, "deployed_address" text, "success" boolean, "sighash" text, "transaction_index" integer NOT NULL, CONSTRAINT "PK_89eadb93a89810556e1cbcd6ab9" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "transaction" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "hash" text NOT NULL, "type" character varying(25) NOT NULL, "label" character varying(15) NOT NULL, "from" text NOT NULL, "to" text, "fee" numeric NOT NULL, "value" numeric NOT NULL, "input" text NOT NULL, "deployed_address" text, "success" boolean, "sighash" text, "transaction_index" integer NOT NULL, CONSTRAINT "PK_89eadb93a89810556e1cbcd6ab9" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_87f2932d4a558d44a2915f849a" ON "transaction" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_de4f0899c41c688529784bc443" ON "transaction" ("hash") `)
         await db.query(`CREATE INDEX "IDX_19b57c8c3e5a0126c781b2923f" ON "transaction" ("label") `)

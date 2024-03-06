@@ -15,10 +15,8 @@ const dapps: string[] = JSON.parse(readFileSync("assets/dapps.json", "utf8"));
 const dappsLower = dapps.map((address) => address.toLowerCase());
 
 export const processor = new EvmBatchProcessor()
-  .setGateway(lookupArchive("avalanche"))
-  .setRpcEndpoint(
-    process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc"
-  )
+  .setGateway(lookupArchive("arbitrum"))
+  .setRpcEndpoint(process.env.RPC_ETH_HTTP ?? "https://arb1.arbitrum.io/rpc")
   .setRpcDataIngestionSettings({ disabled: true })
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
@@ -30,9 +28,9 @@ export const processor = new EvmBatchProcessor()
   })
   .setFinalityConfirmation(75)
   // .addTransaction({ traces: true })
-  // .addLog({
-  //   topic0: [erc20Abi.events.Transfer.topic],
-  // })
+  .addLog({
+    topic0: [erc20Abi.events.Transfer.topic],
+  })
   .addTrace({
     callFrom: dappsLower,
     type: ["call"],
