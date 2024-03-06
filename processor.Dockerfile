@@ -8,8 +8,6 @@ WORKDIR /squid
 ADD package.json .
 ADD package-lock.json .
 ADD assets assets 
-ADD db db
-ADD schema.graphql .
 RUN npm ci
 ADD tsconfig.json .
 ADD src src
