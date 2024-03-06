@@ -1,78 +1,52 @@
-import { lookupArchive } from "@subsquid/archive-registry";
-import {
-  BlockHeader,
-  DataHandlerContext,
-  EvmBatchProcessor,
-  EvmBatchProcessorFields,
-  Log as _Log,
-  Transaction as _Transaction,
-  Trace as _Trace,
-} from "@subsquid/evm-processor";
-import * as erc20Abi from "./abi/erc20";
+import {EvmBatchProcessor, EvmBatchProcessorFields, BlockHeader, Log as _Log, Transaction as _Transaction} from '@subsquid/evm-processor'
+import {lookupArchive} from '@subsquid/archive-registry'
+import * as wglmrAbi from './abi/0xacc15dc74880c9944775448304b263d191c6077f'
 
 export const processor = new EvmBatchProcessor()
-  .setDataSource({
-    archive: lookupArchive("moonbeam", { type: "EVM" }),
-    chain: process.env.RPC_ETH_HTTP ?? "https://rpc.api.moonbeam.network",
-  })
-  .setFinalityConfirmation(75)
-  .useArchiveOnly(true)
-  .setBlockRange({
-    from: process.env.BLOCK_RANGE_FROM
-      ? Number(process.env.BLOCK_RANGE_FROM)
-      : 0,
-    to: process.env.BLOCK_RANGE_TO
-      ? Number(process.env.BLOCK_RANGE_TO)
-      : undefined,
-  })
-  .addTransaction({ traces: false })
-  .addLog({
-    topic0: [erc20Abi.events.Transfer.topic],
-  })
-  .setFields({
-    transaction: {
-      input: true,
-      value: true,
-      gasUsed: true,
-      contractAddress: true,
-      type: true,
-      status: true,
-      sighash: true,
-      effectiveGasPrice: true,
-    },
-    trace: {
-      subtraces: true,
-      // 'create' type related fields
-      createFrom: true,
-      createValue: true,
-      createGas: true,
-      createInit: true,
-      createResultGasUsed: true,
-      createResultCode: true,
-      createResultAddress: true,
-      // 'call' type related fields
-      callFrom: true,
-      callTo: true,
-      callValue: true,
-      callGas: true,
-      callSighash: true,
-      callInput: true,
-      callResultGasUsed: true,
-      callResultOutput: true,
-      // 'suicide' type related fields
-      suicideAddress: true,
-      suicideRefundAddress: true,
-      suicideBalance: true,
-      // 'reward' type related fields
-      rewardAuthor: true,
-      rewardValue: true,
-      rewardType: true,
-    },
-  });
+    .setDataSource({
+        archive: lookupArchive('moonbeam', {type: 'EVM'}),
+    })
+    .setFields({
+            log: {
+                topics: true,
+                data: true,
+                transactionHash: true,
+            },
+            transaction: {
+                hash: true,
+                input: true,
+                from: true,
+                value: true,
+                status: true,
+        }
+    })
+    .addLog({
+        address: ['0xacc15dc74880c9944775448304b263d191c6077f'],
+        topic0: [
+            wglmrAbi.events['Approval'].topic,
+            wglmrAbi.events['Transfer'].topic,
+            wglmrAbi.events['Deposit'].topic,
+            wglmrAbi.events['Withdrawal'].topic,
+        ],
+        range: {
+            from: 171209,
+        },
+    })
+    .addTransaction({
+        to: ['0xacc15dc74880c9944775448304b263d191c6077f'],
+        sighash: [
+            wglmrAbi.functions['approve'].sighash,
+            wglmrAbi.functions['transferFrom'].sighash,
+            wglmrAbi.functions['withdraw'].sighash,
+            wglmrAbi.functions['transfer'].sighash,
+            wglmrAbi.functions['deposit'].sighash,
+        ],
+        range: {
+            from: 171209,
+        },
+    })
 
-export type Fields = EvmBatchProcessorFields<typeof processor>;
-export type Block = BlockHeader<Fields>;
-export type Log = _Log<Fields>;
-export type Transaction = _Transaction<Fields>;
-export type Trace = _Trace<Fields>;
-export type ProcessorContext<Store> = DataHandlerContext<Store, Fields>;
+export type Fields = EvmBatchProcessorFields<typeof processor>
+export type Block = BlockHeader<Fields>
+export type Log = _Log<Fields>
+export type Transaction = _Transaction<Fields>

@@ -1,42 +1,31 @@
-FROM node:19-alpine AS node
+# 1. Base Node Image
+FROM node:18-alpine AS node
 
-FROM node AS node-with-gyp
-RUN apk add g++ make python3
+# 2. Install Dependencies and Tools
+RUN apk add --no-cache g++ make python3 postgresql-client
+RUN npm i -g @subsquid/cli@latest @subsquid/commands
 
-FROM node-with-gyp AS builder
+# 3. Set up the project and dependencies
 WORKDIR /squid
-ADD package.json .
-ADD package-lock.json .
-RUN npm ci
-ADD tsconfig.json .
-ADD src src
-RUN npm run build
+COPY squidgen.yaml ./squidgen.yaml
+COPY . ./
+RUN npm i
+RUN npx squid-gen config squidgen.yaml
 
-FROM node-with-gyp AS deps
-WORKDIR /squid
-ADD package.json .
-ADD package-lock.json .
-RUN npm ci --production
+# Copy db.ts to the src directory
+COPY db.ts ./src/db.ts
 
-FROM node AS squid
-WORKDIR /squid
-COPY --from=deps /squid/package.json .
-COPY --from=deps /squid/package-lock.json .
-COPY --from=deps /squid/node_modules node_modules
-COPY --from=builder /squid/lib lib
-RUN echo -e "loglevel=silent\nupdate-notifier=false" > /squid/.npmrc
-ADD db db
-ADD assets assets
-ADD schema.graphql .
-# TODO: use shorter PROMETHEUS_PORT
+# Copy over the startup script
+COPY startup.sh /squid/startup.sh
+RUN chmod +x /squid/startup.sh
+
+# Optional: Uncomment if needed
+# RUN npm run build
+# RUN npm ci --production
+
+RUN echo -e "loglevel=silent\\nupdate-notifier=false" > /squid/.npmrc
+# Ensure that the sqd command is available globally
+RUN mv $(which squid-commands) /usr/local/bin/sqd
 ENV PROCESSOR_PROMETHEUS_PORT 3000
-EXPOSE 3000
-EXPOSE 4000
 
-
-FROM squid AS processor
-CMD ["npm", "run", "processor:start"]
-
-
-FROM squid AS query-node
-CMD ["npm", "run", "query-node:start"]
+CMD ["/squid/startup.sh", "sh", "-c", "sqd process:prod"]

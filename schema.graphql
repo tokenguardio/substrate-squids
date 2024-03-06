@@ -1,159 +1,125 @@
-type EventNorm @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  extrinsicSuccess: Boolean
-}
-
-type CallNorm @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  success: Boolean
-  origin: JSON
-}
-
-type AddressMapping @entity {
-  id: ID! @index
-  ss58: String
+type Block @entity {
+    id: ID!
+    number: Int! @index
+    timestamp: DateTime! @index
 }
 
 type Transaction @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  hash: String! @index
-  type: EvmTransactionType!
-  label: EvmLabel! @index
-  from: String! @index
-  to: String @index
-  fee: BigInt!
-  value: BigInt!
-  input: String!
-  deployedAddress: String
-  success: Boolean @index
-  sighash: String
-  transactionIndex: Int!
-  traceCreates: [TraceCreate!] @derivedFrom(field: "transaction")
-  traceCalls: [TraceCall!] @derivedFrom(field: "transaction")
-  traceSuicides: [TraceSuicide!] @derivedFrom(field: "transaction")
-  traceRewards: [TraceReward!] @derivedFrom(field: "transaction")
-  ftTransfers: [FtTransfer!] @derivedFrom(field: "transaction")
+    id: ID!
+    blockNumber: Int @index
+    blockTimestamp: DateTime! @index
+    hash: String! @index
+    to: String @index
+    from: String @index
+    status: Int @index
 }
 
-enum EvmTransactionType {
-  LEGACY
-  EIP1559
-  EIP2930
+type WglmrEventApproval @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    eventName: String! @index
+    src: String! @index
+    guy: String! @index
+    wad: BigInt!
 }
 
-enum EvmLabel {
-  CONTRACT_DEPLOY
-  CONTRACT_CALL
-  NATIVE_TRANSFER
+type WglmrEventTransfer @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    eventName: String! @index
+    src: String! @index
+    dst: String! @index
+    wad: BigInt!
 }
 
-type Contract @entity {
-  id: ID!
-  createdBy: String @index
-  createTransaction: Transaction
-  createTimestamp: DateTime @index
-  destroyTransaction: Transaction
-  destroyTimestamp: DateTime @index
+type WglmrEventDeposit @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    eventName: String! @index
+    dst: String! @index
+    wad: BigInt!
 }
 
-type TraceCreate @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  parentHasError: Boolean
-  from: String! @index
-  fromType: AddressType
-  value: BigInt
-  gas: BigInt
-  init: String
-  gasUsed: BigInt
-  code: String
-  address: String
+type WglmrEventWithdrawal @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    eventName: String! @index
+    src: String! @index
+    wad: BigInt!
 }
 
-type TraceCall @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  parentHasError: Boolean
-  from: String! @index
-  fromType: AddressType
-  to: String! @index
-  toType: AddressType
-  value: BigInt
-  gas: BigInt
-  sighash: String
-  input: String
-  gasUsed: BigInt
-  output: String
+type WglmrFunctionApprove @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    functionName: String! @index
+    functionValue: BigInt
+    functionSuccess: Boolean @index
+    guy: String!
+    wad: BigInt!
 }
 
-type TraceSuicide @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  parentHasError: Boolean
-  address: String
-  refundAddress: String
-  balance: BigInt
+type WglmrFunctionTransferFrom @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    functionName: String! @index
+    functionValue: BigInt
+    functionSuccess: Boolean @index
+    src: String!
+    dst: String!
+    wad: BigInt!
 }
 
-type TraceReward @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  parentHasError: Boolean
-  author: String
-  value: BigInt
-  rewardType: String
+type WglmrFunctionWithdraw @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    functionName: String! @index
+    functionValue: BigInt
+    functionSuccess: Boolean @index
+    wad: BigInt!
 }
 
-enum AddressType {
-  EOA
-  CONTRACT
+type WglmrFunctionTransfer @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    functionName: String! @index
+    functionValue: BigInt
+    functionSuccess: Boolean @index
+    dst: String!
+    wad: BigInt!
 }
 
-type FToken @entity {
-  id: ID!
-  name: String @index
-  symbol: String @index
-  decimals: Int
-  ftTransfers: [FtTransfer!] @derivedFrom(field: "token")
+type WglmrFunctionDeposit @entity {
+    id: ID!
+    blockNumber: Int! @index
+    blockTimestamp: DateTime! @index
+    transactionHash: String! @index
+    contract: String! @index
+    functionName: String! @index
+    functionValue: BigInt
+    functionSuccess: Boolean @index
 }
 
-type FtTransfer @entity {
-  id: ID!
-  transaction: Transaction!
-  blockHash: String!
-  timestamp: DateTime! @index
-  eventIndex: Int
-  from: String! @index
-  to: String! @index
-  value: BigInt!
-  transferType: TransferType @index
-  token: FToken
-}
-
-enum TransferType {
-  TRANSFER
-  MINT
-  BURN
-}

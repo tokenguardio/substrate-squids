@@ -1,7 +1,7 @@
 manifestVersion: subsquid.io/v0.1
-name: showcase00
+name: wglmr-squid
 version: 1
-description: 'The very first evm squid from manifest  '
+description: A squid indexer generated from an ABI template
 build: 
 deploy:
   addons:

@@ -1,0 +1,11 @@
+archive: moonbeam
+target:
+  type: postgres
+contracts:
+  - name: WGLMR
+    address: "0xAcc15dC74880C9944775448304B263D191c6077F"
+    range:
+      from: 171209
+    events: true
+    functions: true
+etherscanApi: "https://api-moonbeam.moonscan.io/api"

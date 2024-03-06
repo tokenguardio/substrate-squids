@@ -21,11 +21,11 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
-                "name": "_spender"
+                "name": "guy"
             },
             {
                 "type": "uint256",
-                "name": "_value"
+                "name": "wad"
             }
         ],
         "outputs": [
@@ -57,15 +57,15 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
-                "name": "_from"
+                "name": "src"
             },
             {
                 "type": "address",
-                "name": "_to"
+                "name": "dst"
             },
             {
                 "type": "uint256",
-                "name": "_value"
+                "name": "wad"
             }
         ],
         "outputs": [
@@ -74,6 +74,19 @@ export const ABI_JSON = [
                 "name": ""
             }
         ]
+    },
+    {
+        "type": "function",
+        "name": "withdraw",
+        "constant": false,
+        "payable": false,
+        "inputs": [
+            {
+                "type": "uint256",
+                "name": "wad"
+            }
+        ],
+        "outputs": []
     },
     {
         "type": "function",
@@ -98,13 +111,13 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
-                "name": "_owner"
+                "name": ""
             }
         ],
         "outputs": [
             {
                 "type": "uint256",
-                "name": "balance"
+                "name": ""
             }
         ]
     },
@@ -130,11 +143,11 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
-                "name": "_to"
+                "name": "dst"
             },
             {
                 "type": "uint256",
-                "name": "_value"
+                "name": "wad"
             }
         ],
         "outputs": [
@@ -146,6 +159,15 @@ export const ABI_JSON = [
     },
     {
         "type": "function",
+        "name": "deposit",
+        "constant": false,
+        "stateMutability": "payable",
+        "payable": true,
+        "inputs": [],
+        "outputs": []
+    },
+    {
+        "type": "function",
         "name": "allowance",
         "constant": true,
         "stateMutability": "view",
@@ -153,11 +175,11 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
-                "name": "_owner"
+                "name": ""
             },
             {
                 "type": "address",
-                "name": "_spender"
+                "name": ""
             }
         ],
         "outputs": [
@@ -178,17 +200,17 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
-                "name": "owner",
+                "name": "src",
                 "indexed": true
             },
             {
                 "type": "address",
-                "name": "spender",
+                "name": "guy",
                 "indexed": true
             },
             {
                 "type": "uint256",
-                "name": "value",
+                "name": "wad",
                 "indexed": false
             }
         ]
@@ -200,17 +222,51 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
-                "name": "from",
+                "name": "src",
                 "indexed": true
             },
             {
                 "type": "address",
-                "name": "to",
+                "name": "dst",
                 "indexed": true
             },
             {
                 "type": "uint256",
-                "name": "value",
+                "name": "wad",
+                "indexed": false
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "Deposit",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "dst",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "wad",
+                "indexed": false
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "Withdrawal",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "src",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "wad",
                 "indexed": false
             }
         ]
