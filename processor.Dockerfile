@@ -7,7 +7,6 @@ FROM node-with-gyp AS builder
 WORKDIR /squid
 ADD package.json .
 ADD package-lock.json .
-ADD assets assets 
 ADD db db
 ADD schema.graphql .
 RUN npm ci
@@ -27,8 +26,6 @@ COPY --from=deps /squid/package.json .
 COPY --from=deps /squid/package-lock.json .
 COPY --from=deps /squid/node_modules node_modules
 COPY --from=builder /squid/lib lib
-# remove if no assets folder
-COPY --from=builder /squid/assets assets
 # remove if no db folder
 COPY --from=builder /squid/db db
 # remove if no schema.graphql is in the root
