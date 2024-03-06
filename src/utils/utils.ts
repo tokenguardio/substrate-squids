@@ -1,4 +1,4 @@
-import { EvmTransactionType, TransferType } from "../model";
+import { EvmTransactionType, TransferType } from "../interfaces/models";
 
 const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 

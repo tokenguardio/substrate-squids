@@ -1,4 +1,4 @@
-import { Contract } from "../model";
+import { Contract } from "../interfaces/models";
 
 export function upsertContract(contracts: Contract[], contract: Contract) {
   const existingIndex = contracts.findIndex((c) => c.id === contract.id);

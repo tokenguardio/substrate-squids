@@ -14,7 +14,7 @@ import {
   Contract,
   FtTransfer,
   FToken,
-} from "./../model";
+} from "./../interfaces/models";
 import {
   convertToTransactionType,
   calculateFee,
@@ -22,13 +22,13 @@ import {
   getDecoratedCallResult,
 } from "./../utils/utils";
 import { TraceTree } from "./../utils/trace";
-import { CommonTraceFields } from "./../interfaces/main";
+import { CommonTraceFields } from "./../interfaces/models";
 
 export function createTransaction(
   block: _BlockHeader,
   txn: _Transaction
 ): Transaction {
-  return new Transaction({
+  return {
     id: txn.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
@@ -49,7 +49,7 @@ export function createTransaction(
     success: txn.status !== undefined ? Boolean(txn.status) : undefined,
     sighash: txn.sighash,
     transactionIndex: txn.transactionIndex,
-  });
+  };
 }
 
 function createCommonTraceFields(
@@ -65,7 +65,7 @@ function createCommonTraceFields(
 
   return {
     id: `${trc.transaction.id}_${trc.traceAddress.join("_")}`,
-    transaction: createTransaction(block, trc.transaction),
+    transaction: trc.transaction.id,
     timestamp: new Date(block.timestamp),
     transactionIndex: trc.transactionIndex,
     subtraces: trc.subtraces,
@@ -82,7 +82,7 @@ export function createTraceCreate(
 ): TraceCreate {
   if (trc.type === "create") {
     const commonFields = createCommonTraceFields(block, trc, traceTree);
-    return new TraceCreate({
+    return {
       ...commonFields,
       from: ethers.getAddress(trc.action.from),
       value: trc.action.value,
@@ -93,7 +93,7 @@ export function createTraceCreate(
       address: trc.result?.address
         ? ethers.getAddress(trc.result.address)
         : undefined,
-    });
+    };
   } else {
     throw new Error(
       `Expected 'create' trace type, but received '${trc.type}'.`
@@ -108,7 +108,7 @@ export function createTraceCall(
 ): TraceCall {
   if (trc.type === "call") {
     const commonFields = createCommonTraceFields(block, trc, traceTree);
-    return new TraceCall({
+    return {
       ...commonFields,
       from: ethers.getAddress(trc.action.from),
       to: ethers.getAddress(trc.action.to),
@@ -118,7 +118,7 @@ export function createTraceCall(
       input: trc.action.input,
       gasUsed: trc.result?.gasUsed,
       output: trc.result?.output,
-    });
+    };
   } else {
     throw new Error(`Expected 'call' trace type, but received '${trc.type}'.`);
   }
@@ -131,12 +131,12 @@ export function createTraceSuicide(
 ): TraceSuicide {
   if (trc.type === "suicide") {
     const commonFields = createCommonTraceFields(block, trc, traceTree);
-    return new TraceSuicide({
+    return {
       ...commonFields,
       address: ethers.getAddress(trc.action.address),
       refundAddress: ethers.getAddress(trc.action.refundAddress),
       balance: trc.action.balance,
-    });
+    };
   } else {
     throw new Error(
       `Expected 'suicide' trace type, but received '${trc.type}'.`
@@ -151,12 +151,12 @@ export function createTraceReward(
 ): TraceReward {
   if (trc.type === "reward") {
     const commonFields = createCommonTraceFields(block, trc, traceTree);
-    return new TraceReward({
+    return {
       ...commonFields,
       author: ethers.getAddress(trc.action.author),
       value: trc.action.value,
       rewardType: trc.action.type,
-    });
+    };
   } else {
     throw new Error(
       `Expected 'reward' trace type, but received '${trc.type}'.`
@@ -173,16 +173,14 @@ export function createNewContract(block: _BlockHeader, trc: _Trace): Contract {
         )}`
       );
     }
-    return new Contract({
+    return {
       id: ethers.getAddress(trc.result.address),
       createdBy: ethers.getAddress(trc.action.from),
-      createTransaction: trc.transaction
-        ? createTransaction(block, trc.transaction)
-        : undefined,
+      createTransaction: trc.transaction?.id,
       createTimestamp: new Date(block.timestamp),
       destroyTimestamp: null,
       destroyTransaction: null,
-    });
+    };
   } else {
     throw new Error(
       `Expected 'create' trace type, but received '${trc.type}'.`
@@ -195,13 +193,11 @@ export function createDestroyedContract(
   trc: _Trace
 ): Contract {
   if (trc.type === "suicide") {
-    return new Contract({
+    return {
       id: ethers.getAddress(trc.action.address),
-      destroyTransaction: trc.transaction
-        ? createTransaction(block, trc.transaction)
-        : undefined,
+      destroyTransaction: trc.transaction?.id,
       destroyTimestamp: new Date(block.timestamp),
-    });
+    };
   } else {
     throw new Error(
       `Expected 'suicide' trace type, but received '${trc.type}'.`
@@ -216,11 +212,9 @@ export function createFtTransfer(
   to: string,
   value: bigint
 ): FtTransfer {
-  return new FtTransfer({
+  return {
     id: log.id,
-    transaction: log.transaction
-      ? createTransaction(block, log.transaction)
-      : undefined,
+    transaction: log.transaction?.id,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     eventIndex: log.logIndex,
@@ -228,8 +222,8 @@ export function createFtTransfer(
     to: ethers.getAddress(to),
     value: value,
     transferType: getTransferType(from, to),
-    token: createFToken(log.address),
-  });
+    token: log.address,
+  };
 }
 
 export function createFToken(
@@ -238,10 +232,10 @@ export function createFToken(
   symbol?: string,
   decimals?: number
 ): FToken {
-  return new FToken({
+  return {
     id: ethers.getAddress(id),
     name: name ? getDecoratedCallResult(name) : null,
     symbol: symbol ? getDecoratedCallResult(symbol) : null,
     decimals: decimals ?? null,
-  });
+  };
 }
