@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["moonbeam-mainnet-wglmr-evm"]
+    branches: ["moonbeam-mainnet-evm-wglmr"]
   pull_request:
-    branches: ["moonbeam-mainnet-wglmr-evm"]
+    branches: ["moonbeam-mainnet-evm-wglmr"]
   workflow_dispatch:
 
 jobs:
