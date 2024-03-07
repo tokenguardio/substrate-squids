@@ -72,9 +72,7 @@ export const processor = new EvmBatchProcessor()
       createFrom: true,
       createValue: true,
       createGas: true,
-      createInit: true,
       createResultGasUsed: true,
-      createResultCode: true,
       createResultAddress: true,
       // 'call' type related fields
       callFrom: true,
