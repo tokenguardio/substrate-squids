@@ -39,9 +39,9 @@ export function createTransaction(
     to: txn.to ? ethers.getAddress(txn.to) : undefined,
     fee:
       txn.gasUsed !== undefined && txn.effectiveGasPrice !== undefined
-        ? calculateFee(txn.effectiveGasPrice, txn.gasUsed)
+        ? calculateFee(txn.effectiveGasPrice, txn.gasUsed).toString()
         : undefined,
-    value: txn.value,
+    value: txn.value.toString(),
     input: txn.input,
     deployedAddress: txn.contractAddress
       ? ethers.getAddress(txn.contractAddress)
@@ -85,10 +85,10 @@ export function createTraceCreate(
     return {
       ...commonFields,
       from: ethers.getAddress(trc.action.from),
-      value: trc.action.value,
-      gas: trc.action.gas,
+      value: trc.action.value.toString(),
+      gas: trc.action.gas.toString(),
       init: trc.action.init,
-      gasUsed: trc.result?.gasUsed,
+      gasUsed: trc.result?.gasUsed.toString(),
       code: trc.result?.code,
       address: trc.result?.address
         ? ethers.getAddress(trc.result.address)
@@ -112,11 +112,11 @@ export function createTraceCall(
       ...commonFields,
       from: ethers.getAddress(trc.action.from),
       to: ethers.getAddress(trc.action.to),
-      value: trc.action.value,
-      gas: trc.action.gas,
+      value: trc.action.value?.toString(),
+      gas: trc.action.gas.toString(),
       sighash: trc.action.sighash,
       input: trc.action.input,
-      gasUsed: trc.result?.gasUsed,
+      gasUsed: trc.result?.gasUsed.toString(),
       output: trc.result?.output,
     };
   } else {
@@ -135,7 +135,7 @@ export function createTraceSuicide(
       ...commonFields,
       address: ethers.getAddress(trc.action.address),
       refundAddress: ethers.getAddress(trc.action.refundAddress),
-      balance: trc.action.balance,
+      balance: trc.action.balance.toString(),
     };
   } else {
     throw new Error(
@@ -154,7 +154,7 @@ export function createTraceReward(
     return {
       ...commonFields,
       author: ethers.getAddress(trc.action.author),
-      value: trc.action.value,
+      value: trc.action.value.toString(),
       rewardType: trc.action.type,
     };
   } else {
@@ -220,7 +220,7 @@ export function createFtTransfer(
     eventIndex: log.logIndex,
     from: ethers.getAddress(from),
     to: ethers.getAddress(to),
-    value: value,
+    value: value.toString(),
     transferType: getTransferType(from, to),
     token: log.address,
   };

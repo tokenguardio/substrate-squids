@@ -31,8 +31,8 @@ export interface Transaction {
   label?: EvmLabel;
   from: string;
   to?: string;
-  fee?: bigint;
-  value: bigint;
+  fee?: string;
+  value: string;
   input: string;
   deployedAddress?: string;
   success?: boolean;
@@ -64,7 +64,7 @@ export interface FtTransfer {
   eventIndex: number;
   from: string;
   to: string;
-  value: bigint;
+  value: string;
   transferType: TransferType;
   token: string;
 }
@@ -84,10 +84,10 @@ export interface TraceCreate extends CommonTraceFields {
   // subtraces?: number; (if you want to make it optional here but not in CommonTraceFields)
   from: string;
   fromType?: AddressType;
-  value?: bigint;
-  gas?: bigint;
+  value?: string;
+  gas?: string;
   init?: string;
-  gasUsed?: bigint;
+  gasUsed?: string;
   code?: string;
   address?: string;
 }
@@ -97,23 +97,23 @@ export interface TraceCall extends CommonTraceFields {
   fromType?: AddressType;
   to: string;
   toType?: AddressType;
-  value?: bigint;
-  gas?: bigint;
+  value?: string;
+  gas?: string;
   sighash?: string;
   input?: string;
-  gasUsed?: bigint;
+  gasUsed?: string;
   output?: string;
 }
 
 export interface TraceSuicide extends CommonTraceFields {
   address: string;
   refundAddress: string;
-  balance?: bigint;
+  balance?: string;
 }
 
 export interface TraceReward extends CommonTraceFields {
   author: string;
-  value?: bigint;
+  value?: string;
   rewardType: string;
 }
 

@@ -24,8 +24,8 @@ export const Transaction = new Table(
     to: Column(Types.String(), {
       nullable: true,
     }),
-    fee: Column(Types.Decimal(78, 0)),
-    value: Column(Types.Decimal(78, 0)),
+    fee: Column(Types.String()),
+    value: Column(Types.String()),
     input: Column(Types.String()),
     deployedAddress: Column(Types.String(), {
       nullable: true,
@@ -83,16 +83,16 @@ export const TraceCreate = new Table(
     fromType: Column(Types.String(), {
       nullable: true,
     }),
-    value: Column(Types.Decimal(78, 0), {
+    value: Column(Types.String(), {
       nullable: true,
     }),
-    gas: Column(Types.Decimal(78, 0), {
+    gas: Column(Types.String(), {
       nullable: true,
     }),
     init: Column(Types.String(), {
       nullable: true,
     }),
-    gasUsed: Column(Types.Decimal(78, 0), {
+    gasUsed: Column(Types.String(), {
       nullable: true,
     }),
     code: Column(Types.String(), {
@@ -128,10 +128,10 @@ export const TraceCall = new Table(
     toType: Column(Types.String(), {
       nullable: true,
     }),
-    value: Column(Types.Decimal(78, 0), {
+    value: Column(Types.String(), {
       nullable: true,
     }),
-    gas: Column(Types.Decimal(78, 0), {
+    gas: Column(Types.String(), {
       nullable: true,
     }),
     sighash: Column(Types.String(), {
@@ -140,7 +140,7 @@ export const TraceCall = new Table(
     input: Column(Types.String(), {
       nullable: true,
     }),
-    gasUsed: Column(Types.Decimal(78, 0), {
+    gasUsed: Column(Types.String(), {
       nullable: true,
     }),
     output: Column(Types.String(), {
@@ -171,7 +171,7 @@ export const TraceSuicide = new Table(
     refundAddress: Column(Types.String(), {
       nullable: true,
     }),
-    balance: Column(Types.Decimal(78, 0), {
+    balance: Column(Types.String(), {
       nullable: true,
     }),
   },
@@ -196,7 +196,7 @@ export const TraceReward = new Table(
     author: Column(Types.String(), {
       nullable: true,
     }),
-    value: Column(Types.Decimal(78, 0), {
+    value: Column(Types.String(), {
       nullable: true,
     }),
     rewardType: Column(Types.String(), {
@@ -235,7 +235,7 @@ export const FtTransfer = new Table(
     }),
     from: Column(Types.String()),
     to: Column(Types.String()),
-    value: Column(Types.Decimal(78, 0)),
+    value: Column(Types.String()),
     transferType: Column(Types.String(), {
       nullable: true,
     }),
