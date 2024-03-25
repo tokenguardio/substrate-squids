@@ -6,6 +6,8 @@ import {
   ContractsContractEmittedEvent,
   ContractsDelegateCalledEvent,
   ContractsInstantiatedEvent,
+  ContractsStorageDepositTransferredAndHeldEvent,
+  ContractsStorageDepositTransferredAndReleasedEvent,
   ContractsTerminatedEvent,
 } from "../../../types/events";
 import { ChainContext, Event } from "../../../types/support";
@@ -34,12 +36,16 @@ export function normalizeContractsEventsArgs(ctx: ChainContext, event: Event) {
       e = new ContractsCodeRemovedEvent(ctx, event);
       if (e.isV55) {
         return event.args;
+      } else if (e.isV82) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
     case "Contracts.CodeStored":
       e = new ContractsCodeStoredEvent(ctx, event);
       if (e.isV55) {
+        return event.args;
+      } else if (e.isV82) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
@@ -68,6 +74,20 @@ export function normalizeContractsEventsArgs(ctx: ChainContext, event: Event) {
     case "Contracts.Instantiated":
       e = new ContractsInstantiatedEvent(ctx, event);
       if (e.isV55) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Contracts.StorageDepositTransferredAndHeld":
+      e = new ContractsStorageDepositTransferredAndHeldEvent(ctx, event);
+      if (e.isV82) {
+        return event.args;
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+    case "Contracts.StorageDepositTransferredAndReleased":
+      e = new ContractsStorageDepositTransferredAndReleasedEvent(ctx, event);
+      if (e.isV82) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);

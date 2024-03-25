@@ -25,6 +25,7 @@ import * as v72 from './v72'
 import * as v74 from './v74'
 import * as v77 from './v77'
 import * as v79 from './v79'
+import * as v82 from './v82'
 
 export class AssetsApproveTransferCall {
     private readonly _chain: Chain
@@ -8124,6 +8125,21 @@ export class MultisigAsMultiCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi') === '004ace284d34270ae7f1120b60994538d8d6b71b609de603c1a5d97cbdb8e890'
+    }
+
+    /**
+     * See [`Pallet::as_multi`].
+     */
+    get asV82(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v82.Timepoint | undefined), call: v82.Call, maxWeight: v82.Weight} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigAsMultiThreshold1Call {
@@ -9191,6 +9207,21 @@ export class MultisigAsMultiThreshold1Call {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Multisig.as_multi_threshold_1') === '0655b3f8aace797c6ef3f5e0110de37b7415ab5adb46ee2ce6f69f5c0e0ee67a'
+    }
+
+    /**
+     * See [`Pallet::as_multi_threshold_1`].
+     */
+    get asV82(): {otherSignatories: Uint8Array[], call: v82.Call} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class MultisigCancelAsMultiCall {
@@ -9966,6 +9997,21 @@ export class PolkadotXcmForceXcmVersionCall {
      */
     get asV61(): {location: v61.V3MultiLocation, xcmVersion: number} {
         assert(this.isV61)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::force_xcm_version`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('PolkadotXcm.force_xcm_version') === '33e59692e1de10110f93243ea23af786f87880b56e0ff4d528e142455c6b1bd9'
+    }
+
+    /**
+     * See [`Pallet::force_xcm_version`].
+     */
+    get asV82(): {location: v82.V3MultiLocation, version: number} {
+        assert(this.isV82)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -11563,6 +11609,21 @@ export class ProxyProxyCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::proxy`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Proxy.proxy') === '1529a4e7a033424104ea62aeb347301f266f2cbaa4738492cade7a3e20844968'
+    }
+
+    /**
+     * See [`Pallet::proxy`].
+     */
+    get asV82(): {real: v82.MultiAddress, forceProxyType: (v82.ProxyType | undefined), call: v82.Call} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class ProxyProxyAnnouncedCall {
@@ -11890,6 +11951,21 @@ export class ProxyProxyAnnouncedCall {
      */
     get asV79(): {delegate: v79.MultiAddress, real: v79.MultiAddress, forceProxyType: (v79.ProxyType | undefined), call: v79.Call} {
         assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::proxy_announced`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Proxy.proxy_announced') === '453698f0136bb18d9a020490ac98d03e097679cf8a1485260585c83fb544d3fc'
+    }
+
+    /**
+     * See [`Pallet::proxy_announced`].
+     */
+    get asV82(): {delegate: v82.MultiAddress, real: v82.MultiAddress, forceProxyType: (v82.ProxyType | undefined), call: v82.Call} {
+        assert(this.isV82)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -13296,6 +13372,21 @@ export class SudoSudoCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::sudo`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '4fbd5299b02a7efc743f1a56ac262d8a07faa3830efe209ff7942703175f2ab9'
+    }
+
+    /**
+     * See [`Pallet::sudo`].
+     */
+    get asV82(): {call: v82.Call} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoAsCall {
@@ -14113,6 +14204,21 @@ export class SudoSudoAsCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::sudo_as`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '139b51be1658046e3f57102c6130a7c62ee4ba648dad20c57edcd89d1fabad5a'
+    }
+
+    /**
+     * See [`Pallet::sudo_as`].
+     */
+    get asV82(): {who: v82.MultiAddress, call: v82.Call} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -14914,6 +15020,21 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV79(): {call: v79.Call, weight: v79.Weight} {
         assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::sudo_unchecked_weight`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'df811cb05a7a6f890109ac03e9213f7defa915019d715b28a37cff722e2cd66d'
+    }
+
+    /**
+     * See [`Pallet::sudo_unchecked_weight`].
+     */
+    get asV82(): {call: v82.Call, weight: v82.Weight} {
+        assert(this.isV82)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -16392,6 +16513,21 @@ export class UtilityAsDerivativeCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'a80898552068f448df7d8fefe9f640222a8ddcb6721e9070eb54ce739277bc65'
+    }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get asV82(): {index: number, call: v82.Call} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -17663,6 +17799,21 @@ export class UtilityBatchCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Utility.batch') === 'c775b69279139461cc2a725ddea8799cbdae61c745ededa7272aeedc7d04b222'
+    }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get asV82(): {calls: v82.Call[]} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchAllCall {
@@ -18684,6 +18835,21 @@ export class UtilityBatchAllCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === 'c775b69279139461cc2a725ddea8799cbdae61c745ededa7272aeedc7d04b222'
+    }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get asV82(): {calls: v82.Call[]} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -19418,6 +19584,21 @@ export class UtilityDispatchAsCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '7934dd4f515387d9410544c40df025dfd04678aa1c6470f20e2b640dcf4340af'
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get asV82(): {asOrigin: v82.OriginCaller, call: v82.Call} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityForceBatchCall {
@@ -20070,6 +20251,21 @@ export class UtilityForceBatchCall {
         assert(this.isV79)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === 'c775b69279139461cc2a725ddea8799cbdae61c745ededa7272aeedc7d04b222'
+    }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get asV82(): {calls: v82.Call[]} {
+        assert(this.isV82)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -20357,6 +20553,21 @@ export class UtilityWithWeightCall {
      */
     get asV79(): {call: v79.Call, weight: v79.Weight} {
         assert(this.isV79)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get isV82(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === 'df811cb05a7a6f890109ac03e9213f7defa915019d715b28a37cff722e2cd66d'
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get asV82(): {call: v82.Call, weight: v82.Weight} {
+        assert(this.isV82)
         return this._chain.decodeCall(this.call)
     }
 }

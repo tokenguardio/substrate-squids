@@ -24,6 +24,7 @@ import * as v72 from './v72'
 import * as v74 from './v74'
 import * as v77 from './v77'
 import * as v79 from './v79'
+import * as v82 from './v82'
 
 export class AssetsAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -393,6 +394,44 @@ export interface AuraExtAuthoritiesStorageV1 {
     get(): Promise<Uint8Array[]>
 }
 
+export class AuraExtSlotInfoStorage extends StorageBase {
+    protected getPrefix() {
+        return 'AuraExt'
+    }
+
+    protected getName() {
+        return 'SlotInfo'
+    }
+
+    /**
+     *  Current slot paired with a number of authored blocks.
+     * 
+     *  Updated on each block initialization.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === 'c945ad0b49f59ad16d0f6eba3f41827b2893873386effc63928223533e715d96'
+    }
+
+    /**
+     *  Current slot paired with a number of authored blocks.
+     * 
+     *  Updated on each block initialization.
+     */
+    get asV82(): AuraExtSlotInfoStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
+}
+
+/**
+ *  Current slot paired with a number of authored blocks.
+ * 
+ *  Updated on each block initialization.
+ */
+export interface AuraExtSlotInfoStorageV82 {
+    get(): Promise<([bigint, number] | undefined)>
+}
+
 export class AuthorshipAuthorStorage extends StorageBase {
     protected getPrefix() {
         return 'Authorship'
@@ -735,6 +774,21 @@ export class BalancesHoldsStorage extends StorageBase {
         assert(this.isV64)
         return this as any
     }
+
+    /**
+     *  Holds on account balances.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === '453453c4f37cfd299b923e19b6e97218892ff66f0e72f0bbb8a9b4d420afa98b'
+    }
+
+    /**
+     *  Holds on account balances.
+     */
+    get asV82(): BalancesHoldsStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
 }
 
 /**
@@ -752,6 +806,23 @@ export interface BalancesHoldsStorageV64 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.IdAmount[]][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.IdAmount[]][]>
+}
+
+/**
+ *  Holds on account balances.
+ */
+export interface BalancesHoldsStorageV82 {
+    get(key: Uint8Array): Promise<v82.IdAmount[]>
+    getAll(): Promise<v82.IdAmount[][]>
+    getMany(keys: Uint8Array[]): Promise<v82.IdAmount[][]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v82.IdAmount[]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v82.IdAmount[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v82.IdAmount[]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v82.IdAmount[]][]>
 }
 
 export class BalancesInactiveIssuanceStorage extends StorageBase {
@@ -1256,6 +1327,48 @@ export interface CollatorSelectionSlashDestinationStorageV30 {
     get(): Promise<(Uint8Array | undefined)>
 }
 
+export class ContractsCodeInfoOfStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Contracts'
+    }
+
+    protected getName() {
+        return 'CodeInfoOf'
+    }
+
+    /**
+     *  A mapping from a contract's code hash to its code info.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === '14afed0b78ca8603cba6db022558f6c0e9aabac216a6a3b3853ff20ac62f41b8'
+    }
+
+    /**
+     *  A mapping from a contract's code hash to its code info.
+     */
+    get asV82(): ContractsCodeInfoOfStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
+}
+
+/**
+ *  A mapping from a contract's code hash to its code info.
+ */
+export interface ContractsCodeInfoOfStorageV82 {
+    get(key: Uint8Array): Promise<(v82.CodeInfo | undefined)>
+    getAll(): Promise<v82.CodeInfo[]>
+    getMany(keys: Uint8Array[]): Promise<(v82.CodeInfo | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v82.CodeInfo][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v82.CodeInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v82.CodeInfo][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v82.CodeInfo][]>
+}
+
 export class ContractsCodeStorageStorage extends StorageBase {
     protected getPrefix() {
         return 'Contracts'
@@ -1376,6 +1489,25 @@ export class ContractsContractInfoOfStorage extends StorageBase {
         assert(this.isV64)
         return this as any
     }
+
+    /**
+     *  The code associated with a given account.
+     * 
+     *  TWOX-NOTE: SAFE since `AccountId` is a secure hash.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === 'cc6d94454d3f3715ec698595d3f8dbe2e2a696898da3ee08825d04bebd196172'
+    }
+
+    /**
+     *  The code associated with a given account.
+     * 
+     *  TWOX-NOTE: SAFE since `AccountId` is a secure hash.
+     */
+    get asV82(): ContractsContractInfoOfStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
 }
 
 /**
@@ -1414,6 +1546,25 @@ export interface ContractsContractInfoOfStorageV64 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v64.ContractInfo][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v64.ContractInfo][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v64.ContractInfo][]>
+}
+
+/**
+ *  The code associated with a given account.
+ * 
+ *  TWOX-NOTE: SAFE since `AccountId` is a secure hash.
+ */
+export interface ContractsContractInfoOfStorageV82 {
+    get(key: Uint8Array): Promise<(v82.ContractInfo | undefined)>
+    getAll(): Promise<v82.ContractInfo[]>
+    getMany(keys: Uint8Array[]): Promise<(v82.ContractInfo | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v82.ContractInfo][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v82.ContractInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v82.ContractInfo][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v82.ContractInfo][]>
 }
 
 export class ContractsDeletionQueueStorage extends StorageBase {
@@ -3562,6 +3713,39 @@ export interface EVMAccountStoragesStorageV1 {
     getPairsPaged(pageSize: number, key1: Uint8Array, key2: Uint8Array): AsyncIterable<[k: [Uint8Array, Uint8Array], v: Uint8Array][]>
 }
 
+export class EVMSuicidedStorage extends StorageBase {
+    protected getPrefix() {
+        return 'EVM'
+    }
+
+    protected getName() {
+        return 'Suicided'
+    }
+
+    get isV82(): boolean {
+        return this.getTypeHash() === '38797e2de9f8f94e738f58ec584f9de96f378dfa5348b82ba307ea7cacec468b'
+    }
+
+    get asV82(): EVMSuicidedStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
+}
+
+export interface EVMSuicidedStorageV82 {
+    get(key: Uint8Array): Promise<(null | undefined)>
+    getAll(): Promise<null[]>
+    getMany(keys: Uint8Array[]): Promise<(null | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: null][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: null][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: null][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: null][]>
+}
+
 export class EthereumBlockHashStorage extends StorageBase {
     protected getPrefix() {
         return 'Ethereum'
@@ -4178,6 +4362,44 @@ export interface ParachainInfoParachainIdStorageV1 {
     get(): Promise<number>
 }
 
+export class ParachainSystemAggregatedUnincludedSegmentStorage extends StorageBase {
+    protected getPrefix() {
+        return 'ParachainSystem'
+    }
+
+    protected getName() {
+        return 'AggregatedUnincludedSegment'
+    }
+
+    /**
+     *  Storage field that keeps track of bandwidth used by the unincluded segment along with the
+     *  latest the latest HRMP watermark. Used for limiting the acceptance of new blocks with
+     *  respect to relay chain constraints.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === 'b42b4d4f99a6a22ecfe5ecab9a484f2917195633637a901c8f3d9de093daed42'
+    }
+
+    /**
+     *  Storage field that keeps track of bandwidth used by the unincluded segment along with the
+     *  latest the latest HRMP watermark. Used for limiting the acceptance of new blocks with
+     *  respect to relay chain constraints.
+     */
+    get asV82(): ParachainSystemAggregatedUnincludedSegmentStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
+}
+
+/**
+ *  Storage field that keeps track of bandwidth used by the unincluded segment along with the
+ *  latest the latest HRMP watermark. Used for limiting the acceptance of new blocks with
+ *  respect to relay chain constraints.
+ */
+export interface ParachainSystemAggregatedUnincludedSegmentStorageV82 {
+    get(): Promise<(v82.SegmentTracker | undefined)>
+}
+
 export class ParachainSystemAnnouncedHrmpMessagesPerCandidateStorage extends StorageBase {
     protected getPrefix() {
         return 'ParachainSystem'
@@ -4395,6 +4617,31 @@ export class ParachainSystemHostConfigurationStorage extends StorageBase {
         assert(this.isV9)
         return this as any
     }
+
+    /**
+     *  The parachain host configuration that was obtained from the relay parent.
+     * 
+     *  This field is meant to be updated each block with the validation data inherent. Therefore,
+     *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+     * 
+     *  This data is also absent from the genesis.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === 'de486fae549b1abd5e532e2a83c0a9d6791f4055844fe3ce9c8a5636406ca73f'
+    }
+
+    /**
+     *  The parachain host configuration that was obtained from the relay parent.
+     * 
+     *  This field is meant to be updated each block with the validation data inherent. Therefore,
+     *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+     * 
+     *  This data is also absent from the genesis.
+     */
+    get asV82(): ParachainSystemHostConfigurationStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
 }
 
 /**
@@ -4419,6 +4666,18 @@ export interface ParachainSystemHostConfigurationStorageV1 {
  */
 export interface ParachainSystemHostConfigurationStorageV9 {
     get(): Promise<(v9.V1AbridgedHostConfiguration | undefined)>
+}
+
+/**
+ *  The parachain host configuration that was obtained from the relay parent.
+ * 
+ *  This field is meant to be updated each block with the validation data inherent. Therefore,
+ *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+ * 
+ *  This data is also absent from the genesis.
+ */
+export interface ParachainSystemHostConfigurationStorageV82 {
+    get(): Promise<(v82.V5AbridgedHostConfiguration | undefined)>
 }
 
 export class ParachainSystemHrmpOutboundMessagesStorage extends StorageBase {
@@ -4942,6 +5201,33 @@ export class ParachainSystemRelevantMessagingStateStorage extends StorageBase {
         assert(this.isV64)
         return this as any
     }
+
+    /**
+     *  The snapshot of some state related to messaging relevant to the current parachain as per
+     *  the relay parent.
+     * 
+     *  This field is meant to be updated each block with the validation data inherent. Therefore,
+     *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+     * 
+     *  This data is also absent from the genesis.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === '81e28f1379e57efb7246becb4c95d73a976456a56b1027ee86a610cad3d6002c'
+    }
+
+    /**
+     *  The snapshot of some state related to messaging relevant to the current parachain as per
+     *  the relay parent.
+     * 
+     *  This field is meant to be updated each block with the validation data inherent. Therefore,
+     *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+     * 
+     *  This data is also absent from the genesis.
+     */
+    get asV82(): ParachainSystemRelevantMessagingStateStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
 }
 
 /**
@@ -4968,6 +5254,19 @@ export interface ParachainSystemRelevantMessagingStateStorageV1 {
  */
 export interface ParachainSystemRelevantMessagingStateStorageV64 {
     get(): Promise<(v64.MessagingStateSnapshot | undefined)>
+}
+
+/**
+ *  The snapshot of some state related to messaging relevant to the current parachain as per
+ *  the relay parent.
+ * 
+ *  This field is meant to be updated each block with the validation data inherent. Therefore,
+ *  before processing of the inherent, e.g. in `on_initialize` this data may be stale.
+ * 
+ *  This data is also absent from the genesis.
+ */
+export interface ParachainSystemRelevantMessagingStateStorageV82 {
+    get(): Promise<(v82.MessagingStateSnapshot | undefined)>
 }
 
 export class ParachainSystemReservedDmpWeightOverrideStorage extends StorageBase {
@@ -5138,6 +5437,97 @@ export interface ParachainSystemReservedXcmpWeightOverrideStorageV43 {
  */
 export interface ParachainSystemReservedXcmpWeightOverrideStorageV49 {
     get(): Promise<(v49.Weight | undefined)>
+}
+
+export class ParachainSystemUnincludedSegmentStorage extends StorageBase {
+    protected getPrefix() {
+        return 'ParachainSystem'
+    }
+
+    protected getName() {
+        return 'UnincludedSegment'
+    }
+
+    /**
+     *  Latest included block descendants the runtime accepted. In other words, these are
+     *  ancestors of the currently executing block which have not been included in the observed
+     *  relay-chain state.
+     * 
+     *  The segment length is limited by the capacity returned from the [`ConsensusHook`] configured
+     *  in the pallet.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === 'ea57093aeaa7f055a1dbbbbd84914e43fd65f64ecc240c5666db9e5ae35608e1'
+    }
+
+    /**
+     *  Latest included block descendants the runtime accepted. In other words, these are
+     *  ancestors of the currently executing block which have not been included in the observed
+     *  relay-chain state.
+     * 
+     *  The segment length is limited by the capacity returned from the [`ConsensusHook`] configured
+     *  in the pallet.
+     */
+    get asV82(): ParachainSystemUnincludedSegmentStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
+}
+
+/**
+ *  Latest included block descendants the runtime accepted. In other words, these are
+ *  ancestors of the currently executing block which have not been included in the observed
+ *  relay-chain state.
+ * 
+ *  The segment length is limited by the capacity returned from the [`ConsensusHook`] configured
+ *  in the pallet.
+ */
+export interface ParachainSystemUnincludedSegmentStorageV82 {
+    get(): Promise<v82.Ancestor[]>
+}
+
+export class ParachainSystemUpgradeGoAheadStorage extends StorageBase {
+    protected getPrefix() {
+        return 'ParachainSystem'
+    }
+
+    protected getName() {
+        return 'UpgradeGoAhead'
+    }
+
+    /**
+     *  Optional upgrade go-ahead signal from the relay-chain.
+     * 
+     *  This storage item is a mirror of the corresponding value for the current parachain from the
+     *  relay-chain. This value is ephemeral which means it doesn't hit the storage. This value is
+     *  set after the inherent.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === '4a89f2b5bc0fb569d8b46a1f4c765acce685ac5ee6a83c7bb9943010422461fb'
+    }
+
+    /**
+     *  Optional upgrade go-ahead signal from the relay-chain.
+     * 
+     *  This storage item is a mirror of the corresponding value for the current parachain from the
+     *  relay-chain. This value is ephemeral which means it doesn't hit the storage. This value is
+     *  set after the inherent.
+     */
+    get asV82(): ParachainSystemUpgradeGoAheadStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
+}
+
+/**
+ *  Optional upgrade go-ahead signal from the relay-chain.
+ * 
+ *  This storage item is a mirror of the corresponding value for the current parachain from the
+ *  relay-chain. This value is ephemeral which means it doesn't hit the storage. This value is
+ *  set after the inherent.
+ */
+export interface ParachainSystemUpgradeGoAheadStorageV82 {
+    get(): Promise<(v82.V5UpgradeGoAhead | undefined)>
 }
 
 export class ParachainSystemUpgradeRestrictionSignalStorage extends StorageBase {
@@ -7705,6 +8095,33 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV79)
         return this as any
     }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV82(): boolean {
+        return this.getTypeHash() === '6fc7c9a0be9e439e073b7762d309f1069c1bdd3a754fa45cf45cd03cc7b095c6'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV82(): SystemEventsStorageV82 {
+        assert(this.isV82)
+        return this as any
+    }
 }
 
 /**
@@ -7993,6 +8410,19 @@ export interface SystemEventsStorageV77 {
  */
 export interface SystemEventsStorageV79 {
     get(): Promise<v79.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV82 {
+    get(): Promise<v82.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {

@@ -20,6 +20,7 @@ import * as v66 from './v66'
 import * as v70 from './v70'
 import * as v74 from './v74'
 import * as v79 from './v79'
+import * as v82 from './v82'
 
 export class AssetsAccountsDestroyedEvent {
     private readonly _chain: Chain
@@ -1875,6 +1876,21 @@ export class ContractsCodeRemovedEvent {
         assert(this.isV55)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('Contracts.CodeRemoved') === '2a21e19dec9e7eba62c823140e0c331a9d25b97e18da0b5cbbfa20cf301e924d'
+    }
+
+    /**
+     * A code with the specified hash was removed.
+     */
+    get asV82(): {codeHash: Uint8Array, depositReleased: bigint, remover: Uint8Array} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class ContractsCodeStoredEvent {
@@ -1902,6 +1918,21 @@ export class ContractsCodeStoredEvent {
      */
     get asV55(): {codeHash: Uint8Array} {
         assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('Contracts.CodeStored') === '831a6f0a5035626b64f4111b664d4534f457b9ec26b2f27d58a89a4e92db4955'
+    }
+
+    /**
+     * Code with the specified hash has been stored.
+     */
+    get asV82(): {codeHash: Uint8Array, depositHeld: bigint, uploader: Uint8Array} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -2030,6 +2061,64 @@ export class ContractsInstantiatedEvent {
      */
     get asV55(): {deployer: Uint8Array, contract: Uint8Array} {
         assert(this.isV55)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsStorageDepositTransferredAndHeldEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.StorageDepositTransferredAndHeld')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some funds have been transferred and held as storage deposit.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('Contracts.StorageDepositTransferredAndHeld') === '0ffdf35c495114c2d42a8bf6c241483fd5334ca0198662e14480ad040f1e3a66'
+    }
+
+    /**
+     * Some funds have been transferred and held as storage deposit.
+     */
+    get asV82(): {from: Uint8Array, to: Uint8Array, amount: bigint} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ContractsStorageDepositTransferredAndReleasedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Contracts.StorageDepositTransferredAndReleased')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some storage deposit funds have been transferred and released.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('Contracts.StorageDepositTransferredAndReleased') === '0ffdf35c495114c2d42a8bf6c241483fd5334ca0198662e14480ad040f1e3a66'
+    }
+
+    /**
+     * Some storage deposit funds have been transferred and released.
+     */
+    get asV82(): {from: Uint8Array, to: Uint8Array, amount: bigint} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3299,6 +3388,21 @@ export class DmpQueueExecutedDownwardEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message executed with the given outcome.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('DmpQueue.ExecutedDownward') === '7021ea4fa580e8204fcd82e85ef6e026e294bfb487dcd58921d41103a53dcbaa'
+    }
+
+    /**
+     * Downward message executed with the given outcome.
+     */
+    get asV82(): {messageHash: Uint8Array, messageId: Uint8Array, outcome: v82.V3Outcome} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class DmpQueueInvalidFormatEvent {
@@ -3345,6 +3449,21 @@ export class DmpQueueInvalidFormatEvent {
         assert(this.isV23)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message is invalid XCM.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('DmpQueue.InvalidFormat') === '7bb2cd4e16a7600863dc53c405c6fb0537d9c34c962c92233734a1807e9529c5'
+    }
+
+    /**
+     * Downward message is invalid XCM.
+     */
+    get asV82(): {messageHash: Uint8Array} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class DmpQueueMaxMessagesExhaustedEvent {
@@ -3372,6 +3491,21 @@ export class DmpQueueMaxMessagesExhaustedEvent {
      */
     get asV61(): {messageId: Uint8Array} {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The maximum number of downward messages was reached.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('DmpQueue.MaxMessagesExhausted') === '7bb2cd4e16a7600863dc53c405c6fb0537d9c34c962c92233734a1807e9529c5'
+    }
+
+    /**
+     * The maximum number of downward messages was reached.
+     */
+    get asV82(): {messageHash: Uint8Array} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3448,6 +3582,21 @@ export class DmpQueueOverweightEnqueuedEvent {
      */
     get asV49(): {messageId: Uint8Array, overweightIndex: bigint, requiredWeight: v49.Weight} {
         assert(this.isV49)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Downward message is overweight and was placed in the overweight queue.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('DmpQueue.OverweightEnqueued') === '25e84a4e2cb250d20fd87f408fb5a2d391276eb4c4e7f2f3b3629f4fb818c798'
+    }
+
+    /**
+     * Downward message is overweight and was placed in the overweight queue.
+     */
+    get asV82(): {messageHash: Uint8Array, messageId: Uint8Array, overweightIndex: bigint, requiredWeight: v82.Weight} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -3572,6 +3721,21 @@ export class DmpQueueUnsupportedVersionEvent {
         assert(this.isV23)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Downward message is unsupported version of XCM.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('DmpQueue.UnsupportedVersion') === '7bb2cd4e16a7600863dc53c405c6fb0537d9c34c962c92233734a1807e9529c5'
+    }
+
+    /**
+     * Downward message is unsupported version of XCM.
+     */
+    get asV82(): {messageHash: Uint8Array} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class DmpQueueWeightExhaustedEvent {
@@ -3646,6 +3810,21 @@ export class DmpQueueWeightExhaustedEvent {
      */
     get asV49(): {messageId: Uint8Array, remainingWeight: v49.Weight, requiredWeight: v49.Weight} {
         assert(this.isV49)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The weight limit for handling downward messages was reached.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('DmpQueue.WeightExhausted') === '9c0c43a03bdff3e6f38d5a9f33b5e31cad02cd92b10a65d9073d2d2a935eab09'
+    }
+
+    /**
+     * The weight limit for handling downward messages was reached.
+     */
+    get asV82(): {messageHash: Uint8Array, messageId: Uint8Array, remainingWeight: v82.Weight, requiredWeight: v82.Weight} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5325,6 +5504,21 @@ export class PolkadotXcmAssetsClaimedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.AssetsClaimed') === 'd00ea00073f2771dbd949ebc6ee42f5f3310603eab60e504d4562c1c65fd8a66'
+    }
+
+    /**
+     * Some assets have been claimed from an asset trap
+     */
+    get asV82(): {hash: Uint8Array, origin: v82.V3MultiLocation, assets: v82.VersionedMultiAssets} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmAssetsTrappedEvent {
@@ -5396,6 +5590,21 @@ export class PolkadotXcmAssetsTrappedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.AssetsTrapped') === 'd00ea00073f2771dbd949ebc6ee42f5f3310603eab60e504d4562c1c65fd8a66'
+    }
+
+    /**
+     * Some assets have been placed in an asset trap.
+     */
+    get asV82(): {hash: Uint8Array, origin: v82.V3MultiLocation, assets: v82.VersionedMultiAssets} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmAttemptedEvent {
@@ -5448,6 +5657,21 @@ export class PolkadotXcmAttemptedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Execution of an XCM message was attempted.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Attempted') === '2422ddc668f3b01819427c84d6396493ee941332f71e202147480df98ef5a892'
+    }
+
+    /**
+     * Execution of an XCM message was attempted.
+     */
+    get asV82(): {outcome: v82.V3Outcome} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmFeesPaidEvent {
@@ -5479,6 +5703,21 @@ export class PolkadotXcmFeesPaidEvent {
      */
     get asV61(): [v61.V3MultiLocation, v61.V3MultiAsset[]] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.FeesPaid') === 'ec234f3e15c9f2e59bc1a5758ab00b5eafe775b43e2250bc6610d7270394b3fc'
+    }
+
+    /**
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
+     */
+    get asV82(): {paying: v82.V3MultiLocation, fees: v82.V3MultiAsset[]} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5516,6 +5755,25 @@ export class PolkadotXcmInvalidQuerierEvent {
      */
     get asV61(): [v61.V3MultiLocation, bigint, v61.V3MultiLocation, (v61.V3MultiLocation | undefined)] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidQuerier') === 'ba9e747bdc70472315571317b534c044d7863ad9a9c0a617fc7f3919adbb86f5'
+    }
+
+    /**
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get asV82(): {origin: v82.V3MultiLocation, queryId: bigint, expectedQuerier: v82.V3MultiLocation, maybeActualQuerier: (v82.V3MultiLocation | undefined)} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5561,6 +5819,33 @@ export class PolkadotXcmInvalidQuerierVersionEvent {
      */
     get asV61(): [v61.V3MultiLocation, bigint] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidQuerierVersion') === '63887bfe21639ef69d853381ad1891090e59ad256a542da55cbccec4f21ca0d6'
+    }
+
+    /**
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get asV82(): {origin: v82.V3MultiLocation, queryId: bigint} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5644,6 +5929,25 @@ export class PolkadotXcmInvalidResponderEvent {
      */
     get asV61(): [v61.V3MultiLocation, bigint, (v61.V3MultiLocation | undefined)] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponder') === 'b48adaaf18722ed367aa74c5b722dc32361abcc6314221eeeac63699129aa138'
+    }
+
+    /**
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
+     */
+    get asV82(): {origin: v82.V3MultiLocation, queryId: bigint, expectedLocation: (v82.V3MultiLocation | undefined)} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5753,6 +6057,33 @@ export class PolkadotXcmInvalidResponderVersionEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.InvalidResponderVersion') === '63887bfe21639ef69d853381ad1891090e59ad256a542da55cbccec4f21ca0d6'
+    }
+
+    /**
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
+     * 
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
+     */
+    get asV82(): {origin: v82.V3MultiLocation, queryId: bigint} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmNotifiedEvent {
@@ -5786,6 +6117,23 @@ export class PolkadotXcmNotifiedEvent {
      */
     get asV15(): [bigint, number, number] {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Query response has been received and query is removed. The registered notification has
+     * been dispatched and executed successfully.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Notified') === 'b00126ed722ee8cd6f32c2c19b826e10724bb5df92afaa4e65b8fb03dc30ec5b'
+    }
+
+    /**
+     * Query response has been received and query is removed. The registered notification has
+     * been dispatched and executed successfully.
+     */
+    get asV82(): {queryId: bigint, palletIndex: number, callIndex: number} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5825,6 +6173,25 @@ export class PolkadotXcmNotifyDecodeFailedEvent {
         assert(this.isV15)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response has been received and query is removed. The dispatch was unable to be
+     * decoded into a `Call`; this might be due to dispatch function having a signature which
+     * is not `(origin, QueryId, Response)`.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyDecodeFailed') === 'b00126ed722ee8cd6f32c2c19b826e10724bb5df92afaa4e65b8fb03dc30ec5b'
+    }
+
+    /**
+     * Query response has been received and query is removed. The dispatch was unable to be
+     * decoded into a `Call`; this might be due to dispatch function having a signature which
+     * is not `(origin, QueryId, Response)`.
+     */
+    get asV82(): {queryId: bigint, palletIndex: number, callIndex: number} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmNotifyDispatchErrorEvent {
@@ -5858,6 +6225,23 @@ export class PolkadotXcmNotifyDispatchErrorEvent {
      */
     get asV15(): [bigint, number, number] {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Query response has been received and query is removed. There was a general error with
+     * dispatching the notification call.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyDispatchError') === 'b00126ed722ee8cd6f32c2c19b826e10724bb5df92afaa4e65b8fb03dc30ec5b'
+    }
+
+    /**
+     * Query response has been received and query is removed. There was a general error with
+     * dispatching the notification call.
+     */
+    get asV82(): {queryId: bigint, palletIndex: number, callIndex: number} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -5943,6 +6327,25 @@ export class PolkadotXcmNotifyOverweightEvent {
         assert(this.isV49)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response has been received and query is removed. The registered notification
+     * could not be dispatched because the dispatch weight is greater than the maximum weight
+     * originally budgeted by this runtime for the query result.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyOverweight') === 'e4fa835bcb3be2b76654c2ff5a50d92f182f262d583882f3df4011d77306af19'
+    }
+
+    /**
+     * Query response has been received and query is removed. The registered notification
+     * could not be dispatched because the dispatch weight is greater than the maximum weight
+     * originally budgeted by this runtime for the query result.
+     */
+    get asV82(): {queryId: bigint, palletIndex: number, callIndex: number, actualWeight: v82.Weight, maxBudgetedWeight: v82.Weight} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmNotifyTargetMigrationFailEvent {
@@ -6018,6 +6421,23 @@ export class PolkadotXcmNotifyTargetMigrationFailEvent {
      */
     get asV61(): [v61.VersionedMultiLocation, bigint] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetMigrationFail') === 'c4a59eca6ea5772ac1898a87fcc18a8cc29cf303fd03bdfee7b760a8c594e931'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
+     */
+    get asV82(): {location: v82.VersionedMultiLocation, queryId: bigint} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6097,6 +6517,23 @@ export class PolkadotXcmNotifyTargetSendFailEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.NotifyTargetSendFail') === 'edc2d038c8c8204434d1519585109c7a45487752cfa11496a2ec47aae356c556'
+    }
+
+    /**
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
+     */
+    get asV82(): {location: v82.V3MultiLocation, queryId: bigint, error: v82.V3Error} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmResponseReadyEvent {
@@ -6174,6 +6611,23 @@ export class PolkadotXcmResponseReadyEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.ResponseReady') === 'bef8f7543dfaf827f16faeecf1ae77b01b3a27a17ca90af1a821e1cb820998fa'
+    }
+
+    /**
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
+     */
+    get asV82(): {queryId: bigint, response: v82.V3Response} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmResponseTakenEvent {
@@ -6205,6 +6659,21 @@ export class PolkadotXcmResponseTakenEvent {
      */
     get asV15(): bigint {
         assert(this.isV15)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Received query response has been read and removed.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.ResponseTaken') === '204a390919b90a6aec91ba9059e3c9f8225c5a3b3ab8f97386879582bc302866'
+    }
+
+    /**
+     * Received query response has been read and removed.
+     */
+    get asV82(): {queryId: bigint} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6276,6 +6745,21 @@ export class PolkadotXcmSentEvent {
      */
     get asV61(): [v61.V3MultiLocation, v61.V3MultiLocation, v61.V3Instruction[]] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * A XCM message was sent.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.Sent') === '3d6c8fc6ff3b646a529f145a6f4b4ed06b59ba8e539eba47d55596e67e9b8a2a'
+    }
+
+    /**
+     * A XCM message was sent.
+     */
+    get asV82(): {origin: v82.V3MultiLocation, destination: v82.V3MultiLocation, message: v82.V3Instruction[], messageId: Uint8Array} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6353,6 +6837,23 @@ export class PolkadotXcmSupportedVersionChangedEvent {
      */
     get asV61(): [v61.V3MultiLocation, number] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.SupportedVersionChanged') === '33e59692e1de10110f93243ea23af786f87880b56e0ff4d528e142455c6b1bd9'
+    }
+
+    /**
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
+     */
+    get asV82(): {location: v82.V3MultiLocation, version: number} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6438,6 +6939,25 @@ export class PolkadotXcmUnexpectedResponseEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.UnexpectedResponse') === '63887bfe21639ef69d853381ad1891090e59ad256a542da55cbccec4f21ca0d6'
+    }
+
+    /**
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
+     */
+    get asV82(): {origin: v82.V3MultiLocation, queryId: bigint} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmVersionChangeNotifiedEvent {
@@ -6513,6 +7033,25 @@ export class PolkadotXcmVersionChangeNotifiedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionChangeNotified') === 'a1bb23627cb55142abf0fb5e3eac2b509eb673050d10fc224a86ebe6199560f1'
+    }
+
+    /**
+     * An XCM version change notification message has been attempted to be sent.
+     * 
+     * The cost of sending it (borne by the chain) is included.
+     */
+    get asV82(): {destination: v82.V3MultiLocation, result: number, cost: v82.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmVersionNotifyRequestedEvent {
@@ -6544,6 +7083,21 @@ export class PolkadotXcmVersionNotifyRequestedEvent {
      */
     get asV61(): [v61.V3MultiLocation, v61.V3MultiAsset[]] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * We have requested that a remote chain send us XCM version change notifications.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyRequested') === 'a668a90f8752a9ee52d546887e2c4048efb092178a59d4bc13cbce46cb16351c'
+    }
+
+    /**
+     * We have requested that a remote chain send us XCM version change notifications.
+     */
+    get asV82(): {destination: v82.V3MultiLocation, cost: v82.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -6581,6 +7135,23 @@ export class PolkadotXcmVersionNotifyStartedEvent {
         assert(this.isV61)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyStarted') === 'a668a90f8752a9ee52d546887e2c4048efb092178a59d4bc13cbce46cb16351c'
+    }
+
+    /**
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
+     */
+    get asV82(): {destination: v82.V3MultiLocation, cost: v82.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class PolkadotXcmVersionNotifyUnrequestedEvent {
@@ -6612,6 +7183,23 @@ export class PolkadotXcmVersionNotifyUnrequestedEvent {
      */
     get asV61(): [v61.V3MultiLocation, v61.V3MultiAsset[]] {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change
+     * notifications.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('PolkadotXcm.VersionNotifyUnrequested') === 'a668a90f8752a9ee52d546887e2c4048efb092178a59d4bc13cbce46cb16351c'
+    }
+
+    /**
+     * We have requested that a remote chain stops sending us XCM version change
+     * notifications.
+     */
+    get asV82(): {destination: v82.V3MultiLocation, cost: v82.V3MultiAsset[], messageId: Uint8Array} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -8468,6 +9056,21 @@ export class XcmpQueueBadFormatEvent {
         assert(this.isV30)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Bad XCM format used.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('XcmpQueue.BadFormat') === '7bb2cd4e16a7600863dc53c405c6fb0537d9c34c962c92233734a1807e9529c5'
+    }
+
+    /**
+     * Bad XCM format used.
+     */
+    get asV82(): {messageHash: Uint8Array} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmpQueueBadVersionEvent {
@@ -8510,6 +9113,21 @@ export class XcmpQueueBadVersionEvent {
      */
     get asV30(): {messageHash: (Uint8Array | undefined)} {
         assert(this.isV30)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Bad XCM version used.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('XcmpQueue.BadVersion') === '7bb2cd4e16a7600863dc53c405c6fb0537d9c34c962c92233734a1807e9529c5'
+    }
+
+    /**
+     * Bad XCM version used.
+     */
+    get asV82(): {messageHash: Uint8Array} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -8599,6 +9217,21 @@ export class XcmpQueueFailEvent {
      */
     get asV61(): {messageHash: (Uint8Array | undefined), error: v61.V3Error, weight: v61.Weight} {
         assert(this.isV61)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * Some XCM failed.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('XcmpQueue.Fail') === '2209ec7a14ec537db1677015804c0dded9df5d9fb056a52cba4b1380577b2452'
+    }
+
+    /**
+     * Some XCM failed.
+     */
+    get asV82(): {messageHash: Uint8Array, messageId: Uint8Array, error: v82.V3Error, weight: v82.Weight} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -8823,6 +9456,21 @@ export class XcmpQueueSuccessEvent {
         assert(this.isV49)
         return this._chain.decodeEvent(this.event)
     }
+
+    /**
+     * Some XCM was executed ok.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('XcmpQueue.Success') === '1cf1b26d2d02d654cb89819f279d59db7cf00753f4896ecea4aaa7e793b58fe0'
+    }
+
+    /**
+     * Some XCM was executed ok.
+     */
+    get asV82(): {messageHash: Uint8Array, messageId: Uint8Array, weight: v82.Weight} {
+        assert(this.isV82)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class XcmpQueueUpwardMessageSentEvent {
@@ -8909,6 +9557,21 @@ export class XcmpQueueXcmpMessageSentEvent {
      */
     get asV30(): {messageHash: (Uint8Array | undefined)} {
         assert(this.isV30)
+        return this._chain.decodeEvent(this.event)
+    }
+
+    /**
+     * An HRMP message was sent to a sibling parachain.
+     */
+    get isV82(): boolean {
+        return this._chain.getEventHash('XcmpQueue.XcmpMessageSent') === '7bb2cd4e16a7600863dc53c405c6fb0537d9c34c962c92233734a1807e9529c5'
+    }
+
+    /**
+     * An HRMP message was sent to a sibling parachain.
+     */
+    get asV82(): {messageHash: Uint8Array} {
+        assert(this.isV82)
         return this._chain.decodeEvent(this.event)
     }
 }
