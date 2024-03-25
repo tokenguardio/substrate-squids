@@ -8,7 +8,6 @@ If you don't find a suitable Squid Archive in the registry, set up your own Squi
 
 Once set up, we encourage to contribute to the Squid community and make a PR to the [Archive Registry](https://github.com/subsquid/archive-registry).
 
-
 ## Where do I get a type bundle for my chain?
 
 Most chains publish their type bundles as an npm package. One of the best places to check for the latest version is the [polkadot-js/app repo](https://github.com/polkadot-js/apps/tree/master/packages/apps-config). Note, however, that a types bundle is only needed for pre-Metadata v14 blocks, so for recently deployed chains it may be not needed. 
@@ -29,7 +28,6 @@ Note that the type bundle format for typegen is slightly different from `Overrid
 }
 ```
 
-
 ## How do I write the schema?
 
 The schema file defines the shape of the final GraphQL API and has very few limitations. Designing the schema file is very similar to the design of the database schema. As a rule of thumb, the schema should represent high level domain specific entities and relations between them, to make data fetching and filtering easy for the API consumers.
@@ -41,11 +39,10 @@ Typically, the API is consumed by the frontend and mobile apps, so it's a good i
 TL;DR: If you're ok dropping the database, simply update `schema.graphql` and run:
 
 ```sh
-bash scripts/reset-schema.sh
+bash reset-schema.sh
 ```
 
-OBS! The database will be wiped out, so if it's not an option, read below. 
-
+OBS! The database will be wiped out, so if it's not an option, read below.
 
 Here's a step-by-step instruction. First, generated the model files:
 
@@ -63,7 +60,7 @@ During the development process, recreating the schema is often more convenient. 
 Run
 
 ```sh
-bash scripts/reset-db.sh
+bash reset-db.sh
 ```
 
 ### Option 2: Make an incremental update to the schema
@@ -77,27 +74,27 @@ npx sqd db migrate
 
 You can find the newly generated and applied migration in `db/migrations`.
 
-
 ## How do I run and test the GraphQL API?
 
 Once the migrations are applied, simply run
 
-```
+```bash
 npx squid-graphql-server
 ```
 
 Observe the port (4350 by default) and navigate to `localhost:4350/graphql` to explore your API. However, you need to run the processor to start populating the database.
 
-
 ## How do I start the processor?
 
 First, make sure you have compiled your project with
-```
+
+```bash
 npm run build
 ```
 
-Then simply run 
-```
+Then simply run:
+
+```bash
 node -r dotenv/config lib/processor.js
 ```
 

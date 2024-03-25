@@ -1,125 +1,37 @@
-type EventNorm @entity {
+type WasmContractAbi @entity {
   id: ID!
-  blockHash: String!
+  dappName: String!
+  abi: JSON!
+}
+
+enum DappActivityType {
+  call
+  event
+}
+
+type DappActivity @entity {
+  id: ID!
+  callId: String! #powtorzenia
+  extrinsic: SubstrateExtrinsic!
+  extrinsicHash: String!
+  blockNumber: Int!
   timestamp: DateTime! @index
+  dappName: String! @index
+  caller: String @index #powtorzenia
+  contract: String! @index #call -> to, event -> emitujacy kontrakt
+  success: Boolean @index #event -> zawsze true
+  type: DappActivityType!
   name: String! @index
-  args: JSON
-  extrinsicSuccess: Boolean
+  value: BigInt #event --> null
+  decodedArgs: JSON
 }
 
-type CallNorm @entity {
+type SubstrateExtrinsic @entity {
   id: ID!
-  blockHash: String!
+  blockNumber: Int!
+  extrinsicHash: String!
   timestamp: DateTime! @index
-  name: String! @index
-  args: JSON
-  success: Boolean
-  origin: JSON
-}
-
-type AddressMapping @entity {
-  id: ID! @index
-  ss58: String
-}
-
-type Transaction @entity {
-  id: ID!
-  blockHash: String!
-  timestamp: DateTime! @index
-  hash: String!
-  type: EvmTransactionType!
-  label: EvmLabel! @index
-  from: String! @index
-  to: String @index
   fee: BigInt!
-  value: BigInt!
-  input: String!
-  deployedAddress: String
-  success: Boolean @index
-  sighash: String
-  transactionIndex: Int!
-  traceCreates: [TraceCreate!] @derivedFrom(field: "transaction")
-  traceCalls: [TraceCall!] @derivedFrom(field: "transaction")
-  traceSuicides: [TraceSuicide!] @derivedFrom(field: "transaction")
-  traceRewards: [TraceReward!] @derivedFrom(field: "transaction")
-}
-
-enum EvmTransactionType {
-  LEGACY
-  EIP1559
-  EIP2930
-}
-
-enum EvmLabel {
-  CONTRACT_DEPLOY
-  CONTRACT_CALL
-  NATIVE_TRANSFER
-}
-
-type Contract @entity {
-  id: ID!
-  createdBy: String @index
-  transaction: Transaction
-  createdTimestamp: DateTime @index
-}
-
-type TraceCreate @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  from: String! @index
-  fromType: AddressType
-  value: BigInt
-  gas: BigInt
-  init: String
-  gasUsed: BigInt
-  code: String
-  address: String
-}
-
-type TraceCall @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  from: String! @index
-  fromType: AddressType
-  to: String! @index
-  toType: AddressType
-  value: BigInt
-  gas: BigInt
-  sighash: String
-  input: String
-  gasUsed: BigInt
-  output: String
-}
-
-type TraceSuicide @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  address: String
-  refundAddress: String
-  balance: BigInt
-}
-
-type TraceReward @entity {
-  id: ID!
-  transaction: Transaction!
-  timestamp: DateTime! @index
-  subtraces: Int
-  error: String
-  author: String
-  value: BigInt
-  rewardType: String
-}
-
-enum AddressType {
-  EOA
-  CONTRACT
+  tip: BigInt
+  success: Boolean!
 }

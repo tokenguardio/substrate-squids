@@ -1,14 +1,18 @@
 manifestVersion: subsquid.io/v0.1
-name: substrate-template
+name: wasabi
 version: 1
-description: |-
-  The very first squid from manifest  
-build:
-
+description: Ink! contract indexing squid
+build: 
 deploy:
   addons:
-    postgres:
+    postgres: 
   processor:
-    cmd: [ "node", "lib/processor" ]
+    cmd:
+      - sqd
+      - process:prod
+    env:
+      RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}
   api:
-    cmd: [ "npx", "squid-graphql-server", "--dumb-cache", "in-memory", "--dumb-cache-ttl", "1000", "--dumb-cache-size", "100", "--dumb-cache-max-age", "1000" ]
+    cmd:
+      - sqd
+      - serve:prod
