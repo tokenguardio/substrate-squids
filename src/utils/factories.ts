@@ -1,7 +1,6 @@
-import { Block, Event, Call, Extrinsic } from "./../processor";
+import { Block, Event, Call } from "./../processor";
 import { DappActivity, DappActivityType, SubstrateExtrinsic } from "./../model";
-import * as ss58 from "@subsquid/ss58";
-import { SS58_NETWORK } from "../processor";
+import { fromHexToSs58 } from "./misc";
 
 export function createDappActivityEvent(
   block: Block,
@@ -17,8 +16,8 @@ export function createDappActivityEvent(
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappName: dappName,
-    caller: ss58.codec(SS58_NETWORK).encode(event.call?.origin?.value?.value),
-    contract: ss58.codec(SS58_NETWORK).encode(event.args.contract),
+    caller: fromHexToSs58(event.call?.origin?.value?.value),
+    contract: fromHexToSs58(event.args.contract),
     success: event.call?.success,
     type: DappActivityType.event,
     name: args.__kind,
@@ -41,8 +40,8 @@ export function createDappActivityCall(
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappName: dappName,
-    caller: ss58.codec(SS58_NETWORK).encode(call.origin?.value?.value),
-    contract: ss58.codec(SS58_NETWORK).encode(call.args.dest.value),
+    caller: fromHexToSs58(call.origin?.value?.value),
+    contract: fromHexToSs58(call.args.dest.value),
     success: call.success,
     type: DappActivityType.event,
     name: args.__kind,

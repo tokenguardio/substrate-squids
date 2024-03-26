@@ -10,11 +10,12 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 
-export const SS58_NETWORK = "substrate";
-export const DAPP_NAME = "AZERO.ID";
-
 export const processor = new SubstrateBatchProcessor()
-  .setGateway(lookupArchive("aleph-zero", { release: "ArrowSquid" }))
+  .setGateway(
+    lookupArchive(assertNotNull(process.env.ARCHIVE_NAME), {
+      release: "ArrowSquid",
+    })
+  )
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,

@@ -1,9 +1,9 @@
 import assert from "assert";
-import * as ss58 from "@subsquid/ss58";
+import { assertNotNull } from "@subsquid/util-internal";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { Abi as SubsquidAbi } from "@subsquid/ink-abi";
-import { convertUint8ArrayPropsToHex } from "./utils/utils";
-import { processor, DAPP_NAME, SS58_NETWORK } from "./processor";
+import { convertUint8ArrayPropsToHex, fromSs58ToHex } from "./utils/misc";
+import { processor } from "./processor";
 import { DappActivity, SubstrateExtrinsic, WasmContractAbi } from "./model";
 import {
   createDappActivityCall,
@@ -16,22 +16,26 @@ import {
   return this.toString();
 };
 
+const dappName = assertNotNull(process.env.DAPP_NAME);
+
 let abiInit = false;
 const abiMap = new Map<string, SubsquidAbi>();
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   if (!abiInit) {
     const abis = await ctx.store.findBy(WasmContractAbi, {
-      dappName: DAPP_NAME,
+      dappName: dappName,
     });
 
     if (!abis || abis.length === 0) {
-      throw new Error("Could not fetch abis");
+      throw new Error(`Could not fetch abis for ${dappName} dapp`);
     }
+
+    ctx.log.info(`Fetched ${abis.length} abis for ${dappName} dapp`);
 
     for (const abi of abis) {
       const subsquidAbi = new SubsquidAbi(abi.abi);
-      abiMap.set(ss58.codec(SS58_NETWORK).decode(abi.id), subsquidAbi);
+      abiMap.set(fromSs58ToHex(abi.id), subsquidAbi);
     }
 
     abiInit = true;
@@ -58,7 +62,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             block.header,
             event,
             contractEvent,
-            DAPP_NAME
+            dappName
           );
           dappActivities.push(dappActivityEvent);
         } catch (err) {
@@ -86,7 +90,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
             block.header,
             call,
             contractMessage,
-            DAPP_NAME
+            dappName
           );
           dappActivities.push(dappActivityCall);
         } catch (err) {
