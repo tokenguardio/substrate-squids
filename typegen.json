@@ -1,7 +1,14 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://moonbeam.archive.subsquid.io/graphql",
-  "events": true,
-  "calls": true,
-  "storage": []
+  "specVersions": "https://v2.archive.subsquid.io/metadata/moonbeam",
+  "pallets": {
+    "Balances": {
+      "events": true,
+      "calls": true
+    },
+    "System": {
+      "events": true,
+      "calls": true
+    }
+  }
 }
