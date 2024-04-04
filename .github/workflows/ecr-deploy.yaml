@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["arbitrum-one-mainnet-evm-contract-set"]
+    branches: ["arbitrum-one-mainnet-evm-contract-set-one-dapp"]
   pull_request:
-    branches: ["arbitrum-one-mainnet-evm-contract-set"]
+    branches: ["arbitrum-one-mainnet-evm-contract-set-one-dapp"]
   workflow_dispatch:
 
 jobs:
