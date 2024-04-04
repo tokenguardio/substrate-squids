@@ -28,9 +28,9 @@ export const processor = new EvmBatchProcessor()
   })
   .setFinalityConfirmation(75)
   // .addTransaction({ traces: true })
-  .addLog({
-    topic0: [erc20Abi.events.Transfer.topic],
-  })
+  // .addLog({
+  //   topic0: [erc20Abi.events.Transfer.topic],
+  // })
   .addTrace({
     callFrom: dappsLower,
     type: ["call"],
