@@ -43,7 +43,7 @@ export function createDappActivityCall(
     caller: fromHexToSs58(call.origin?.value?.value),
     contract: fromHexToSs58(call.args.dest.value),
     success: call.success,
-    type: DappActivityType.event,
+    type: DappActivityType.call,
     name: args.__kind,
     value: call.args.value,
     decodedArgs: args,
