@@ -2,6 +2,9 @@ type WasmContractAbi @entity {
   id: ID!
   dappName: String!
   abi: JSON!
+  label: String
+  fromBlock: BigInt
+  addedBy: String
 }
 
 enum DappActivityType {
