@@ -1,3 +1,5 @@
+import { NamedObject } from "@src/interfaces/misc";
+
 export function bufferToHex(buffer: Uint8Array): string {
   const hexString =
     "0x" +
@@ -19,4 +21,10 @@ export function removeDuplicates<T>(items: T[], key: keyof T): T[] {
     return !duplicate;
   });
   return filtered;
+}
+
+export function extractNamesFromObjects(objectsArray: NamedObject[]): string[] {
+  return objectsArray.flatMap((obj) =>
+    Object.values(obj).map((subObj) => subObj.name)
+  );
 }
