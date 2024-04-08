@@ -1,152 +1,137 @@
-import {
-  NominationPoolsBondedEvent,
-  NominationPoolsCreatedEvent,
-  NominationPoolsDestroyedEvent,
-  NominationPoolsMemberRemovedEvent,
-  NominationPoolsMinBalanceDeficitAdjustedEvent,
-  NominationPoolsMinBalanceExcessAdjustedEvent,
-  NominationPoolsPaidOutEvent,
-  NominationPoolsPoolCommissionChangeRateUpdatedEvent,
-  NominationPoolsPoolCommissionClaimedEvent,
-  NominationPoolsPoolCommissionUpdatedEvent,
-  NominationPoolsPoolMaxCommissionUpdatedEvent,
-  NominationPoolsPoolSlashedEvent,
-  NominationPoolsRolesUpdatedEvent,
-  NominationPoolsStateChangedEvent,
-  NominationPoolsUnbondedEvent,
-  NominationPoolsUnbondingPoolSlashedEvent,
-  NominationPoolsWithdrawnEvent,
-} from "../../../types/events";
-import { ChainContext, Event } from "../../../types/support";
+import { nominationPools } from "../../../types/events";
+import { Event } from "./../../../processor";
 import {
   UnknownEventVersionError,
   UnknownEventError,
 } from "../../../utils/errors";
 
-export function normalizeNominationPoolsEventsArgs(
-  ctx: ChainContext,
-  event: Event
-) {
-  let e;
+export function normalizeNominationPoolsEventsArgs(event: Event): any {
   switch (event.name) {
-    case "NominationPools.Bonded":
-      e = new NominationPoolsBondedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+    case nominationPools.bonded.name:
+      if (nominationPools.bonded.v9280.is(event)) {
+        return nominationPools.bonded.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.Created":
-      e = new NominationPoolsCreatedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.created.name:
+      if (nominationPools.created.v9280.is(event)) {
+        return nominationPools.created.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.Destroyed":
-      e = new NominationPoolsDestroyedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.destroyed.name:
+      if (nominationPools.destroyed.v9280.is(event)) {
+        return nominationPools.destroyed.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.MemberRemoved":
-      e = new NominationPoolsMemberRemovedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.memberRemoved.name:
+      if (nominationPools.memberRemoved.v9280.is(event)) {
+        return nominationPools.memberRemoved.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.MinBalanceDeficitAdjusted":
-      e = new NominationPoolsMinBalanceDeficitAdjustedEvent(ctx, event);
-      if (e.isV1001002) {
-        return event.args;
+
+    case nominationPools.minBalanceDeficitAdjusted.name:
+      if (nominationPools.minBalanceDeficitAdjusted.v1001002.is(event)) {
+        return nominationPools.minBalanceDeficitAdjusted.v1001002.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.MinBalanceExcessAdjusted":
-      e = new NominationPoolsMinBalanceExcessAdjustedEvent(ctx, event);
-      if (e.isV1001002) {
-        return event.args;
+
+    case nominationPools.minBalanceExcessAdjusted.name:
+      if (nominationPools.minBalanceExcessAdjusted.v1001002.is(event)) {
+        return nominationPools.minBalanceExcessAdjusted.v1001002.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.PaidOut":
-      e = new NominationPoolsPaidOutEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.paidOut.name:
+      if (nominationPools.paidOut.v9280.is(event)) {
+        return nominationPools.paidOut.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.PoolSlashed":
-      e = new NominationPoolsPoolSlashedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.poolSlashed.name:
+      if (nominationPools.poolSlashed.v9280.is(event)) {
+        return nominationPools.poolSlashed.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.RolesUpdated":
-      e = new NominationPoolsRolesUpdatedEvent(ctx, event);
-      if (e.isV9280) {
-        return { ...event.args, bouncer: null };
-      } else if (e.isV9420) {
-        return { ...event.args, stateToggler: null };
+
+    case nominationPools.rolesUpdated.name:
+      if (nominationPools.rolesUpdated.v9280.is(event)) {
+        return {
+          ...nominationPools.rolesUpdated.v9280.decode(event),
+          bouncer: null,
+        };
+      } else if (nominationPools.rolesUpdated.v9420.is(event)) {
+        return {
+          ...nominationPools.rolesUpdated.v9420.decode(event),
+          stateToggler: null,
+        };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.StateChanged":
-      e = new NominationPoolsStateChangedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.stateChanged.name:
+      if (nominationPools.stateChanged.v9280.is(event)) {
+        return nominationPools.stateChanged.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.Unbonded":
-      e = new NominationPoolsUnbondedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.unbonded.name:
+      if (nominationPools.unbonded.v9280.is(event)) {
+        return nominationPools.unbonded.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.UnbondingPoolSlashed":
-      e = new NominationPoolsUnbondingPoolSlashedEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.unbondingPoolSlashed.name:
+      if (nominationPools.unbondingPoolSlashed.v9280.is(event)) {
+        return nominationPools.unbondingPoolSlashed.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.Withdrawn":
-      e = new NominationPoolsWithdrawnEvent(ctx, event);
-      if (e.isV9280) {
-        return event.args;
+
+    case nominationPools.withdrawn.name:
+      if (nominationPools.withdrawn.v9280.is(event)) {
+        return nominationPools.withdrawn.v9280.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.PoolCommissionChangeRateUpdated":
-      e = new NominationPoolsPoolCommissionChangeRateUpdatedEvent(ctx, event);
-      if (e.isV9420) {
-        return event.args;
+
+    case nominationPools.poolCommissionChangeRateUpdated.name:
+      if (nominationPools.poolCommissionChangeRateUpdated.v9420.is(event)) {
+        return nominationPools.poolCommissionChangeRateUpdated.v9420.decode(
+          event
+        );
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.PoolCommissionClaimed":
-      e = new NominationPoolsPoolCommissionClaimedEvent(ctx, event);
-      if (e.isV9420) {
-        return event.args;
+
+    case nominationPools.poolCommissionClaimed.name:
+      if (nominationPools.poolCommissionClaimed.v9420.is(event)) {
+        return nominationPools.poolCommissionClaimed.v9420.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.PoolCommissionUpdated":
-      e = new NominationPoolsPoolCommissionUpdatedEvent(ctx, event);
-      if (e.isV9420) {
-        return event.args;
+
+    case nominationPools.poolCommissionUpdated.name:
+      if (nominationPools.poolCommissionUpdated.v9420.is(event)) {
+        return nominationPools.poolCommissionUpdated.v9420.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "NominationPools.PoolMaxCommissionUpdated":
-      e = new NominationPoolsPoolMaxCommissionUpdatedEvent(ctx, event);
-      if (e.isV9420) {
-        return event.args;
+
+    case nominationPools.poolMaxCommissionUpdated.name:
+      if (nominationPools.poolMaxCommissionUpdated.v9420.is(event)) {
+        return nominationPools.poolMaxCommissionUpdated.v9420.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }

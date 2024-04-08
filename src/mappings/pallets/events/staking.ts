@@ -1,273 +1,204 @@
-import {
-  StakingBondedEvent,
-  StakingChilledEvent,
-  StakingEraPaidEvent,
-  StakingEraPayoutEvent,
-  StakingForceEraEvent,
-  StakingKickedEvent,
-  StakingOldSlashingReportDiscardedEvent,
-  StakingPayoutStartedEvent,
-  StakingRewardEvent,
-  StakingRewardedEvent,
-  StakingSlashEvent,
-  StakingSlashReportedEvent,
-  StakingSlashedEvent,
-  StakingSnapshotTargetsSizeExceededEvent,
-  StakingSnapshotVotersSizeExceededEvent,
-  StakingSolutionStoredEvent,
-  StakingStakersElectedEvent,
-  StakingStakingElectionEvent,
-  StakingStakingElectionFailedEvent,
-  StakingUnbondedEvent,
-  StakingValidatorPrefsSetEvent,
-  StakingWithdrawnEvent,
-} from "../../../types/events";
-import { ChainContext, Event } from "../../../types/support";
-import { bufferToHex } from "../../../utils/utils";
+import { staking } from "../../../types/events";
+import { Event } from "./../../../processor";
 import {
   UnknownEventVersionError,
   UnknownEventError,
 } from "../../../utils/errors";
 
-export function normalizeStakingEventsArgs(ctx: ChainContext, event: Event) {
-  let e;
+export function normalizeStakingEventsArgs(event: Event): any {
   switch (event.name) {
-    case "Staking.Bonded":
-      e = new StakingBondedEvent(ctx, event);
-      if (e.isV0) {
-        let [stash, amount] = e.asV0;
+    case staking.bonded.name:
+      if (staking.bonded.v0.is(event)) {
+        const [stash, amount] = staking.bonded.v0.decode(event);
+        return { stash, amount };
+      } else if (staking.bonded.v9300.is(event)) {
+        return staking.bonded.v9300.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.chilled.name:
+      if (staking.chilled.v9090.is(event)) {
+        return { stash: staking.chilled.v9090.decode(event) };
+      } else if (staking.chilled.v9300.is(event)) {
+        return staking.chilled.v9300.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.eraPaid.name:
+      if (staking.eraPaid.v9090.is(event)) {
+        const [eraIndex, validatorPayout, remainder] =
+          staking.eraPaid.v9090.decode(event);
+        return { eraIndex, validatorPayout, remainder };
+      } else if (staking.eraPaid.v9300.is(event)) {
+        return staking.eraPaid.v9300.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.eraPayout.name:
+      if (staking.eraPayout.v0.is(event)) {
+        const [eraIndex, validatorPayout, remainder] =
+          staking.eraPayout.v0.decode(event);
+        return { eraIndex, validatorPayout, remainder };
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.forceEra.name:
+      if (staking.forceEra.v9370.is(event)) {
+        return staking.forceEra.v9370.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.kicked.name:
+      if (staking.kicked.v28.is(event)) {
+        const [nominator, stash] = staking.kicked.v28.decode(event);
+        return { nominator, stash };
+      } else if (staking.kicked.v9300.is(event)) {
+        return staking.kicked.v9300.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.oldSlashingReportDiscarded.name:
+      if (staking.oldSlashingReportDiscarded.v0.is(event)) {
         return {
-          stash: bufferToHex(stash),
-          amount,
+          sessionIndex: staking.oldSlashingReportDiscarded.v0.decode(event),
         };
-      } else if (e.isV9300) {
-        return event.args;
+      } else if (staking.oldSlashingReportDiscarded.v9300.is(event)) {
+        return staking.oldSlashingReportDiscarded.v9300.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.Chilled":
-      e = new StakingChilledEvent(ctx, event);
-      if (e.isV9090) {
-        let stash = e.asV9090;
-        return {
-          stash: bufferToHex(stash),
-        };
-      } else if (e.isV9300) {
-        return event.args;
+
+    case staking.payoutStarted.name:
+      if (staking.payoutStarted.v9090.is(event)) {
+        const [eraIndex, validatorStash] =
+          staking.payoutStarted.v9090.decode(event);
+        return { eraIndex, validatorStash };
+      } else if (staking.payoutStarted.v9300.is(event)) {
+        return staking.payoutStarted.v9300.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.EraPaid":
-      e = new StakingEraPaidEvent(ctx, event);
-      if (e.isV9090) {
-        let [eraIndex, validatorPayout, remainder] = e.asV9090;
-        return {
-          eraIndex,
-          validatorPayout,
-          remainder,
-        };
-      } else if (e.isV9300) {
-        return event.args;
+
+    case staking.reward.name:
+      if (staking.reward.v0.is(event)) {
+        const [stash, amount] = staking.reward.v0.decode(event);
+        return { stash, amount };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.EraPayout":
-      e = new StakingEraPayoutEvent(ctx, event);
-      if (e.isV0) {
-        let [eraIndex, validatorPayout, remainder] = e.asV0;
-        return {
-          eraIndex,
-          validatorPayout,
-          remainder,
-        };
+
+    case staking.rewarded.name:
+      if (staking.rewarded.v9090.is(event)) {
+        const [stash, amount] = staking.rewarded.v9090.decode(event);
+        return { stash, amount };
+      } else if (staking.rewarded.v9300.is(event)) {
+        return staking.rewarded.v9300.decode(event);
+      } else if (staking.rewarded.v1001002.is(event)) {
+        return staking.rewarded.v1001002.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.ForceEra":
-      e = new StakingForceEraEvent(ctx, event);
-      if (e.isV9370) {
-        return event.args;
+    case staking.slash.name:
+      if (staking.slash.v0.is(event)) {
+        const [validator, amount] = staking.slash.v0.decode(event);
+        return { validator, amount };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.Kicked":
-      e = new StakingKickedEvent(ctx, event);
-      if (e.isV28) {
-        let [nominator, stash] = e.asV28;
-        return {
-          nominator: bufferToHex(nominator),
-          stash: bufferToHex(stash),
-        };
-      } else if (e.isV9300) {
-        return event.args;
+
+    case staking.slashReported.name:
+      if (staking.slashReported.v9360.is(event)) {
+        return staking.slashReported.v9360.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.OldSlashingReportDiscarded":
-      e = new StakingOldSlashingReportDiscardedEvent(ctx, event);
-      if (e.isV0) {
-        let sessionIndex = e.asV0;
-        return {
-          sessionIndex,
-        };
-      } else if (e.isV9300) {
-        return event.args;
+
+    case staking.slashed.name:
+      if (staking.slashed.v9090.is(event)) {
+        const [validator, amount] = staking.slashed.v9090.decode(event);
+        return { validator, amount };
+      } else if (staking.slashed.v9300.is(event)) {
+        return staking.slashed.v9300.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.PayoutStarted":
-      e = new StakingPayoutStartedEvent(ctx, event);
-      if (e.isV9090) {
-        let [eraIndex, validatorStash] = e.asV9090;
-        return {
-          eraIndex,
-          validatorStash: bufferToHex(validatorStash),
-        };
-      } else if (e.isV9300) {
-        return event.args;
+
+    case staking.snapshotTargetsSizeExceeded.name:
+      if (staking.snapshotTargetsSizeExceeded.v1000001.is(event)) {
+        return staking.snapshotTargetsSizeExceeded.v1000001.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.Reward":
-      e = new StakingRewardEvent(ctx, event);
-      if (e.isV0) {
-        let [stash, amount] = e.asV0;
-        return {
-          stash: bufferToHex(stash),
-          amount,
-        };
+
+    case staking.snapshotVotersSizeExceeded.name:
+      if (staking.snapshotVotersSizeExceeded.v1000001.is(event)) {
+        return staking.snapshotVotersSizeExceeded.v1000001.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.Rewarded":
-      e = new StakingRewardedEvent(ctx, event);
-      if (e.isV9090) {
-        let [stash, amount] = e.asV9090;
-        return {
-          stash: bufferToHex(stash),
-          amount,
-        };
-      } else if (e.isV9300) {
-        return event.args;
-      } else if (e.isV1001002) {
-        return event.args;
+
+    case staking.solutionStored.name:
+      if (staking.solutionStored.v0.is(event)) {
+        return { electionCompute: staking.solutionStored.v0.decode(event) };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.Slash":
-      e = new StakingSlashEvent(ctx, event);
-      if (e.isV0) {
-        let [validator, amount] = e.asV0;
-        return {
-          validator: bufferToHex(validator),
-          amount,
-        };
+
+    case staking.stakersElected.name:
+      if (staking.stakersElected.v9090.is(event)) {
+        return staking.stakersElected.v9090.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.SlashReported":
-      e = new StakingSlashReportedEvent(ctx, event);
-      if (e.isV9360) {
-        return event.args;
+
+    case staking.stakingElection.name:
+      if (staking.stakingElection.v0.is(event)) {
+        return staking.stakingElection.v0.decode(event);
+      } else if (staking.stakingElection.v30.is(event)) {
+        return staking.stakingElection.v30.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.Slashed":
-      e = new StakingSlashedEvent(ctx, event);
-      if (e.isV9090) {
-        let [validator, amount] = e.asV9090;
-        return {
-          staker: bufferToHex(validator),
-          amount,
-        };
-      } else if (e.isV9300) {
-        return event.args;
+
+    case staking.stakingElectionFailed.name:
+      if (staking.stakingElectionFailed.v9050.is(event)) {
+        return staking.stakingElectionFailed.v9050.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.SnapshotTargetsSizeExceeded":
-      e = new StakingSnapshotTargetsSizeExceededEvent(ctx, event);
-      if (e.isV1000001) {
-        return event.args;
+
+    case staking.unbonded.name:
+      if (staking.unbonded.v0.is(event)) {
+        const [stash, amount] = staking.unbonded.v0.decode(event);
+        return { stash, amount };
+      } else if (staking.unbonded.v9300.is(event)) {
+        return staking.unbonded.v9300.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.SnapshotVotersSizeExceeded":
-      e = new StakingSnapshotVotersSizeExceededEvent(ctx, event);
-      if (e.isV1000001) {
-        return event.args;
+
+    case staking.validatorPrefsSet.name:
+      if (staking.validatorPrefsSet.v9200.is(event)) {
+        const [stash, prefs] = staking.validatorPrefsSet.v9200.decode(event);
+        return { stash, prefs };
+      } else if (staking.validatorPrefsSet.v9300.is(event)) {
+        return staking.validatorPrefsSet.v9300.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Staking.SolutionStored":
-      e = new StakingSolutionStoredEvent(ctx, event);
-      if (e.isV0) {
-        let electionCompute = e.asV0;
-        return {
-          electionCompute,
-        };
-      } else {
-        throw new UnknownEventVersionError(event.name);
-      }
-    case "Staking.StakersElected":
-      e = new StakingStakersElectedEvent(ctx, event);
-      if (e.isV9090) {
-        return event.args;
-      } else {
-        throw new UnknownEventVersionError(event.name);
-      }
-    case "Staking.StakingElection":
-      e = new StakingStakingElectionEvent(ctx, event);
-      if (e.isV0) {
-        return null;
-      } else if (e.isV30) {
-        return event.args;
-      } else {
-        throw new UnknownEventVersionError(event.name);
-      }
-    case "Staking.StakingElectionFailed":
-      e = new StakingStakingElectionFailedEvent(ctx, event);
-      if (e.isV9050) {
-        return event.args;
-      } else {
-        throw new UnknownEventVersionError(event.name);
-      }
-    case "Staking.Unbonded":
-      e = new StakingUnbondedEvent(ctx, event);
-      if (e.isV0) {
-        let [stash, amount] = e.asV0;
-        return {
-          stash: bufferToHex(stash),
-          amount,
-        };
-      } else if (e.isV9300) {
-        return event.args;
-      } else {
-        throw new UnknownEventVersionError(event.name);
-      }
-    case "Staking.ValidatorPrefsSet":
-      e = new StakingValidatorPrefsSetEvent(ctx, event);
-      if (e.isV9200) {
-        let [stash, prefs] = e.asV9200;
-        return {
-          stash: bufferToHex(stash),
-          prefs,
-        };
-      } else if (e.isV9300) {
-        return event.args;
-      } else {
-        throw new UnknownEventVersionError(event.name);
-      }
-    case "Staking.Withdrawn":
-      e = new StakingWithdrawnEvent(ctx, event);
-      if (e.isV0) {
-        let [stash, amount] = e.asV0;
-        return {
-          stash: bufferToHex(stash),
-          amount,
-        };
-      } else if (e.isV9300) {
-        return event.args;
+
+    case staking.withdrawn.name:
+      if (staking.withdrawn.v0.is(event)) {
+        const [stash, amount] = staking.withdrawn.v0.decode(event);
+        return { stash, amount };
+      } else if (staking.withdrawn.v9300.is(event)) {
+        return staking.withdrawn.v9300.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }

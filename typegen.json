@@ -1,7 +1,19 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://polkadot.archive.subsquid.io/graphql",
-  "events": true,
-  "calls": true,
-  "storage": []
+  "specVersions": "https://v2.archive.subsquid.io/metadata/polkadot",
+  "pallets": {
+    "Balances": {
+      "events": true
+    },
+    "System": {
+      "events": true
+    },
+    "NominationPools": {
+      "events": true,
+      "calls": true
+    },
+    "Staking": {
+      "events": true
+    }
+  }
 }
