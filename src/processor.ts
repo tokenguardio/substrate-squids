@@ -10,6 +10,21 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { nominationPools as nominationPoolsCalls } from "./types/calls";
+import {
+  balances,
+  nominationPools as nominationPoolsEvents,
+  staking,
+  system,
+} from "./types/events";
+import { extractNamesFromObjects } from "./utils/misc";
+
+const callNames = extractNamesFromObjects([nominationPoolsCalls]);
+const eventNames = extractNamesFromObjects([
+  balances,
+  nominationPoolsEvents,
+  staking,
+  system,
+]);
 
 export const processor = new SubstrateBatchProcessor()
   .setGateway(
@@ -23,8 +38,8 @@ export const processor = new SubstrateBatchProcessor()
     rateLimit: 10,
   })
   .setRpcDataIngestionSettings({ disabled: true })
-  .addEvent({ extrinsic: true })
-  .addCall({})
+  .addEvent({ name: eventNames, extrinsic: true })
+  .addCall({ name: callNames })
   .setFields({
     block: {
       timestamp: true,
