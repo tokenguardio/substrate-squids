@@ -68,7 +68,7 @@ export const processor = new SubstrateBatchProcessor()
       ? Number(process.env.BLOCK_RANGE_TO)
       : undefined,
   })
-  .setTypesBundle(process.env.TYPES_BUNDLE_FILE ?? "typesBundle.json");
+  .setTypesBundle(process.env.TYPES_BUNDLE_FILE ?? "assets/typesBundle.json");
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
