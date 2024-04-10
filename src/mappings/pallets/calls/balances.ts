@@ -1,100 +1,90 @@
+import { balances } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
-  BalancesForceSetBalanceCall,
-  BalancesForceTransferCall,
-  BalancesForceUnreserveCall,
-  BalancesSetBalanceCall,
-  BalancesSetBalanceDeprecatedCall,
-  BalancesTransferCall,
-  BalancesTransferAllCall,
-  BalancesTransferAllowDeathCall,
-  BalancesTransferKeepAliveCall,
-  BalancesUpgradeAccountsCall,
-} from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
-import { UnknownVersionError, UnknownCallError } from "../../../utils/errors";
+  UnknownCallVersionError,
+  UnknownCallError,
+} from "../../../utils/errors";
 
-export function normalizeBalancesCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeBalancesCallsArgs(call: Call): any {
   switch (call.name) {
-    case "Balances.force_set_balance":
-      e = new BalancesForceSetBalanceCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+    case balances.forceSetBalance.name:
+      if (balances.forceSetBalance.v68.is(call)) {
+        return balances.forceSetBalance.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.force_transfer":
-      e = new BalancesForceTransferCall(ctx, call);
-      if (e.isV3) {
-        return call.args;
-      } else if (e.isV12) {
-        return call.args;
+
+    case balances.forceTransfer.name:
+      if (balances.forceTransfer.v3.is(call)) {
+        return balances.forceTransfer.v3.decode(call);
+      } else if (balances.forceTransfer.v12.is(call)) {
+        return balances.forceTransfer.v12.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.force_unreserve":
-      e = new BalancesForceUnreserveCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case balances.forceUnreserve.name:
+      if (balances.forceUnreserve.v12.is(call)) {
+        return balances.forceUnreserve.v12.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.set_balance":
-      e = new BalancesSetBalanceCall(ctx, call);
-      if (e.isV3) {
-        return call.args;
-      } else if (e.isV12) {
-        return call.args;
+
+    case balances.setBalance.name:
+      if (balances.setBalance.v3.is(call)) {
+        return balances.setBalance.v3.decode(call);
+      } else if (balances.setBalance.v12.is(call)) {
+        return balances.setBalance.v12.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.set_balance_deprecated":
-      e = new BalancesSetBalanceDeprecatedCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case balances.setBalanceDeprecated.name:
+      if (balances.setBalanceDeprecated.v68.is(call)) {
+        return balances.setBalanceDeprecated.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.transfer":
-      e = new BalancesTransferCall(ctx, call);
-      if (e.isV3) {
-        return call.args;
-      } else if (e.isV12) {
-        return call.args;
+
+    case balances.transfer.name:
+      if (balances.transfer.v3.is(call)) {
+        return balances.transfer.v3.decode(call);
+      } else if (balances.transfer.v12.is(call)) {
+        return balances.transfer.v12.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.transfer_all":
-      e = new BalancesTransferAllCall(ctx, call);
-      if (e.isV3) {
-        return call.args;
-      } else if (e.isV12) {
-        return call.args;
+
+    case balances.transferAll.name:
+      if (balances.transferAll.v3.is(call)) {
+        return balances.transferAll.v3.decode(call);
+      } else if (balances.transferAll.v12.is(call)) {
+        return balances.transferAll.v12.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.transfer_allow_death":
-      e = new BalancesTransferAllowDeathCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case balances.transferAllowDeath.name:
+      if (balances.transferAllowDeath.v68.is(call)) {
+        return balances.transferAllowDeath.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.transfer_keep_alive":
-      e = new BalancesTransferKeepAliveCall(ctx, call);
-      if (e.isV3) {
-        return call.args;
-      } else if (e.isV12) {
-        return call.args;
+
+    case balances.transferKeepAlive.name:
+      if (balances.transferKeepAlive.v3.is(call)) {
+        return balances.transferKeepAlive.v3.decode(call);
+      } else if (balances.transferKeepAlive.v12.is(call)) {
+        return balances.transferKeepAlive.v12.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "Balances.upgrade_accounts":
-      e = new BalancesUpgradeAccountsCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case balances.upgradeAccounts.name:
+      if (balances.upgradeAccounts.v68.is(call)) {
+        return balances.upgradeAccounts.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
 
     default:

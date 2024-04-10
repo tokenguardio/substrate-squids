@@ -1,233 +1,182 @@
+import { balances } from "../../../types/events";
+import { Event } from "../../../processor";
 import {
-  BalancesBalanceSetEvent,
-  BalancesBurnedEvent,
-  BalancesDepositEvent,
-  BalancesDustLostEvent,
-  BalancesEndowedEvent,
-  BalancesFrozenEvent,
-  BalancesIssuedEvent,
-  BalancesLockedEvent,
-  BalancesMintedEvent,
-  BalancesRescindedEvent,
-  BalancesReserveRepatriatedEvent,
-  BalancesReservedEvent,
-  BalancesRestoredEvent,
-  BalancesSlashedEvent,
-  BalancesSuspendedEvent,
-  BalancesThawedEvent,
-  BalancesTransferEvent,
-  BalancesUnlockedEvent,
-  BalancesUnreservedEvent,
-  BalancesUpgradedEvent,
-  BalancesWithdrawEvent,
-} from "../../../types/events";
-import { ChainContext, Event } from "../../../types/support";
-import { bufferToHex } from "../../../utils/utils";
-import { UnknownVersionError, UnknownEventError } from "../../../utils/errors";
+  UnknownEventVersionError,
+  UnknownEventError,
+} from "../../../utils/errors";
 
-export function normalizeBalancesEventsArgs(ctx: ChainContext, event: Event) {
-  let e;
+export function normalizeBalancesEventsArgs(event: Event): any {
   switch (event.name) {
-    case "Balances.BalanceSet":
-      e = new BalancesBalanceSetEvent(ctx, event);
-      if (e.isV3) {
-        let [who, free, reserved] = e.asV3;
-        return {
-          who: bufferToHex(who),
-          free,
-          reserved,
-        };
-      } else if (e.isV12) {
-        return event.args;
-      } else if (e.isV68) {
-        return event.args;
+    case balances.balanceSet.name:
+      if (balances.balanceSet.v3.is(event)) {
+        const [who, free, reserved] = balances.balanceSet.v3.decode(event);
+        return { who, free, reserved };
+      } else if (balances.balanceSet.v12.is(event)) {
+        return balances.balanceSet.v12.decode(event);
+      } else if (balances.balanceSet.v68.is(event)) {
+        return balances.balanceSet.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Burned":
-      e = new BalancesBurnedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.burned.name:
+      if (balances.burned.v68.is(event)) {
+        return balances.burned.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Deposit":
-      e = new BalancesDepositEvent(ctx, event);
-      if (e.isV3) {
-        let [who, deposit] = e.asV3;
-        return {
-          who: bufferToHex(who),
-          amount: deposit,
-        };
-      } else if (e.isV12) {
-        return event.args;
+
+    case balances.deposit.name:
+      if (balances.deposit.v3.is(event)) {
+        const [who, deposit] = balances.deposit.v3.decode(event);
+        return { who, amount: deposit };
+      } else if (balances.deposit.v12.is(event)) {
+        return balances.deposit.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.DustLost":
-      e = new BalancesDustLostEvent(ctx, event);
-      if (e.isV3) {
-        let [account, balance] = e.asV3;
-        return {
-          account: bufferToHex(account),
-          amount: balance,
-        };
-      } else if (e.isV12) {
-        return event.args;
+
+    case balances.dustLost.name:
+      if (balances.dustLost.v3.is(event)) {
+        const [account, balance] = balances.dustLost.v3.decode(event);
+        return { account, amount: balance };
+      } else if (balances.dustLost.v12.is(event)) {
+        return balances.dustLost.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Endowed":
-      e = new BalancesEndowedEvent(ctx, event);
-      if (e.isV3) {
-        let [account, freeBalance] = e.asV3;
-        return {
-          account: bufferToHex(account),
-          freeBalance,
-        };
-      } else if (e.isV12) {
-        return event.args;
+
+    case balances.endowed.name:
+      if (balances.endowed.v3.is(event)) {
+        const [account, freeBalance] = balances.endowed.v3.decode(event);
+        return { account, freeBalance };
+      } else if (balances.endowed.v12.is(event)) {
+        return balances.endowed.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Frozen":
-      e = new BalancesFrozenEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.frozen.name:
+      if (balances.frozen.v68.is(event)) {
+        return balances.frozen.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Issued":
-      e = new BalancesIssuedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.issued.name:
+      if (balances.issued.v68.is(event)) {
+        return balances.issued.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Locked":
-      e = new BalancesLockedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.locked.name:
+      if (balances.locked.v68.is(event)) {
+        return balances.locked.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Minted":
-      e = new BalancesMintedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.minted.name:
+      if (balances.minted.v68.is(event)) {
+        return balances.minted.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Rescinded":
-      e = new BalancesRescindedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.rescinded.name:
+      if (balances.rescinded.v68.is(event)) {
+        return balances.rescinded.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.ReserveRepatriated":
-      e = new BalancesReserveRepatriatedEvent(ctx, event);
-      if (e.isV3) {
-        let [from, to, balance, destinationStatus] = e.asV3;
-        return {
-          from: bufferToHex(from),
-          to: bufferToHex(to),
-          amount: balance,
-          destinationStatus,
-        };
-      } else if (e.isV12) {
-        return event.args;
+    case balances.reserveRepatriated.name:
+      if (balances.reserveRepatriated.v3.is(event)) {
+        const [from, to, amount, destinationStatus] =
+          balances.reserveRepatriated.v3.decode(event);
+        return { from, to, amount, destinationStatus };
+      } else if (balances.reserveRepatriated.v12.is(event)) {
+        return balances.reserveRepatriated.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Reserved":
-      e = new BalancesReservedEvent(ctx, event);
-      if (e.isV3) {
-        let [who, value] = e.asV3;
-        return {
-          who: bufferToHex(who),
-          amount: value,
-        };
-      } else if (e.isV12) {
-        return event.args;
+
+    case balances.reserved.name:
+      if (balances.reserved.v3.is(event)) {
+        const [who, value] = balances.reserved.v3.decode(event);
+        return { who, amount: value };
+      } else if (balances.reserved.v12.is(event)) {
+        return balances.reserved.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Restored":
-      e = new BalancesRestoredEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+    case balances.restored.name:
+      if (balances.restored.v68.is(event)) {
+        return balances.restored.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Slashed":
-      e = new BalancesSlashedEvent(ctx, event);
-      if (e.isV12) {
-        return event.args;
+
+    case balances.slashed.name:
+      if (balances.slashed.v12.is(event)) {
+        return balances.slashed.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Suspended":
-      e = new BalancesSuspendedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.suspended.name:
+      if (balances.suspended.v68.is(event)) {
+        return balances.suspended.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Thawed":
-      e = new BalancesThawedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.thawed.name:
+      if (balances.thawed.v68.is(event)) {
+        return balances.thawed.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Transfer":
-      e = new BalancesTransferEvent(ctx, event);
-      if (e.isV3) {
-        let [from, to, value] = e.asV3;
-        return {
-          from: bufferToHex(from),
-          to: bufferToHex(to),
-          amount: value,
-        };
-      } else if (e.isV12) {
-        return event.args;
+
+    case balances.transfer.name:
+      if (balances.transfer.v3.is(event)) {
+        const [from, to, amount] = balances.transfer.v3.decode(event);
+        return { from, to, amount };
+      } else if (balances.transfer.v12.is(event)) {
+        return balances.transfer.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Unlocked":
-      e = new BalancesUnlockedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.unlocked.name:
+      if (balances.unlocked.v68.is(event)) {
+        return balances.unlocked.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Unreserved":
-      e = new BalancesUnreservedEvent(ctx, event);
-      if (e.isV3) {
-        let [who, value] = e.asV3;
-        return {
-          who: bufferToHex(who),
-          amount: value,
-        };
-      } else if (e.isV12) {
-        return event.args;
+
+    case balances.unreserved.name:
+      if (balances.unreserved.v3.is(event)) {
+        const [who, amount] = balances.unreserved.v3.decode(event);
+        return { who, amount };
+      } else if (balances.unreserved.v12.is(event)) {
+        return balances.unreserved.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Upgraded":
-      e = new BalancesUpgradedEvent(ctx, event);
-      if (e.isV68) {
-        return event.args;
+
+    case balances.upgraded.name:
+      if (balances.upgraded.v68.is(event)) {
+        return balances.upgraded.v68.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "Balances.Withdraw":
-      e = new BalancesWithdrawEvent(ctx, event);
-      if (e.isV12) {
-        return event.args;
+
+    case balances.withdraw.name:
+      if (balances.withdraw.v12.is(event)) {
+        return balances.withdraw.v12.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
 
     default:

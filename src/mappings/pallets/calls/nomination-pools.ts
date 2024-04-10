@@ -1,195 +1,171 @@
+import { nominationPools } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
-  NominationPoolsBondExtraCall,
-  NominationPoolsBondExtraOtherCall,
-  NominationPoolsChillCall,
-  NominationPoolsClaimCommissionCall,
-  NominationPoolsClaimPayoutCall,
-  NominationPoolsClaimPayoutOtherCall,
-  NominationPoolsCreateCall,
-  NominationPoolsCreateWithPoolIdCall,
-  NominationPoolsJoinCall,
-  NominationPoolsNominateCall,
-  NominationPoolsPoolWithdrawUnbondedCall,
-  NominationPoolsSetClaimPermissionCall,
-  NominationPoolsSetCommissionCall,
-  NominationPoolsSetCommissionChangeRateCall,
-  NominationPoolsSetCommissionMaxCall,
-  NominationPoolsSetConfigsCall,
-  NominationPoolsSetMetadataCall,
-  NominationPoolsSetStateCall,
-  NominationPoolsUnbondCall,
-  NominationPoolsUpdateRolesCall,
-  NominationPoolsWithdrawUnbondedCall,
-} from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
-import { UnknownVersionError, UnknownCallError } from "../../../utils/errors";
+  UnknownCallVersionError,
+  UnknownCallError,
+} from "../../../utils/errors";
 
-export function normalizeNominationPoolsCallsArgs(
-  ctx: ChainContext,
-  call: Call
-) {
-  let e;
+export function normalizeNominationPoolsCallsArgs(call: Call): any {
   switch (call.name) {
-    case "NominationPools.bond_extra":
-      e = new NominationPoolsBondExtraCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+    case nominationPools.bondExtra.name:
+      if (nominationPools.bondExtra.v39.is(call)) {
+        return nominationPools.bondExtra.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.bond_extra_other":
-      e = new NominationPoolsBondExtraOtherCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case nominationPools.bondExtraOther.name:
+      if (nominationPools.bondExtraOther.v68.is(call)) {
+        return nominationPools.bondExtraOther.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.chill":
-      e = new NominationPoolsChillCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+
+    case nominationPools.chill.name:
+      if (nominationPools.chill.v39.is(call)) {
+        return nominationPools.chill.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.claim_commission":
-      e = new NominationPoolsClaimCommissionCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case nominationPools.claimCommission.name:
+      if (nominationPools.claimCommission.v68.is(call)) {
+        return nominationPools.claimCommission.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.claim_payout":
-      e = new NominationPoolsClaimPayoutCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+
+    case nominationPools.claimPayout.name:
+      if (nominationPools.claimPayout.v39.is(call)) {
+        return nominationPools.claimPayout.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.claim_payout_other":
-      e = new NominationPoolsClaimPayoutOtherCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case nominationPools.claimPayoutOther.name:
+      if (nominationPools.claimPayoutOther.v68.is(call)) {
+        return nominationPools.claimPayoutOther.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.create":
-      e = new NominationPoolsCreateCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
-      } else if (e.isV58) {
-        return call.args;
-      } else if (e.isV68) {
-        return call.args;
+
+    case nominationPools.create.name:
+      if (nominationPools.create.v39.is(call)) {
+        return nominationPools.create.v39.decode(call);
+      } else if (nominationPools.create.v58.is(call)) {
+        return nominationPools.create.v58.decode(call);
+      } else if (nominationPools.create.v68.is(call)) {
+        return nominationPools.create.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.create_with_pool_id":
-      e = new NominationPoolsCreateWithPoolIdCall(ctx, call);
-      if (e.isV59) {
-        return call.args;
-      } else if (e.isV68) {
-        return call.args;
+
+    case nominationPools.createWithPoolId.name:
+      if (nominationPools.createWithPoolId.v59.is(call)) {
+        return nominationPools.createWithPoolId.v59.decode(call);
+      } else if (nominationPools.createWithPoolId.v68.is(call)) {
+        return nominationPools.createWithPoolId.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.join":
-      e = new NominationPoolsJoinCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+
+    case nominationPools.join.name:
+      if (nominationPools.join.v39.is(call)) {
+        return nominationPools.join.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.nominate":
-      e = new NominationPoolsNominateCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+
+    case nominationPools.nominate.name:
+      if (nominationPools.nominate.v39.is(call)) {
+        return nominationPools.nominate.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.pool_withdraw_unbonded":
-      e = new NominationPoolsPoolWithdrawUnbondedCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+
+    case nominationPools.poolWithdrawUnbonded.name:
+      if (nominationPools.poolWithdrawUnbonded.v39.is(call)) {
+        return nominationPools.poolWithdrawUnbonded.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.set_claim_permission":
-      e = new NominationPoolsSetClaimPermissionCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case nominationPools.setClaimPermission.name:
+      if (nominationPools.setClaimPermission.v68.is(call)) {
+        return nominationPools.setClaimPermission.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.set_commission":
-      e = new NominationPoolsSetCommissionCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case nominationPools.setCommission.name:
+      if (nominationPools.setCommission.v68.is(call)) {
+        return nominationPools.setCommission.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.set_commission_change_rate":
-      e = new NominationPoolsSetCommissionChangeRateCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case nominationPools.setCommissionChangeRate.name:
+      if (nominationPools.setCommissionChangeRate.v68.is(call)) {
+        return nominationPools.setCommissionChangeRate.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.set_commission_max":
-      e = new NominationPoolsSetCommissionMaxCall(ctx, call);
-      if (e.isV68) {
-        return call.args;
+
+    case nominationPools.setCommissionMax.name:
+      if (nominationPools.setCommissionMax.v68.is(call)) {
+        return nominationPools.setCommissionMax.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.set_configs":
-      e = new NominationPoolsSetConfigsCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
-      } else if (e.isV68) {
-        return call.args;
+
+    case nominationPools.setConfigs.name:
+      if (nominationPools.setConfigs.v39.is(call)) {
+        return nominationPools.setConfigs.v39.decode(call);
+      } else if (nominationPools.setConfigs.v68.is(call)) {
+        return nominationPools.setConfigs.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.set_metadata":
-      e = new NominationPoolsSetMetadataCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+
+    case nominationPools.setMetadata.name:
+      if (nominationPools.setMetadata.v39.is(call)) {
+        return nominationPools.setMetadata.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.set_state":
-      e = new NominationPoolsSetStateCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
+
+    case nominationPools.setState.name:
+      if (nominationPools.setState.v39.is(call)) {
+        return nominationPools.setState.v39.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.unbond":
-      e = new NominationPoolsUnbondCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
-      } else if (e.isV58) {
-        return call.args;
+
+    case nominationPools.unbond.name:
+      if (nominationPools.unbond.v39.is(call)) {
+        return nominationPools.unbond.v39.decode(call);
+      } else if (nominationPools.unbond.v58.is(call)) {
+        return nominationPools.unbond.v58.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.update_roles":
-      e = new NominationPoolsUpdateRolesCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
-      } else if (e.isV68) {
-        return call.args;
+
+    case nominationPools.updateRoles.name:
+      if (nominationPools.updateRoles.v39.is(call)) {
+        return nominationPools.updateRoles.v39.decode(call);
+      } else if (nominationPools.updateRoles.v68.is(call)) {
+        return nominationPools.updateRoles.v68.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
-    case "NominationPools.withdraw_unbonded":
-      e = new NominationPoolsWithdrawUnbondedCall(ctx, call);
-      if (e.isV39) {
-        return call.args;
-      } else if (e.isV58) {
-        return call.args;
+
+    case nominationPools.withdrawUnbonded.name:
+      if (nominationPools.withdrawUnbonded.v39.is(call)) {
+        return nominationPools.withdrawUnbonded.v39.decode(call);
+      } else if (nominationPools.withdrawUnbonded.v58.is(call)) {
+        return nominationPools.withdrawUnbonded.v58.decode(call);
       } else {
-        throw new UnknownVersionError(call.name);
+        throw new UnknownCallVersionError(call.name);
       }
 
     default:

@@ -1,4 +1,5 @@
 import { EventNorm, CallNorm } from "../model";
+import { NamedObject } from "@src/interfaces/misc";
 
 export function bufferToHex(buffer: Uint8Array): string {
   const hexString =
@@ -35,4 +36,10 @@ export function nullifyNonexistentCalls(
       event.call = null;
     }
   });
+}
+
+export function extractNamesFromObjects(objectsArray: NamedObject[]): string[] {
+  return objectsArray.flatMap((obj) =>
+    Object.values(obj).map((subObj) => subObj.name)
+  );
 }

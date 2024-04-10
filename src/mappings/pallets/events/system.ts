@@ -1,96 +1,73 @@
+import { system } from "../../../types/events";
+import { Event } from "../../../processor";
 import {
-  SystemCodeUpdatedEvent,
-  SystemExtrinsicFailedEvent,
-  SystemExtrinsicSuccessEvent,
-  SystemKilledAccountEvent,
-  SystemNewAccountEvent,
-  SystemRemarkedEvent,
-} from "../../../types/events";
-import { ChainContext, Event } from "../../../types/support";
-import { bufferToHex } from "../../../utils/utils";
-import { UnknownVersionError, UnknownEventError } from "../../../utils/errors";
+  UnknownEventVersionError,
+  UnknownEventError,
+} from "../../../utils/errors";
 
-export function normalizeSystemEventsArgs(ctx: ChainContext, event: Event) {
-  let e;
+export function normalizeSystemEventsArgs(event: Event): any {
   switch (event.name) {
-    case "System.CodeUpdated":
-      e = new SystemCodeUpdatedEvent(ctx, event);
-      if (e.isV3) {
-        return event.args;
+    case system.codeUpdated.name:
+      if (system.codeUpdated.v3.is(event)) {
+        return system.codeUpdated.v3.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "System.ExtrinsicFailed":
-      e = new SystemExtrinsicFailedEvent(ctx, event);
-      if (e.isV3) {
-        let [error, info] = e.asV3;
-        return {
-          dispatchError: error,
-          dispatchInfo: info,
-        };
-      } else if (e.isV12) {
-        let [error, info] = e.asV12;
-        return {
-          dispatchError: error,
-          dispatchInfo: info,
-        };
-      } else if (e.isV39) {
-        return event.args;
-      } else if (e.isV58) {
-        return event.args;
-      } else if (event.args) {
-        return event.args;
+
+    case system.extrinsicFailed.name:
+      if (system.extrinsicFailed.v3.is(event)) {
+        const [dispatchError, dispatchInfo] =
+          system.extrinsicFailed.v3.decode(event);
+        return { dispatchError, dispatchInfo };
+      } else if (system.extrinsicFailed.v12.is(event)) {
+        const [dispatchError, dispatchInfo] =
+          system.extrinsicFailed.v12.decode(event);
+        return { dispatchError, dispatchInfo };
+      } else if (system.extrinsicFailed.v39.is(event)) {
+        return system.extrinsicFailed.v39.decode(event);
+      } else if (system.extrinsicFailed.v58.is(event)) {
+        return system.extrinsicFailed.v58.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "System.ExtrinsicSuccess":
-      e = new SystemExtrinsicSuccessEvent(ctx, event);
-      if (e.isV3) {
-        let dispatchInfo = e.asV3;
-        return { dispatchInfo };
-      } else if (e.isV39) {
-        return event.args;
-      } else if (e.isV58) {
-        return event.args;
+
+    case system.extrinsicSuccess.name:
+      if (system.extrinsicSuccess.v3.is(event)) {
+        return { dispatchInfo: system.extrinsicSuccess.v3.decode(event) };
+      } else if (system.extrinsicSuccess.v39.is(event)) {
+        return system.extrinsicSuccess.v39.decode(event);
+      } else if (system.extrinsicSuccess.v58.is(event)) {
+        return system.extrinsicSuccess.v58.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "System.KilledAccount":
-      e = new SystemKilledAccountEvent(ctx, event);
-      if (e.isV3) {
-        let account = e.asV3;
-        return {
-          account: bufferToHex(account),
-        };
-      } else if (e.isV39) {
-        return event.args;
+
+    case system.killedAccount.name:
+      if (system.killedAccount.v3.is(event)) {
+        return { account: system.killedAccount.v3.decode(event) };
+      } else if (system.killedAccount.v39.is(event)) {
+        return system.killedAccount.v39.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "System.NewAccount":
-      e = new SystemNewAccountEvent(ctx, event);
-      if (e.isV3) {
-        let account = e.asV3;
-        return {
-          account: bufferToHex(account),
-        };
-      } else if (e.isV39) {
-        return event.args;
+
+    case system.newAccount.name:
+      if (system.newAccount.v3.is(event)) {
+        return { account: system.newAccount.v3.decode(event) };
+      } else if (system.newAccount.v39.is(event)) {
+        return system.newAccount.v39.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
-    case "System.Remarked":
-      e = new SystemRemarkedEvent(ctx, event);
-      if (e.isV3) {
-        let [origin, remarkHash] = e.asV3;
-        return {
-          sender: bufferToHex(origin),
-          hash: bufferToHex(remarkHash),
-        };
-      } else if (e.isV39) {
-        return event.args;
+
+    case system.remarked.name:
+      if (system.remarked.v3.is(event)) {
+        const [sender, hash] = system.remarked.v3.decode(event);
+        return { sender, hash };
+      } else if (system.remarked.v39.is(event)) {
+        return system.remarked.v39.decode(event);
       } else {
-        throw new UnknownVersionError(event.name);
+        throw new UnknownEventVersionError(event.name);
       }
 
     default:

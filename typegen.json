@@ -1,8 +1,27 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://aleph-zero.archive.subsquid.io/graphql",
-  "typesBundle": "typesBundle.json",
-  "events": true,
-  "calls": true,
-  "storage": []
+  "specVersions": "https://v2.archive.subsquid.io/metadata/aleph-zero",
+  "pallets": {
+    "Balances": {
+      "events": true,
+      "calls": true
+    },
+    "Contracts": {
+      "events": true,
+      "calls": true
+    },
+    "NominationPools": {
+      "events": true,
+      "calls": true
+    },
+    "System": {
+      "events": true
+    },
+    "Staking": {
+      "events": true
+    },
+    "Treasury": {
+      "events": ["Deposit"]
+    }
+  }
 }
