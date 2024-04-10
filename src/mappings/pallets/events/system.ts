@@ -27,6 +27,8 @@ export function normalizeSystemEventsArgs(event: Event): any {
         return system.extrinsicFailed.v39.decode(event);
       } else if (system.extrinsicFailed.v58.is(event)) {
         return system.extrinsicFailed.v58.decode(event);
+      } else if (system.extrinsicFailed.v68.is(event)) {
+        return system.extrinsicFailed.v68.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
