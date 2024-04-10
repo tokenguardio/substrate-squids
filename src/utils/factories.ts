@@ -1,4 +1,4 @@
-import { Block, Event, Call } from "./../processor";
+import { Block, Event, Call } from "../processor";
 import { EventNorm, CallNorm, AddressMapping } from "../model";
 import { MappedAddress } from "../interfaces/mappings/specific";
 
