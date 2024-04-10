@@ -13,7 +13,7 @@ import {
   createAddressMapping,
   createCallNorm,
   createEventNorm,
-} from "./utils/dbEntityCreators";
+} from "./utils/factories";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
