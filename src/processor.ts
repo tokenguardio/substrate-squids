@@ -1,4 +1,3 @@
-import { lookupArchive } from "@subsquid/archive-registry";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -11,12 +10,13 @@ import {
 import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
-  .setDataSource({
-    archive: lookupArchive("astar", { type: "EVM" }),
-    chain: process.env.RPC_ETH_HTTP ?? "https://evm.astar.network",
+  .setGateway("https://v2.archive.subsquid.io/network/astar-mainnet")
+  .setRpcEndpoint({
+    url: process.env.RPC_ETH_HTTP ?? "https://evm.astar.network",
+    rateLimit: 10,
   })
+  .setRpcDataIngestionSettings({ disabled: true })
   .setFinalityConfirmation(75)
-  .useArchiveOnly(true)
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
       ? Number(process.env.BLOCK_RANGE_FROM)
