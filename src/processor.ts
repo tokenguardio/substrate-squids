@@ -1,4 +1,3 @@
-import { lookupArchive } from "@subsquid/archive-registry";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -11,11 +10,13 @@ import {
 import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
-  .setDataSource({
-    archive: lookupArchive("avalanche"),
-    chain: process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc",
+  .setGateway("https://v2.archive.subsquid.io/network/avalanche-mainnet")
+  .setRpcEndpoint({
+    url: process.env.RPC_ETH_HTTP ?? "https://api.avax.network/ext/bc/C/rpc",
+    rateLimit: 10,
   })
-  .useArchiveOnly(true)
+  .setRpcDataIngestionSettings({ disabled: true })
+  .setFinalityConfirmation(75)
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
       ? Number(process.env.BLOCK_RANGE_FROM)
@@ -24,7 +25,6 @@ export const processor = new EvmBatchProcessor()
       ? Number(process.env.BLOCK_RANGE_TO)
       : undefined,
   })
-  .setFinalityConfirmation(75)
   .addTransaction({ traces: true })
   .addLog({
     topic0: [erc20Abi.events.Transfer.topic],
