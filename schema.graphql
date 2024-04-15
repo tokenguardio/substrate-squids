@@ -1,5 +1,6 @@
 type EventNorm @entity {
   id: ID!
+  call: CallNorm
   blockHash: String!
   timestamp: DateTime! @index
   name: String! @index
@@ -19,7 +20,27 @@ type CallNorm @entity {
 
 type AddressMapping @entity {
   id: ID! @index
-  ss58: String
+  ss58: String! @index
+}
+
+type SubstrateTransaction @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  name: String! @index
+  args: JSON
+  label: SubstrateLabel! @index
+  fee: BigInt!
+  tip: BigInt
+  from: String
+  to: String
+  success: Boolean!
+}
+
+enum SubstrateLabel {
+  contract_deploy
+  contract_call
+  other
 }
 
 type Transaction @entity {

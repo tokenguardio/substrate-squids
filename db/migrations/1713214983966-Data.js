@@ -1,14 +1,20 @@
-module.exports = class Data1700826287103 {
-    name = 'Data1700826287103'
+module.exports = class Data1713214983966 {
+    name = 'Data1713214983966'
 
     async up(db) {
-        await db.query(`CREATE TABLE "event_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "extrinsic_success" boolean, CONSTRAINT "PK_d33300243feb4679ec112a74a03" PRIMARY KEY ("id"))`)
-        await db.query(`CREATE INDEX "IDX_9399a1351b92b17b633f2a4d88" ON "event_norm" ("timestamp") `)
-        await db.query(`CREATE INDEX "IDX_815deac0945f896227f308f346" ON "event_norm" ("name") `)
         await db.query(`CREATE TABLE "call_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "success" boolean, "origin" jsonb, CONSTRAINT "PK_e6dee5a463d3dd8993668fb913e" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_5fc3745dc44160b5563cf88307" ON "call_norm" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_d069b0512be986815a0a41e601" ON "call_norm" ("name") `)
-        await db.query(`CREATE TABLE "address_mapping" ("id" character varying NOT NULL, "ss58" text, CONSTRAINT "PK_8611a631b9c1187979a08ecb53f" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "event_norm" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "extrinsic_success" boolean, "call_id" character varying, CONSTRAINT "PK_d33300243feb4679ec112a74a03" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_eb16d2b5f399577e7dd72cef2a" ON "event_norm" ("call_id") `)
+        await db.query(`CREATE INDEX "IDX_9399a1351b92b17b633f2a4d88" ON "event_norm" ("timestamp") `)
+        await db.query(`CREATE INDEX "IDX_815deac0945f896227f308f346" ON "event_norm" ("name") `)
+        await db.query(`CREATE TABLE "address_mapping" ("id" character varying NOT NULL, "ss58" text NOT NULL, CONSTRAINT "PK_8611a631b9c1187979a08ecb53f" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_3a046999bc4c3e7c38468ddf80" ON "address_mapping" ("ss58") `)
+        await db.query(`CREATE TABLE "substrate_transaction" ("id" character varying NOT NULL, "block_hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "args" jsonb, "label" character varying(15) NOT NULL, "fee" numeric NOT NULL, "tip" numeric, "from" text, "to" text, "success" boolean NOT NULL, CONSTRAINT "PK_34de898449e2832c9db92960c1f" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_043968eb757e5722239a3c0be2" ON "substrate_transaction" ("timestamp") `)
+        await db.query(`CREATE INDEX "IDX_677b4a05fa2e22da71eba05a9c" ON "substrate_transaction" ("name") `)
+        await db.query(`CREATE INDEX "IDX_9f087038b728637fceb8c37774" ON "substrate_transaction" ("label") `)
         await db.query(`CREATE TABLE "trace_create" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "subtraces" integer, "error" text, "parent_has_error" boolean, "from" text NOT NULL, "from_type" character varying(8), "value" numeric, "gas" numeric, "init" text, "gas_used" numeric, "code" text, "address" text, "transaction_id" character varying, CONSTRAINT "PK_d9815d6da7ab247cd74a2b7fc4f" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_5c1fec96d7d34607a2425d8767" ON "trace_create" ("transaction_id") `)
         await db.query(`CREATE INDEX "IDX_a26c98eae28add5bba9700a122" ON "trace_create" ("timestamp") `)
@@ -47,6 +53,7 @@ module.exports = class Data1700826287103 {
         await db.query(`CREATE INDEX "IDX_0da5680fecb0d6609a8323d096" ON "contract" ("create_timestamp") `)
         await db.query(`CREATE INDEX "IDX_762f741b4669e160debbedfcb6" ON "contract" ("destroy_transaction_id") `)
         await db.query(`CREATE INDEX "IDX_b48bb286471daf1cb75ce717f8" ON "contract" ("destroy_timestamp") `)
+        await db.query(`ALTER TABLE "event_norm" ADD CONSTRAINT "FK_eb16d2b5f399577e7dd72cef2a2" FOREIGN KEY ("call_id") REFERENCES "call_norm"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "trace_create" ADD CONSTRAINT "FK_5c1fec96d7d34607a2425d87670" FOREIGN KEY ("transaction_id") REFERENCES "transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "trace_call" ADD CONSTRAINT "FK_897da4a3d4140de4916bda223ca" FOREIGN KEY ("transaction_id") REFERENCES "transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "trace_suicide" ADD CONSTRAINT "FK_3e8e3ecbccef2bf410966a4a14d" FOREIGN KEY ("transaction_id") REFERENCES "transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -58,13 +65,19 @@ module.exports = class Data1700826287103 {
     }
 
     async down(db) {
-        await db.query(`DROP TABLE "event_norm"`)
-        await db.query(`DROP INDEX "public"."IDX_9399a1351b92b17b633f2a4d88"`)
-        await db.query(`DROP INDEX "public"."IDX_815deac0945f896227f308f346"`)
         await db.query(`DROP TABLE "call_norm"`)
         await db.query(`DROP INDEX "public"."IDX_5fc3745dc44160b5563cf88307"`)
         await db.query(`DROP INDEX "public"."IDX_d069b0512be986815a0a41e601"`)
+        await db.query(`DROP TABLE "event_norm"`)
+        await db.query(`DROP INDEX "public"."IDX_eb16d2b5f399577e7dd72cef2a"`)
+        await db.query(`DROP INDEX "public"."IDX_9399a1351b92b17b633f2a4d88"`)
+        await db.query(`DROP INDEX "public"."IDX_815deac0945f896227f308f346"`)
         await db.query(`DROP TABLE "address_mapping"`)
+        await db.query(`DROP INDEX "public"."IDX_3a046999bc4c3e7c38468ddf80"`)
+        await db.query(`DROP TABLE "substrate_transaction"`)
+        await db.query(`DROP INDEX "public"."IDX_043968eb757e5722239a3c0be2"`)
+        await db.query(`DROP INDEX "public"."IDX_677b4a05fa2e22da71eba05a9c"`)
+        await db.query(`DROP INDEX "public"."IDX_9f087038b728637fceb8c37774"`)
         await db.query(`DROP TABLE "trace_create"`)
         await db.query(`DROP INDEX "public"."IDX_5c1fec96d7d34607a2425d8767"`)
         await db.query(`DROP INDEX "public"."IDX_a26c98eae28add5bba9700a122"`)
@@ -103,6 +116,7 @@ module.exports = class Data1700826287103 {
         await db.query(`DROP INDEX "public"."IDX_0da5680fecb0d6609a8323d096"`)
         await db.query(`DROP INDEX "public"."IDX_762f741b4669e160debbedfcb6"`)
         await db.query(`DROP INDEX "public"."IDX_b48bb286471daf1cb75ce717f8"`)
+        await db.query(`ALTER TABLE "event_norm" DROP CONSTRAINT "FK_eb16d2b5f399577e7dd72cef2a2"`)
         await db.query(`ALTER TABLE "trace_create" DROP CONSTRAINT "FK_5c1fec96d7d34607a2425d87670"`)
         await db.query(`ALTER TABLE "trace_call" DROP CONSTRAINT "FK_897da4a3d4140de4916bda223ca"`)
         await db.query(`ALTER TABLE "trace_suicide" DROP CONSTRAINT "FK_3e8e3ecbccef2bf410966a4a14d"`)

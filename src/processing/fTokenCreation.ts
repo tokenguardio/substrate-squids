@@ -61,7 +61,7 @@ async function performMulticall(
     ctx,
     lastBlock.header,
     process.env.MULTICALL_CONTRACT ??
-      "0x6477204E12A7236b9619385ea453F370aD897bb2"
+      "0x2c6ca2C92e208E7f7459eC4C911e329Ab90eCED5"
   );
   return await multicall.tryAggregate(
     contractFunction,

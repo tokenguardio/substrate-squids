@@ -12,8 +12,8 @@ import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
   .setDataSource({
-    archive: lookupArchive("moonbeam", { type: "EVM" }),
-    chain: process.env.RPC_ETH_HTTP ?? "https://rpc.api.moonbeam.network",
+    archive: lookupArchive("astar", { type: "EVM" }),
+    chain: process.env.RPC_ETH_HTTP ?? "https://evm.astar.network",
   })
   .setFinalityConfirmation(75)
   .useArchiveOnly(true)
