@@ -16,8 +16,11 @@ import { normalizeBalancesCallsArgs } from "./calls/balances";
 import { normalizeBaseFeeCallsArgs } from "./calls/base-fee";
 import { normalizeEthCallCallsArgs } from "./calls/eth-call";
 import { normalizeDappStakingCallsArgs } from "./calls/dapp-staking";
+import { Event, Call } from "./../../processor";
 
-export const eventNormalizationHandlers: { [key: string]: any } = {
+export const eventNormalizationHandlers: {
+  [key: string]: (event: Event) => any;
+} = {
   Balances: normalizeBalancesEventsArgs,
   System: normalizeSystemEventsArgs,
   Contracts: normalizeContractsEventsArgs,
@@ -29,13 +32,14 @@ export const eventNormalizationHandlers: { [key: string]: any } = {
   DappStaking: normalizeDappStakingEventsArgs,
 };
 
-export const callNormalizationHandlers: { [key: string]: any } = {
-  Balances: normalizeBalancesCallsArgs,
-  Contracts: normalizeContractsCallsArgs,
-  EVM: normalizeEVMCallsArgs,
-  Ethereum: normalizeEthereumCallsArgs,
-  DappsStaking: normalizeDappsStakingCallsArgs,
-  BaseFee: normalizeBaseFeeCallsArgs,
-  EthCall: normalizeEthCallCallsArgs,
-  DappStaking: normalizeDappStakingCallsArgs,
-};
+export const callNormalizationHandlers: { [key: string]: (call: Call) => any } =
+  {
+    Balances: normalizeBalancesCallsArgs,
+    Contracts: normalizeContractsCallsArgs,
+    EVM: normalizeEVMCallsArgs,
+    Ethereum: normalizeEthereumCallsArgs,
+    DappsStaking: normalizeDappsStakingCallsArgs,
+    BaseFee: normalizeBaseFeeCallsArgs,
+    EthCall: normalizeEthCallCallsArgs,
+    DappStaking: normalizeDappStakingCallsArgs,
+  };

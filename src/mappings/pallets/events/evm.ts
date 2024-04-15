@@ -1,106 +1,71 @@
-import {
-  EvmBalanceDepositEvent,
-  EvmBalanceWithdrawEvent,
-  EvmCreatedEvent,
-  EvmCreatedFailedEvent,
-  EvmExecutedEvent,
-  EvmExecutedFailedEvent,
-  EvmLogEvent,
-} from "../../../types/events";
-import { ChainContext, Event } from "../../../types/support";
+import { evm } from "../../../types/events";
+import { Event } from "../../../processor";
 import {
   UnknownEventVersionError,
   UnknownEventError,
 } from "../../../utils/errors";
 
-export function normalizeEVMEventsArgs(ctx: ChainContext, event: Event) {
-  let e;
+export function normalizeEVMEventsArgs(event: Event): any {
   switch (event.name) {
-    case "EVM.BalanceDeposit":
-      e = new EvmBalanceDepositEvent(ctx, event);
-      if (e.isV1) {
-        let [sender, address, value] = event.args;
-        return {
-          sender,
-          address,
-          value,
-        };
+    case evm.balanceDeposit.name:
+      if (evm.balanceDeposit.v1.is(event)) {
+        const [sender, address, value] = evm.balanceDeposit.v1.decode(event);
+        return { sender, address, value };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "EVM.BalanceWithdraw":
-      e = new EvmBalanceWithdrawEvent(ctx, event);
-      if (e.isV1) {
-        let [sender, address, value] = event.args;
-        return {
-          sender,
-          address,
-          value,
-        };
+    case evm.balanceWithdraw.name:
+      if (evm.balanceWithdraw.v1.is(event)) {
+        const [sender, address, value] = evm.balanceWithdraw.v1.decode(event);
+        return { sender, address, value };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "EVM.Created":
-      e = new EvmCreatedEvent(ctx, event);
-      if (e.isV1) {
-        let address = event.args;
-        return {
-          address,
-        };
-      } else if (e.isV33) {
+    case evm.created.name:
+      if (evm.created.v1.is(event)) {
+        const address = evm.created.v1.decode(event);
+        return { address };
+      } else if (evm.created.v33.is(event)) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "EVM.CreatedFailed":
-      e = new EvmCreatedFailedEvent(ctx, event);
-      if (e.isV1) {
-        let address = event.args;
-        return {
-          address,
-        };
-      } else if (e.isV33) {
+    case evm.createdFailed.name:
+      if (evm.createdFailed.v1.is(event)) {
+        const address = evm.createdFailed.v1.decode(event);
+        return { address };
+      } else if (evm.createdFailed.v33.is(event)) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "EVM.Executed":
-      e = new EvmExecutedEvent(ctx, event);
-      if (e.isV1) {
-        let address = event.args;
-        return {
-          address,
-        };
-      } else if (e.isV33) {
+    case evm.executed.name:
+      if (evm.executed.v1.is(event)) {
+        const address = evm.executed.v1.decode(event);
+        return { address };
+      } else if (evm.executed.v33.is(event)) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "EVM.ExecutedFailed":
-      e = new EvmExecutedFailedEvent(ctx, event);
-      if (e.isV1) {
-        let address = event.args;
-        return {
-          address,
-        };
-      } else if (e.isV33) {
+    case evm.executedFailed.name:
+      if (evm.executedFailed.v1.is(event)) {
+        const address = evm.executedFailed.v1.decode(event);
+        return { address };
+      } else if (evm.executedFailed.v33.is(event)) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "EVM.Log":
-      e = new EvmLogEvent(ctx, event);
-      if (e.isV1) {
-        let log = event.args;
-        return {
-          log,
-        };
-      } else if (e.isV33) {
+    case evm.log.name:
+      if (evm.log.v1.is(event)) {
+        const log = evm.log.v1.decode(event);
+        return { log };
+      } else if (evm.log.v33.is(event)) {
         return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-
     default:
       throw new UnknownEventError(event.name);
   }

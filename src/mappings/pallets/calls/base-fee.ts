@@ -1,35 +1,27 @@
-import {
-  BaseFeeSetBaseFeePerGasCall,
-  BaseFeeSetElasticityCall,
-  BaseFeeSetIsActiveCall,
-} from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
+import { baseFee } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
   UnknownCallVersionError,
   UnknownCallError,
 } from "../../../utils/errors";
 
-export function normalizeBaseFeeCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeBaseFeeCallsArgs(call: Call): any {
   switch (call.name) {
-    case "BaseFee.set_base_fee_per_gas":
-      e = new BaseFeeSetBaseFeePerGasCall(ctx, call);
-      if (e.isV9) {
-        return call.args;
+    case baseFee.setBaseFeePerGas.name:
+      if (baseFee.setBaseFeePerGas.v9.is(call)) {
+        return baseFee.setBaseFeePerGas.v9.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "BaseFee.set_elasticity":
-      e = new BaseFeeSetElasticityCall(ctx, call);
-      if (e.isV9) {
-        return call.args;
+    case baseFee.setElasticity.name:
+      if (baseFee.setElasticity.v9.is(call)) {
+        return baseFee.setElasticity.v9.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "BaseFee.set_is_active":
-      e = new BaseFeeSetIsActiveCall(ctx, call);
-      if (e.isV9) {
-        return call.args;
+    case baseFee.setIsActive.name:
+      if (baseFee.setIsActive.v9.is(call)) {
+        return baseFee.setIsActive.v9.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }

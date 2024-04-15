@@ -1,192 +1,164 @@
-import {
-  DappsStakingBondAndStakeCall,
-  DappsStakingBurnStaleRewardCall,
-  DappsStakingClaimCall,
-  DappsStakingClaimDappCall,
-  DappsStakingClaimStakerCall,
-  DappsStakingClaimStakerForCall,
-  DappsStakingDecommissionCall,
-  DappsStakingDeveloperPreApprovalCall,
-  DappsStakingDoUpgradeCall,
-  DappsStakingEnableDeveloperPreApprovalCall,
-  DappsStakingForceNewEraCall,
-  DappsStakingMaintenanceModeCall,
-  DappsStakingNominationTransferCall,
-  DappsStakingRegisterCall,
-  DappsStakingSetContractStakeInfoCall,
-  DappsStakingSetRewardDestinationCall,
-  DappsStakingSetRewardDestinationForCall,
-  DappsStakingUnbondAndUnstakeCall,
-  DappsStakingUnbondUnstakeAndWithdrawCall,
-  DappsStakingUnregisterCall,
-  DappsStakingWithdrawFromUnregisteredCall,
-  DappsStakingWithdrawUnbondedCall,
-} from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
+import { dappsStaking } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
   UnknownCallVersionError,
   UnknownCallError,
 } from "../../../utils/errors";
 
-export function normalizeDappsStakingCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeDappsStakingCallsArgs(call: Call): any {
   switch (call.name) {
-    case "DappsStaking.bond_and_stake":
-      e = new DappsStakingBondAndStakeCall(ctx, call);
-      if (e.isV4) {
-        return call.args;
+    case dappsStaking.bondAndStake.name:
+      if (dappsStaking.bondAndStake.v4.is(call)) {
+        return dappsStaking.bondAndStake.v4.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.burn_stale_reward":
-      e = new DappsStakingBurnStaleRewardCall(ctx, call);
-      if (e.isV49) {
-        return call.args;
+
+    case dappsStaking.burnStaleReward.name:
+      if (dappsStaking.burnStaleReward.v49.is(call)) {
+        return dappsStaking.burnStaleReward.v49.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.claim":
-      e = new DappsStakingClaimCall(ctx, call);
-      if (e.isV4) {
-        return call.args;
+
+    case dappsStaking.claim.name:
+      if (dappsStaking.claim.v4.is(call)) {
+        return dappsStaking.claim.v4.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.claim_dapp":
-      e = new DappsStakingClaimDappCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case dappsStaking.claimDapp.name:
+      if (dappsStaking.claimDapp.v12.is(call)) {
+        return dappsStaking.claimDapp.v12.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.claim_staker":
-      e = new DappsStakingClaimStakerCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case dappsStaking.claimStaker.name:
+      if (dappsStaking.claimStaker.v12.is(call)) {
+        return dappsStaking.claimStaker.v12.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.claim_staker_for":
-      e = new DappsStakingClaimStakerForCall(ctx, call);
-      if (e.isV77) {
-        return call.args;
+
+    case dappsStaking.claimStakerFor.name:
+      if (dappsStaking.claimStakerFor.v77.is(call)) {
+        return dappsStaking.claimStakerFor.v77.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.decommission":
-      e = new DappsStakingDecommissionCall(ctx, call);
-      if (e.isV77) {
-        return call.args;
+
+    case dappsStaking.decommission.name:
+      if (dappsStaking.decommission.v77.is(call)) {
+        return dappsStaking.decommission.v77.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.developer_pre_approval":
-      e = new DappsStakingDeveloperPreApprovalCall(ctx, call);
-      if (e.isV4) {
-        return call.args;
+
+    case dappsStaking.developerPreApproval.name:
+      if (dappsStaking.developerPreApproval.v4.is(call)) {
+        return dappsStaking.developerPreApproval.v4.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.do_upgrade":
-      e = new DappsStakingDoUpgradeCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case dappsStaking.doUpgrade.name:
+      if (dappsStaking.doUpgrade.v12.is(call)) {
+        return dappsStaking.doUpgrade.v12.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.enable_developer_pre_approval":
-      e = new DappsStakingEnableDeveloperPreApprovalCall(ctx, call);
-      if (e.isV4) {
-        return call.args;
+
+    case dappsStaking.enableDeveloperPreApproval.name:
+      if (dappsStaking.enableDeveloperPreApproval.v4.is(call)) {
+        return dappsStaking.enableDeveloperPreApproval.v4.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.force_new_era":
-      e = new DappsStakingForceNewEraCall(ctx, call);
-      if (e.isV4) {
-        return call.args;
+
+    case dappsStaking.forceNewEra.name:
+      if (dappsStaking.forceNewEra.v4.is(call)) {
+        return dappsStaking.forceNewEra.v4.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.maintenance_mode":
-      e = new DappsStakingMaintenanceModeCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case dappsStaking.maintenanceMode.name:
+      if (dappsStaking.maintenanceMode.v12.is(call)) {
+        return dappsStaking.maintenanceMode.v12.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.nomination_transfer":
-      e = new DappsStakingNominationTransferCall(ctx, call);
-      if (e.isV17) {
-        return call.args;
+
+    case dappsStaking.nominationTransfer.name:
+      if (dappsStaking.nominationTransfer.v17.is(call)) {
+        return dappsStaking.nominationTransfer.v17.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.register":
-      e = new DappsStakingRegisterCall(ctx, call);
-      if (e.isV4) {
-        return {
-          ...call.args,
-          developer: null,
-        };
-      } else if (e.isV33) {
-        return call.args;
+
+    case dappsStaking.register.name:
+      if (dappsStaking.register.v4.is(call)) {
+        return { ...dappsStaking.register.v4.decode(call), developer: null };
+      } else if (dappsStaking.register.v33.is(call)) {
+        return dappsStaking.register.v33.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.set_contract_stake_info":
-      e = new DappsStakingSetContractStakeInfoCall(ctx, call);
-      if (e.isV16) {
-        return call.args;
+
+    case dappsStaking.setContractStakeInfo.name:
+      if (dappsStaking.setContractStakeInfo.v16.is(call)) {
+        return dappsStaking.setContractStakeInfo.v16.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.set_reward_destination":
-      e = new DappsStakingSetRewardDestinationCall(ctx, call);
-      if (e.isV16) {
-        return call.args;
+
+    case dappsStaking.setRewardDestination.name:
+      if (dappsStaking.setRewardDestination.v16.is(call)) {
+        return dappsStaking.setRewardDestination.v16.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.set_reward_destination_for":
-      e = new DappsStakingSetRewardDestinationForCall(ctx, call);
-      if (e.isV77) {
-        return call.args;
+
+    case dappsStaking.setRewardDestinationFor.name:
+      if (dappsStaking.setRewardDestinationFor.v77.is(call)) {
+        return dappsStaking.setRewardDestinationFor.v77.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.unbond_and_unstake":
-      e = new DappsStakingUnbondAndUnstakeCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case dappsStaking.unbondAndUnstake.name:
+      if (dappsStaking.unbondAndUnstake.v12.is(call)) {
+        return dappsStaking.unbondAndUnstake.v12.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.unbond_unstake_and_withdraw":
-      e = new DappsStakingUnbondUnstakeAndWithdrawCall(ctx, call);
-      if (e.isV4) {
-        return call.args;
+
+    case dappsStaking.unbondUnstakeAndWithdraw.name:
+      if (dappsStaking.unbondUnstakeAndWithdraw.v4.is(call)) {
+        return dappsStaking.unbondUnstakeAndWithdraw.v4.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.unregister":
-      e = new DappsStakingUnregisterCall(ctx, call);
-      if (e.isV4) {
-        return call.args;
+
+    case dappsStaking.unregister.name:
+      if (dappsStaking.unregister.v4.is(call)) {
+        return dappsStaking.unregister.v4.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.withdraw_from_unregistered":
-      e = new DappsStakingWithdrawFromUnregisteredCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case dappsStaking.withdrawFromUnregistered.name:
+      if (dappsStaking.withdrawFromUnregistered.v12.is(call)) {
+        return dappsStaking.withdrawFromUnregistered.v12.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappsStaking.withdraw_unbonded":
-      e = new DappsStakingWithdrawUnbondedCall(ctx, call);
-      if (e.isV12) {
-        return call.args;
+
+    case dappsStaking.withdrawUnbonded.name:
+      if (dappsStaking.withdrawUnbonded.v12.is(call)) {
+        return dappsStaking.withdrawUnbonded.v12.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }

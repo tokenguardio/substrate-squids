@@ -1,166 +1,123 @@
-import {
-  DappStakingBonusRewardEvent,
-  DappStakingClaimedUnlockedEvent,
-  DappStakingDAppOwnerChangedEvent,
-  DappStakingDAppRegisteredEvent,
-  DappStakingDAppRewardEvent,
-  DappStakingDAppRewardDestinationUpdatedEvent,
-  DappStakingDAppUnregisteredEvent,
-  DappStakingExpiredEntriesRemovedEvent,
-  DappStakingForceEvent,
-  DappStakingLockedEvent,
-  DappStakingMaintenanceModeEvent,
-  DappStakingNewEraEvent,
-  DappStakingNewSubperiodEvent,
-  DappStakingRelockEvent,
-  DappStakingRewardEvent,
-  DappStakingStakeEvent,
-  DappStakingUnlockingEvent,
-  DappStakingUnstakeEvent,
-  DappStakingUnstakeFromUnregisteredEvent,
-} from "../../../types/events";
-import { ChainContext, Event } from "../../../types/support";
+import { dappStaking as dsEvents } from "../../../types/events";
+import { Event } from "../../../processor";
 import {
   UnknownEventVersionError,
   UnknownEventError,
 } from "../../../utils/errors";
 
-export function normalizeDappStakingEventsArgs(
-  ctx: ChainContext,
-  event: Event
-) {
-  let e;
+export function normalizeDappStakingEventsArgs(event: Event): any {
   switch (event.name) {
-    case "DappStaking.BonusReward":
-      e = new DappStakingBonusRewardEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.bonusReward.name:
+      if (dsEvents.bonusReward.v79.is(event)) {
+        return dsEvents.bonusReward.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.ClaimedUnlocked":
-      e = new DappStakingClaimedUnlockedEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.claimedUnlocked.name:
+      if (dsEvents.claimedUnlocked.v79.is(event)) {
+        return dsEvents.claimedUnlocked.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.DAppOwnerChanged":
-      e = new DappStakingDAppOwnerChangedEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.dAppOwnerChanged.name:
+      if (dsEvents.dAppOwnerChanged.v79.is(event)) {
+        return dsEvents.dAppOwnerChanged.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.DAppRegistered":
-      e = new DappStakingDAppRegisteredEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.dAppRegistered.name:
+      if (dsEvents.dAppRegistered.v79.is(event)) {
+        return dsEvents.dAppRegistered.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.DAppReward":
-      e = new DappStakingDAppRewardEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.dAppReward.name:
+      if (dsEvents.dAppReward.v79.is(event)) {
+        return dsEvents.dAppReward.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.DAppRewardDestinationUpdated":
-      e = new DappStakingDAppRewardDestinationUpdatedEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.dAppRewardDestinationUpdated.name:
+      if (dsEvents.dAppRewardDestinationUpdated.v79.is(event)) {
+        return dsEvents.dAppRewardDestinationUpdated.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.DAppUnregistered":
-      e = new DappStakingDAppUnregisteredEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.dAppUnregistered.name:
+      if (dsEvents.dAppUnregistered.v79.is(event)) {
+        return dsEvents.dAppUnregistered.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.ExpiredEntriesRemoved":
-      e = new DappStakingExpiredEntriesRemovedEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.expiredEntriesRemoved.name:
+      if (dsEvents.expiredEntriesRemoved.v79.is(event)) {
+        return dsEvents.expiredEntriesRemoved.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.Force":
-      e = new DappStakingForceEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.force.name:
+      if (dsEvents.force.v79.is(event)) {
+        return dsEvents.force.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.Locked":
-      e = new DappStakingLockedEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.locked.name:
+      if (dsEvents.locked.v79.is(event)) {
+        return dsEvents.locked.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.MaintenanceMode":
-      e = new DappStakingMaintenanceModeEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.maintenanceMode.name:
+      if (dsEvents.maintenanceMode.v79.is(event)) {
+        return dsEvents.maintenanceMode.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.NewEra":
-      e = new DappStakingNewEraEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.newEra.name:
+      if (dsEvents.newEra.v79.is(event)) {
+        return dsEvents.newEra.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.NewSubperiod":
-      e = new DappStakingNewSubperiodEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.newSubperiod.name:
+      if (dsEvents.newSubperiod.v79.is(event)) {
+        return dsEvents.newSubperiod.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.Relock":
-      e = new DappStakingRelockEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.relock.name:
+      if (dsEvents.relock.v79.is(event)) {
+        return dsEvents.relock.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.Reward":
-      e = new DappStakingRewardEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.reward.name:
+      if (dsEvents.reward.v79.is(event)) {
+        return dsEvents.reward.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.Stake":
-      e = new DappStakingStakeEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.stake.name:
+      if (dsEvents.stake.v79.is(event)) {
+        return dsEvents.stake.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.Unlocking":
-      e = new DappStakingUnlockingEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.unlocking.name:
+      if (dsEvents.unlocking.v79.is(event)) {
+        return dsEvents.unlocking.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.Unstake":
-      e = new DappStakingUnstakeEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.unstake.name:
+      if (dsEvents.unstake.v79.is(event)) {
+        return dsEvents.unstake.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "DappStaking.UnstakeFromUnregistered":
-      e = new DappStakingUnstakeFromUnregisteredEvent(ctx, event);
-      if (e.isV79) {
-        return event.args;
+    case dsEvents.unstakeFromUnregistered.name:
+      if (dsEvents.unstakeFromUnregistered.v79.is(event)) {
+        return dsEvents.unstakeFromUnregistered.v79.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }

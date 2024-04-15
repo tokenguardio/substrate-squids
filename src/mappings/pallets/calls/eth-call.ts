@@ -1,53 +1,51 @@
-import { EthCallCallCall } from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
+import { ethCall } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
   UnknownCallVersionError,
   UnknownCallError,
 } from "../../../utils/errors";
 
-export function normalizeEthCallCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeEthCallCallsArgs(call: Call): any {
   switch (call.name) {
-    case "EthCall.call":
-      e = new EthCallCallCall(ctx, call);
-      if (e.isV1) {
-        return call.args;
-      } else if (e.isV3) {
-        return call.args;
-      } else if (e.isV4) {
-        return call.args;
-      } else if (e.isV9) {
-        return call.args;
-      } else if (e.isV12) {
-        return call.args;
-      } else if (e.isV13) {
-        return call.args;
-      } else if (e.isV15) {
-        return call.args;
-      } else if (e.isV16) {
-        return call.args;
-      } else if (e.isV17) {
-        return call.args;
-      } else if (e.isV23) {
-        return call.args;
-      } else if (e.isV30) {
-        return call.args;
-      } else if (e.isV33) {
-        return call.args;
-      } else if (e.isV43) {
-        return call.args;
-      } else if (e.isV49) {
-        return call.args;
-      } else if (e.isV52) {
-        return call.args;
-      } else if (e.isV55) {
-        return call.args;
-      } else if (e.isV61) {
-        return call.args;
-      } else if (e.isV64) {
-        return call.args;
-      } else if (e.isV66) {
-        return call.args;
+    case ethCall.call.name:
+      if (ethCall.call.v1.is(call)) {
+        return ethCall.call.v1.decode(call);
+      } else if (ethCall.call.v3.is(call)) {
+        return ethCall.call.v3.decode(call);
+      } else if (ethCall.call.v4.is(call)) {
+        return ethCall.call.v4.decode(call);
+      } else if (ethCall.call.v9.is(call)) {
+        return ethCall.call.v9.decode(call);
+      } else if (ethCall.call.v12.is(call)) {
+        return ethCall.call.v12.decode(call);
+      } else if (ethCall.call.v13.is(call)) {
+        return ethCall.call.v13.decode(call);
+      } else if (ethCall.call.v15.is(call)) {
+        return ethCall.call.v15.decode(call);
+      } else if (ethCall.call.v16.is(call)) {
+        return ethCall.call.v16.decode(call);
+      } else if (ethCall.call.v17.is(call)) {
+        return ethCall.call.v17.decode(call);
+      } else if (ethCall.call.v23.is(call)) {
+        return ethCall.call.v23.decode(call);
+      } else if (ethCall.call.v30.is(call)) {
+        return ethCall.call.v30.decode(call);
+      } else if (ethCall.call.v33.is(call)) {
+        return ethCall.call.v33.decode(call);
+      } else if (ethCall.call.v43.is(call)) {
+        return ethCall.call.v43.decode(call);
+      } else if (ethCall.call.v49.is(call)) {
+        return ethCall.call.v49.decode(call);
+      } else if (ethCall.call.v52.is(call)) {
+        return ethCall.call.v52.decode(call);
+      } else if (ethCall.call.v55.is(call)) {
+        return ethCall.call.v55.decode(call);
+      } else if (ethCall.call.v61.is(call)) {
+        return ethCall.call.v61.decode(call);
+      } else if (ethCall.call.v64.is(call)) {
+        return ethCall.call.v64.decode(call);
+      } else if (ethCall.call.v66.is(call)) {
+        return ethCall.call.v66.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }

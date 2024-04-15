@@ -1,163 +1,141 @@
-import {
-  DappStakingClaimBonusRewardCall,
-  DappStakingClaimDappRewardCall,
-  DappStakingClaimStakerRewardsCall,
-  DappStakingClaimUnlockedCall,
-  DappStakingCleanupExpiredEntriesCall,
-  DappStakingForceCall,
-  DappStakingLockCall,
-  DappStakingMaintenanceModeCall,
-  DappStakingRegisterCall,
-  DappStakingRelockUnlockingCall,
-  DappStakingSetDappOwnerCall,
-  DappStakingSetDappRewardBeneficiaryCall,
-  DappStakingStakeCall,
-  DappStakingUnbondAndUnstakeCall,
-  DappStakingUnlockCall,
-  DappStakingUnregisterCall,
-  DappStakingUnstakeCall,
-  DappStakingUnstakeFromUnregisteredCall,
-  DappStakingWithdrawUnbondedCall,
-} from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
+import { dappStaking } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
   UnknownCallVersionError,
   UnknownCallError,
 } from "../../../utils/errors";
 
-export function normalizeDappStakingCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeDappStakingCallsArgs(call: Call): any {
   switch (call.name) {
-    case "DappStaking.claim_bonus_reward":
-      e = new DappStakingClaimBonusRewardCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+    case dappStaking.claimBonusReward.name:
+      if (dappStaking.claimBonusReward.v79.is(call)) {
+        return dappStaking.claimBonusReward.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.claim_dapp_reward":
-      e = new DappStakingClaimDappRewardCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.claimDappReward.name:
+      if (dappStaking.claimDappReward.v79.is(call)) {
+        return dappStaking.claimDappReward.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.claim_staker_rewards":
-      e = new DappStakingClaimStakerRewardsCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.claimStakerRewards.name:
+      if (dappStaking.claimStakerRewards.v79.is(call)) {
+        return dappStaking.claimStakerRewards.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.claim_unlocked":
-      e = new DappStakingClaimUnlockedCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.claimUnlocked.name:
+      if (dappStaking.claimUnlocked.v79.is(call)) {
+        return dappStaking.claimUnlocked.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.cleanup_expired_entries":
-      e = new DappStakingCleanupExpiredEntriesCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.cleanupExpiredEntries.name:
+      if (dappStaking.cleanupExpiredEntries.v79.is(call)) {
+        return dappStaking.cleanupExpiredEntries.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.force":
-      e = new DappStakingForceCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.force.name:
+      if (dappStaking.force.v79.is(call)) {
+        return dappStaking.force.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.lock":
-      e = new DappStakingLockCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.lock.name:
+      if (dappStaking.lock.v79.is(call)) {
+        return dappStaking.lock.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.maintenance_mode":
-      e = new DappStakingMaintenanceModeCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.maintenanceMode.name:
+      if (dappStaking.maintenanceMode.v79.is(call)) {
+        return dappStaking.maintenanceMode.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.register":
-      e = new DappStakingRegisterCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.register.name:
+      if (dappStaking.register.v79.is(call)) {
+        return dappStaking.register.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.relock_unlocking":
-      e = new DappStakingRelockUnlockingCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.relockUnlocking.name:
+      if (dappStaking.relockUnlocking.v79.is(call)) {
+        return dappStaking.relockUnlocking.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.set_dapp_owner":
-      e = new DappStakingSetDappOwnerCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.setDappOwner.name:
+      if (dappStaking.setDappOwner.v79.is(call)) {
+        return dappStaking.setDappOwner.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.set_dapp_reward_beneficiary":
-      e = new DappStakingSetDappRewardBeneficiaryCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.setDappRewardBeneficiary.name:
+      if (dappStaking.setDappRewardBeneficiary.v79.is(call)) {
+        return dappStaking.setDappRewardBeneficiary.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.stake":
-      e = new DappStakingStakeCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.stake.name:
+      if (dappStaking.stake.v79.is(call)) {
+        return dappStaking.stake.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.unbond_and_unstake":
-      e = new DappStakingUnbondAndUnstakeCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.unbondAndUnstake.name:
+      if (dappStaking.unbondAndUnstake.v79.is(call)) {
+        return dappStaking.unbondAndUnstake.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.unlock":
-      e = new DappStakingUnlockCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.unlock.name:
+      if (dappStaking.unlock.v79.is(call)) {
+        return dappStaking.unlock.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.unregister":
-      e = new DappStakingUnregisterCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.unregister.name:
+      if (dappStaking.unregister.v79.is(call)) {
+        return dappStaking.unregister.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.unstake":
-      e = new DappStakingUnstakeCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.unstake.name:
+      if (dappStaking.unstake.v79.is(call)) {
+        return dappStaking.unstake.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.unstake_from_unregistered":
-      e = new DappStakingUnstakeFromUnregisteredCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.unstakeFromUnregistered.name:
+      if (dappStaking.unstakeFromUnregistered.v79.is(call)) {
+        return dappStaking.unstakeFromUnregistered.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "DappStaking.withdraw_unbonded":
-      e = new DappStakingWithdrawUnbondedCall(ctx, call);
-      if (e.isV79) {
-        return call.args;
+
+    case dappStaking.withdrawUnbonded.name:
+      if (dappStaking.withdrawUnbonded.v79.is(call)) {
+        return dappStaking.withdrawUnbonded.v79.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }

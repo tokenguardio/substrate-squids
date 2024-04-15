@@ -1,101 +1,90 @@
-import {
-  ContractsCalledEvent,
-  ContractsCodeRemovedEvent,
-  ContractsCodeStoredEvent,
-  ContractsContractCodeUpdatedEvent,
-  ContractsContractEmittedEvent,
-  ContractsDelegateCalledEvent,
-  ContractsInstantiatedEvent,
-  ContractsStorageDepositTransferredAndHeldEvent,
-  ContractsStorageDepositTransferredAndReleasedEvent,
-  ContractsTerminatedEvent,
-} from "../../../types/events";
-import { ChainContext, Event } from "../../../types/support";
+import { contracts } from "../../../types/events";
+import { Event } from "../../../processor";
 import {
   UnknownEventVersionError,
   UnknownEventError,
 } from "../../../utils/errors";
 
-export function normalizeContractsEventsArgs(ctx: ChainContext, event: Event) {
-  let e;
+export function normalizeContractsEventsArgs(event: Event): any {
   switch (event.name) {
-    case "Contracts.Called":
-      e = new ContractsCalledEvent(ctx, event);
-      if (e.isV55) {
-        return { ...event.args, __kind: null };
-      } else if (e.isV64) {
+    case contracts.called.name:
+      if (contracts.called.v55.is(event)) {
+        return { ...contracts.called.v55.decode(event), __kind: null };
+      } else if (contracts.called.v64.is(event)) {
+        let decoded = contracts.called.v64.decode(event);
         return {
-          caller: event.args.caller?.value,
-          __kind: event.args.caller.__kind,
-          contract: event.args.contract,
+          caller:
+            decoded.caller.__kind === "Signed" ? decoded.caller.value : null,
+          __kind: decoded.caller.__kind,
+          contract: decoded.contract,
         };
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.CodeRemoved":
-      e = new ContractsCodeRemovedEvent(ctx, event);
-      if (e.isV55) {
-        return event.args;
-      } else if (e.isV82) {
-        return event.args;
+
+    case contracts.codeRemoved.name:
+      if (contracts.codeRemoved.v55.is(event)) {
+        return contracts.codeRemoved.v55.decode(event);
+      } else if (contracts.codeRemoved.v82.is(event)) {
+        return contracts.codeRemoved.v82.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.CodeStored":
-      e = new ContractsCodeStoredEvent(ctx, event);
-      if (e.isV55) {
-        return event.args;
-      } else if (e.isV82) {
-        return event.args;
+
+    case contracts.codeStored.name:
+      if (contracts.codeStored.v55.is(event)) {
+        return contracts.codeStored.v55.decode(event);
+      } else if (contracts.codeStored.v82.is(event)) {
+        return contracts.codeStored.v82.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.ContractCodeUpdated":
-      e = new ContractsContractCodeUpdatedEvent(ctx, event);
-      if (e.isV55) {
-        return event.args;
+
+    case contracts.contractCodeUpdated.name:
+      if (contracts.contractCodeUpdated.v55.is(event)) {
+        return contracts.contractCodeUpdated.v55.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.ContractEmitted":
-      e = new ContractsContractEmittedEvent(ctx, event);
-      if (e.isV55) {
-        return event.args;
+
+    case contracts.contractEmitted.name:
+      if (contracts.contractEmitted.v55.is(event)) {
+        return contracts.contractEmitted.v55.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.DelegateCalled":
-      e = new ContractsDelegateCalledEvent(ctx, event);
-      if (e.isV55) {
-        return event.args;
+
+    case contracts.delegateCalled.name:
+      if (contracts.delegateCalled.v55.is(event)) {
+        return contracts.delegateCalled.v55.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.Instantiated":
-      e = new ContractsInstantiatedEvent(ctx, event);
-      if (e.isV55) {
-        return event.args;
+
+    case contracts.instantiated.name:
+      if (contracts.instantiated.v55.is(event)) {
+        return contracts.instantiated.v55.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.StorageDepositTransferredAndHeld":
-      e = new ContractsStorageDepositTransferredAndHeldEvent(ctx, event);
-      if (e.isV82) {
-        return event.args;
+
+    case contracts.storageDepositTransferredAndHeld.name:
+      if (contracts.storageDepositTransferredAndHeld.v82.is(event)) {
+        return contracts.storageDepositTransferredAndHeld.v82.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.StorageDepositTransferredAndReleased":
-      e = new ContractsStorageDepositTransferredAndReleasedEvent(ctx, event);
-      if (e.isV82) {
-        return event.args;
+
+    case contracts.storageDepositTransferredAndReleased.name:
+      if (contracts.storageDepositTransferredAndReleased.v82.is(event)) {
+        return contracts.storageDepositTransferredAndReleased.v82.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-    case "Contracts.Terminated":
-      e = new ContractsTerminatedEvent(ctx, event);
-      if (e.isV55) {
-        return event.args;
+
+    case contracts.terminated.name:
+      if (contracts.terminated.v55.is(event)) {
+        return contracts.terminated.v55.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }

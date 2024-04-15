@@ -1,19 +1,20 @@
-import { EthereumTransactCall } from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
+import { ethereum } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
   UnknownCallVersionError,
   UnknownCallError,
 } from "../../../utils/errors";
 
-export function normalizeEthereumCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeEthereumCallsArgs(call: Call): any {
   switch (call.name) {
-    case "Ethereum.transact":
-      e = new EthereumTransactCall(ctx, call);
-      if (e.isV1) {
-        return { transaction: { __kind: "Legacy", value: call.args.transaction } }
-      } else if (e.isV9) {
-        return call.args;
+    case ethereum.transact.name:
+      if (ethereum.transact.v1.is(call)) {
+        const transact = ethereum.transact.v1.decode(call);
+        return {
+          transaction: { __kind: "Legacy", value: transact.transaction },
+        };
+      } else if (ethereum.transact.v9.is(call)) {
+        return ethereum.transact.v9.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }

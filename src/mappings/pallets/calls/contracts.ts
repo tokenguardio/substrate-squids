@@ -1,93 +1,71 @@
-import {
-  ContractsCallCall,
-  ContractsCallOldWeightCall,
-  ContractsInstantiateCall,
-  ContractsInstantiateOldWeightCall,
-  ContractsInstantiateWithCodeCall,
-  ContractsInstantiateWithCodeOldWeightCall,
-  ContractsMigrateCall,
-  ContractsRemoveCodeCall,
-  ContractsSetCodeCall,
-  ContractsUploadCodeCall,
-} from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
+import { contracts } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
   UnknownCallVersionError,
   UnknownCallError,
 } from "../../../utils/errors";
 
-export function normalizeContractsCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeContractsCallsArgs(call: Call): any {
   switch (call.name) {
-    case "Contracts.call":
-      e = new ContractsCallCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.call.name:
+      if (contracts.call.v55.is(call)) {
+        return contracts.call.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.call_old_weight":
-      e = new ContractsCallOldWeightCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.callOldWeight.name:
+      if (contracts.callOldWeight.v55.is(call)) {
+        return contracts.callOldWeight.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.instantiate":
-      e = new ContractsInstantiateCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.instantiate.name:
+      if (contracts.instantiate.v55.is(call)) {
+        return contracts.instantiate.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.instantiate_old_weight":
-      e = new ContractsInstantiateOldWeightCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.instantiateOldWeight.name:
+      if (contracts.instantiateOldWeight.v55.is(call)) {
+        return contracts.instantiateOldWeight.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.instantiate_with_code":
-      e = new ContractsInstantiateWithCodeCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.instantiateWithCode.name:
+      if (contracts.instantiateWithCode.v55.is(call)) {
+        return contracts.instantiateWithCode.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.instantiate_with_code_old_weight":
-      e = new ContractsInstantiateWithCodeOldWeightCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.instantiateWithCodeOldWeight.name:
+      if (contracts.instantiateWithCodeOldWeight.v55.is(call)) {
+        return contracts.instantiateWithCodeOldWeight.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.migrate":
-      e = new ContractsMigrateCall(ctx, call);
-      if (e.isV64) {
-        return call.args;
+    case contracts.migrate.name:
+      if (contracts.migrate.v64.is(call)) {
+        return contracts.migrate.v64.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.remove_code":
-      e = new ContractsRemoveCodeCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.removeCode.name:
+      if (contracts.removeCode.v55.is(call)) {
+        return contracts.removeCode.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.set_code":
-      e = new ContractsSetCodeCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
+    case contracts.setCode.name:
+      if (contracts.setCode.v55.is(call)) {
+        return contracts.setCode.v55.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "Contracts.upload_code":
-      e = new ContractsUploadCodeCall(ctx, call);
-      if (e.isV55) {
-        return call.args;
-      } else if (e.isV64) {
-        return call.args;
+    case contracts.uploadCode.name:
+      if (contracts.uploadCode.v55.is(call)) {
+        return contracts.uploadCode.v55.decode(call);
+      } else if (contracts.uploadCode.v64.is(call)) {
+        return contracts.uploadCode.v64.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }

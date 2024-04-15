@@ -1,81 +1,69 @@
-import {
-  EvmCallCall,
-  EvmCreateCall,
-  EvmCreate2Call,
-  EvmHotfixIncAccountSufficientsCall,
-  EvmWithdrawCall,
-} from "../../../types/calls";
-import { ChainContext, Call } from "../../../types/support";
+import { evm } from "../../../types/calls";
+import { Call } from "../../../processor";
 import {
   UnknownCallVersionError,
   UnknownCallError,
 } from "../../../utils/errors";
 
-export function normalizeEVMCallsArgs(ctx: ChainContext, call: Call) {
-  let e;
+export function normalizeEVMCallsArgs(call: Call): any {
   switch (call.name) {
-    case "EVM.call":
-      e = new EvmCallCall(ctx, call);
-      if (e.isV1) {
+    case evm.call.name:
+      if (evm.call.v1.is(call)) {
         return {
-          ...call.args,
+          ...evm.call.v1.decode(call),
           maxFeePerGas: null,
           maxPriorityFeePerGas: null,
           accessList: null,
         };
-      } else if (e.isV9) {
+      } else if (evm.call.v9.is(call)) {
         return {
-          ...call.args,
+          ...evm.call.v9.decode(call),
           gasPrice: null,
         };
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "EVM.create":
-      e = new EvmCreateCall(ctx, call);
-      if (e.isV1) {
+    case evm.create.name:
+      if (evm.create.v1.is(call)) {
         return {
-          ...call.args,
+          ...evm.create.v1.decode(call),
           maxFeePerGas: null,
           maxPriorityFeePerGas: null,
           accessList: null,
         };
-      } else if (e.isV9) {
+      } else if (evm.create.v9.is(call)) {
         return {
-          ...call.args,
+          ...evm.create.v9.decode(call),
           gasPrice: null,
         };
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "EVM.create2":
-      e = new EvmCreate2Call(ctx, call);
-      if (e.isV1) {
+    case evm.create2.name:
+      if (evm.create2.v1.is(call)) {
         return {
-          ...call.args,
+          ...evm.create2.v1.decode(call),
           maxFeePerGas: null,
           maxPriorityFeePerGas: null,
           accessList: null,
         };
-      } else if (e.isV9) {
+      } else if (evm.create2.v9.is(call)) {
         return {
-          ...call.args,
+          ...evm.create2.v9.decode(call),
           gasPrice: null,
         };
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "EVM.hotfix_inc_account_sufficients":
-      e = new EvmHotfixIncAccountSufficientsCall(ctx, call);
-      if (e.isV15) {
-        return call.args;
+    case evm.hotfixIncAccountSufficients.name:
+      if (evm.hotfixIncAccountSufficients.v15.is(call)) {
+        return evm.hotfixIncAccountSufficients.v15.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
-    case "EVM.withdraw":
-      e = new EvmWithdrawCall(ctx, call);
-      if (e.isV1) {
-        return call.args;
+    case evm.withdraw.name:
+      if (evm.withdraw.v1.is(call)) {
+        return evm.withdraw.v1.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }
