@@ -1,4 +1,3 @@
-import { lookupArchive } from "@subsquid/archive-registry";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -11,11 +10,12 @@ import {
 import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
-  .setDataSource({
-    archive: lookupArchive("arbitrum-nova"),
-    chain:
-      process.env.RPC_ETH_HTTP ?? "https://arbitrum-nova.public.blastapi.io",
+  .setGateway("https://v2.archive.subsquid.io/network/arbitrum-nova")
+  .setRpcEndpoint({
+    url: process.env.RPC_ETH_HTTP ?? "https://arbitrum-nova.public.blastapi.io",
+    rateLimit: 10,
   })
+  .setRpcDataIngestionSettings({ disabled: true })
   .setFinalityConfirmation(75)
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
@@ -70,8 +70,7 @@ export const processor = new EvmBatchProcessor()
       rewardValue: true,
       rewardType: true,
     },
-  })
-  .useArchiveOnly(true);
+  });
 
 export type Fields = EvmBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
