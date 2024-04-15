@@ -8,66 +8,76 @@ import {
 export function normalizeSystemEventsArgs(event: Event): any {
   switch (event.name) {
     case system.codeUpdated.name:
-      if (system.codeUpdated.v3.is(event)) {
-        return system.codeUpdated.v3.decode(event);
+      if (system.codeUpdated.v1.is(event)) {
+        return system.codeUpdated.v1.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-
     case system.extrinsicFailed.name:
-      if (system.extrinsicFailed.v3.is(event)) {
-        const [dispatchError, dispatchInfo] =
-          system.extrinsicFailed.v3.decode(event);
-        return { dispatchError, dispatchInfo };
-      } else if (system.extrinsicFailed.v12.is(event)) {
-        const [dispatchError, dispatchInfo] =
-          system.extrinsicFailed.v12.decode(event);
-        return { dispatchError, dispatchInfo };
-      } else if (system.extrinsicFailed.v39.is(event)) {
-        return system.extrinsicFailed.v39.decode(event);
-      } else if (system.extrinsicFailed.v58.is(event)) {
-        return system.extrinsicFailed.v58.decode(event);
-      } else if (system.extrinsicFailed.v68.is(event)) {
-        return system.extrinsicFailed.v68.decode(event);
+      if (system.extrinsicFailed.v1.is(event)) {
+        const [error, info] = system.extrinsicFailed.v1.decode(event);
+        return { dispatchError: error, dispatchInfo: info };
+      } else if (system.extrinsicFailed.v9.is(event)) {
+        return event.args;
+      } else if (system.extrinsicFailed.v15.is(event)) {
+        return event.args;
+      } else if (system.extrinsicFailed.v43.is(event)) {
+        return event.args;
+      } else if (system.extrinsicFailed.v49.is(event)) {
+        return event.args;
+      } else if (system.extrinsicFailed.v64.is(event)) {
+        return event.args;
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-
     case system.extrinsicSuccess.name:
-      if (system.extrinsicSuccess.v3.is(event)) {
-        return { dispatchInfo: system.extrinsicSuccess.v3.decode(event) };
-      } else if (system.extrinsicSuccess.v39.is(event)) {
-        return system.extrinsicSuccess.v39.decode(event);
-      } else if (system.extrinsicSuccess.v58.is(event)) {
-        return system.extrinsicSuccess.v58.decode(event);
+      if (system.extrinsicSuccess.v1.is(event)) {
+        const decoded = system.extrinsicSuccess.v1.decode(event);
+        const newDecoded: any = decoded;
+        newDecoded.weight = { refTime: decoded.weight, proofSize: null };
+        return { dispatchInfo: newDecoded };
+      } else if (system.extrinsicSuccess.v9.is(event)) {
+        const decoded = system.extrinsicSuccess.v9.decode(event);
+        const newDecoded: any = decoded;
+        newDecoded.dispatchInfo.weight = {
+          refTime: decoded.dispatchInfo.weight,
+          proofSize: null,
+        };
+        return newDecoded;
+      } else if (system.extrinsicSuccess.v43.is(event)) {
+        const decoded = system.extrinsicSuccess.v43.decode(event);
+        const newDecoded: any = decoded;
+        newDecoded.dispatchInfo.weight.proofSize = null;
+        return newDecoded;
+      } else if (system.extrinsicSuccess.v49.is(event)) {
+        return system.extrinsicSuccess.v49.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-
     case system.killedAccount.name:
-      if (system.killedAccount.v3.is(event)) {
-        return { account: system.killedAccount.v3.decode(event) };
-      } else if (system.killedAccount.v39.is(event)) {
-        return system.killedAccount.v39.decode(event);
+      if (system.killedAccount.v1.is(event)) {
+        const account = system.killedAccount.v1.decode(event);
+        return { account };
+      } else if (system.killedAccount.v9.is(event)) {
+        return system.killedAccount.v9.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-
     case system.newAccount.name:
-      if (system.newAccount.v3.is(event)) {
-        return { account: system.newAccount.v3.decode(event) };
-      } else if (system.newAccount.v39.is(event)) {
-        return system.newAccount.v39.decode(event);
+      if (system.newAccount.v1.is(event)) {
+        const account = system.newAccount.v1.decode(event);
+        return { account };
+      } else if (system.newAccount.v9.is(event)) {
+        return system.newAccount.v9.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-
     case system.remarked.name:
-      if (system.remarked.v3.is(event)) {
-        const [sender, hash] = system.remarked.v3.decode(event);
-        return { sender, hash };
-      } else if (system.remarked.v39.is(event)) {
-        return system.remarked.v39.decode(event);
+      if (system.remarked.v1.is(event)) {
+        const [origin, remarkHash] = system.remarked.v1.decode(event);
+        return { sender: origin, hash: remarkHash };
+      } else if (system.remarked.v9.is(event)) {
+        return system.remarked.v9.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }

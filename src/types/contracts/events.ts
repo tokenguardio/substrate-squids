@@ -1,17 +1,18 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v59 from '../v59'
-import * as v68 from '../v68'
+import * as v55 from '../v55'
+import * as v64 from '../v64'
+import * as v82 from '../v82'
 
 export const instantiated =  {
     name: 'Contracts.Instantiated',
     /**
      * Contract deployed by address at the specified address.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.Instantiated',
         sts.struct({
-            deployer: v59.AccountId32,
-            contract: v59.AccountId32,
+            deployer: v55.AccountId32,
+            contract: v55.AccountId32,
         })
     ),
 }
@@ -26,17 +27,17 @@ export const terminated =  {
      * The only way for a contract to be removed and emitting this event is by calling
      * `seal_terminate`.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.Terminated',
         sts.struct({
             /**
              * The contract that was terminated.
              */
-            contract: v59.AccountId32,
+            contract: v55.AccountId32,
             /**
              * The account that received the contracts remaining balance
              */
-            beneficiary: v59.AccountId32,
+            beneficiary: v55.AccountId32,
         })
     ),
 }
@@ -46,10 +47,21 @@ export const codeStored =  {
     /**
      * Code with the specified hash has been stored.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.CodeStored',
         sts.struct({
-            codeHash: v59.H256,
+            codeHash: v55.H256,
+        })
+    ),
+    /**
+     * Code with the specified hash has been stored.
+     */
+    v82: new EventType(
+        'Contracts.CodeStored',
+        sts.struct({
+            codeHash: v82.H256,
+            depositHeld: sts.bigint(),
+            uploader: v82.AccountId32,
         })
     ),
 }
@@ -59,13 +71,13 @@ export const contractEmitted =  {
     /**
      * A custom event emitted by the contract.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.ContractEmitted',
         sts.struct({
             /**
              * The contract that emitted the event.
              */
-            contract: v59.AccountId32,
+            contract: v55.AccountId32,
             /**
              * Data supplied by the contract. Metadata generated during contract compilation
              * is needed to decode it.
@@ -80,10 +92,21 @@ export const codeRemoved =  {
     /**
      * A code with the specified hash was removed.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.CodeRemoved',
         sts.struct({
-            codeHash: v59.H256,
+            codeHash: v55.H256,
+        })
+    ),
+    /**
+     * A code with the specified hash was removed.
+     */
+    v82: new EventType(
+        'Contracts.CodeRemoved',
+        sts.struct({
+            codeHash: v82.H256,
+            depositReleased: sts.bigint(),
+            remover: v82.AccountId32,
         })
     ),
 }
@@ -93,21 +116,21 @@ export const contractCodeUpdated =  {
     /**
      * A contract's code was updated.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.ContractCodeUpdated',
         sts.struct({
             /**
              * The contract that has been updated.
              */
-            contract: v59.AccountId32,
+            contract: v55.AccountId32,
             /**
              * New code hash that was set for the contract.
              */
-            newCodeHash: v59.H256,
+            newCodeHash: v55.H256,
             /**
              * Previous code hash of the contract.
              */
-            oldCodeHash: v59.H256,
+            oldCodeHash: v55.H256,
         })
     ),
 }
@@ -123,17 +146,17 @@ export const called =  {
      * calls. This is because on failure all storage changes including events are
      * rolled back.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.Called',
         sts.struct({
             /**
              * The account that called the `contract`.
              */
-            caller: v59.AccountId32,
+            caller: v55.AccountId32,
             /**
              * The contract that was called.
              */
-            contract: v59.AccountId32,
+            contract: v55.AccountId32,
         })
     ),
     /**
@@ -145,17 +168,17 @@ export const called =  {
      * calls. This is because on failure all storage changes including events are
      * rolled back.
      */
-    v68: new EventType(
+    v64: new EventType(
         'Contracts.Called',
         sts.struct({
             /**
              * The caller of the `contract`.
              */
-            caller: v68.Origin,
+            caller: v64.Origin,
             /**
              * The contract that was called.
              */
-            contract: v68.AccountId32,
+            contract: v64.AccountId32,
         })
     ),
 }
@@ -171,18 +194,48 @@ export const delegateCalled =  {
      * calls. This is because on failure all storage changes including events are
      * rolled back.
      */
-    v59: new EventType(
+    v55: new EventType(
         'Contracts.DelegateCalled',
         sts.struct({
             /**
              * The contract that performed the delegate call and hence in whose context
              * the `code_hash` is executed.
              */
-            contract: v59.AccountId32,
+            contract: v55.AccountId32,
             /**
              * The code hash that was delegate called.
              */
-            codeHash: v59.H256,
+            codeHash: v55.H256,
+        })
+    ),
+}
+
+export const storageDepositTransferredAndHeld =  {
+    name: 'Contracts.StorageDepositTransferredAndHeld',
+    /**
+     * Some funds have been transferred and held as storage deposit.
+     */
+    v82: new EventType(
+        'Contracts.StorageDepositTransferredAndHeld',
+        sts.struct({
+            from: v82.AccountId32,
+            to: v82.AccountId32,
+            amount: sts.bigint(),
+        })
+    ),
+}
+
+export const storageDepositTransferredAndReleased =  {
+    name: 'Contracts.StorageDepositTransferredAndReleased',
+    /**
+     * Some storage deposit funds have been transferred and released.
+     */
+    v82: new EventType(
+        'Contracts.StorageDepositTransferredAndReleased',
+        sts.struct({
+            from: v82.AccountId32,
+            to: v82.AccountId32,
+            amount: sts.bigint(),
         })
     ),
 }

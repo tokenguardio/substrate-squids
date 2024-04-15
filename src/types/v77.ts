@@ -1,5 +1,22 @@
 import {sts, Result, Option, Bytes, BitSequence} from './support'
 
+export const RewardDestination: sts.Type<RewardDestination> = sts.closedEnum(() => {
+    return  {
+        FreeBalance: sts.unit(),
+        StakeBalance: sts.unit(),
+    }
+})
+
+export type RewardDestination = RewardDestination_FreeBalance | RewardDestination_StakeBalance
+
+export interface RewardDestination_FreeBalance {
+    __kind: 'FreeBalance'
+}
+
+export interface RewardDestination_StakeBalance {
+    __kind: 'StakeBalance'
+}
+
 export const SmartContract: sts.Type<SmartContract> = sts.closedEnum(() => {
     return  {
         Evm: H160,

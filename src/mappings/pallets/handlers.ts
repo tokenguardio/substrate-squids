@@ -1,12 +1,13 @@
 import { normalizeBalancesEventsArgs } from "./events/balances";
 import { normalizeContractsEventsArgs } from "./events/contracts";
 import { normalizeSystemEventsArgs } from "./events/system";
-import { normalizeNominationPoolsEventsArgs } from "./events/nomination-pools";
-import { normalizeStakingEventsArgs } from "./events/staking";
+import { normalizeDappsStakingEventsArgs } from "./events/dapps-staking";
+import { normalizeDappStakingEventsArgs } from "./events/dapp-staking";
 
 import { normalizeContractsCallsArgs } from "./calls/contracts";
-import { normalizeNominationPoolsCallsArgs } from "./calls/nomination-pools";
+import { normalizeDappsStakingCallsArgs } from "./calls/dapps-staking";
 import { normalizeBalancesCallsArgs } from "./calls/balances";
+import { normalizeDappStakingCallsArgs } from "./calls/dapp-staking";
 import { Event, Call } from "./../../processor";
 
 export const eventNormalizationHandlers: {
@@ -15,14 +16,14 @@ export const eventNormalizationHandlers: {
   Balances: normalizeBalancesEventsArgs,
   System: normalizeSystemEventsArgs,
   Contracts: normalizeContractsEventsArgs,
-  NominationPools: normalizeNominationPoolsEventsArgs,
-  Staking: normalizeStakingEventsArgs,
+  DappsStaking: normalizeDappsStakingEventsArgs,
+  DappStaking: normalizeDappStakingEventsArgs,
 };
 
-export const callNormalizationHandlers: {
-  [key: string]: (call: Call) => any;
-} = {
-  Contracts: normalizeContractsCallsArgs,
-  NominationPools: normalizeNominationPoolsCallsArgs,
-  Balances: normalizeBalancesCallsArgs,
-};
+export const callNormalizationHandlers: { [key: string]: (call: Call) => any } =
+  {
+    Balances: normalizeBalancesCallsArgs,
+    Contracts: normalizeContractsCallsArgs,
+    DappsStaking: normalizeDappsStakingCallsArgs,
+    DappStaking: normalizeDappStakingCallsArgs,
+  };

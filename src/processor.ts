@@ -10,27 +10,25 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import {
-  balances as balancesEvents,
-  nominationPools as nominationPoolsEvents,
-  contracts as contractsEvents,
-  staking,
+  dappStaking,
+  dappsStaking,
+  balances,
+  contracts,
   system,
-  treasury,
 } from "./types/events";
 import { extractNamesFromObjects } from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([
-  balancesEvents,
-  nominationPoolsEvents,
-  contractsEvents,
-  staking,
+  dappStaking,
+  dappsStaking,
+  balances,
+  contracts,
   system,
-  treasury,
 ]);
 
 export const processor = new SubstrateBatchProcessor()
   .setGateway(
-    lookupArchive("aleph-zero", {
+    lookupArchive("astar", {
       release: "ArrowSquid",
       type: "Substrate",
     })
@@ -67,8 +65,7 @@ export const processor = new SubstrateBatchProcessor()
     to: process.env.BLOCK_RANGE_TO
       ? Number(process.env.BLOCK_RANGE_TO)
       : undefined,
-  })
-  .setTypesBundle(process.env.TYPES_BUNDLE_FILE ?? "assets/typesBundle.json");
+  });
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;

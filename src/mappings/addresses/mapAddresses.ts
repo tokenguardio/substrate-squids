@@ -15,7 +15,7 @@ export function mapAddresses(
   return addresses.map((address) => {
     return {
       hex: address,
-      ss58: ss58.codec("substrate").encode(decodeHex(address)),
+      ss58: ss58.codec("astar").encode(decodeHex(address)),
     };
   });
 }

@@ -1,35 +1,45 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v3 from '../v3'
-import * as v12 from '../v12'
-import * as v39 from '../v39'
-import * as v58 from '../v58'
-import * as v68 from '../v68'
+import * as v1 from '../v1'
+import * as v9 from '../v9'
+import * as v15 from '../v15'
+import * as v43 from '../v43'
+import * as v49 from '../v49'
+import * as v64 from '../v64'
 
 export const extrinsicSuccess =  {
     name: 'System.ExtrinsicSuccess',
     /**
-     *  An extrinsic completed successfully. \[info\]
+     * An extrinsic completed successfully. \[info\]
      */
-    v3: new EventType(
+    v1: new EventType(
         'System.ExtrinsicSuccess',
-        v3.DispatchInfo
+        v1.DispatchInfo
     ),
     /**
      * An extrinsic completed successfully.
      */
-    v39: new EventType(
+    v9: new EventType(
         'System.ExtrinsicSuccess',
         sts.struct({
-            dispatchInfo: v39.DispatchInfo,
+            dispatchInfo: v9.DispatchInfo,
         })
     ),
     /**
      * An extrinsic completed successfully.
      */
-    v58: new EventType(
+    v43: new EventType(
         'System.ExtrinsicSuccess',
         sts.struct({
-            dispatchInfo: v58.DispatchInfo,
+            dispatchInfo: v43.DispatchInfo,
+        })
+    ),
+    /**
+     * An extrinsic completed successfully.
+     */
+    v49: new EventType(
+        'System.ExtrinsicSuccess',
+        sts.struct({
+            dispatchInfo: v49.DispatchInfo,
         })
     ),
 }
@@ -37,47 +47,60 @@ export const extrinsicSuccess =  {
 export const extrinsicFailed =  {
     name: 'System.ExtrinsicFailed',
     /**
-     *  An extrinsic failed. \[error, info\]
-     */
-    v3: new EventType(
-        'System.ExtrinsicFailed',
-        sts.tuple([v3.DispatchError, v3.DispatchInfo])
-    ),
-    /**
      * An extrinsic failed. \[error, info\]
      */
-    v12: new EventType(
+    v1: new EventType(
         'System.ExtrinsicFailed',
-        sts.tuple([v12.DispatchError, v12.DispatchInfo])
+        sts.tuple([v1.DispatchError, v1.DispatchInfo])
     ),
     /**
      * An extrinsic failed.
      */
-    v39: new EventType(
+    v9: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v39.DispatchError,
-            dispatchInfo: v39.DispatchInfo,
+            dispatchError: v9.DispatchError,
+            dispatchInfo: v9.DispatchInfo,
         })
     ),
     /**
      * An extrinsic failed.
      */
-    v58: new EventType(
+    v15: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v58.DispatchError,
-            dispatchInfo: v58.DispatchInfo,
+            dispatchError: v15.DispatchError,
+            dispatchInfo: v15.DispatchInfo,
         })
     ),
     /**
      * An extrinsic failed.
      */
-    v68: new EventType(
+    v43: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v68.DispatchError,
-            dispatchInfo: v68.DispatchInfo,
+            dispatchError: v43.DispatchError,
+            dispatchInfo: v43.DispatchInfo,
+        })
+    ),
+    /**
+     * An extrinsic failed.
+     */
+    v49: new EventType(
+        'System.ExtrinsicFailed',
+        sts.struct({
+            dispatchError: v49.DispatchError,
+            dispatchInfo: v49.DispatchInfo,
+        })
+    ),
+    /**
+     * An extrinsic failed.
+     */
+    v64: new EventType(
+        'System.ExtrinsicFailed',
+        sts.struct({
+            dispatchError: v64.DispatchError,
+            dispatchInfo: v64.DispatchInfo,
         })
     ),
 }
@@ -85,9 +108,9 @@ export const extrinsicFailed =  {
 export const codeUpdated =  {
     name: 'System.CodeUpdated',
     /**
-     *  `:code` was updated.
+     * `:code` was updated.
      */
-    v3: new EventType(
+    v1: new EventType(
         'System.CodeUpdated',
         sts.unit()
     ),
@@ -96,19 +119,19 @@ export const codeUpdated =  {
 export const newAccount =  {
     name: 'System.NewAccount',
     /**
-     *  A new \[account\] was created.
+     * A new \[account\] was created.
      */
-    v3: new EventType(
+    v1: new EventType(
         'System.NewAccount',
-        v3.AccountId
+        v1.AccountId32
     ),
     /**
      * A new account was created.
      */
-    v39: new EventType(
+    v9: new EventType(
         'System.NewAccount',
         sts.struct({
-            account: v39.AccountId32,
+            account: v9.AccountId32,
         })
     ),
 }
@@ -116,19 +139,19 @@ export const newAccount =  {
 export const killedAccount =  {
     name: 'System.KilledAccount',
     /**
-     *  An \[account\] was reaped.
+     * An \[account\] was reaped.
      */
-    v3: new EventType(
+    v1: new EventType(
         'System.KilledAccount',
-        v3.AccountId
+        v1.AccountId32
     ),
     /**
      * An account was reaped.
      */
-    v39: new EventType(
+    v9: new EventType(
         'System.KilledAccount',
         sts.struct({
-            account: v39.AccountId32,
+            account: v9.AccountId32,
         })
     ),
 }
@@ -136,20 +159,20 @@ export const killedAccount =  {
 export const remarked =  {
     name: 'System.Remarked',
     /**
-     *  On on-chain remark happened. \[origin, remark_hash\]
+     * On on-chain remark happened. \[origin, remark_hash\]
      */
-    v3: new EventType(
+    v1: new EventType(
         'System.Remarked',
-        sts.tuple([v3.AccountId, v3.Hash])
+        sts.tuple([v1.AccountId32, v1.H256])
     ),
     /**
      * On on-chain remark happened.
      */
-    v39: new EventType(
+    v9: new EventType(
         'System.Remarked',
         sts.struct({
-            sender: v39.AccountId32,
-            hash: v39.H256,
+            sender: v9.AccountId32,
+            hash: v9.H256,
         })
     ),
 }

@@ -20,7 +20,7 @@ export function handleSubstrateTransaction(
 ) {
   const call = extrinsic.call;
   if (!call) {
-    console.log(`Extrinsic without call: ${extrinsic.hash}`);
+    console.error(`Extrinsic without call: ${extrinsic.hash}`);
     throw new Error("Extrinsic without call");
   }
   let label;
@@ -82,7 +82,7 @@ function addSingleToAddressMapping(
 ) {
   const mappedAddress = {
     hex: address,
-    ss58: ss58.codec("substrate").encode(decodeHex(address)),
+    ss58: ss58.codec("astar").encode(decodeHex(address)),
   };
   const addressMapping = createAddressMapping(mappedAddress);
   addressMappings.set(mappedAddress.hex, addressMapping);
