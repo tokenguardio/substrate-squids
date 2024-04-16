@@ -1,4 +1,3 @@
-import { lookupArchive } from "@subsquid/archive-registry";
 import { readFileSync } from "fs";
 import {
   BlockHeader,
@@ -15,8 +14,8 @@ const dapps: string[] = JSON.parse(readFileSync("assets/dapps.json", "utf8"));
 const dappsLower = dapps.map((address) => address.toLowerCase());
 
 export const processor = new EvmBatchProcessor()
-  .setGateway(lookupArchive("arbitrum"))
-  .setRpcEndpoint(process.env.RPC_ETH_HTTP ?? "https://arb1.arbitrum.io/rpc")
+  .setGateway("https://v2.archive.subsquid.io/network/arbitrum-one ")
+  .setRpcEndpoint(process.env.RPC_ETH_HTTP)
   .setRpcDataIngestionSettings({ disabled: true })
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
