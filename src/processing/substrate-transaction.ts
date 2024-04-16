@@ -1,38 +1,28 @@
-import * as ss58 from "@subsquid/ss58";
-import { decodeHex } from "@subsquid/util-internal-hex";
-import {
-  AddressMapping,
-  SubstrateTransaction,
-  SubstrateLabel,
-} from "./../model";
+import { SubstrateTransaction, SubstrateLabel } from "./../model";
 import { callNormalizationHandlers } from "./../mappings";
-import {
-  createSubstrateTransaction,
-  createAddressMapping,
-} from "./../utils/factories";
+import { createSubstrateTransaction } from "./../utils/factories";
+import { fromHexToSs58 } from "../utils/misc";
 import { Block, Extrinsic } from "./../processor";
 
 export function handleSubstrateTransaction(
   extrinsic: Extrinsic,
   substrateTransactions: SubstrateTransaction[],
-  block: Block,
-  addressMappings: Map<string, AddressMapping>
+  block: Block
 ) {
   const call = extrinsic.call;
   if (!call) {
-    console.log(`Extrinsic without call: ${extrinsic.hash}`);
+    console.error(`Extrinsic without call: ${extrinsic.hash}`);
     throw new Error("Extrinsic without call");
   }
   let label;
-  let to;
+  let to: string | null = null;
   let normalizedCallArgs;
   switch (call.name) {
     case "Contracts.call":
     case "Contracts.call_old_weight":
       normalizedCallArgs = callNormalizationHandlers["Contracts"](call);
       if (normalizedCallArgs.dest?.__kind === "Id") {
-        to = normalizedCallArgs.dest.value;
-        addSingleToAddressMapping(to, addressMappings);
+        to = fromHexToSs58(normalizedCallArgs.dest.value);
       }
       label = SubstrateLabel.contract_call;
       break;
@@ -48,8 +38,7 @@ export function handleSubstrateTransaction(
     case "Balances.transfer_keep_alive":
       normalizedCallArgs = callNormalizationHandlers["Balances"](call);
       if (normalizedCallArgs.dest?.__kind === "Id") {
-        to = normalizedCallArgs.dest.value;
-        addSingleToAddressMapping(to, addressMappings);
+        to = fromHexToSs58(normalizedCallArgs.dest.value);
       }
       label = SubstrateLabel.other;
       break;
@@ -62,8 +51,8 @@ export function handleSubstrateTransaction(
   let from = null;
   if ((extrinsic.signature as any)?.address?.__kind === "Id") {
     from = (extrinsic.signature as any).address.value;
+    from = fromHexToSs58(from);
   }
-  addSingleToAddressMapping(from, addressMappings);
 
   const substrateTransaction = createSubstrateTransaction(
     call,
@@ -74,16 +63,4 @@ export function handleSubstrateTransaction(
     to
   );
   substrateTransactions.push(substrateTransaction);
-}
-
-function addSingleToAddressMapping(
-  address: string,
-  addressMappings: Map<string, AddressMapping>
-) {
-  const mappedAddress = {
-    hex: address,
-    ss58: ss58.codec("substrate").encode(decodeHex(address)),
-  };
-  const addressMapping = createAddressMapping(mappedAddress);
-  addressMappings.set(mappedAddress.hex, addressMapping);
 }

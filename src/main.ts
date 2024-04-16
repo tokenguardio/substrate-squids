@@ -2,25 +2,12 @@ import axios from "axios";
 import https from "https";
 import axiosRetry from "axios-retry";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import {
-  EventNorm,
-  CallNorm,
-  AddressMapping,
-  SubstrateTransaction,
-} from "./model";
+import { EventNorm, CallNorm, SubstrateTransaction } from "./model";
 import {
   eventNormalizationHandlers,
   callNormalizationHandlers,
-  eventsAddressArgs,
-  callsAddressArgs,
-  mapAddresses,
 } from "./mappings";
-import {
-  createEventNorm,
-  createCallNorm,
-  createAddressMapping,
-} from "./utils/factories";
-import { AddressArgs } from "./interfaces/mappings/specific";
+import { createEventNorm, createCallNorm } from "./utils/factories";
 import {
   ExtrinsicResponse,
   Extrinsic as SidecarExtrinsic,
@@ -72,7 +59,6 @@ processor.run(
     const events: EventNorm[] = [];
     const calls: CallNorm[] = [];
     const substrateTransactions: SubstrateTransaction[] = [];
-    const addressMappings: Map<string, AddressMapping> = new Map();
     let fetchedBlockHash: string = "";
     let fetchedExtrinsics: SidecarExtrinsic[] = [];
 
@@ -124,8 +110,7 @@ processor.run(
               handleSubstrateTransaction(
                 event.extrinsic,
                 substrateTransactions,
-                block.header,
-                addressMappings
+                block.header
               );
             }
           }
@@ -146,8 +131,7 @@ processor.run(
             handleSubstrateTransaction(
               event.extrinsic,
               substrateTransactions,
-              block.header,
-              addressMappings
+              block.header
             );
           }
         } else if (block.header.height >= 33235255) {
@@ -165,8 +149,7 @@ processor.run(
               handleSubstrateTransaction(
                 event.extrinsic,
                 substrateTransactions,
-                block.header,
-                addressMappings
+                block.header
               );
             }
           }
@@ -180,12 +163,6 @@ processor.run(
           const args = eventNormalizationHandlers[pallet](event);
           const eventNorm = createEventNorm(block.header, event, args);
           events.push(eventNorm);
-          addAddressesToMap(
-            event.name,
-            args,
-            eventsAddressArgs,
-            addressMappings
-          );
         }
       }
       for (const call of block.calls) {
@@ -194,7 +171,6 @@ processor.run(
           const args = callNormalizationHandlers[pallet](call);
           const callNorm = createCallNorm(block.header, call, args);
           calls.push(callNorm);
-          addAddressesToMap(call.name, args, callsAddressArgs, addressMappings);
         }
       }
     }
@@ -205,19 +181,5 @@ processor.run(
 
     await ctx.store.save(calls);
     await ctx.store.save(events);
-    await ctx.store.save(Array.from(addressMappings.values()));
   }
 );
-
-export function addAddressesToMap(
-  itemName: string,
-  args: any,
-  addressArgs: AddressArgs,
-  addressMappings: Map<string, AddressMapping>
-): void {
-  const mappedAddresses = mapAddresses(itemName, args, addressArgs);
-  mappedAddresses.forEach((mappedAddress) => {
-    const addressMapping = createAddressMapping(mappedAddress);
-    addressMappings.set(mappedAddress.hex, addressMapping);
-  });
-}

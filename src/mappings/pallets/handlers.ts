@@ -1,28 +1,52 @@
-import { normalizeBalancesEventsArgs } from "./events/balances";
-import { normalizeContractsEventsArgs } from "./events/contracts";
-import { normalizeSystemEventsArgs } from "./events/system";
-import { normalizeNominationPoolsEventsArgs } from "./events/nomination-pools";
-import { normalizeStakingEventsArgs } from "./events/staking";
-
-import { normalizeContractsCallsArgs } from "./calls/contracts";
-import { normalizeNominationPoolsCallsArgs } from "./calls/nomination-pools";
-import { normalizeBalancesCallsArgs } from "./calls/balances";
+import {
+  normalizeBalancesEventsArgs,
+  normalizeContractsEventsArgs,
+  normalizeNominationPoolsEventsArgs,
+  normalizeStakingEventsArgs,
+  normalizeSystemEventsArgs,
+} from "./events";
+import {
+  normalizeBalancesCallsArgs,
+  normalizeContractsCallsArgs,
+  normalizeNominationPoolsCallsArgs,
+} from "./calls";
 import { Event, Call } from "./../../processor";
+import {
+  wrapCallNormalizationWithFormatting,
+  wrapEventNormalizationWithFormatting,
+} from "../addresses/mapAddresses";
+
+function wrapHandlers<T>(
+  handlers: { [key: string]: (input: T) => any },
+  wrapper: (normalizer: (input: T) => any) => (input: T) => any
+) {
+  const wrappedHandlers: { [key: string]: (input: T) => any } = {};
+  Object.keys(handlers).forEach((key) => {
+    wrappedHandlers[key] = wrapper(handlers[key]);
+  });
+  return wrappedHandlers;
+}
 
 export const eventNormalizationHandlers: {
   [key: string]: (event: Event) => any;
-} = {
-  Balances: normalizeBalancesEventsArgs,
-  System: normalizeSystemEventsArgs,
-  Contracts: normalizeContractsEventsArgs,
-  NominationPools: normalizeNominationPoolsEventsArgs,
-  Staking: normalizeStakingEventsArgs,
-};
+} = wrapHandlers(
+  {
+    Balances: normalizeBalancesEventsArgs,
+    System: normalizeSystemEventsArgs,
+    Contracts: normalizeContractsEventsArgs,
+    NominationPools: normalizeNominationPoolsEventsArgs,
+    Staking: normalizeStakingEventsArgs,
+  },
+  wrapEventNormalizationWithFormatting
+);
 
 export const callNormalizationHandlers: {
   [key: string]: (call: Call) => any;
-} = {
-  Contracts: normalizeContractsCallsArgs,
-  NominationPools: normalizeNominationPoolsCallsArgs,
-  Balances: normalizeBalancesCallsArgs,
-};
+} = wrapHandlers(
+  {
+    Contracts: normalizeContractsCallsArgs,
+    NominationPools: normalizeNominationPoolsCallsArgs,
+    Balances: normalizeBalancesCallsArgs,
+  },
+  wrapCallNormalizationWithFormatting
+);

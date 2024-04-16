@@ -1,5 +1,4 @@
 import { assertNotNull } from "@subsquid/util-internal";
-import { lookupArchive } from "@subsquid/archive-registry";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -29,12 +28,7 @@ const eventNames = extractNamesFromObjects([
 ]);
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway(
-    lookupArchive("aleph-zero", {
-      release: "ArrowSquid",
-      type: "Substrate",
-    })
-  )
+  .setGateway("https://v2.archive.subsquid.io/network/aleph-zero")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,

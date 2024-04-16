@@ -2,11 +2,9 @@ import { Block, Extrinsic, Call, Event } from "../processor";
 import {
   EventNorm,
   CallNorm,
-  AddressMapping,
   SubstrateTransaction,
   SubstrateLabel,
 } from "../model";
-import { MappedAddress } from "../interfaces/mappings/specific";
 
 export function createSubstrateTransaction(
   call: Call,
@@ -19,6 +17,7 @@ export function createSubstrateTransaction(
   return new SubstrateTransaction({
     id: extrinsic.id,
     blockHash: block.hash,
+    extrinsicHash: extrinsic.hash,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     name: call.name,
     args: call.args,
@@ -56,14 +55,5 @@ export function createCallNorm(block: Block, call: Call, args: any): CallNorm {
     args,
     success: call.success,
     origin: call.origin,
-  });
-}
-
-export function createAddressMapping(
-  mappedAddress: MappedAddress
-): AddressMapping {
-  return new AddressMapping({
-    id: mappedAddress.hex,
-    ss58: mappedAddress.ss58,
   });
 }
