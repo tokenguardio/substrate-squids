@@ -17,11 +17,6 @@ type CallNorm @entity {
   origin: JSON
 }
 
-type AddressMapping @entity {
-  id: ID! @index
-  ss58: String
-}
-
 type Transaction @entity {
   id: ID!
   blockHash: String!

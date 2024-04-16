@@ -1,22 +1,46 @@
-import * as ss58 from "@subsquid/ss58";
-import { MappedAddress, AddressArgs } from "../../interfaces/mappings/specific";
-import { decodeHex } from "@subsquid/util-internal-hex";
+import { evmAddressToMixedCase } from "../../utils/misc";
+import { eventsAddressArgs } from "./eventsAddressArgs";
+import { callsAddressArgs } from "./callsAddressArgs";
+import { Event, Call } from "@src/processor";
 
-export function mapAddresses(
-  itemName: string,
-  args: any,
-  addressArgs: AddressArgs
-): MappedAddress[] {
-  const addressArgNames = addressArgs[itemName] || [];
-  const addresses: string[] = addressArgNames
-    .map((name) => args[name])
-    .filter(Boolean);
-
-  return addresses.map((address) => {
-    return {
-      hex: address,
-      // ss58: ss58.codec("moonbeam").encode(decodeHex(address)),
-      ss58: null,
-    };
+function formatAddresses(normalizedArgs: any, addressFields: string[]) {
+  if (!normalizedArgs) {
+    throw new Error("Normalized args are null - unable to reformat address");
+  }
+  addressFields.forEach((field) => {
+    if (field in normalizedArgs) {
+      normalizedArgs[field] = evmAddressToMixedCase(normalizedArgs[field]);
+    } else {
+      throw new Error(
+        `Field ${field} does not exist on normalized args - unable to reformat address`
+      );
+    }
   });
+  return normalizedArgs;
+}
+
+export function wrapEventNormalizationWithFormatting<T>(
+  normalizer: (event: Event) => T
+) {
+  return (event: Event): T => {
+    const normalizedData: T = normalizer(event);
+    const addressFields = eventsAddressArgs[event.name];
+    if (addressFields) {
+      return formatAddresses(normalizedData, addressFields);
+    }
+    return normalizedData;
+  };
+}
+
+export function wrapCallNormalizationWithFormatting<T>(
+  normalizer: (call: Call) => T
+) {
+  return (call: Call): T => {
+    const normalizedData: T = normalizer(call);
+    const addressFields = callsAddressArgs[call.name];
+    if (addressFields) {
+      return formatAddresses(normalizedData, addressFields);
+    }
+    return normalizedData;
+  };
 }

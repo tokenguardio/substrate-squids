@@ -4,19 +4,24 @@ import {
   UnknownEventVersionError,
   UnknownEventError,
 } from "../../../utils/errors";
+import { evmAddressToMixedCase } from "../../../utils/misc";
 
 export function normalizeBalancesEventsArgs(event: Event): any {
   switch (event.name) {
     case balances.balanceSet.name:
       if (balances.balanceSet.v900.is(event)) {
-        let [who, free, reserved] = balances.balanceSet.v900.decode(event);
+        const [who, free, reserved] = balances.balanceSet.v900.decode(event);
         return {
-          who,
+          who: evmAddressToMixedCase(who),
           free,
           reserved,
         };
       } else if (balances.balanceSet.v1201.is(event)) {
-        return balances.balanceSet.v1201.decode(event);
+        const decoded = balances.balanceSet.v1201.decode(event);
+        return {
+          ...decoded,
+          who: evmAddressToMixedCase(decoded.who),
+        };
       } else if (balances.balanceSet.v2501.is(event)) {
         return {
           ...balances.balanceSet.v2501.decode(event),

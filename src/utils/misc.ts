@@ -1,3 +1,4 @@
+import * as ethers from "ethers";
 import { NamedObject } from "@src/interfaces/misc";
 
 export function bufferToHex(buffer: Uint8Array): string {
@@ -27,4 +28,8 @@ export function extractNamesFromObjects(objectsArray: NamedObject[]): string[] {
   return objectsArray.flatMap((obj) =>
     Object.values(obj).map((subObj) => subObj.name)
   );
+}
+
+export function evmAddressToMixedCase(address: string): string {
+  return ethers.getAddress(address);
 }
