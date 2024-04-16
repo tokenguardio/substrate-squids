@@ -16,8 +16,3 @@ type CallNorm @entity {
   success: Boolean
   origin: JSON
 }
-
-type AddressMapping @entity {
-  id: ID! @index
-  ss58: String! @index
-}
