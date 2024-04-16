@@ -1,5 +1,4 @@
 import { assertNotNull } from "@subsquid/util-internal";
-import { lookupArchive } from "@subsquid/archive-registry";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -15,12 +14,7 @@ import { extractNamesFromObjects } from "./utils/misc";
 const eventNames = extractNamesFromObjects([balances, system]);
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway(
-    lookupArchive("moonbeam", {
-      release: "ArrowSquid",
-      type: "Substrate",
-    })
-  )
+  .setGateway("https://v2.archive.subsquid.io/network/moonbeam-substrate")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
