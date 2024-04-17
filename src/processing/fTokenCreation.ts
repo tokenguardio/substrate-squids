@@ -1,5 +1,6 @@
 import { Store } from "@subsquid/typeorm-store";
 import { In } from "typeorm";
+import { assertNotNull } from "@subsquid/util-internal";
 import { ProcessorContext } from "../processor";
 import { FToken } from "../model";
 import { Multicall } from "../abi/multicall";
@@ -60,13 +61,12 @@ async function performMulticall(
   const multicall = new Multicall(
     ctx,
     lastBlock.header,
-    process.env.MULTICALL_CONTRACT ??
-      "0x842eC2c7D803033Edf55E478F461FC547Bc54EB2"
+    assertNotNull(process.env.MULTICALL_CONTRACT)
   );
   return await multicall.tryAggregate(
     contractFunction,
     addresses.map((address) => [address, [] as any[]] as [string, any[]]),
-    parseInt(process.env.MULTICALL_BATCH_SIZE ?? "100")
+    parseInt(assertNotNull(process.env.MULTICALL_BATCH_SIZE))
   );
 }
 

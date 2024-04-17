@@ -8,14 +8,18 @@ import {
   Transaction as _Transaction,
   Trace as _Trace,
 } from "@subsquid/evm-processor";
+import { assertNotNull } from "@subsquid/util-internal";
 import * as erc20Abi from "./abi/erc20";
 
 const dapps: string[] = JSON.parse(readFileSync("assets/dapps.json", "utf8"));
 const dappsLower = dapps.map((address) => address.toLowerCase());
 
 export const processor = new EvmBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/arbitrum-one ")
-  .setRpcEndpoint(process.env.RPC_ETH_HTTP)
+  .setGateway("https://v2.archive.subsquid.io/network/moonbeam-mainnet")
+  .setRpcEndpoint({
+    url: assertNotNull(process.env.RPC_ETH_HTTP),
+    rateLimit: 10,
+  })
   .setRpcDataIngestionSettings({ disabled: true })
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
