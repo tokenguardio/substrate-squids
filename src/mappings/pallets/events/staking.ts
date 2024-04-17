@@ -122,7 +122,7 @@ export function normalizeStakingEventsArgs(event: Event): any {
     case staking.slashed.name:
       if (staking.slashed.v9090.is(event)) {
         const [validator, amount] = staking.slashed.v9090.decode(event);
-        return { validator, amount };
+        return { staker: validator, amount };
       } else if (staking.slashed.v9300.is(event)) {
         return staking.slashed.v9300.decode(event);
       } else {
