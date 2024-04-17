@@ -18,12 +18,6 @@ type CallNorm @entity {
   origin: JSON
 }
 
-enum SubstrateLabel {
-  contract_deploy
-  contract_call
-  other
-}
-
 type SubstrateTransaction @entity {
   id: ID!
   blockHash: String!
@@ -37,4 +31,146 @@ type SubstrateTransaction @entity {
   from: String
   to: String
   success: Boolean!
+}
+
+enum SubstrateLabel {
+  contract_deploy
+  contract_call
+  other
+}
+
+type Transaction @entity {
+  id: ID!
+  blockHash: String!
+  timestamp: DateTime! @index
+  hash: String! @index
+  type: EvmTransactionType!
+  label: EvmLabel! @index
+  from: String! @index
+  to: String @index
+  fee: BigInt!
+  value: BigInt!
+  input: String!
+  deployedAddress: String
+  success: Boolean @index
+  sighash: String
+  transactionIndex: Int!
+  traceCreates: [TraceCreate!] @derivedFrom(field: "transaction")
+  traceCalls: [TraceCall!] @derivedFrom(field: "transaction")
+  traceSuicides: [TraceSuicide!] @derivedFrom(field: "transaction")
+  traceRewards: [TraceReward!] @derivedFrom(field: "transaction")
+  ftTransfers: [FtTransfer!] @derivedFrom(field: "transaction")
+}
+
+enum EvmTransactionType {
+  LEGACY
+  EIP1559
+  EIP2930
+}
+
+enum EvmLabel {
+  CONTRACT_DEPLOY
+  CONTRACT_CALL
+  NATIVE_TRANSFER
+}
+
+type Contract @entity {
+  id: ID!
+  createdBy: String @index
+  createTransaction: Transaction
+  createTimestamp: DateTime @index
+  destroyTransaction: Transaction
+  destroyTimestamp: DateTime @index
+}
+
+type TraceCreate @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  parentHasError: Boolean
+  from: String! @index
+  fromType: AddressType
+  value: BigInt
+  gas: BigInt
+  init: String
+  gasUsed: BigInt
+  code: String
+  address: String
+}
+
+type TraceCall @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  parentHasError: Boolean
+  from: String! @index
+  fromType: AddressType
+  to: String! @index
+  toType: AddressType
+  value: BigInt
+  gas: BigInt
+  sighash: String
+  input: String
+  gasUsed: BigInt
+  output: String
+}
+
+type TraceSuicide @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  parentHasError: Boolean
+  address: String
+  refundAddress: String
+  balance: BigInt
+}
+
+type TraceReward @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: DateTime! @index
+  subtraces: Int
+  error: String
+  parentHasError: Boolean
+  author: String
+  value: BigInt
+  rewardType: String
+}
+
+enum AddressType {
+  EOA
+  CONTRACT
+}
+
+type FToken @entity {
+  id: ID!
+  name: String @index
+  symbol: String @index
+  decimals: Int
+  ftTransfers: [FtTransfer!] @derivedFrom(field: "token")
+}
+
+type FtTransfer @entity {
+  id: ID!
+  transaction: Transaction!
+  blockHash: String!
+  timestamp: DateTime! @index
+  eventIndex: Int
+  from: String! @index
+  to: String! @index
+  value: BigInt!
+  transferType: TransferType @index
+  token: FToken
+}
+
+enum TransferType {
+  TRANSFER
+  MINT
+  BURN
 }
