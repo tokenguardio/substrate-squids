@@ -7,12 +7,13 @@ import {
   Transaction as _Transaction,
   Trace as _Trace,
 } from "@subsquid/evm-processor";
+import { assertNotNull } from "@subsquid/util-internal";
 import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
   .setGateway("https://v2.archive.subsquid.io/network/arbitrum-nova")
   .setRpcEndpoint({
-    url: process.env.RPC_ETH_HTTP ?? "https://arbitrum-nova.public.blastapi.io",
+    url: assertNotNull(process.env.RPC_ETH_HTTP),
     rateLimit: 10,
   })
   .setRpcDataIngestionSettings({ disabled: true })
