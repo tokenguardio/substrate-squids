@@ -18,14 +18,10 @@ type CallNorm @entity {
   origin: JSON
 }
 
-type AddressMapping @entity {
-  id: ID! @index
-  ss58: String! @index
-}
-
 type SubstrateTransaction @entity {
   id: ID!
   blockHash: String!
+  extrinsicHash: String! @index
   timestamp: DateTime! @index
   name: String! @index
   args: JSON

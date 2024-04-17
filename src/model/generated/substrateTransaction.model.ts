@@ -15,6 +15,10 @@ export class SubstrateTransaction {
     blockHash!: string
 
     @Index_()
+    @Column_("text", {nullable: false})
+    extrinsicHash!: string
+
+    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
