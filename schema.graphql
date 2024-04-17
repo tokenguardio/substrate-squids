@@ -21,7 +21,7 @@ type Transaction @entity {
   id: ID!
   blockHash: String!
   timestamp: DateTime! @index
-  hash: String!
+  hash: String! @index
   type: EvmTransactionType!
   label: EvmLabel! @index
   from: String! @index
@@ -37,6 +37,7 @@ type Transaction @entity {
   traceCalls: [TraceCall!] @derivedFrom(field: "transaction")
   traceSuicides: [TraceSuicide!] @derivedFrom(field: "transaction")
   traceRewards: [TraceReward!] @derivedFrom(field: "transaction")
+  ftTransfers: [FtTransfer!] @derivedFrom(field: "transaction")
 }
 
 enum EvmTransactionType {
@@ -54,8 +55,10 @@ enum EvmLabel {
 type Contract @entity {
   id: ID!
   createdBy: String @index
-  transaction: Transaction
-  createdTimestamp: DateTime @index
+  createTransaction: Transaction
+  createTimestamp: DateTime @index
+  destroyTransaction: Transaction
+  destroyTimestamp: DateTime @index
 }
 
 type TraceCreate @entity {
@@ -64,6 +67,7 @@ type TraceCreate @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   from: String! @index
   fromType: AddressType
   value: BigInt
@@ -80,6 +84,7 @@ type TraceCall @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   from: String! @index
   fromType: AddressType
   to: String! @index
@@ -98,6 +103,7 @@ type TraceSuicide @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   address: String
   refundAddress: String
   balance: BigInt
@@ -109,6 +115,7 @@ type TraceReward @entity {
   timestamp: DateTime! @index
   subtraces: Int
   error: String
+  parentHasError: Boolean
   author: String
   value: BigInt
   rewardType: String
@@ -117,4 +124,31 @@ type TraceReward @entity {
 enum AddressType {
   EOA
   CONTRACT
+}
+
+type FToken @entity {
+  id: ID!
+  name: String @index
+  symbol: String @index
+  decimals: Int
+  ftTransfers: [FtTransfer!] @derivedFrom(field: "token")
+}
+
+type FtTransfer @entity {
+  id: ID!
+  transaction: Transaction!
+  blockHash: String!
+  timestamp: DateTime! @index
+  eventIndex: Int
+  from: String! @index
+  to: String! @index
+  value: BigInt!
+  transferType: TransferType @index
+  token: FToken
+}
+
+enum TransferType {
+  TRANSFER
+  MINT
+  BURN
 }
