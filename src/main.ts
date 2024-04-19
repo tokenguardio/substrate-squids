@@ -29,6 +29,11 @@ import {
 } from "./processing/contractCreation";
 import { db } from "./db";
 
+// Avoid type errors when serializing BigInts
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 const precompiles: Precompiles = JSON.parse(
   readFileSync("assets/precompiles.json", "utf8")
 );
@@ -39,10 +44,10 @@ let traceTree: TraceTree = new TraceTree("");
 
 processor.run(db, async (ctx) => {
   const transactions: Transaction[] = [];
-  const traceCreates: TraceCreate[] = [];
-  const traceCalls: TraceCall[] = [];
-  const traceSuicides: TraceSuicide[] = [];
-  const traceRewards: TraceReward[] = [];
+  // const traceCreates: TraceCreate[] = [];
+  // const traceCalls: TraceCall[] = [];
+  // const traceSuicides: TraceSuicide[] = [];
+  // const traceRewards: TraceReward[] = [];
   const newContracts: Contract[] = [];
   const destroyedContracts: Contract[] = [];
   const ftTransfers: FtTransfer[] = [];
@@ -78,7 +83,7 @@ processor.run(db, async (ctx) => {
             trc.result?.address != null &&
             trc.transaction?.hash !== undefined &&
             trc.transaction?.status !== 0 &&
-            trc.error === null &&
+            trc.error == null &&
             !traceTree.parentHasError(trc)
           ) {
             // CREATE2 opcode - contract can be created more than once in one batch
@@ -86,16 +91,16 @@ processor.run(db, async (ctx) => {
             const newContract = createNewContract(block.header, trc);
             upsertContract(newContracts, newContract);
           }
-          traceCreates.push(createTraceCreate(block.header, trc, traceTree));
+          // traceCreates.push(createTraceCreate(block.header, trc, traceTree));
           break;
-        case "call":
-          traceCalls.push(createTraceCall(block.header, trc, traceTree));
-          break;
+        // case "call":
+        //   traceCalls.push(createTraceCall(block.header, trc, traceTree));
+        //   break;
         case "suicide":
           if (
             trc.transaction?.hash !== undefined &&
             trc.transaction?.status !== 0 &&
-            trc.error === null &&
+            trc.error == null &&
             !traceTree.parentHasError(trc)
           ) {
             // CREATE2 opcode - contract can be destroyed more than once in one batch
@@ -106,11 +111,11 @@ processor.run(db, async (ctx) => {
             );
             upsertContract(destroyedContracts, destroyedContract);
           }
-          traceSuicides.push(createTraceSuicide(block.header, trc, traceTree));
+          // traceSuicides.push(createTraceSuicide(block.header, trc, traceTree));
           break;
-        case "reward":
-          traceRewards.push(createTraceReward(block.header, trc, traceTree));
-          break;
+        // case "reward":
+        //   traceRewards.push(createTraceReward(block.header, trc, traceTree));
+        //   break;
       }
     }
     for (let log of block.logs) {
@@ -133,9 +138,9 @@ processor.run(db, async (ctx) => {
   await ctx.store.Transaction.writeMany(transactions);
   await ctx.store.Contract.writeMany(newContracts);
   await ctx.store.Contract.writeMany(destroyedContracts);
-  await ctx.store.TraceCreate.writeMany(traceCreates);
-  await ctx.store.TraceCall.writeMany(traceCalls);
-  await ctx.store.TraceSuicide.writeMany(traceSuicides);
-  await ctx.store.TraceReward.writeMany(traceRewards);
+  // await ctx.store.TraceCreate.writeMany(traceCreates);
+  // await ctx.store.TraceCall.writeMany(traceCalls);
+  // await ctx.store.TraceSuicide.writeMany(traceSuicides);
+  // await ctx.store.TraceReward.writeMany(traceRewards);
   await ctx.store.FtTransfer.writeMany(ftTransfers);
 });
