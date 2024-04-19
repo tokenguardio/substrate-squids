@@ -25,21 +25,22 @@ export const processor = new EvmBatchProcessor()
       ? Number(process.env.BLOCK_RANGE_TO)
       : undefined,
   })
-  .addTransaction({ traces: true })
-  .addLog({
-    topic0: [erc20Abi.events.Transfer.topic],
-  })
+  .addTrace({ type: ["create", "call"], transaction: true })
+  // .addTransaction({ traces: true })
+  // .addLog({
+  //   topic0: [erc20Abi.events.Transfer.topic],
+  // })
   .setFields({
-    transaction: {
-      input: true,
-      value: true,
-      gasUsed: true,
-      contractAddress: true,
-      type: true,
-      status: true,
-      sighash: true,
-      effectiveGasPrice: true,
-    },
+    // transaction: {
+    //   input: true,
+    //   value: true,
+    //   gasUsed: true,
+    //   contractAddress: true,
+    //   type: true,
+    //   status: true,
+    //   sighash: true,
+    //   effectiveGasPrice: true,
+    // },
     trace: {
       subtraces: true,
       // 'create' type related fields

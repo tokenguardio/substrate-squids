@@ -24,33 +24,33 @@ import {
 import { TraceTree } from "./../utils/trace";
 import { CommonTraceFields } from "./../interfaces/models";
 
-export function createTransaction(
-  block: _BlockHeader,
-  txn: _Transaction
-): Transaction {
-  return {
-    id: txn.id,
-    blockHash: block.hash,
-    timestamp: new Date(block.timestamp),
-    hash: txn.hash,
-    type:
-      txn.type !== undefined ? convertToTransactionType(txn.type) : undefined,
-    from: ethers.getAddress(txn.from),
-    to: txn.to ? ethers.getAddress(txn.to) : undefined,
-    fee:
-      txn.gasUsed !== undefined && txn.effectiveGasPrice !== undefined
-        ? calculateFee(txn.effectiveGasPrice, txn.gasUsed).toString()
-        : undefined,
-    value: txn.value.toString(),
-    input: txn.input,
-    deployedAddress: txn.contractAddress
-      ? ethers.getAddress(txn.contractAddress)
-      : undefined,
-    success: txn.status !== undefined ? Boolean(txn.status) : undefined,
-    sighash: txn.sighash,
-    transactionIndex: txn.transactionIndex,
-  };
-}
+// export function createTransaction(
+//   block: _BlockHeader,
+//   txn: _Transaction
+// ): Transaction {
+//   return {
+//     id: txn.id,
+//     blockHash: block.hash,
+//     timestamp: new Date(block.timestamp),
+//     hash: txn.hash,
+//     type:
+//       txn.type !== undefined ? convertToTransactionType(txn.type) : undefined,
+//     from: ethers.getAddress(txn.from),
+//     to: txn.to ? ethers.getAddress(txn.to) : undefined,
+//     fee:
+//       txn.gasUsed !== undefined && txn.effectiveGasPrice !== undefined
+//         ? calculateFee(txn.effectiveGasPrice, txn.gasUsed).toString()
+//         : undefined,
+//     value: txn.value.toString(),
+//     input: txn.input,
+//     deployedAddress: txn.contractAddress
+//       ? ethers.getAddress(txn.contractAddress)
+//       : undefined,
+//     success: txn.status !== undefined ? Boolean(txn.status) : undefined,
+//     sighash: txn.sighash,
+//     transactionIndex: txn.transactionIndex,
+//   };
+// }
 
 function createCommonTraceFields(
   block: _BlockHeader,
