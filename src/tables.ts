@@ -16,7 +16,9 @@ export const Transaction = new Table(
     blockHash: Column(Types.String()),
     timestamp: Column(Types.Timestamp()),
     hash: Column(Types.String()),
-    type: Column(Types.String()),
+    type: Column(Types.String(), {
+      nullable: true,
+    }),
     label: Column(Types.String(), {
       nullable: true,
     }),
@@ -24,7 +26,9 @@ export const Transaction = new Table(
     to: Column(Types.String(), {
       nullable: true,
     }),
-    fee: Column(Types.String()),
+    fee: Column(Types.String(), {
+      nullable: true,
+    }),
     value: Column(Types.String()),
     input: Column(Types.String()),
     deployedAddress: Column(Types.String(), {
@@ -227,7 +231,9 @@ export const FtTransfer = new Table(
   "ft_transfer.parquet",
   {
     id: Column(Types.String()),
-    transaction: Column(Types.String()),
+    transaction: Column(Types.String(), {
+      nullable: true,
+    }),
     blockHash: Column(Types.String()),
     timestamp: Column(Types.Timestamp()),
     eventIndex: Column(Types.Int32(), {

@@ -38,14 +38,14 @@ let currentTransactionId: string | null = null;
 let traceTree: TraceTree = new TraceTree("");
 
 processor.run(db, async (ctx) => {
-  const transactions: any[] = [];
-  const traceCreates: any[] = [];
-  const traceCalls: any[] = [];
-  const traceSuicides: any[] = [];
-  const traceRewards: any[] = [];
-  const newContracts: any[] = [];
-  const destroyedContracts: any[] = [];
-  const ftTransfers: any[] = [];
+  const transactions: Transaction[] = [];
+  const traceCreates: TraceCreate[] = [];
+  const traceCalls: TraceCall[] = [];
+  const traceSuicides: TraceSuicide[] = [];
+  const traceRewards: TraceReward[] = [];
+  const newContracts: Contract[] = [];
+  const destroyedContracts: Contract[] = [];
+  const ftTransfers: FtTransfer[] = [];
   const fTokenAddresses: Set<string> = new Set();
 
   if (!precompilesAdded) {

@@ -71,7 +71,7 @@ export interface FtTransfer {
 
 export interface CommonTraceFields {
   id: string;
-  transaction?: string;
+  transaction: string;
   timestamp: Date;
   transactionIndex: number;
   subtraces: number;
@@ -80,8 +80,6 @@ export interface CommonTraceFields {
 }
 
 export interface TraceCreate extends CommonTraceFields {
-  // Override any common fields if necessary, for example:
-  // subtraces?: number; (if you want to make it optional here but not in CommonTraceFields)
   from: string;
   fromType?: AddressType;
   value?: string;
