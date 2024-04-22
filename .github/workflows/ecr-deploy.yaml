@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["avalanche-mainnet-evm-parquet-s1-a"]
+    branches: ["avalanche-mainnet-evm-parquet-s2-a"]
   pull_request:
-    branches: ["avalanche-mainnet-evm-parquet-s1-a"]
+    branches: ["avalanche-mainnet-evm-parquet-s2-a"]
   workflow_dispatch:
 
 jobs:
