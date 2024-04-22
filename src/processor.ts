@@ -25,7 +25,8 @@ export const processor = new EvmBatchProcessor()
       ? Number(process.env.BLOCK_RANGE_TO)
       : undefined,
   })
-  .addTransaction({ traces: true })
+  .addTransaction({})
+  .addTrace({ type: ["create", "suicide"] })
   .addLog({
     topic0: [erc20Abi.events.Transfer.topic],
   })

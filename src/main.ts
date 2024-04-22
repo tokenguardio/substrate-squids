@@ -39,8 +39,8 @@ const precompiles: Precompiles = JSON.parse(
 );
 let precompilesAdded = false;
 
-let currentTransactionId: string | null = null;
-let traceTree: TraceTree = new TraceTree("");
+// let currentTransactionId: string | null = null;
+// let traceTree: TraceTree = new TraceTree("");
 
 processor.run(db, async (ctx) => {
   const transactions: Transaction[] = [];
@@ -68,14 +68,14 @@ processor.run(db, async (ctx) => {
     }
     for (let trc of block.traces) {
       // create new TraceTree for each transaction
-      if (currentTransactionId !== trc.transaction?.id) {
-        traceTree = new TraceTree(trc.transaction?.id || "");
-        currentTransactionId = trc.transaction?.id || null;
-      }
+      // if (currentTransactionId !== trc.transaction?.id) {
+      //   traceTree = new TraceTree(trc.transaction?.id || "");
+      //   currentTransactionId = trc.transaction?.id || null;
+      // }
 
-      if (traceTree) {
-        traceTree.addTrace(trc);
-      }
+      // if (traceTree) {
+      //   traceTree.addTrace(trc);
+      // }
 
       switch (trc.type) {
         case "create":
@@ -83,8 +83,9 @@ processor.run(db, async (ctx) => {
             trc.result?.address != null &&
             trc.transaction?.hash !== undefined &&
             trc.transaction?.status !== 0 &&
-            trc.error == null &&
-            !traceTree.parentHasError(trc)
+            trc.error == null
+            // &&
+            // !traceTree.parentHasError(trc)
           ) {
             // CREATE2 opcode - contract can be created more than once in one batch
             // if that's the case take the latest created and remove previous one from newContracts list
@@ -100,8 +101,9 @@ processor.run(db, async (ctx) => {
           if (
             trc.transaction?.hash !== undefined &&
             trc.transaction?.status !== 0 &&
-            trc.error == null &&
-            !traceTree.parentHasError(trc)
+            trc.error == null
+            //  &&
+            // !traceTree.parentHasError(trc)
           ) {
             // CREATE2 opcode - contract can be destroyed more than once in one batch
             // if that's the case take the latest destroyed contract and remove previous one from destroyedContracts list
