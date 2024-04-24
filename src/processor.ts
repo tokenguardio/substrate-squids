@@ -11,7 +11,7 @@ import { assertNotNull } from "@subsquid/util-internal";
 import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/avalanche-mainnet")
+  .setGateway("https://v2.archive.subsquid.io/network/moonbeam-mainnet")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ETH_HTTP),
     rateLimit: 10,
