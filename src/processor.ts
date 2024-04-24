@@ -10,7 +10,7 @@ import {
 import { assertNotNull } from "@subsquid/util-internal";
 
 export const processor = new EvmBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/arbitrum-one")
+  .setGateway("https://v2.archive.subsquid.io/network/arbitrum-nova")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ETH_HTTP),
     rateLimit: 10,

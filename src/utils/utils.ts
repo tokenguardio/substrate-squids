@@ -10,8 +10,6 @@ export function convertToTransactionType(type: number): EvmTransactionType {
       return EvmTransactionType.EIP2930;
     case 2:
       return EvmTransactionType.EIP1559;
-    case 3:
-      return EvmTransactionType.EIP4844;
     case 100:
       return EvmTransactionType.ARBITRUM_DEPOSIT;
     case 101:
@@ -24,8 +22,6 @@ export function convertToTransactionType(type: number): EvmTransactionType {
       return EvmTransactionType.ARBITRUM_SUBMIT_RETRYABLE;
     case 106:
       return EvmTransactionType.ARBITRUM_INTERNAL;
-    case 120:
-      return EvmTransactionType.ARBITRUM_LEGACY;
     default:
       throw new Error(`Unknown transaction type: ${type}`);
   }
