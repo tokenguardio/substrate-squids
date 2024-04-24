@@ -5,18 +5,11 @@ import {
   Trace as _Trace,
   Log as _Log,
 } from "./../processor";
-import {
-  Transaction,
-  Contract,
-  FtTransfer,
-  FToken,
-  Block,
-} from "./../interfaces/models";
+import { Transaction, FtTransfer, Block } from "./../interfaces/models";
 import {
   convertToTransactionType,
   calculateFee,
   getTransferType,
-  getDecoratedCallResult,
 } from "./../utils/utils";
 
 export function createTransaction(
@@ -47,47 +40,6 @@ export function createTransaction(
   };
 }
 
-export function createNewContract(block: _BlockHeader, trc: _Trace): Contract {
-  if (trc.type === "create") {
-    if (!trc.result?.address) {
-      throw new Error(
-        `Contract address (id) in create trace is undefined. Unable to create Contract. Trace object: ${JSON.stringify(
-          trc
-        )}`
-      );
-    }
-    return {
-      id: ethers.getAddress(trc.result.address),
-      createdBy: ethers.getAddress(trc.action.from),
-      createTransaction: trc.transaction?.id,
-      createTimestamp: new Date(block.timestamp),
-      destroyTimestamp: null,
-      destroyTransaction: null,
-    };
-  } else {
-    throw new Error(
-      `Expected 'create' trace type, but received '${trc.type}'.`
-    );
-  }
-}
-
-export function createDestroyedContract(
-  block: _BlockHeader,
-  trc: _Trace
-): Contract {
-  if (trc.type === "suicide") {
-    return {
-      id: ethers.getAddress(trc.action.address),
-      destroyTransaction: trc.transaction?.id,
-      destroyTimestamp: new Date(block.timestamp),
-    };
-  } else {
-    throw new Error(
-      `Expected 'suicide' trace type, but received '${trc.type}'.`
-    );
-  }
-}
-
 export function createFtTransfer(
   block: _BlockHeader,
   log: _Log,
@@ -106,20 +58,6 @@ export function createFtTransfer(
     value: value.toString(),
     transferType: getTransferType(from, to),
     token: log.address,
-  };
-}
-
-export function createFToken(
-  id: string,
-  name?: string,
-  symbol?: string,
-  decimals?: number
-): FToken {
-  return {
-    id: ethers.getAddress(id),
-    name: name ? getDecoratedCallResult(name) : null,
-    symbol: symbol ? getDecoratedCallResult(symbol) : null,
-    decimals: decimals ?? null,
   };
 }
 

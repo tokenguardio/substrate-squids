@@ -1,20 +1,11 @@
-import { readFileSync } from "fs";
-import * as ethers from "ethers";
 import { processor } from "./processor";
-import { Block, Transaction, Contract, FtTransfer } from "./interfaces/models";
+import { Block, Transaction, FtTransfer } from "./interfaces/models";
 import * as erc20Abi from "./abi/erc20";
 import {
   createTransaction,
   createBlock,
-  createNewContract,
-  createDestroyedContract,
   createFtTransfer,
 } from "./utils/factories";
-import { Precompiles } from "./interfaces/models";
-import {
-  upsertContract,
-  synchronizeContracts,
-} from "./processing/contractCreation";
 import { db } from "./db";
 
 // Avoid type errors when serializing BigInts
@@ -22,64 +13,16 @@ import { db } from "./db";
   return this.toString();
 };
 
-const precompiles: Precompiles = JSON.parse(
-  readFileSync("assets/precompiles.json", "utf8")
-);
-let precompilesAdded = false;
-
 processor.run(db, async (ctx) => {
   const transactions: Transaction[] = [];
-  const newContracts: Contract[] = [];
-  const destroyedContracts: Contract[] = [];
   const ftTransfers: FtTransfer[] = [];
   const fTokenAddresses: Set<string> = new Set();
   const blocks: Block[] = [];
-
-  if (!precompilesAdded) {
-    newContracts.push(
-      ...Object.values(precompiles).map((precompile) => ({
-        id: ethers.getAddress(precompile),
-      }))
-    );
-    precompilesAdded = true;
-  }
 
   for (let block of ctx.blocks) {
     blocks.push(createBlock(block.header));
     for (let txn of block.transactions) {
       transactions.push(createTransaction(block.header, txn));
-    }
-    for (let trc of block.traces) {
-      switch (trc.type) {
-        case "create":
-          if (
-            trc.result?.address != null &&
-            trc.transaction?.hash !== undefined &&
-            trc.transaction?.status !== 0 &&
-            trc.error == null
-          ) {
-            // CREATE2 opcode - contract can be created more than once in one batch
-            // if that's the case take the latest created and remove previous one from newContracts list
-            const newContract = createNewContract(block.header, trc);
-            upsertContract(newContracts, newContract);
-          }
-          break;
-        case "suicide":
-          if (
-            trc.transaction?.hash !== undefined &&
-            trc.transaction?.status !== 0 &&
-            trc.error == null
-          ) {
-            // CREATE2 opcode - contract can be destroyed more than once in one batch
-            // if that's the case take the latest destroyed contract and remove previous one from destroyedContracts list
-            const destroyedContract = createDestroyedContract(
-              block.header,
-              trc
-            );
-            upsertContract(destroyedContracts, destroyedContract);
-          }
-          break;
-      }
     }
     for (let log of block.logs) {
       if (log.topics[0] === erc20Abi.events.Transfer.topic) {
@@ -95,12 +38,7 @@ processor.run(db, async (ctx) => {
     }
   }
 
-  // // synchronize contracts created by CREATE2
-  synchronizeContracts(newContracts, destroyedContracts);
-
   await ctx.store.Block.writeMany(blocks);
   await ctx.store.Transaction.writeMany(transactions);
-  await ctx.store.Contract.writeMany(newContracts);
-  await ctx.store.Contract.writeMany(destroyedContracts);
   await ctx.store.FtTransfer.writeMany(ftTransfers);
 });

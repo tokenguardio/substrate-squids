@@ -11,7 +11,7 @@ import { assertNotNull } from "@subsquid/util-internal";
 import * as erc20Abi from "./abi/erc20";
 
 export const processor = new EvmBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/moonbeam-mainnet")
+  .setGateway("https://v2.archive.subsquid.io/network/astar-mainnet")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ETH_HTTP),
     rateLimit: 10,
@@ -26,7 +26,6 @@ export const processor = new EvmBatchProcessor()
       : undefined,
   })
   .addTransaction({})
-  .addTrace({ type: ["create", "suicide"] })
   .addLog({
     topic0: [erc20Abi.events.Transfer.topic],
   })
@@ -40,14 +39,6 @@ export const processor = new EvmBatchProcessor()
       status: true,
       sighash: true,
       effectiveGasPrice: true,
-    },
-    trace: {
-      subtraces: true,
-      // 'create' type related fields
-      createFrom: true,
-      createResultAddress: true,
-      // 'suicide' type related fields
-      suicideAddress: true,
     },
   });
 
