@@ -32,7 +32,6 @@ processor.run(db, async (ctx) => {
   const newContracts: Contract[] = [];
   const destroyedContracts: Contract[] = [];
   const ftTransfers: FtTransfer[] = [];
-  const fTokenAddresses: Set<string> = new Set();
   const blocks: Block[] = [];
 
   if (!precompilesAdded) {
@@ -89,7 +88,6 @@ processor.run(db, async (ctx) => {
           ftTransfers.push(
             createFtTransfer(block.header, log, from, to, value)
           );
-          fTokenAddresses.add(log.address);
         } catch (err) {}
       }
     }

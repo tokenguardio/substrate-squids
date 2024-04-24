@@ -9,14 +9,12 @@ import {
   Transaction,
   Contract,
   FtTransfer,
-  FToken,
   Block,
 } from "./../interfaces/models";
 import {
   convertToTransactionType,
   calculateFee,
   getTransferType,
-  getDecoratedCallResult,
 } from "./../utils/utils";
 
 export function createTransaction(
@@ -106,20 +104,6 @@ export function createFtTransfer(
     value: value.toString(),
     transferType: getTransferType(from, to),
     token: log.address,
-  };
-}
-
-export function createFToken(
-  id: string,
-  name?: string,
-  symbol?: string,
-  decimals?: number
-): FToken {
-  return {
-    id: ethers.getAddress(id),
-    name: name ? getDecoratedCallResult(name) : null,
-    symbol: symbol ? getDecoratedCallResult(symbol) : null,
-    decimals: decimals ?? null,
   };
 }
 
