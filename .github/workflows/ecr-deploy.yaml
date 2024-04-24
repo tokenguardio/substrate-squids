@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["bsc-mainnet-evm-parquet-s2-b-final"]
+    branches: ["optimism-mainnet-evm-parquet-s2-b-final"]
   pull_request:
-    branches: ["bsc-mainnet-evm-parquet-s2-b-final"]
+    branches: ["optimism-mainnet-evm-parquet-s2-b-final"]
   workflow_dispatch:
 
 jobs:
