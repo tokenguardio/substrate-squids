@@ -51,7 +51,7 @@ export class TraceTree {
           "Parent trace not found in the tree - unexpected state"
         );
       }
-      if (parent.error !== null) {
+      if (parent.error != null) {
         return true; // An error was found in one of the parents
       }
       currentTrace = parent; // Move up to the next parent

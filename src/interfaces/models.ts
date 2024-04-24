@@ -118,3 +118,10 @@ export interface TraceReward extends CommonTraceFields {
 export interface Precompiles {
   [key: string]: string;
 }
+
+export interface Block {
+  id: string;
+  hash: string;
+  height: number;
+  timestamp: Date;
+}

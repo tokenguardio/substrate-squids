@@ -9,38 +9,13 @@ const compression: Compression | undefined = process.env.COMPRESSION as
   | Compression
   | undefined;
 
-export const Transaction = new Table(
-  "transaction.parquet",
+export const Block = new Table(
+  "block.parquet",
   {
     id: Column(Types.String()),
-    blockHash: Column(Types.String()),
-    timestamp: Column(Types.Timestamp()),
     hash: Column(Types.String()),
-    type: Column(Types.String(), {
-      nullable: true,
-    }),
-    label: Column(Types.String(), {
-      nullable: true,
-    }),
-    from: Column(Types.String()),
-    to: Column(Types.String(), {
-      nullable: true,
-    }),
-    fee: Column(Types.String(), {
-      nullable: true,
-    }),
-    value: Column(Types.String()),
-    input: Column(Types.String()),
-    deployedAddress: Column(Types.String(), {
-      nullable: true,
-    }),
-    success: Column(Types.Boolean(), {
-      nullable: true,
-    }),
-    sighash: Column(Types.String(), {
-      nullable: true,
-    }),
-    transactionIndex: Column(Types.Uint32()),
+    height: Column(Types.Uint64()),
+    timestamp: Column(Types.Timestamp()),
   },
   { compression: compression }
 );
@@ -115,7 +90,7 @@ export const TraceCall = new Table(
     id: Column(Types.String()),
     transaction: Column(Types.String()),
     timestamp: Column(Types.Timestamp()),
-    subtraces: Column(Types.Int32(), {
+    subtraces: Column(Types.Uint32(), {
       nullable: true,
     }),
     error: Column(Types.String(), {
@@ -125,13 +100,7 @@ export const TraceCall = new Table(
       nullable: true,
     }),
     from: Column(Types.String()),
-    fromType: Column(Types.String(), {
-      nullable: true,
-    }),
     to: Column(Types.String()),
-    toType: Column(Types.String(), {
-      nullable: true,
-    }),
     value: Column(Types.String(), {
       nullable: true,
     }),
@@ -160,7 +129,7 @@ export const TraceSuicide = new Table(
     id: Column(Types.String()),
     transaction: Column(Types.String()),
     timestamp: Column(Types.Timestamp()),
-    subtraces: Column(Types.Int32(), {
+    subtraces: Column(Types.Uint32(), {
       nullable: true,
     }),
     error: Column(Types.String(), {
@@ -188,7 +157,7 @@ export const TraceReward = new Table(
     id: Column(Types.String()),
     transaction: Column(Types.String()),
     timestamp: Column(Types.Timestamp()),
-    subtraces: Column(Types.Int32(), {
+    subtraces: Column(Types.Uint32(), {
       nullable: true,
     }),
     error: Column(Types.String(), {
@@ -204,48 +173,6 @@ export const TraceReward = new Table(
       nullable: true,
     }),
     rewardType: Column(Types.String(), {
-      nullable: true,
-    }),
-  },
-  { compression: compression }
-);
-
-export const FToken = new Table(
-  "f_token.parquet",
-  {
-    id: Column(Types.String()),
-    name: Column(Types.String(), {
-      nullable: true,
-    }),
-    symbol: Column(Types.String(), {
-      nullable: true,
-    }),
-    decimals: Column(Types.Int32(), {
-      nullable: true,
-    }),
-  },
-  { compression: compression }
-);
-
-export const FtTransfer = new Table(
-  "ft_transfer.parquet",
-  {
-    id: Column(Types.String()),
-    transaction: Column(Types.String(), {
-      nullable: true,
-    }),
-    blockHash: Column(Types.String()),
-    timestamp: Column(Types.Timestamp()),
-    eventIndex: Column(Types.Int32(), {
-      nullable: true,
-    }),
-    from: Column(Types.String()),
-    to: Column(Types.String()),
-    value: Column(Types.String()),
-    transferType: Column(Types.String(), {
-      nullable: true,
-    }),
-    token: Column(Types.String(), {
       nullable: true,
     }),
   },
