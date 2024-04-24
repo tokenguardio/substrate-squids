@@ -1,14 +1,13 @@
 import { S3Dest } from "@subsquid/file-store-s3";
 import { Database, LocalDest, Store } from "@subsquid/file-store";
 import { assertNotNull } from "@subsquid/util-internal";
-import { Transaction, Contract, Block, FToken, FtTransfer } from "./tables";
+import { Transaction, Contract, Block, FtTransfer } from "./tables";
 
 export const db = new Database({
   tables: {
     Transaction,
     Contract,
     Block,
-    FToken,
     FtTransfer,
   },
   dest:
