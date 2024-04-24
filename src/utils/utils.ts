@@ -4,6 +4,8 @@ const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export function convertToTransactionType(type: number): EvmTransactionType {
   switch (type) {
+    case -1:
+      return EvmTransactionType.UNKNOWN;
     case 0:
       return EvmTransactionType.LEGACY;
     case 1:
