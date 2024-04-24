@@ -76,23 +76,6 @@ export const Contract = new Table(
   { compression: compression }
 );
 
-export const FToken = new Table(
-  "f_token.parquet",
-  {
-    id: Column(Types.String()),
-    name: Column(Types.String(), {
-      nullable: true,
-    }),
-    symbol: Column(Types.String(), {
-      nullable: true,
-    }),
-    decimals: Column(Types.Uint8(), {
-      nullable: true,
-    }),
-  },
-  { compression: compression }
-);
-
 export const FtTransfer = new Table(
   "ft_transfer.parquet",
   {
