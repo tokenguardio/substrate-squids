@@ -51,7 +51,7 @@ export function createTraceCreate(
       from: ethers.getAddress(trc.action.from),
       value: trc.action.value.toString(),
       gas: trc.action.gas.toString(),
-      init: trc.action.init,
+      // init: trc.action.init,
       gasUsed: trc.result?.gasUsed.toString(),
       code: trc.result?.code,
       address: trc.result?.address

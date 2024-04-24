@@ -39,7 +39,7 @@ export const processor = new EvmBatchProcessor()
       createFrom: true,
       createValue: true,
       createGas: true,
-      createInit: true,
+      createInit: false,
       createResultGasUsed: true,
       createResultCode: true,
       createResultAddress: true,
