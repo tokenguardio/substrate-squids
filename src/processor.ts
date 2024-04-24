@@ -45,29 +45,9 @@ export const processor = new EvmBatchProcessor()
       subtraces: true,
       // 'create' type related fields
       createFrom: true,
-      createValue: true,
-      createGas: true,
-      createInit: true,
-      createResultGasUsed: true,
-      createResultCode: true,
       createResultAddress: true,
-      // 'call' type related fields
-      callFrom: true,
-      callTo: true,
-      callValue: true,
-      callGas: true,
-      callSighash: true,
-      callInput: true,
-      callResultGasUsed: true,
-      callResultOutput: true,
       // 'suicide' type related fields
       suicideAddress: true,
-      suicideRefundAddress: true,
-      suicideBalance: true,
-      // 'reward' type related fields
-      rewardAuthor: true,
-      rewardValue: true,
-      rewardType: true,
     },
   });
 
