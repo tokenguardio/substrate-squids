@@ -38,24 +38,17 @@ export interface MultiAddress_Raw {
 
 export type AccountId32 = Bytes
 
-export const BalanceStatus: sts.Type<BalanceStatus> = sts.closedEnum(() => {
+export const ValidatorPrefs: sts.Type<ValidatorPrefs> = sts.struct(() => {
     return  {
-        Free: sts.unit(),
-        Reserved: sts.unit(),
+        commission: sts.number(),
+        blocked: sts.boolean(),
     }
 })
 
-export type BalanceStatus = BalanceStatus_Free | BalanceStatus_Reserved
-
-export interface BalanceStatus_Free {
-    __kind: 'Free'
+export interface ValidatorPrefs {
+    commission: number
+    blocked: boolean
 }
-
-export interface BalanceStatus_Reserved {
-    __kind: 'Reserved'
-}
-
-export const H256 = sts.bytes()
 
 export const AccountId32 = sts.bytes()
 
@@ -65,15 +58,34 @@ export const DispatchError: sts.Type<DispatchError> = sts.closedEnum(() => {
         BadOrigin: sts.unit(),
         CannotLookup: sts.unit(),
         ConsumerRemaining: sts.unit(),
-        Module: sts.enumStruct({
-            index: sts.number(),
-            error: sts.number(),
-        }),
+        Corruption: sts.unit(),
+        Exhausted: sts.unit(),
+        Module: ModuleError,
         NoProviders: sts.unit(),
         Other: sts.unit(),
         Token: TokenError,
+        TooManyConsumers: sts.unit(),
+        Transactional: TransactionalError,
+        Unavailable: sts.unit(),
     }
 })
+
+export const TransactionalError: sts.Type<TransactionalError> = sts.closedEnum(() => {
+    return  {
+        LimitReached: sts.unit(),
+        NoLayer: sts.unit(),
+    }
+})
+
+export type TransactionalError = TransactionalError_LimitReached | TransactionalError_NoLayer
+
+export interface TransactionalError_LimitReached {
+    __kind: 'LimitReached'
+}
+
+export interface TransactionalError_NoLayer {
+    __kind: 'NoLayer'
+}
 
 export const TokenError: sts.Type<TokenError> = sts.closedEnum(() => {
     return  {
@@ -117,6 +129,18 @@ export interface TokenError_WouldDie {
     __kind: 'WouldDie'
 }
 
+export const ModuleError: sts.Type<ModuleError> = sts.struct(() => {
+    return  {
+        index: sts.number(),
+        error: sts.bytes(),
+    }
+})
+
+export interface ModuleError {
+    index: number
+    error: Bytes
+}
+
 export const ArithmeticError: sts.Type<ArithmeticError> = sts.closedEnum(() => {
     return  {
         DivisionByZero: sts.unit(),
@@ -139,7 +163,7 @@ export interface ArithmeticError_Underflow {
     __kind: 'Underflow'
 }
 
-export type DispatchError = DispatchError_Arithmetic | DispatchError_BadOrigin | DispatchError_CannotLookup | DispatchError_ConsumerRemaining | DispatchError_Module | DispatchError_NoProviders | DispatchError_Other | DispatchError_Token
+export type DispatchError = DispatchError_Arithmetic | DispatchError_BadOrigin | DispatchError_CannotLookup | DispatchError_ConsumerRemaining | DispatchError_Corruption | DispatchError_Exhausted | DispatchError_Module | DispatchError_NoProviders | DispatchError_Other | DispatchError_Token | DispatchError_TooManyConsumers | DispatchError_Transactional | DispatchError_Unavailable
 
 export interface DispatchError_Arithmetic {
     __kind: 'Arithmetic'
@@ -158,10 +182,17 @@ export interface DispatchError_ConsumerRemaining {
     __kind: 'ConsumerRemaining'
 }
 
+export interface DispatchError_Corruption {
+    __kind: 'Corruption'
+}
+
+export interface DispatchError_Exhausted {
+    __kind: 'Exhausted'
+}
+
 export interface DispatchError_Module {
     __kind: 'Module'
-    index: number
-    error: number
+    value: ModuleError
 }
 
 export interface DispatchError_NoProviders {
@@ -177,9 +208,22 @@ export interface DispatchError_Token {
     value: TokenError
 }
 
+export interface DispatchError_TooManyConsumers {
+    __kind: 'TooManyConsumers'
+}
+
+export interface DispatchError_Transactional {
+    __kind: 'Transactional'
+    value: TransactionalError
+}
+
+export interface DispatchError_Unavailable {
+    __kind: 'Unavailable'
+}
+
 export const DispatchInfo: sts.Type<DispatchInfo> = sts.struct(() => {
     return  {
-        weight: sts.bigint(),
+        weight: Weight,
         class: DispatchClass,
         paysFee: Pays,
     }
@@ -224,8 +268,20 @@ export interface DispatchClass_Operational {
     __kind: 'Operational'
 }
 
+export const Weight: sts.Type<Weight> = sts.struct(() => {
+    return  {
+        refTime: sts.bigint(),
+        proofSize: sts.bigint(),
+    }
+})
+
+export interface Weight {
+    refTime: bigint
+    proofSize: bigint
+}
+
 export interface DispatchInfo {
-    weight: bigint
+    weight: Weight
     class: DispatchClass
     paysFee: Pays
 }

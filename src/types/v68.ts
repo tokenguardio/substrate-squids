@@ -29,6 +29,147 @@ export interface Determinism_Relaxed {
     __kind: 'Relaxed'
 }
 
+export const ClaimPermission: sts.Type<ClaimPermission> = sts.closedEnum(() => {
+    return  {
+        Permissioned: sts.unit(),
+        PermissionlessAll: sts.unit(),
+        PermissionlessCompound: sts.unit(),
+        PermissionlessWithdraw: sts.unit(),
+    }
+})
+
+export type ClaimPermission = ClaimPermission_Permissioned | ClaimPermission_PermissionlessAll | ClaimPermission_PermissionlessCompound | ClaimPermission_PermissionlessWithdraw
+
+export interface ClaimPermission_Permissioned {
+    __kind: 'Permissioned'
+}
+
+export interface ClaimPermission_PermissionlessAll {
+    __kind: 'PermissionlessAll'
+}
+
+export interface ClaimPermission_PermissionlessCompound {
+    __kind: 'PermissionlessCompound'
+}
+
+export interface ClaimPermission_PermissionlessWithdraw {
+    __kind: 'PermissionlessWithdraw'
+}
+
+export const BondExtra: sts.Type<BondExtra> = sts.closedEnum(() => {
+    return  {
+        FreeBalance: sts.bigint(),
+        Rewards: sts.unit(),
+    }
+})
+
+export type BondExtra = BondExtra_FreeBalance | BondExtra_Rewards
+
+export interface BondExtra_FreeBalance {
+    __kind: 'FreeBalance'
+    value: bigint
+}
+
+export interface BondExtra_Rewards {
+    __kind: 'Rewards'
+}
+
+export const Type_150: sts.Type<Type_150> = sts.closedEnum(() => {
+    return  {
+        Noop: sts.unit(),
+        Remove: sts.unit(),
+        Set: AccountId32,
+    }
+})
+
+export type Type_150 = Type_150_Noop | Type_150_Remove | Type_150_Set
+
+export interface Type_150_Noop {
+    __kind: 'Noop'
+}
+
+export interface Type_150_Remove {
+    __kind: 'Remove'
+}
+
+export interface Type_150_Set {
+    __kind: 'Set'
+    value: AccountId32
+}
+
+export type AccountId32 = Bytes
+
+export const Type_149: sts.Type<Type_149> = sts.closedEnum(() => {
+    return  {
+        Noop: sts.unit(),
+        Remove: sts.unit(),
+        Set: Perbill,
+    }
+})
+
+export type Type_149 = Type_149_Noop | Type_149_Remove | Type_149_Set
+
+export interface Type_149_Noop {
+    __kind: 'Noop'
+}
+
+export interface Type_149_Remove {
+    __kind: 'Remove'
+}
+
+export interface Type_149_Set {
+    __kind: 'Set'
+    value: Perbill
+}
+
+export type Perbill = number
+
+export const Type_148: sts.Type<Type_148> = sts.closedEnum(() => {
+    return  {
+        Noop: sts.unit(),
+        Remove: sts.unit(),
+        Set: sts.number(),
+    }
+})
+
+export type Type_148 = Type_148_Noop | Type_148_Remove | Type_148_Set
+
+export interface Type_148_Noop {
+    __kind: 'Noop'
+}
+
+export interface Type_148_Remove {
+    __kind: 'Remove'
+}
+
+export interface Type_148_Set {
+    __kind: 'Set'
+    value: number
+}
+
+export const Type_147: sts.Type<Type_147> = sts.closedEnum(() => {
+    return  {
+        Noop: sts.unit(),
+        Remove: sts.unit(),
+        Set: sts.bigint(),
+    }
+})
+
+export type Type_147 = Type_147_Noop | Type_147_Remove | Type_147_Set
+
+export interface Type_147_Noop {
+    __kind: 'Noop'
+}
+
+export interface Type_147_Remove {
+    __kind: 'Remove'
+}
+
+export interface Type_147_Set {
+    __kind: 'Set'
+    value: bigint
+}
+
 export const MultiAddress: sts.Type<MultiAddress> = sts.closedEnum(() => {
     return  {
         Address20: sts.bytes(),
@@ -65,8 +206,6 @@ export interface MultiAddress_Raw {
     value: Bytes
 }
 
-export type AccountId32 = Bytes
-
 export const Origin: sts.Type<Origin> = sts.closedEnum(() => {
     return  {
         Root: sts.unit(),
@@ -84,6 +223,20 @@ export interface Origin_Signed {
     __kind: 'Signed'
     value: AccountId32
 }
+
+export const CommissionChangeRate: sts.Type<CommissionChangeRate> = sts.struct(() => {
+    return  {
+        maxIncrease: Perbill,
+        minDelay: sts.number(),
+    }
+})
+
+export interface CommissionChangeRate {
+    maxIncrease: Perbill
+    minDelay: number
+}
+
+export const Perbill = sts.number()
 
 export const AccountId32 = sts.bytes()
 

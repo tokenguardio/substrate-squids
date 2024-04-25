@@ -1,25 +1,27 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://v2.archive.subsquid.io/metadata/astar",
+  "specVersions": "https://v2.archive.subsquid.io/metadata/aleph-zero",
   "pallets": {
     "Balances": {
+      "events": true,
+      "calls": true
+    },
+    "Contracts": {
+      "events": true,
+      "calls": true
+    },
+    "NominationPools": {
       "events": true,
       "calls": true
     },
     "System": {
       "events": true
     },
-    "Contracts": {
-      "events": true,
-      "calls": true
+    "Staking": {
+      "events": true
     },
-    "DappStaking": {
-      "events": true,
-      "calls": true
-    },
-    "DappsStaking": {
-      "events": true,
-      "calls": true
+    "Treasury": {
+      "events": ["Deposit"]
     }
   }
 }

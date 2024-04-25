@@ -1,57 +1,131 @@
 import {sts, Result, Option, Bytes, BitSequence} from './support'
 
-export const DispatchInfo: sts.Type<DispatchInfo> = sts.struct(() => {
+export const Type_144: sts.Type<Type_144> = sts.closedEnum(() => {
     return  {
-        weight: sts.bigint(),
-        class: DispatchClass,
-        paysFee: Pays,
+        Noop: sts.unit(),
+        Remove: sts.unit(),
+        Set: AccountId32,
     }
 })
 
-export const Pays: sts.Type<Pays> = sts.closedEnum(() => {
+export type Type_144 = Type_144_Noop | Type_144_Remove | Type_144_Set
+
+export interface Type_144_Noop {
+    __kind: 'Noop'
+}
+
+export interface Type_144_Remove {
+    __kind: 'Remove'
+}
+
+export interface Type_144_Set {
+    __kind: 'Set'
+    value: AccountId32
+}
+
+export type AccountId32 = Bytes
+
+export const Type_143: sts.Type<Type_143> = sts.closedEnum(() => {
     return  {
-        No: sts.unit(),
-        Yes: sts.unit(),
+        Noop: sts.unit(),
+        Remove: sts.unit(),
+        Set: sts.number(),
     }
 })
 
-export type Pays = Pays_No | Pays_Yes
+export type Type_143 = Type_143_Noop | Type_143_Remove | Type_143_Set
 
-export interface Pays_No {
-    __kind: 'No'
+export interface Type_143_Noop {
+    __kind: 'Noop'
 }
 
-export interface Pays_Yes {
-    __kind: 'Yes'
+export interface Type_143_Remove {
+    __kind: 'Remove'
 }
 
-export const DispatchClass: sts.Type<DispatchClass> = sts.closedEnum(() => {
+export interface Type_143_Set {
+    __kind: 'Set'
+    value: number
+}
+
+export const Type_142: sts.Type<Type_142> = sts.closedEnum(() => {
     return  {
-        Mandatory: sts.unit(),
-        Normal: sts.unit(),
-        Operational: sts.unit(),
+        Noop: sts.unit(),
+        Remove: sts.unit(),
+        Set: sts.bigint(),
     }
 })
 
-export type DispatchClass = DispatchClass_Mandatory | DispatchClass_Normal | DispatchClass_Operational
+export type Type_142 = Type_142_Noop | Type_142_Remove | Type_142_Set
 
-export interface DispatchClass_Mandatory {
-    __kind: 'Mandatory'
+export interface Type_142_Noop {
+    __kind: 'Noop'
 }
 
-export interface DispatchClass_Normal {
-    __kind: 'Normal'
+export interface Type_142_Remove {
+    __kind: 'Remove'
 }
 
-export interface DispatchClass_Operational {
-    __kind: 'Operational'
+export interface Type_142_Set {
+    __kind: 'Set'
+    value: bigint
 }
 
-export interface DispatchInfo {
-    weight: bigint
-    class: DispatchClass
-    paysFee: Pays
+export const BondExtra: sts.Type<BondExtra> = sts.closedEnum(() => {
+    return  {
+        FreeBalance: sts.bigint(),
+        Rewards: sts.unit(),
+    }
+})
+
+export type BondExtra = BondExtra_FreeBalance | BondExtra_Rewards
+
+export interface BondExtra_FreeBalance {
+    __kind: 'FreeBalance'
+    value: bigint
 }
+
+export interface BondExtra_Rewards {
+    __kind: 'Rewards'
+}
+
+export const PoolState: sts.Type<PoolState> = sts.closedEnum(() => {
+    return  {
+        Blocked: sts.unit(),
+        Destroying: sts.unit(),
+        Open: sts.unit(),
+    }
+})
+
+export type PoolState = PoolState_Blocked | PoolState_Destroying | PoolState_Open
+
+export interface PoolState_Blocked {
+    __kind: 'Blocked'
+}
+
+export interface PoolState_Destroying {
+    __kind: 'Destroying'
+}
+
+export interface PoolState_Open {
+    __kind: 'Open'
+}
+
+export const ValidatorPrefs: sts.Type<ValidatorPrefs> = sts.struct(() => {
+    return  {
+        commission: sts.number(),
+        blocked: sts.boolean(),
+    }
+})
+
+export interface ValidatorPrefs {
+    commission: number
+    blocked: boolean
+}
+
+export const H256 = sts.bytes()
+
+export const AccountId32 = sts.bytes()
 
 export const DispatchError: sts.Type<DispatchError> = sts.closedEnum(() => {
     return  {
@@ -205,4 +279,57 @@ export interface DispatchError_TooManyConsumers {
 export interface DispatchError_Transactional {
     __kind: 'Transactional'
     value: TransactionalError
+}
+
+export const DispatchInfo: sts.Type<DispatchInfo> = sts.struct(() => {
+    return  {
+        weight: sts.bigint(),
+        class: DispatchClass,
+        paysFee: Pays,
+    }
+})
+
+export const Pays: sts.Type<Pays> = sts.closedEnum(() => {
+    return  {
+        No: sts.unit(),
+        Yes: sts.unit(),
+    }
+})
+
+export type Pays = Pays_No | Pays_Yes
+
+export interface Pays_No {
+    __kind: 'No'
+}
+
+export interface Pays_Yes {
+    __kind: 'Yes'
+}
+
+export const DispatchClass: sts.Type<DispatchClass> = sts.closedEnum(() => {
+    return  {
+        Mandatory: sts.unit(),
+        Normal: sts.unit(),
+        Operational: sts.unit(),
+    }
+})
+
+export type DispatchClass = DispatchClass_Mandatory | DispatchClass_Normal | DispatchClass_Operational
+
+export interface DispatchClass_Mandatory {
+    __kind: 'Mandatory'
+}
+
+export interface DispatchClass_Normal {
+    __kind: 'Normal'
+}
+
+export interface DispatchClass_Operational {
+    __kind: 'Operational'
+}
+
+export interface DispatchInfo {
+    weight: bigint
+    class: DispatchClass
+    paysFee: Pays
 }

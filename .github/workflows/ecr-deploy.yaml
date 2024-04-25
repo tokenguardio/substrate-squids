@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["astar-mainnet-substrate-parquet"]
+    branches: ["azero-mainnet-substrate-parquet"]
   pull_request:
-    branches: ["astar-mainnet-substrate-parquet"]
+    branches: ["azero-mainnet-substrate-parquet"]
   workflow_dispatch:
 
 jobs:

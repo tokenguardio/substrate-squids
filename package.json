@@ -11,7 +11,9 @@
     "@subsquid/file-store-parquet": "^1.1.1",
     "@subsquid/file-store-s3": "^2.0.1",
     "@subsquid/util-internal": "^3.2.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "axios": "^1.6.8",
+    "axios-retry": "^4.1.0"
   },
   "devDependencies": {
     "@subsquid/substrate-metadata-explorer": "3.1.2",

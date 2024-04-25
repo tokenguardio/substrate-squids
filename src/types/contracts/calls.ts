@@ -1,16 +1,16 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v55 from '../v55'
-import * as v64 from '../v64'
+import * as v59 from '../v59'
+import * as v68 from '../v68'
 
 export const callOldWeight =  {
     name: 'Contracts.call_old_weight',
     /**
      * Deprecated version if [`Self::call`] for use in an in-storage `Call`.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.call_old_weight',
         sts.struct({
-            dest: v55.MultiAddress,
+            dest: v59.MultiAddress,
             value: sts.bigint(),
             gasLimit: sts.bigint(),
             storageDepositLimit: sts.option(() => sts.bigint()),
@@ -24,7 +24,7 @@ export const instantiateWithCodeOldWeight =  {
     /**
      * Deprecated version if [`Self::instantiate_with_code`] for use in an in-storage `Call`.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.instantiate_with_code_old_weight',
         sts.struct({
             value: sts.bigint(),
@@ -42,13 +42,13 @@ export const instantiateOldWeight =  {
     /**
      * Deprecated version if [`Self::instantiate`] for use in an in-storage `Call`.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.instantiate_old_weight',
         sts.struct({
             value: sts.bigint(),
             gasLimit: sts.bigint(),
             storageDepositLimit: sts.option(() => sts.bigint()),
-            codeHash: v55.H256,
+            codeHash: v59.H256,
             data: sts.bytes(),
             salt: sts.bytes(),
         })
@@ -79,42 +79,23 @@ export const uploadCode =  {
      * only be instantiated by permissioned entities. The same is true when uploading
      * through [`Self::instantiate_with_code`].
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.upload_code',
         sts.struct({
             code: sts.bytes(),
             storageDepositLimit: sts.option(() => sts.bigint()),
-            determinism: v55.Determinism,
+            determinism: v59.Determinism,
         })
     ),
     /**
-     * Upload new `code` without instantiating a contract from it.
-     * 
-     * If the code does not already exist a deposit is reserved from the caller
-     * and unreserved only when [`Self::remove_code`] is called. The size of the reserve
-     * depends on the instrumented size of the the supplied `code`.
-     * 
-     * If the code already exists in storage it will still return `Ok` and upgrades
-     * the in storage version to the current
-     * [`InstructionWeights::version`](InstructionWeights).
-     * 
-     * - `determinism`: If this is set to any other value but [`Determinism::Enforced`] then
-     *   the only way to use this code is to delegate call into it from an offchain execution.
-     *   Set to [`Determinism::Enforced`] if in doubt.
-     * 
-     * # Note
-     * 
-     * Anyone can instantiate a contract from any uploaded code and thus prevent its removal.
-     * To avoid this situation a constructor could employ access control so that it can
-     * only be instantiated by permissioned entities. The same is true when uploading
-     * through [`Self::instantiate_with_code`].
+     * See [`Pallet::upload_code`].
      */
-    v64: new CallType(
+    v68: new CallType(
         'Contracts.upload_code',
         sts.struct({
             code: sts.bytes(),
             storageDepositLimit: sts.option(() => sts.bigint()),
-            determinism: v64.Determinism,
+            determinism: v68.Determinism,
         })
     ),
 }
@@ -127,10 +108,10 @@ export const removeCode =  {
      * A code can only be removed by its original uploader (its owner) and only if it is
      * not used by any contract.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.remove_code',
         sts.struct({
-            codeHash: v55.H256,
+            codeHash: v59.H256,
         })
     ),
 }
@@ -149,11 +130,11 @@ export const setCode =  {
      * that the contract address is no longer derived from its code hash after calling
      * this dispatchable.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.set_code',
         sts.struct({
-            dest: v55.MultiAddress,
-            codeHash: v55.H256,
+            dest: v59.MultiAddress,
+            codeHash: v59.H256,
         })
     ),
 }
@@ -178,12 +159,12 @@ export const call =  {
      * * If no account exists and the call value is not less than `existential_deposit`,
      * a regular account will be created and any value will be transferred.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.call',
         sts.struct({
-            dest: v55.MultiAddress,
+            dest: v59.MultiAddress,
             value: sts.bigint(),
-            gasLimit: v55.Weight,
+            gasLimit: v59.Weight,
             storageDepositLimit: sts.option(() => sts.bigint()),
             data: sts.bytes(),
         })
@@ -220,11 +201,11 @@ export const instantiateWithCode =  {
      * - The `value` is transferred to the new account.
      * - The `deploy` function is executed in the context of the newly-created account.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.instantiate_with_code',
         sts.struct({
             value: sts.bigint(),
-            gasLimit: v55.Weight,
+            gasLimit: v59.Weight,
             storageDepositLimit: sts.option(() => sts.bigint()),
             code: sts.bytes(),
             data: sts.bytes(),
@@ -242,13 +223,13 @@ export const instantiate =  {
      * code deployment step. Instead, the `code_hash` of an on-chain deployed wasm binary
      * must be supplied.
      */
-    v55: new CallType(
+    v59: new CallType(
         'Contracts.instantiate',
         sts.struct({
             value: sts.bigint(),
-            gasLimit: v55.Weight,
+            gasLimit: v59.Weight,
             storageDepositLimit: sts.option(() => sts.bigint()),
-            codeHash: v55.H256,
+            codeHash: v59.H256,
             data: sts.bytes(),
             salt: sts.bytes(),
         })
@@ -258,15 +239,12 @@ export const instantiate =  {
 export const migrate =  {
     name: 'Contracts.migrate',
     /**
-     * When a migration is in progress, this dispatchable can be used to run migration steps.
-     * Calls that contribute to advancing the migration have their fees waived, as it's helpful
-     * for the chain. Note that while the migration is in progress, the pallet will also
-     * leverage the `on_idle` hooks to run migration steps.
+     * See [`Pallet::migrate`].
      */
-    v64: new CallType(
+    v68: new CallType(
         'Contracts.migrate',
         sts.struct({
-            weightLimit: v64.Weight,
+            weightLimit: v68.Weight,
         })
     ),
 }

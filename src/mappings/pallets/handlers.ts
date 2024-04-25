@@ -1,15 +1,14 @@
 import {
   normalizeBalancesEventsArgs,
   normalizeContractsEventsArgs,
+  normalizeNominationPoolsEventsArgs,
+  normalizeStakingEventsArgs,
   normalizeSystemEventsArgs,
-  normalizeDappsStakingEventsArgs,
-  normalizeDappStakingEventsArgs,
 } from "./events";
 import {
-  normalizeContractsCallsArgs,
-  normalizeDappStakingCallsArgs,
   normalizeBalancesCallsArgs,
-  normalizeDappsStakingCallsArgs,
+  normalizeContractsCallsArgs,
+  normalizeNominationPoolsCallsArgs,
 } from "./calls";
 import { Event, Call } from "./../../processor";
 import {
@@ -35,19 +34,19 @@ export const eventNormalizationHandlers: {
     Balances: normalizeBalancesEventsArgs,
     System: normalizeSystemEventsArgs,
     Contracts: normalizeContractsEventsArgs,
-    DappsStaking: normalizeDappsStakingEventsArgs,
-    DappStaking: normalizeDappStakingEventsArgs,
+    NominationPools: normalizeNominationPoolsEventsArgs,
+    Staking: normalizeStakingEventsArgs,
   },
   wrapEventNormalizationWithFormatting
 );
 
-export const callNormalizationHandlers: { [key: string]: (call: Call) => any } =
-  wrapHandlers(
-    {
-      Balances: normalizeBalancesCallsArgs,
-      Contracts: normalizeContractsCallsArgs,
-      DappsStaking: normalizeDappsStakingCallsArgs,
-      DappStaking: normalizeDappStakingCallsArgs,
-    },
-    wrapCallNormalizationWithFormatting
-  );
+export const callNormalizationHandlers: {
+  [key: string]: (call: Call) => any;
+} = wrapHandlers(
+  {
+    Contracts: normalizeContractsCallsArgs,
+    NominationPools: normalizeNominationPoolsCallsArgs,
+    Balances: normalizeBalancesCallsArgs,
+  },
+  wrapCallNormalizationWithFormatting
+);

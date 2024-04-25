@@ -9,24 +9,26 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import {
-  dappStaking,
-  dappsStaking,
-  balances,
-  contracts,
+  balances as balancesEvents,
+  nominationPools as nominationPoolsEvents,
+  contracts as contractsEvents,
+  staking,
   system,
+  treasury,
 } from "./types/events";
 import { extractNamesFromObjects } from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([
-  dappStaking,
-  dappsStaking,
-  balances,
-  contracts,
+  balancesEvents,
+  nominationPoolsEvents,
+  contractsEvents,
+  staking,
   system,
+  treasury,
 ]);
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/astar-substrate")
+  .setGateway("https://v2.archive.subsquid.io/network/aleph-zero")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
@@ -59,7 +61,8 @@ export const processor = new SubstrateBatchProcessor()
     to: process.env.BLOCK_RANGE_TO
       ? Number(process.env.BLOCK_RANGE_TO)
       : undefined,
-  });
+  })
+  .setTypesBundle(process.env.TYPES_BUNDLE_FILE ?? "assets/typesBundle.json");
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
