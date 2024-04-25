@@ -32,8 +32,8 @@ export interface SubstrateTransaction {
   name: string;
   args?: { [key: string]: any };
   label?: string;
-  fee?: bigint;
-  tip?: bigint;
+  fee?: string;
+  tip?: string;
   from: string | null;
   to: string | null;
   success: boolean;

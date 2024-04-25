@@ -79,10 +79,10 @@ export const SubstrateTransaction = new Table(
     label: Column(Types.String(), {
       nullable: true,
     }),
-    fee: Column(Types.Uint64(), {
+    fee: Column(Types.String(), {
       nullable: true,
     }),
-    tip: Column(Types.Uint64(), {
+    tip: Column(Types.String(), {
       nullable: true,
     }),
     from: Column(Types.String(), {
