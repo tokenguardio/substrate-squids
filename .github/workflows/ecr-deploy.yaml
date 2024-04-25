@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["moonbeam-mainnet-substrate-parquet"]
+    branches: ["astar-mainnet-substrate-parquet"]
   pull_request:
-    branches: ["moonbeam-mainnet-substrate-parquet"]
+    branches: ["astar-mainnet-substrate-parquet"]
   workflow_dispatch:
 
 jobs:

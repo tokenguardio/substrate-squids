@@ -1,7 +1,7 @@
-import { evmAddressToMixedCase } from "../../utils/misc";
+import { fromHexToSs58 } from "../../utils/misc";
 import { eventsAddressArgs } from "./eventsAddressArgs";
 import { callsAddressArgs } from "./callsAddressArgs";
-import { Event as _Event, Call as _Call } from "./../../processor";
+import { Event, Call } from "./../../processor";
 
 function formatAddresses(normalizedArgs: any, addressFields: string[]) {
   if (!normalizedArgs) {
@@ -9,7 +9,7 @@ function formatAddresses(normalizedArgs: any, addressFields: string[]) {
   }
   addressFields.forEach((field) => {
     if (field in normalizedArgs) {
-      normalizedArgs[field] = evmAddressToMixedCase(normalizedArgs[field]);
+      normalizedArgs[field] = fromHexToSs58(normalizedArgs[field]);
     } else {
       throw new Error(
         `Field ${field} does not exist on normalized args - unable to reformat address`
@@ -20,9 +20,9 @@ function formatAddresses(normalizedArgs: any, addressFields: string[]) {
 }
 
 export function wrapEventNormalizationWithFormatting<T>(
-  normalizer: (event: _Event) => T
+  normalizer: (event: Event) => T
 ) {
-  return (event: _Event): T => {
+  return (event: Event): T => {
     const normalizedData: T = normalizer(event);
     const addressFields = eventsAddressArgs[event.name];
     if (addressFields) {
@@ -33,9 +33,9 @@ export function wrapEventNormalizationWithFormatting<T>(
 }
 
 export function wrapCallNormalizationWithFormatting<T>(
-  normalizer: (call: _Call) => T
+  normalizer: (call: Call) => T
 ) {
-  return (call: _Call): T => {
+  return (call: Call): T => {
     const normalizedData: T = normalizer(call);
     const addressFields = callsAddressArgs[call.name];
     if (addressFields) {

@@ -1,6 +1,6 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v900 from '../v900'
-import * as v2501 from '../v2501'
+import * as v1 from '../v1'
+import * as v64 from '../v64'
 
 export const transfer =  {
     name: 'Balances.transfer',
@@ -34,10 +34,10 @@ export const transfer =  {
      * - Origin account is already in memory, so no DB operations for them.
      * # </weight>
      */
-    v900: new CallType(
+    v1: new CallType(
         'Balances.transfer',
         sts.struct({
-            dest: v900.H160,
+            dest: v1.MultiAddress,
             value: sts.bigint(),
         })
     ),
@@ -65,10 +65,10 @@ export const setBalance =  {
      * - DB Weight: 1 Read, 1 Write to `who`
      * # </weight>
      */
-    v900: new CallType(
+    v1: new CallType(
         'Balances.set_balance',
         sts.struct({
-            who: v900.H160,
+            who: v1.MultiAddress,
             newFree: sts.bigint(),
             newReserved: sts.bigint(),
         })
@@ -85,11 +85,11 @@ export const forceTransfer =  {
      *   assumed to be in the overlay.
      * # </weight>
      */
-    v900: new CallType(
+    v1: new CallType(
         'Balances.force_transfer',
         sts.struct({
-            source: v900.H160,
-            dest: v900.H160,
+            source: v1.MultiAddress,
+            dest: v1.MultiAddress,
             value: sts.bigint(),
         })
     ),
@@ -110,10 +110,10 @@ export const transferKeepAlive =  {
      * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
      * #</weight>
      */
-    v900: new CallType(
+    v1: new CallType(
         'Balances.transfer_keep_alive',
         sts.struct({
-            dest: v900.H160,
+            dest: v1.MultiAddress,
             value: sts.bigint(),
         })
     ),
@@ -140,10 +140,10 @@ export const transferAll =  {
      * - O(1). Just like transfer, but reading the user's transferable balance first.
      *   #</weight>
      */
-    v900: new CallType(
+    v1: new CallType(
         'Balances.transfer_all',
         sts.struct({
-            dest: v900.H160,
+            dest: v1.MultiAddress,
             keepAlive: sts.boolean(),
         })
     ),
@@ -156,10 +156,10 @@ export const forceUnreserve =  {
      * 
      * Can only be called by ROOT.
      */
-    v900: new CallType(
+    v1: new CallType(
         'Balances.force_unreserve',
         sts.struct({
-            who: v900.H160,
+            who: v1.MultiAddress,
             amount: sts.bigint(),
         })
     ),
@@ -176,10 +176,10 @@ export const transferAllowDeath =  {
      * 
      * The dispatch origin for this call must be `Signed` by the transactor.
      */
-    v2501: new CallType(
+    v64: new CallType(
         'Balances.transfer_allow_death',
         sts.struct({
-            dest: v2501.AccountId20,
+            dest: v64.MultiAddress,
             value: sts.bigint(),
         })
     ),
@@ -195,10 +195,10 @@ export const setBalanceDeprecated =  {
      * 
      * WARNING: This call is DEPRECATED! Use `force_set_balance` instead.
      */
-    v2501: new CallType(
+    v64: new CallType(
         'Balances.set_balance_deprecated',
         sts.struct({
-            who: v2501.AccountId20,
+            who: v64.MultiAddress,
             newFree: sts.bigint(),
             oldReserved: sts.bigint(),
         })
@@ -217,10 +217,10 @@ export const upgradeAccounts =  {
      * be upgraded. (We let some not have to be upgraded just in order to allow for the
      * possibililty of churn).
      */
-    v2501: new CallType(
+    v64: new CallType(
         'Balances.upgrade_accounts',
         sts.struct({
-            who: sts.array(() => v2501.AccountId20),
+            who: sts.array(() => v64.AccountId32),
         })
     ),
 }
@@ -232,10 +232,10 @@ export const forceSetBalance =  {
      * 
      * The dispatch origin for this call is `root`.
      */
-    v2501: new CallType(
+    v64: new CallType(
         'Balances.force_set_balance',
         sts.struct({
-            who: v2501.AccountId20,
+            who: v64.MultiAddress,
             newFree: sts.bigint(),
         })
     ),

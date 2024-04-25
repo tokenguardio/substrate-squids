@@ -1,46 +1,45 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v900 from '../v900'
-import * as v1300 from '../v1300'
-import * as v1401 from '../v1401'
-import * as v1606 from '../v1606'
-import * as v1901 from '../v1901'
-import * as v2000 from '../v2000'
-import * as v2501 from '../v2501'
+import * as v1 from '../v1'
+import * as v9 from '../v9'
+import * as v15 from '../v15'
+import * as v43 from '../v43'
+import * as v49 from '../v49'
+import * as v64 from '../v64'
 
 export const extrinsicSuccess =  {
     name: 'System.ExtrinsicSuccess',
     /**
      * An extrinsic completed successfully. \[info\]
      */
-    v900: new EventType(
+    v1: new EventType(
         'System.ExtrinsicSuccess',
-        v900.DispatchInfo
+        v1.DispatchInfo
     ),
     /**
      * An extrinsic completed successfully.
      */
-    v1300: new EventType(
+    v9: new EventType(
         'System.ExtrinsicSuccess',
         sts.struct({
-            dispatchInfo: v1300.DispatchInfo,
+            dispatchInfo: v9.DispatchInfo,
         })
     ),
     /**
      * An extrinsic completed successfully.
      */
-    v1901: new EventType(
+    v43: new EventType(
         'System.ExtrinsicSuccess',
         sts.struct({
-            dispatchInfo: v1901.DispatchInfo,
+            dispatchInfo: v43.DispatchInfo,
         })
     ),
     /**
      * An extrinsic completed successfully.
      */
-    v2000: new EventType(
+    v49: new EventType(
         'System.ExtrinsicSuccess',
         sts.struct({
-            dispatchInfo: v2000.DispatchInfo,
+            dispatchInfo: v49.DispatchInfo,
         })
     ),
 }
@@ -50,68 +49,58 @@ export const extrinsicFailed =  {
     /**
      * An extrinsic failed. \[error, info\]
      */
-    v900: new EventType(
+    v1: new EventType(
         'System.ExtrinsicFailed',
-        sts.tuple([v900.DispatchError, v900.DispatchInfo])
+        sts.tuple([v1.DispatchError, v1.DispatchInfo])
     ),
     /**
      * An extrinsic failed.
      */
-    v1300: new EventType(
+    v9: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v1300.DispatchError,
-            dispatchInfo: v1300.DispatchInfo,
+            dispatchError: v9.DispatchError,
+            dispatchInfo: v9.DispatchInfo,
         })
     ),
     /**
      * An extrinsic failed.
      */
-    v1401: new EventType(
+    v15: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v1401.DispatchError,
-            dispatchInfo: v1401.DispatchInfo,
+            dispatchError: v15.DispatchError,
+            dispatchInfo: v15.DispatchInfo,
         })
     ),
     /**
      * An extrinsic failed.
      */
-    v1606: new EventType(
+    v43: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v1606.DispatchError,
-            dispatchInfo: v1606.DispatchInfo,
+            dispatchError: v43.DispatchError,
+            dispatchInfo: v43.DispatchInfo,
         })
     ),
     /**
      * An extrinsic failed.
      */
-    v1901: new EventType(
+    v49: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v1901.DispatchError,
-            dispatchInfo: v1901.DispatchInfo,
+            dispatchError: v49.DispatchError,
+            dispatchInfo: v49.DispatchInfo,
         })
     ),
     /**
      * An extrinsic failed.
      */
-    v2000: new EventType(
+    v64: new EventType(
         'System.ExtrinsicFailed',
         sts.struct({
-            dispatchError: v2000.DispatchError,
-            dispatchInfo: v2000.DispatchInfo,
-        })
-    ),
-    /**
-     * An extrinsic failed.
-     */
-    v2501: new EventType(
-        'System.ExtrinsicFailed',
-        sts.struct({
-            dispatchError: v2501.DispatchError,
-            dispatchInfo: v2501.DispatchInfo,
+            dispatchError: v64.DispatchError,
+            dispatchInfo: v64.DispatchInfo,
         })
     ),
 }
@@ -121,7 +110,7 @@ export const codeUpdated =  {
     /**
      * `:code` was updated.
      */
-    v900: new EventType(
+    v1: new EventType(
         'System.CodeUpdated',
         sts.unit()
     ),
@@ -132,17 +121,17 @@ export const newAccount =  {
     /**
      * A new \[account\] was created.
      */
-    v900: new EventType(
+    v1: new EventType(
         'System.NewAccount',
-        v900.H160
+        v1.AccountId32
     ),
     /**
      * A new account was created.
      */
-    v1300: new EventType(
+    v9: new EventType(
         'System.NewAccount',
         sts.struct({
-            account: v1300.AccountId20,
+            account: v9.AccountId32,
         })
     ),
 }
@@ -152,17 +141,17 @@ export const killedAccount =  {
     /**
      * An \[account\] was reaped.
      */
-    v900: new EventType(
+    v1: new EventType(
         'System.KilledAccount',
-        v900.H160
+        v1.AccountId32
     ),
     /**
      * An account was reaped.
      */
-    v1300: new EventType(
+    v9: new EventType(
         'System.KilledAccount',
         sts.struct({
-            account: v1300.AccountId20,
+            account: v9.AccountId32,
         })
     ),
 }
@@ -172,18 +161,18 @@ export const remarked =  {
     /**
      * On on-chain remark happened. \[origin, remark_hash\]
      */
-    v900: new EventType(
+    v1: new EventType(
         'System.Remarked',
-        sts.tuple([v900.H160, v900.H256])
+        sts.tuple([v1.AccountId32, v1.H256])
     ),
     /**
      * On on-chain remark happened.
      */
-    v1300: new EventType(
+    v9: new EventType(
         'System.Remarked',
         sts.struct({
-            sender: v1300.AccountId20,
-            hash: v1300.H256,
+            sender: v9.AccountId32,
+            hash: v9.H256,
         })
     ),
 }

@@ -17,4 +17,4 @@ export interface BalanceStatus_Reserved {
     __kind: 'Reserved'
 }
 
-export const AccountId20 = sts.bytes()
+export const AccountId32 = sts.bytes()

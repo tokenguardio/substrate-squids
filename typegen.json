@@ -1,12 +1,23 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://v2.archive.subsquid.io/metadata/moonbeam",
+  "specVersions": "https://v2.archive.subsquid.io/metadata/astar",
   "pallets": {
     "Balances": {
       "events": true,
       "calls": true
     },
     "System": {
+      "events": true
+    },
+    "Contracts": {
+      "events": true,
+      "calls": true
+    },
+    "DappStaking": {
+      "events": true,
+      "calls": true
+    },
+    "DappsStaking": {
       "events": true,
       "calls": true
     }

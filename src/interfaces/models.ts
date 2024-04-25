@@ -23,3 +23,24 @@ export interface CallNorm {
   success?: boolean;
   origin?: { [key: string]: any };
 }
+
+export interface SubstrateTransaction {
+  id: string;
+  blockHash: string;
+  extrinsicHash: string;
+  timestamp?: Date;
+  name: string;
+  args?: { [key: string]: any };
+  label?: string;
+  fee?: bigint;
+  tip?: bigint;
+  from: string | null;
+  to: string | null;
+  success: boolean;
+}
+
+export enum SubstrateLabel {
+  contract_deploy = "contract_deploy",
+  contract_call = "contract_call",
+  other = "other",
+}

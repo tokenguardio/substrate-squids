@@ -1,5 +1,9 @@
-import * as ethers from "ethers";
 import { NamedObject } from "./../interfaces/misc";
+import { assertNotNull } from "@subsquid/util-internal";
+import * as ss58 from "@subsquid/ss58";
+
+const network = assertNotNull(process.env.SS58_NETWORK);
+const codec = ss58.codec(network);
 
 export function bufferToHex(buffer: Uint8Array): string {
   const hexString =
@@ -30,6 +34,10 @@ export function extractNamesFromObjects(objectsArray: NamedObject[]): string[] {
   );
 }
 
-export function evmAddressToMixedCase(address: string): string {
-  return ethers.getAddress(address);
+export function fromHexToSs58(hex: string): string {
+  return codec.encode(hex);
+}
+
+export function fromSs58ToHex(hex: string): string {
+  return codec.decode(hex);
 }

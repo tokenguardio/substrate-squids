@@ -62,3 +62,36 @@ export const CallNorm = new Table(
   },
   { compression: compression }
 );
+
+export const SubstrateTransaction = new Table(
+  "substrate_transaction.parquet",
+  {
+    id: Column(Types.String()),
+    blockHash: Column(Types.String()),
+    extrinsicHash: Column(Types.String()),
+    timestamp: Column(Types.Timestamp(), {
+      nullable: true,
+    }),
+    name: Column(Types.String()),
+    args: Column(Types.JSON<{ [k: string]: any }>(), {
+      nullable: true,
+    }),
+    label: Column(Types.String(), {
+      nullable: true,
+    }),
+    fee: Column(Types.Uint64(), {
+      nullable: true,
+    }),
+    tip: Column(Types.Uint64(), {
+      nullable: true,
+    }),
+    from: Column(Types.String(), {
+      nullable: true,
+    }),
+    to: Column(Types.String(), {
+      nullable: true,
+    }),
+    success: Column(Types.Boolean()),
+  },
+  { compression: compression }
+);

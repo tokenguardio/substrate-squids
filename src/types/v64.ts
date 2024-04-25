@@ -1,6 +1,91 @@
 import {sts, Result, Option, Bytes, BitSequence} from './support'
 
-export const AccountId20 = sts.bytes()
+export const Weight: sts.Type<Weight> = sts.struct(() => {
+    return  {
+        refTime: sts.bigint(),
+        proofSize: sts.bigint(),
+    }
+})
+
+export interface Weight {
+    refTime: bigint
+    proofSize: bigint
+}
+
+export const Determinism: sts.Type<Determinism> = sts.closedEnum(() => {
+    return  {
+        Enforced: sts.unit(),
+        Relaxed: sts.unit(),
+    }
+})
+
+export type Determinism = Determinism_Enforced | Determinism_Relaxed
+
+export interface Determinism_Enforced {
+    __kind: 'Enforced'
+}
+
+export interface Determinism_Relaxed {
+    __kind: 'Relaxed'
+}
+
+export const MultiAddress: sts.Type<MultiAddress> = sts.closedEnum(() => {
+    return  {
+        Address20: sts.bytes(),
+        Address32: sts.bytes(),
+        Id: AccountId32,
+        Index: sts.unit(),
+        Raw: sts.bytes(),
+    }
+})
+
+export type MultiAddress = MultiAddress_Address20 | MultiAddress_Address32 | MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw
+
+export interface MultiAddress_Address20 {
+    __kind: 'Address20'
+    value: Bytes
+}
+
+export interface MultiAddress_Address32 {
+    __kind: 'Address32'
+    value: Bytes
+}
+
+export interface MultiAddress_Id {
+    __kind: 'Id'
+    value: AccountId32
+}
+
+export interface MultiAddress_Index {
+    __kind: 'Index'
+}
+
+export interface MultiAddress_Raw {
+    __kind: 'Raw'
+    value: Bytes
+}
+
+export type AccountId32 = Bytes
+
+export const Origin: sts.Type<Origin> = sts.closedEnum(() => {
+    return  {
+        Root: sts.unit(),
+        Signed: AccountId32,
+    }
+})
+
+export type Origin = Origin_Root | Origin_Signed
+
+export interface Origin_Root {
+    __kind: 'Root'
+}
+
+export interface Origin_Signed {
+    __kind: 'Signed'
+    value: AccountId32
+}
+
+export const AccountId32 = sts.bytes()
 
 export const DispatchInfo: sts.Type<DispatchInfo> = sts.struct(() => {
     return  {
@@ -47,18 +132,6 @@ export interface DispatchClass_Normal {
 
 export interface DispatchClass_Operational {
     __kind: 'Operational'
-}
-
-export const Weight: sts.Type<Weight> = sts.struct(() => {
-    return  {
-        refTime: sts.bigint(),
-        proofSize: sts.bigint(),
-    }
-})
-
-export interface Weight {
-    refTime: bigint
-    proofSize: bigint
 }
 
 export interface DispatchInfo {

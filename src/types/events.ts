@@ -1,2 +1,5 @@
 export * as system from './system/events'
 export * as balances from './balances/events'
+export * as dappsStaking from './dapps-staking/events'
+export * as contracts from './contracts/events'
+export * as dappStaking from './dapp-staking/events'

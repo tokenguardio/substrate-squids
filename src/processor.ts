@@ -8,25 +8,43 @@ import {
   Call as _Call,
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
-import { balances, system } from "./types/events";
+import {
+  dappStaking,
+  dappsStaking,
+  balances,
+  contracts,
+  system,
+} from "./types/events";
 import { extractNamesFromObjects } from "./utils/misc";
 
-const eventNames = extractNamesFromObjects([balances, system]);
+const eventNames = extractNamesFromObjects([
+  dappStaking,
+  dappsStaking,
+  balances,
+  contracts,
+  system,
+]);
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/moonbeam-substrate")
+  .setGateway("https://v2.archive.subsquid.io/network/astar-substrate")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
   .setRpcDataIngestionSettings({ disabled: true })
   .addEvent({ name: eventNames, extrinsic: true })
+  // Ask for all calls to identify parent call name in substrate transaction
+  .addCall({ extrinsic: true })
   .setFields({
     block: {
       timestamp: true,
     },
     extrinsic: {
       success: true,
+      signature: true,
+      hash: true,
+      fee: true,
+      tip: true,
     },
     call: {
       origin: true,
