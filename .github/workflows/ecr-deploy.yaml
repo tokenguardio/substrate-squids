@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["avalanche-mainnet-evm-parquet-s2-a-final"]
+    branches: ["moonbeam-mainnet-substrate-parquet"]
   pull_request:
-    branches: ["avalanche-mainnet-evm-parquet-s2-a-final"]
+    branches: ["moonbeam-mainnet-substrate-parquet"]
   workflow_dispatch:
 
 jobs:

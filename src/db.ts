@@ -1,23 +1,13 @@
 import { S3Dest } from "@subsquid/file-store-s3";
 import { Database, LocalDest, Store } from "@subsquid/file-store";
 import { assertNotNull } from "@subsquid/util-internal";
-import {
-  Block,
-  Contract,
-  TraceCreate,
-  TraceCall,
-  TraceReward,
-  TraceSuicide,
-} from "./tables";
+import { Block, EventNorm, CallNorm } from "./tables";
 
 export const db = new Database({
   tables: {
     Block,
-    Contract,
-    TraceCreate,
-    TraceCall,
-    TraceReward,
-    TraceSuicide,
+    EventNorm,
+    CallNorm,
   },
   dest:
     process.env.DEST === "S3"

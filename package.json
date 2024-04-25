@@ -5,7 +5,8 @@
     "build": "rm -rf lib && tsc"
   },
   "dependencies": {
-    "@subsquid/evm-processor": "^1.18.0",
+    "@subsquid/substrate-processor": "^8.3.0",
+    "@subsquid/ss58": "2.0.2",
     "@subsquid/file-store": "^2.0.0",
     "@subsquid/file-store-parquet": "^1.1.1",
     "@subsquid/file-store-s3": "^2.0.1",
@@ -14,8 +15,10 @@
     "ethers": "^6.12.0"
   },
   "devDependencies": {
-    "@subsquid/evm-typegen": "^3.3.0",
+    "@subsquid/substrate-metadata-explorer": "3.1.2",
+    "@subsquid/substrate-typegen": "^8.1.0",
     "@types/node": "^20.12.7",
+    "ts-node": "^10.9.2",
     "typescript": "~5.4.5"
   }
 }
