@@ -9,7 +9,9 @@ function formatAddresses(normalizedArgs: any, addressFields: string[]) {
   }
   addressFields.forEach((field) => {
     if (field in normalizedArgs) {
-      normalizedArgs[field] = fromHexToSs58(normalizedArgs[field]);
+      if (normalizedArgs[field] !== null) {
+        normalizedArgs[field] = fromHexToSs58(normalizedArgs[field]);
+      }
     } else {
       throw new Error(
         `Field ${field} does not exist on normalized args - unable to reformat address`
