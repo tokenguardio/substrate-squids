@@ -9,7 +9,9 @@ function formatAddresses(normalizedArgs: any, addressFields: string[]) {
   }
   addressFields.forEach((field) => {
     if (field in normalizedArgs) {
-      normalizedArgs[field] = evmAddressToMixedCase(normalizedArgs[field]);
+      if (normalizedArgs[field] !== null) {
+        normalizedArgs[field] = evmAddressToMixedCase(normalizedArgs[field]);
+      }
     } else {
       throw new Error(
         `Field ${field} does not exist on normalized args - unable to reformat address`
