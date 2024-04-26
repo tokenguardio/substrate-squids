@@ -77,9 +77,11 @@ export function normalizeStakingEventsArgs(event: Event): any {
     case staking.rewarded.name:
       if (staking.rewarded.v12.is(event)) {
         const [stash, amount] = staking.rewarded.v12.decode(event);
-        return { stash, amount };
+        return { stash, amount, dest: null };
       } else if (staking.rewarded.v58.is(event)) {
-        return staking.rewarded.v58.decode(event);
+        return { dest: null, ...staking.rewarded.v58.decode(event) };
+      } else if (staking.rewarded.v73.is(event)) {
+        return staking.rewarded.v73.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -140,6 +142,20 @@ export function normalizeStakingEventsArgs(event: Event): any {
         return { stash, amount };
       } else if (staking.withdrawn.v58.is(event)) {
         return staking.withdrawn.v58.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.snapshotVotersSizeExceeded.name:
+      if (staking.snapshotVotersSizeExceeded.v73.is(event)) {
+        return staking.snapshotVotersSizeExceeded.v73.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case staking.snapshotTargetsSizeExceeded.name:
+      if (staking.snapshotTargetsSizeExceeded.v73.is(event)) {
+        return staking.snapshotTargetsSizeExceeded.v73.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }

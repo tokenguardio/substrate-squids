@@ -20,6 +20,10 @@ const Contracts: AddressArgs = {
   "Contracts.DelegateCalled": ["contract"],
   "Contracts.Instantiated": ["deployer", "contract"],
   "Contracts.Terminated": ["contract", "beneficiary"],
+  "Contracts.CodeStored": ["uploader"],
+  "Contracts.CodeRemoved": ["remover"],
+  "Contracts.StorageDepositTransferredAndHeld": ["from", "to"],
+  "Contracts.StorageDepositTransferredAndReleased": ["from", "to"],
 };
 
 const System: AddressArgs = {

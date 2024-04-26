@@ -21,14 +21,26 @@ export function normalizeContractsEventsArgs(event: Event): any {
       }
     case contracts.codeRemoved.name:
       if (contracts.codeRemoved.v59.is(event)) {
-        return contracts.codeRemoved.v59.decode(event);
+        return {
+          depositReleased: null,
+          remover: null,
+          ...contracts.codeRemoved.v59.decode(event),
+        };
+      } else if (contracts.codeRemoved.v73.is(event)) {
+        return contracts.codeRemoved.v73.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
 
     case contracts.codeStored.name:
       if (contracts.codeStored.v59.is(event)) {
-        return contracts.codeStored.v59.decode(event);
+        return {
+          depositHeld: null,
+          uploader: null,
+          ...contracts.codeStored.v59.decode(event),
+        };
+      } else if (contracts.codeStored.v73.is(event)) {
+        return contracts.codeStored.v73.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
@@ -64,6 +76,20 @@ export function normalizeContractsEventsArgs(event: Event): any {
     case contracts.terminated.name:
       if (contracts.terminated.v59.is(event)) {
         return contracts.terminated.v59.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case contracts.storageDepositTransferredAndHeld.name:
+      if (contracts.storageDepositTransferredAndHeld.v73.is(event)) {
+        return contracts.storageDepositTransferredAndHeld.v73.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
+    case contracts.storageDepositTransferredAndReleased.name:
+      if (contracts.storageDepositTransferredAndReleased.v73.is(event)) {
+        return contracts.storageDepositTransferredAndReleased.v73.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }
