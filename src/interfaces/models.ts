@@ -15,6 +15,7 @@ export enum EvmTransactionType {
   EIP1559 = "EIP1559",
   EIP4844 = "EIP4844",
   UNKNOWN = "UNKNOWN",
+  SYSTEM = "SYSTEM",
 }
 
 export enum TransferType {
