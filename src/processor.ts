@@ -9,6 +9,7 @@ import {
   Call as _Call,
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
+import { getEnvBoolean } from "./utils/misc";
 
 export const processor = new SubstrateBatchProcessor()
   .setGateway(
@@ -20,7 +21,9 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
-  .setRpcDataIngestionSettings({ disabled: true })
+  .setRpcDataIngestionSettings({
+    disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
+  })
   .addEvent({
     name: ["Contracts.ContractEmitted"],
     extrinsic: true,
