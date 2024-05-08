@@ -56,3 +56,7 @@ export function fromHexToSs58(hex: string): string {
 export function fromSs58ToHex(hex: string): string {
   return codec.decode(hex);
 }
+
+export function getEnvBoolean(value: undefined | string, defaultValue = false) {
+  return value ? value.toLowerCase() === "true" : defaultValue;
+}
