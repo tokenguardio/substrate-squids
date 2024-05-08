@@ -26,6 +26,7 @@ const eventNames = extractNamesFromObjects([
   system,
   treasury,
 ]);
+import { getEnvBoolean } from "./utils/misc";
 
 export const processor = new SubstrateBatchProcessor()
   .setGateway("https://v2.archive.subsquid.io/network/aleph-zero")
@@ -33,7 +34,9 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
-  .setRpcDataIngestionSettings({ disabled: true })
+  .setRpcDataIngestionSettings({
+    disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
+  })
   .addEvent({ name: eventNames, extrinsic: true })
   // Ask for all calls to identify parent call name in substrate transaction
   .addCall({ extrinsic: true })
