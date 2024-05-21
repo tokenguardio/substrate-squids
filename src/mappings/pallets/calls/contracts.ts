@@ -73,6 +73,8 @@ export function normalizeContractsCallsArgs(call: Call): any {
     case contracts.uploadCode.name:
       if (contracts.uploadCode.v59.is(call)) {
         return contracts.uploadCode.v59.decode(call);
+      } else if (contracts.uploadCode.v68.is(call)) {
+        return contracts.uploadCode.v68.decode(call);
       } else {
         throw new UnknownCallVersionError(call.name);
       }

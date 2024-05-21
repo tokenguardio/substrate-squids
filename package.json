@@ -5,20 +5,20 @@
     "build": "rm -rf lib && tsc"
   },
   "dependencies": {
-    "@subsquid/substrate-processor": "^8.3.0",
+    "@subsquid/substrate-processor": "^8.3.1",
     "@subsquid/ss58": "2.0.2",
     "@subsquid/file-store": "^2.0.0",
     "@subsquid/file-store-parquet": "^1.1.1",
     "@subsquid/file-store-s3": "^2.0.1",
     "@subsquid/util-internal": "^3.2.0",
     "dotenv": "^16.4.5",
-    "axios": "^1.6.8",
-    "axios-retry": "^4.1.0"
+    "axios": "^1.7.1",
+    "axios-retry": "^4.3.0"
   },
   "devDependencies": {
     "@subsquid/substrate-metadata-explorer": "3.1.2",
     "@subsquid/substrate-typegen": "^8.1.0",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.12",
     "ts-node": "^10.9.2",
     "typescript": "~5.4.5"
   }
