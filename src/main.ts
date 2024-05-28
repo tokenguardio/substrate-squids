@@ -23,6 +23,7 @@ import {
 } from "./mappings";
 import { db } from "./db";
 import { handleSubstrateTransaction } from "./processing/substrate-transaction";
+import { isInFlushWindow, shouldForceFlush } from "./utils/force-flush";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -58,6 +59,8 @@ client.interceptors.response.use((response) => {
   }
   return response.data;
 });
+
+let blockCount = 0;
 
 processor.run(db, async (ctx) => {
   const events: EventNorm[] = [];
@@ -185,4 +188,15 @@ processor.run(db, async (ctx) => {
   await ctx.store.SubstrateTransaction.writeMany(substrateTransactions);
   await ctx.store.EventNorm.writeMany(events);
   await ctx.store.CallNorm.writeMany(calls);
+
+  const lastBlock = ctx.blocks[ctx.blocks.length - 1];
+  if (lastBlock && typeof lastBlock.header.timestamp === "number") {
+    if (isInFlushWindow(lastBlock.header.timestamp)) {
+      blockCount += ctx.blocks.length;
+      if (shouldForceFlush(blockCount)) {
+        ctx.store.setForceFlush(true);
+        blockCount = 0;
+      }
+    }
+  }
 });

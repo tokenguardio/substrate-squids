@@ -37,6 +37,7 @@ export const processor = new SubstrateBatchProcessor()
   .setRpcDataIngestionSettings({
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
   })
+  .includeAllBlocks()
   .addEvent({ name: eventNames, extrinsic: true })
   // Ask for all calls to identify parent call name in substrate transaction
   .addCall({ extrinsic: true })
