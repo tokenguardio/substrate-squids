@@ -33,3 +33,7 @@ export function extractNamesFromObjects(objectsArray: NamedObject[]): string[] {
 export function evmAddressToMixedCase(address: string): string {
   return ethers.getAddress(address);
 }
+
+export function getEnvBoolean(value: undefined | string, defaultValue = false) {
+  return value ? value.toLowerCase() === "true" : defaultValue;
+}

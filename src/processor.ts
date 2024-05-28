@@ -9,7 +9,7 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { balances, system } from "./types/events";
-import { extractNamesFromObjects } from "./utils/misc";
+import { extractNamesFromObjects, getEnvBoolean } from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([balances, system]);
 
@@ -19,7 +19,10 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
-  .setRpcDataIngestionSettings({ disabled: true })
+  .setRpcDataIngestionSettings({
+    disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
+  })
+  .includeAllBlocks()
   .addEvent({ name: eventNames, extrinsic: true })
   .setFields({
     block: {
