@@ -1,9 +1,10 @@
 const { assertNotNull } = require("@subsquid/substrate-processor");
 
 const dappId = assertNotNull(process.env.DAPP_ID);
+const createdTimestamp = assertNotNull(process.env.CREATED_TIMESTAMP);
 
 module.exports = class Data {
-  name = `Data${Date.now()}`;
+  name = `Data${createdTimestamp}`;
 
   async up(db) {
     await db.query(
