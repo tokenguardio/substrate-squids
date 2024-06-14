@@ -24,27 +24,16 @@ enum DappActivityType {
 
 type DappActivity @entity {
   id: ID!
-  callId: String! #powtorzenia
-  # extrinsic: SubstrateExtrinsic!
+  callId: String!
   extrinsicHash: String!
   blockNumber: Int!
   timestamp: DateTime! @index
   dappId: String!
-  caller: String @index #powtorzenia
-  contract: String! @index #call -> to, event -> emitujacy kontrakt
-  success: Boolean @index #event -> zawsze true
+  caller: String @index
+  contract: String! @index
+  success: Boolean @index
   type: DappActivityType!
   name: String! @index
-  value: BigInt #event --> null
+  value: BigInt
   decodedArgs: JSON
 }
-
-# type SubstrateExtrinsic @entity {
-#   id: ID!
-#   blockNumber: Int!
-#   extrinsicHash: String!
-#   timestamp: DateTime! @index
-#   fee: BigInt!
-#   tip: BigInt
-#   success: Boolean!
-# }

@@ -11,7 +11,6 @@ export function createDappActivityEvent(
   return new DappActivity({
     id: `e-${event.id}`,
     callId: event.call?.id,
-    // extrinsic: new SubstrateExtrinsic({ id: event.extrinsic?.id }),
     extrinsicHash: event.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
@@ -35,7 +34,6 @@ export function createDappActivityCall(
   return new DappActivity({
     id: `c-${call.id}`,
     callId: call.id,
-    // extrinsic: new SubstrateExtrinsic({ id: call.extrinsic?.id }),
     extrinsicHash: call.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
@@ -49,18 +47,3 @@ export function createDappActivityCall(
     decodedArgs: args,
   });
 }
-
-// export function createSubstrateExtrinsic(
-//   item: Call | Event,
-//   block: Block
-// ): SubstrateExtrinsic {
-//   return new SubstrateExtrinsic({
-//     id: item.extrinsic?.id,
-//     blockNumber: block.height,
-//     extrinsicHash: item.extrinsic?.hash,
-//     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
-//     fee: item.extrinsic?.fee,
-//     tip: item.extrinsic?.tip,
-//     success: item.extrinsic?.success,
-//   });
-// }

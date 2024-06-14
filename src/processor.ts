@@ -49,8 +49,6 @@ export const processor = new SubstrateBatchProcessor()
     },
   })
   .setBlockRange({
-    // genesis block happens to not have a timestamp, so it's easier
-    // to start from 1 in cases when the deployment height is unknown
     from: process.env.BLOCK_RANGE_FROM
       ? Number(process.env.BLOCK_RANGE_FROM)
       : 1,

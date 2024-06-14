@@ -43,7 +43,6 @@ processor.run(
     }
 
     const dappActivities: DappActivity[] = [];
-    // const substrateExtrinsics = new Map<string, SubstrateExtrinsic>();
 
     for (const block of ctx.blocks) {
       for (const event of block.events) {
@@ -69,12 +68,6 @@ processor.run(
           } catch (err) {
             console.error(err);
           }
-
-          // const substrateExtrinsic = createSubstrateExtrinsic(
-          //   event,
-          //   block.header
-          // );
-          // substrateExtrinsics.set(event.extrinsic.id, substrateExtrinsic);
         }
       }
       for (const call of block.calls) {
@@ -100,17 +93,10 @@ processor.run(
           } catch (err) {
             console.error(err);
           }
-
-          // const substrateExtrinsic = createSubstrateExtrinsic(
-          //   call,
-          //   block.header
-          // );
-          // substrateExtrinsics.set(call.extrinsic.id, substrateExtrinsic);
         }
       }
     }
 
-    // await ctx.store.save(Array.from(substrateExtrinsics.values()));
     await ctx.store.save(dappActivities);
   }
 );
