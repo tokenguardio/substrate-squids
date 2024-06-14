@@ -4,11 +4,10 @@ import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { Abi as SubsquidAbi } from "@subsquid/ink-abi";
 import { convertUint8ArrayPropsToHex, fromSs58ToHex } from "./utils/misc";
 import { processor } from "./processor";
-import { DappActivity, SubstrateExtrinsic, WasmContractAbi } from "./model";
+import { DappActivity, Dapps } from "./model";
 import {
   createDappActivityCall,
   createDappActivityEvent,
-  createSubstrateExtrinsic,
 } from "./utils/factories";
 
 // Avoid type errors when serializing BigInts
@@ -16,35 +15,35 @@ import {
   return this.toString();
 };
 
-const dappName = assertNotNull(process.env.DAPP_NAME);
+const dappId = assertNotNull(process.env.DAPP_ID);
+const stateSchema = `${dappId}_state`;
 
 let abiInit = false;
 const abiMap = new Map<string, SubsquidAbi>();
 
 processor.run(
-  new TypeormDatabase({ stateSchema: process.env.STATE_SCHEMA }),
+  new TypeormDatabase({ stateSchema: stateSchema }),
   async (ctx) => {
     if (!abiInit) {
-      const abis = await ctx.store.findBy(WasmContractAbi, {
-        dappName: dappName,
-      });
+      const dapp = await ctx.store.get(Dapps, dappId);
 
-      if (!abis || abis.length === 0) {
-        throw new Error(`Could not fetch abis for ${dappName} dapp`);
+      if (!dapp || !dapp.abis) {
+        throw new Error(`Could not fetch abis for ${dappId} dapp`);
       }
 
-      ctx.log.info(`Fetched ${abis.length} abis for ${dappName} dapp`);
+      ctx.log.info(`Fetched ${dapp.abis.length} abis for ${dappId} dapp`);
 
-      for (const abi of abis) {
-        const subsquidAbi = new SubsquidAbi(abi.abi);
-        abiMap.set(fromSs58ToHex(abi.id), subsquidAbi);
+      for (const abiEntry of dapp.abis) {
+        const subsquidAbi = new SubsquidAbi(abiEntry.abi);
+
+        abiMap.set(fromSs58ToHex(abiEntry.address), subsquidAbi);
       }
 
       abiInit = true;
     }
 
     const dappActivities: DappActivity[] = [];
-    const substrateExtrinsics = new Map<string, SubstrateExtrinsic>();
+    // const substrateExtrinsics = new Map<string, SubstrateExtrinsic>();
 
     for (const block of ctx.blocks) {
       for (const event of block.events) {
@@ -64,18 +63,18 @@ processor.run(
               block.header,
               event,
               contractEvent,
-              dappName
+              dappId
             );
             dappActivities.push(dappActivityEvent);
           } catch (err) {
             console.error(err);
           }
 
-          const substrateExtrinsic = createSubstrateExtrinsic(
-            event,
-            block.header
-          );
-          substrateExtrinsics.set(event.extrinsic.id, substrateExtrinsic);
+          // const substrateExtrinsic = createSubstrateExtrinsic(
+          //   event,
+          //   block.header
+          // );
+          // substrateExtrinsics.set(event.extrinsic.id, substrateExtrinsic);
         }
       }
       for (const call of block.calls) {
@@ -95,23 +94,23 @@ processor.run(
               block.header,
               call,
               contractMessage,
-              dappName
+              dappId
             );
             dappActivities.push(dappActivityCall);
           } catch (err) {
             console.error(err);
           }
 
-          const substrateExtrinsic = createSubstrateExtrinsic(
-            call,
-            block.header
-          );
-          substrateExtrinsics.set(call.extrinsic.id, substrateExtrinsic);
+          // const substrateExtrinsic = createSubstrateExtrinsic(
+          //   call,
+          //   block.header
+          // );
+          // substrateExtrinsics.set(call.extrinsic.id, substrateExtrinsic);
         }
       }
     }
 
-    await ctx.store.save(Array.from(substrateExtrinsics.values()));
+    // await ctx.store.save(Array.from(substrateExtrinsics.values()));
     await ctx.store.save(dappActivities);
   }
 );

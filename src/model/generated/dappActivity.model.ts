@@ -1,9 +1,11 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
-import {SubstrateExtrinsic} from "./substrateExtrinsic.model"
 import {DappActivityType} from "./_dappActivityType"
+import { assertNotNull } from "@subsquid/substrate-processor";
 
-@Entity_()
+const dappId = assertNotNull(process.env.DAPP_ID);
+
+@Entity_({ name: `dapp_analytics_${dappId}` })
 export class DappActivity {
     constructor(props?: Partial<DappActivity>) {
         Object.assign(this, props)
@@ -15,10 +17,6 @@ export class DappActivity {
     @Column_("text", {nullable: false})
     callId!: string
 
-    @Index_()
-    @ManyToOne_(() => SubstrateExtrinsic, {nullable: true})
-    extrinsic!: SubstrateExtrinsic
-
     @Column_("text", {nullable: false})
     extrinsicHash!: string
 
@@ -29,9 +27,8 @@ export class DappActivity {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
-    @Index_()
     @Column_("text", {nullable: false})
-    dappName!: string
+    dappId!: string
 
     @Index_()
     @Column_("text", {nullable: true})

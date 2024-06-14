@@ -1,21 +1,21 @@
 import { Block, Event, Call } from "./../processor";
-import { DappActivity, DappActivityType, SubstrateExtrinsic } from "./../model";
+import { DappActivity, DappActivityType } from "./../model";
 import { fromHexToSs58 } from "./misc";
 
 export function createDappActivityEvent(
   block: Block,
   event: Event,
   args: { [key: string]: any },
-  dappName: string
+  dappId: string
 ): DappActivity {
   return new DappActivity({
     id: `e-${event.id}`,
     callId: event.call?.id,
-    extrinsic: new SubstrateExtrinsic({ id: event.extrinsic?.id }),
+    // extrinsic: new SubstrateExtrinsic({ id: event.extrinsic?.id }),
     extrinsicHash: event.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
-    dappName: dappName,
+    dappId: dappId,
     caller: fromHexToSs58(event.call?.origin?.value?.value),
     contract: fromHexToSs58(event.args.contract),
     success: event.call?.success,
@@ -30,16 +30,16 @@ export function createDappActivityCall(
   block: Block,
   call: Call,
   args: { [key: string]: any },
-  dappName: string
+  dappId: string
 ): DappActivity {
   return new DappActivity({
     id: `c-${call.id}`,
     callId: call.id,
-    extrinsic: new SubstrateExtrinsic({ id: call.extrinsic?.id }),
+    // extrinsic: new SubstrateExtrinsic({ id: call.extrinsic?.id }),
     extrinsicHash: call.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
-    dappName: dappName,
+    dappId: dappId,
     caller: fromHexToSs58(call.origin?.value?.value),
     contract: fromHexToSs58(call.args.dest.value),
     success: call.success,
@@ -50,17 +50,17 @@ export function createDappActivityCall(
   });
 }
 
-export function createSubstrateExtrinsic(
-  item: Call | Event,
-  block: Block
-): SubstrateExtrinsic {
-  return new SubstrateExtrinsic({
-    id: item.extrinsic?.id,
-    blockNumber: block.height,
-    extrinsicHash: item.extrinsic?.hash,
-    timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
-    fee: item.extrinsic?.fee,
-    tip: item.extrinsic?.tip,
-    success: item.extrinsic?.success,
-  });
-}
+// export function createSubstrateExtrinsic(
+//   item: Call | Event,
+//   block: Block
+// ): SubstrateExtrinsic {
+//   return new SubstrateExtrinsic({
+//     id: item.extrinsic?.id,
+//     blockNumber: block.height,
+//     extrinsicHash: item.extrinsic?.hash,
+//     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
+//     fee: item.extrinsic?.fee,
+//     tip: item.extrinsic?.tip,
+//     success: item.extrinsic?.success,
+//   });
+// }
