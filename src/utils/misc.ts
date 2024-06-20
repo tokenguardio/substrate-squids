@@ -1,6 +1,7 @@
 import { NamedObject } from "./../interfaces/misc";
 import { assertNotNull } from "@subsquid/util-internal";
 import * as ss58 from "@subsquid/ss58";
+import { TransferType } from "../interfaces/models";
 
 const network = assertNotNull(process.env.SS58_NETWORK);
 const codec = ss58.codec(network);
@@ -44,4 +45,44 @@ export function fromSs58ToHex(hex: string): string {
 
 export function getEnvBoolean(value: undefined | string, defaultValue = false) {
   return value ? value.toLowerCase() === "true" : defaultValue;
+}
+
+export function getTransferType(from: string, to: string): TransferType {
+  if (isMint(from, to)) {
+    return TransferType.MINT;
+  }
+  if (isBurn(from, to)) {
+    return TransferType.BURN;
+  }
+
+  return TransferType.TRANSFER;
+}
+
+function isMint(from: string, to: string): boolean {
+  return from == null && to != null;
+}
+
+function isBurn(from: string, to: string): boolean {
+  return to == null && from != null;
+}
+
+export function isDecodedDataFtTransfer(decodedData?: any): boolean {
+  if (typeof decodedData !== "object" || decodedData === null) {
+    return false;
+  }
+
+  const keys = Object.keys(decodedData);
+
+  const requiredKeys = ["from", "to", "value"];
+  if (keys.length !== requiredKeys.length) {
+    return false;
+  }
+
+  for (const key of requiredKeys) {
+    if (!keys.includes(key)) {
+      return false;
+    }
+  }
+
+  return true;
 }

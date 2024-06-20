@@ -95,3 +95,34 @@ export const SubstrateTransaction = new Table(
   },
   { compression: compression }
 );
+
+export const FtTransfer = new Table(
+  "ft_transfer.parquet",
+  {
+    id: Column(Types.String()),
+    substrateTransaction: Column(Types.String(), {
+      nullable: true,
+    }),
+    blockHash: Column(Types.String()),
+    timestamp: Column(Types.Timestamp(), {
+      nullable: true,
+    }),
+    eventIndex: Column(Types.Uint32(), {
+      nullable: true,
+    }),
+    from: Column(Types.String(), {
+      nullable: true,
+    }),
+    to: Column(Types.String(), {
+      nullable: true,
+    }),
+    value: Column(Types.String()),
+    transferType: Column(Types.String(), {
+      nullable: true,
+    }),
+    token: Column(Types.String(), {
+      nullable: true,
+    }),
+  },
+  { compression: compression }
+);

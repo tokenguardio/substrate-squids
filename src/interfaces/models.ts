@@ -44,3 +44,22 @@ export enum SubstrateLabel {
   contract_call = "contract_call",
   other = "other",
 }
+
+export enum TransferType {
+  TRANSFER = "TRANSFER",
+  MINT = "MINT",
+  BURN = "BURN",
+}
+
+export interface FtTransfer {
+  id: string;
+  substrateTransaction?: string;
+  blockHash: string;
+  timestamp?: Date;
+  eventIndex: number;
+  from?: string;
+  to?: string;
+  value: string;
+  transferType: TransferType;
+  token: string;
+}

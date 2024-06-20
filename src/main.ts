@@ -7,11 +7,13 @@ import {
   CallNorm,
   Block,
   SubstrateTransaction,
+  FtTransfer,
 } from "./interfaces/models";
 import {
   createCallNorm,
   createEventNorm,
   createBlock,
+  createFtTransfer,
 } from "./utils/factories";
 import {
   ExtrinsicResponse,
@@ -24,6 +26,8 @@ import {
 import { db } from "./db";
 import { handleSubstrateTransaction } from "./processing/substrate-transaction";
 import { isInFlushWindow, shouldForceFlush } from "./utils/force-flush";
+import { psp22v4Abi } from "./abi/psp22";
+import { isDecodedDataFtTransfer } from "./utils/misc";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -67,6 +71,7 @@ processor.run(db, async (ctx) => {
   const calls: CallNorm[] = [];
   const blocks: Block[] = [];
   const substrateTransactions: SubstrateTransaction[] = [];
+  const ftTransfers: FtTransfer[] = [];
   let fetchedBlockHash: string = "";
   let fetchedExtrinsics: SidecarExtrinsic[] = [];
 
@@ -173,6 +178,26 @@ processor.run(db, async (ctx) => {
         const eventNorm = createEventNorm(block.header, event, args);
         events.push(eventNorm);
       }
+      if (event.name === "Contracts.ContractEmitted") {
+        try {
+          const decodedData = psp22v4Abi.decodeEvent(event.args.data);
+          console.log(decodedData);
+          if (isDecodedDataFtTransfer(decodedData)) {
+            ftTransfers.push(
+              createFtTransfer(
+                block.header,
+                event,
+                decodedData.from,
+                decodedData.to,
+                decodedData.value,
+                event.args.contract
+              )
+            );
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
     }
     for (const call of block.calls) {
       const pallet = call.name.split(".")[0];
@@ -188,6 +213,7 @@ processor.run(db, async (ctx) => {
   await ctx.store.SubstrateTransaction.writeMany(substrateTransactions);
   await ctx.store.EventNorm.writeMany(events);
   await ctx.store.CallNorm.writeMany(calls);
+  await ctx.store.FtTransfer.writeMany(ftTransfers);
 
   const lastBlock = ctx.blocks[ctx.blocks.length - 1];
   if (lastBlock && typeof lastBlock.header.timestamp === "number") {
