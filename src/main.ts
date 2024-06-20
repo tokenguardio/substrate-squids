@@ -181,7 +181,6 @@ processor.run(db, async (ctx) => {
       if (event.name === "Contracts.ContractEmitted") {
         try {
           const decodedData = psp22v4Abi.decodeEvent(event.args.data);
-          console.log(decodedData);
           if (isDecodedDataFtTransfer(decodedData)) {
             ftTransfers.push(
               createFtTransfer(
@@ -194,9 +193,7 @@ processor.run(db, async (ctx) => {
               )
             );
           }
-        } catch (err) {
-          console.error(err);
-        }
+        } catch (err) {}
       }
     }
     for (const call of block.calls) {
