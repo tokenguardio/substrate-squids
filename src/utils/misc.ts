@@ -84,5 +84,23 @@ export function isDecodedDataFtTransfer(decodedData?: any): boolean {
     }
   }
 
+  if (!(decodedData.to || decodedData.from)) {
+    return false;
+  }
+
+  if (
+    (decodedData.from !== undefined &&
+      decodedData.from !== null &&
+      typeof decodedData.from !== "string") ||
+    (decodedData.to !== undefined &&
+      decodedData.to !== null &&
+      typeof decodedData.to !== "string") ||
+    (decodedData.value !== undefined &&
+      decodedData.value !== null &&
+      typeof decodedData.value !== "bigint")
+  ) {
+    return false;
+  }
+
   return true;
 }
