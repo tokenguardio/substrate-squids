@@ -12,11 +12,7 @@ import {
 import { getEnvBoolean } from "./utils/misc";
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway(
-    lookupArchive(assertNotNull(process.env.ARCHIVE_NAME), {
-      release: "ArrowSquid",
-    })
-  )
+  .setGateway(assertNotNull(process.env.GATEWAY_URL))
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
