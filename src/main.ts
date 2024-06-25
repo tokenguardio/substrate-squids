@@ -26,7 +26,11 @@ import {
 import { db } from "./db";
 import { handleSubstrateTransaction } from "./processing/substrate-transaction";
 import { isInFlushWindow, shouldForceFlush } from "./utils/force-flush";
-import { psp22v4Abi } from "./abi/psp22";
+import {
+  psp22v4CardinalAbi,
+  psp22v4InkWhaleAbi,
+  psp22v5CardinalAbi,
+} from "./abi/psp22";
 import { isDecodedDataFtTransfer } from "./utils/misc";
 
 // Avoid type errors when serializing BigInts
@@ -179,8 +183,11 @@ processor.run(db, async (ctx) => {
         events.push(eventNorm);
       }
       if (event.name === "Contracts.ContractEmitted") {
+        let decodedData;
+        let success = false;
+
         try {
-          const decodedData = psp22v4Abi.decodeEvent(event.args.data);
+          decodedData = psp22v4InkWhaleAbi.decodeEvent(event.args.data);
           if (isDecodedDataFtTransfer(decodedData)) {
             ftTransfers.push(
               createFtTransfer(
@@ -192,8 +199,31 @@ processor.run(db, async (ctx) => {
                 event.args.contract
               )
             );
+            success = true;
           }
-        } catch (err) {}
+        } catch (err) {
+          console.error("Error decoding with psp22v4InkWhaleAbi: ", err);
+        }
+
+        if (!success) {
+          try {
+            decodedData = psp22v4CardinalAbi.decodeEvent(event.args.data);
+            if (isDecodedDataFtTransfer(decodedData)) {
+              ftTransfers.push(
+                createFtTransfer(
+                  block.header,
+                  event,
+                  decodedData.from,
+                  decodedData.to,
+                  decodedData.value,
+                  event.args.contract
+                )
+              );
+            }
+          } catch (err) {
+            console.error("Error decoding with psp22v4CardinalAbi: ", err);
+          }
+        }
       }
     }
     for (const call of block.calls) {

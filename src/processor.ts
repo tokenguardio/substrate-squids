@@ -42,6 +42,7 @@ export const processor = new SubstrateBatchProcessor()
   // Ask for all calls to identify parent call name in substrate transaction
   .addCall({ extrinsic: true })
   .setFields({
+    event: { topics: true },
     block: {
       timestamp: true,
     },
