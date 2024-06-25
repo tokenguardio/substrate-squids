@@ -201,9 +201,7 @@ processor.run(db, async (ctx) => {
             );
             success = true;
           }
-        } catch (err) {
-          console.error("Error decoding with psp22v4InkWhaleAbi: ", err);
-        }
+        } catch (err) {}
 
         if (!success) {
           try {
@@ -220,9 +218,7 @@ processor.run(db, async (ctx) => {
                 )
               );
             }
-          } catch (err) {
-            console.error("Error decoding with psp22v4CardinalAbi: ", err);
-          }
+          } catch (err) {}
         }
       }
     }
