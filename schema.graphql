@@ -24,8 +24,7 @@ enum DappActivityType {
 
 type DappActivity @entity {
   id: ID!
-  callId: String!
-  extrinsicHash: String!
+  transactionHash: String!
   blockNumber: Int!
   timestamp: DateTime! @index
   dappId: String!
