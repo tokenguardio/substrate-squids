@@ -1,8 +1,6 @@
-import assert from "assert";
 import { assertNotNull } from "@subsquid/util-internal";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { Abi as SubsquidAbi } from "@subsquid/ink-abi";
-import { convertUint8ArrayPropsToHex, fromSs58ToHex } from "./utils/misc";
+import { Interface as EvmAbi } from "ethers";
 import { processor } from "./processor";
 import { DappActivity, Dapps } from "./model";
 import {
@@ -19,7 +17,7 @@ const dappId = assertNotNull(process.env.DAPP_ID);
 const stateSchema = `${dappId}_state`;
 
 let abiInit = false;
-const abiMap = new Map<string, SubsquidAbi>();
+const abiMap = new Map<string, EvmAbi>();
 
 processor.run(
   new TypeormDatabase({ stateSchema: stateSchema }),
@@ -34,9 +32,9 @@ processor.run(
       ctx.log.info(`Fetched ${dapp.abis.length} abis for ${dappId} dapp`);
 
       for (const abiEntry of dapp.abis) {
-        const subsquidAbi = new SubsquidAbi(abiEntry.abi);
+        const evmAbi = new EvmAbi(abiEntry.abi as string);
 
-        abiMap.set(fromSs58ToHex(abiEntry.address), subsquidAbi);
+        abiMap.set(abiEntry.address.toLowerCase(), evmAbi);
       }
 
       abiInit = true;
@@ -45,51 +43,45 @@ processor.run(
     const dappActivities: DappActivity[] = [];
 
     for (const block of ctx.blocks) {
-      for (const event of block.events) {
-        if (
-          event.name === "Contracts.ContractEmitted" &&
-          abiMap.has(event.args.contract)
-        ) {
-          assert(
-            event.extrinsic,
-            `Event ${event} arrived without a parent extrinsic`
-          );
+      for (const log of block.logs) {
+        if (abiMap.has(log.address)) {
           try {
-            const contractAbi = abiMap.get(event.args.contract)!;
-            let contractEvent = contractAbi.decodeEvent(event.args.data);
-            contractEvent = convertUint8ArrayPropsToHex(contractEvent);
-            const dappActivityEvent = createDappActivityEvent(
-              block.header,
-              event,
-              contractEvent,
-              dappId
-            );
-            dappActivities.push(dappActivityEvent);
+            const contractAbi = abiMap.get(log.address)!;
+            let contractEvent = contractAbi.parseLog({
+              data: log.data,
+              topics: log.topics,
+            });
+            if (contractEvent) {
+              const dappActivityEvent = createDappActivityEvent(
+                block.header,
+                log,
+                contractEvent,
+                dappId
+              );
+              dappActivities.push(dappActivityEvent);
+            }
           } catch (err) {
             console.error(err);
           }
         }
       }
-      for (const call of block.calls) {
-        if (
-          call.name === "Contracts.call" &&
-          abiMap.has(call.args.dest.value)
-        ) {
-          assert(
-            call.extrinsic,
-            `Call ${call} arrived without a parent extrinsic`
-          );
+      for (const txn of block.transactions) {
+        if (txn.to !== undefined && abiMap.has(txn.to)) {
           try {
-            const contractAbi = abiMap.get(call.args.dest.value)!;
-            let contractMessage = contractAbi.decodeMessage(call.args.data);
-            contractMessage = convertUint8ArrayPropsToHex(contractMessage);
-            const dappActivityCall = createDappActivityCall(
-              block.header,
-              call,
-              contractMessage,
-              dappId
-            );
-            dappActivities.push(dappActivityCall);
+            const contractAbi = abiMap.get(txn.to)!;
+            let contractTx = contractAbi.parseTransaction({
+              data: txn.input,
+              value: txn.value,
+            });
+            if (contractTx) {
+              const dappActivityCall = createDappActivityCall(
+                block.header,
+                txn,
+                contractTx,
+                dappId
+              );
+              dappActivities.push(dappActivityCall);
+            }
           } catch (err) {
             console.error(err);
           }

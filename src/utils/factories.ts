@@ -1,49 +1,49 @@
-import { Block, Event, Call } from "./../processor";
+import * as ethers from "ethers";
+import { Block, Log, Transaction } from "./../processor";
 import { DappActivity, DappActivityType } from "./../model";
-import { fromHexToSs58 } from "./misc";
 
 export function createDappActivityEvent(
   block: Block,
-  event: Event,
-  args: { [key: string]: any },
+  log: Log,
+  args: ethers.LogDescription,
   dappId: string
 ): DappActivity {
   return new DappActivity({
-    id: `e-${event.id}`,
-    callId: event.call?.id,
-    extrinsicHash: event.extrinsic?.hash,
+    id: `e-${log.id}`,
+    transactionHash: log.transactionHash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappId: dappId,
-    caller: fromHexToSs58(event.call?.origin?.value?.value),
-    contract: fromHexToSs58(event.args.contract),
-    success: event.call?.success,
+    caller: log.transaction?.from
+      ? ethers.getAddress(log.transaction?.from)
+      : undefined,
+    contract: ethers.getAddress(log.address),
+    success: log.transaction?.status ? true : false,
     type: DappActivityType.event,
-    name: args.__kind,
+    name: args.name,
     value: null,
-    decodedArgs: args,
+    decodedArgs: args.args.toObject(),
   });
 }
 
 export function createDappActivityCall(
   block: Block,
-  call: Call,
-  args: { [key: string]: any },
+  txn: Transaction,
+  args: ethers.TransactionDescription,
   dappId: string
 ): DappActivity {
   return new DappActivity({
-    id: `c-${call.id}`,
-    callId: call.id,
-    extrinsicHash: call.extrinsic?.hash,
+    id: `c-${txn.id}`,
+    transactionHash: txn.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappId: dappId,
-    caller: fromHexToSs58(call.origin?.value?.value),
-    contract: fromHexToSs58(call.args.dest.value),
-    success: call.success,
+    caller: ethers.getAddress(txn.from),
+    contract: txn.to ? ethers.getAddress(txn.to) : undefined,
+    success: txn.status ? true : false,
     type: DappActivityType.call,
-    name: args.__kind,
-    value: call.args.value,
-    decodedArgs: args,
+    name: args.name,
+    value: txn.value,
+    decodedArgs: args.args.toObject(),
   });
 }

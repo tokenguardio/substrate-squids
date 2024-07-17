@@ -1,17 +1,19 @@
 import { assertNotNull } from "@subsquid/util-internal";
-import { lookupArchive } from "@subsquid/archive-registry";
 import {
   BlockHeader,
   DataHandlerContext,
-  SubstrateBatchProcessor,
-  SubstrateBatchProcessorFields,
-  Event as _Event,
-  Call as _Call,
-  Extrinsic as _Extrinsic,
-} from "@subsquid/substrate-processor";
+  EvmBatchProcessor,
+  EvmBatchProcessorFields,
+  Log as _Log,
+  Transaction as _Transaction,
+  Trace as _Trace,
+} from "@subsquid/evm-processor";
 import { getEnvBoolean } from "./utils/misc";
 
-export const processor = new SubstrateBatchProcessor()
+const dappAddressesEnv = assertNotNull(process.env.DAPP_ADDRESSES);
+const dappAddresses = dappAddressesEnv.split(",");
+
+export const processor = new EvmBatchProcessor()
   .setGateway(assertNotNull(process.env.GATEWAY_URL))
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
@@ -20,28 +22,19 @@ export const processor = new SubstrateBatchProcessor()
   .setRpcDataIngestionSettings({
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
   })
-  .addEvent({
-    name: ["Contracts.ContractEmitted"],
-    extrinsic: true,
-  })
-  .addCall({
-    name: ["Contracts.call"],
-    extrinsic: true,
-  })
+  .addLog({ address: dappAddresses, transaction: true })
+  .addTransaction({ to: dappAddresses })
   .setFields({
     block: {
       timestamp: true,
     },
-    extrinsic: {
-      hash: true,
-      fee: true,
-      tip: true,
-      success: true,
+    transaction: {
+      input: true,
+      value: true,
+      status: true,
     },
-    call: {
-      origin: true,
-      success: true,
-      name: true,
+    log: {
+      transactionHash: true,
     },
   })
   .setBlockRange({
@@ -53,9 +46,9 @@ export const processor = new SubstrateBatchProcessor()
       : undefined,
   });
 
-export type Fields = SubstrateBatchProcessorFields<typeof processor>;
+export type Fields = EvmBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
-export type Event = _Event<Fields>;
-export type Call = _Call<Fields>;
-export type Extrinsic = _Extrinsic<Fields>;
+export type Log = _Log<Fields>;
+export type Transaction = _Transaction<Fields>;
+export type Trace = _Trace<Fields>;
 export type ProcessorContext<Store> = DataHandlerContext<Store, Fields>;

@@ -1,9 +1,4 @@
-import { toHex } from "@subsquid/substrate-processor";
-import { assertNotNull } from "@subsquid/util-internal";
-import * as ss58 from "@subsquid/ss58";
-
-const network = assertNotNull(process.env.SS58_NETWORK);
-const codec = ss58.codec(network);
+import * as ethers from "ethers";
 
 export function bufferToHex(buffer: Uint8Array): string {
   const hexString =
@@ -28,29 +23,26 @@ export function removeDuplicates<T>(items: T[], key: keyof T): T[] {
   return filtered;
 }
 
-export function convertUint8ArrayPropsToHex(obj: any): any {
-  if (obj instanceof Uint8Array) {
-    return toHex(obj);
-  } else if (Array.isArray(obj)) {
-    return obj.map(convertUint8ArrayPropsToHex);
-  } else if (typeof obj === "object" && obj !== null) {
-    let newObj: { [key: string]: any } = {};
-    for (let prop in obj) {
-      newObj[prop] = convertUint8ArrayPropsToHex(obj[prop]);
-    }
-    return newObj;
+export function getEnvBoolean(value: undefined | string, defaultValue = false) {
+  return value ? value.toLowerCase() === "true" : defaultValue;
+}
+
+export function convertBigIntToStrings(
+  obj: Record<string, any>
+): Record<string, any> {
+  if (typeof obj === "object" && obj !== null) {
+    Object.keys(obj).forEach((key) => {
+      if (typeof obj[key] === "bigint") {
+        obj[key] = obj[key].toString();
+      } else if (typeof obj[key] === "object") {
+        convertBigIntToStrings(obj[key]);
+      }
+    });
   }
   return obj;
 }
 
-export function fromHexToSs58(hex: string): string {
-  return codec.encode(hex);
-}
-
-export function fromSs58ToHex(hex: string): string {
-  return codec.decode(hex);
-}
-
-export function getEnvBoolean(value: undefined | string, defaultValue = false) {
-  return value ? value.toLowerCase() === "true" : defaultValue;
+export function formatArgs(args: ethers.Result): Record<string, any> {
+  const argsObj = args.toObject();
+  return convertBigIntToStrings(argsObj);
 }

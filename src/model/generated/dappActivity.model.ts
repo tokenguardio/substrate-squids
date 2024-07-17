@@ -1,7 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
-import * as marshal from "./marshal"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, StringColumn as StringColumn_, IntColumn as IntColumn_, DateTimeColumn as DateTimeColumn_, Index as Index_, BooleanColumn as BooleanColumn_, BigIntColumn as BigIntColumn_, JSONColumn as JSONColumn_} from "@subsquid/typeorm-store"
 import {DappActivityType} from "./_dappActivityType"
-import { assertNotNull } from "@subsquid/substrate-processor";
+import { assertNotNull } from "@subsquid/util-internal";
 
 const dappId = assertNotNull(process.env.DAPP_ID);
 
@@ -14,44 +13,41 @@ export class DappActivity {
     @PrimaryColumn_()
     id!: string
 
-    @Column_("text", {nullable: false})
-    callId!: string
+    @StringColumn_({nullable: false})
+    transactionHash!: string
 
-    @Column_("text", {nullable: false})
-    extrinsicHash!: string
-
-    @Column_("int4", {nullable: false})
+    @IntColumn_({nullable: false})
     blockNumber!: number
 
     @Index_()
-    @Column_("timestamp with time zone", {nullable: false})
+    @DateTimeColumn_({nullable: false})
     timestamp!: Date
 
-    @Column_("text", {nullable: false})
+    @StringColumn_({nullable: false})
     dappId!: string
 
     @Index_()
-    @Column_("text", {nullable: true})
+    @StringColumn_({nullable: true})
     caller!: string | undefined | null
 
     @Index_()
-    @Column_("text", {nullable: false})
+    @StringColumn_({nullable: false})
     contract!: string
 
     @Index_()
-    @Column_("bool", {nullable: true})
+    @BooleanColumn_({nullable: true})
     success!: boolean | undefined | null
 
     @Column_("varchar", {length: 5, nullable: false})
     type!: DappActivityType
 
     @Index_()
-    @Column_("text", {nullable: false})
+    @StringColumn_({nullable: false})
     name!: string
 
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    @BigIntColumn_({nullable: true})
     value!: bigint | undefined | null
 
-    @Column_("jsonb", {nullable: true})
+    @JSONColumn_({nullable: true})
     decodedArgs!: unknown | undefined | null
 }

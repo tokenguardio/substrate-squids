@@ -1,4 +1,4 @@
-const { assertNotNull } = require("@subsquid/substrate-processor");
+const { assertNotNull } = require("@subsquid/util-internal");
 
 const dappId = assertNotNull(process.env.DAPP_ID);
 const createdTimestamp = assertNotNull(process.env.CREATED_TIMESTAMP);
