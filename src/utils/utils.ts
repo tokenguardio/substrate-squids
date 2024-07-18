@@ -78,3 +78,7 @@ function clearNullBytes(rawStr: string): string {
    */
   return rawStr ? rawStr.replace(/\0/g, "") : rawStr;
 }
+
+export function getEnvBoolean(value: undefined | string, defaultValue = false) {
+  return value ? value.toLowerCase() === "true" : defaultValue;
+}
