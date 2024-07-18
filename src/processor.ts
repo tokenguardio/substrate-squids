@@ -31,6 +31,7 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
+  .includeAllBlocks()
   .setRpcDataIngestionSettings({ disabled: true })
   .addEvent({ name: eventNames, extrinsic: true })
   // Ask for all calls to identify parent call name in substrate transaction
