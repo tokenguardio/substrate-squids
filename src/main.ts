@@ -7,11 +7,14 @@ import {
   createFtTransfer,
 } from "./utils/factories";
 import { db } from "./db";
+import { isInFlushWindow, shouldForceFlush } from "./utils/force-flush";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
+
+let blockCount = 0;
 
 processor.run(db, async (ctx) => {
   const transactions: Transaction[] = [];
@@ -41,4 +44,15 @@ processor.run(db, async (ctx) => {
   await ctx.store.Block.writeMany(blocks);
   await ctx.store.Transaction.writeMany(transactions);
   await ctx.store.FtTransfer.writeMany(ftTransfers);
+
+  const lastBlock = ctx.blocks[ctx.blocks.length - 1];
+  if (lastBlock && typeof lastBlock.header.timestamp === "number") {
+    if (isInFlushWindow(lastBlock.header.timestamp)) {
+      blockCount += ctx.blocks.length;
+      if (shouldForceFlush(blockCount)) {
+        ctx.store.setForceFlush(true);
+        blockCount = 0;
+      }
+    }
+  }
 });
