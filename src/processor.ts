@@ -9,14 +9,23 @@ import {
 } from "@subsquid/evm-processor";
 import { assertNotNull } from "@subsquid/util-internal";
 import * as erc20Abi from "./abi/erc20";
+import { getEnvBoolean } from "./utils/utils";
 
 export const processor = new EvmBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/arbitrum-one")
+  .setGateway(assertNotNull(process.env.GATEWAY_URL))
   .setRpcEndpoint({
-    url: assertNotNull(process.env.RPC_ETH_HTTP),
+    url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
-  .setRpcDataIngestionSettings({ disabled: true })
+  .setRpcDataIngestionSettings({
+    disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
+  })
+  .setFinalityConfirmation(
+    process.env.FINALITY_CONFIRMATION
+      ? Number(process.env.FINALITY_CONFIRMATION)
+      : 75
+  )
+  .includeAllBlocks()
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
       ? Number(process.env.BLOCK_RANGE_FROM)
