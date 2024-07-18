@@ -25,6 +25,7 @@ import {
   synchronizeContracts,
 } from "./processing/contractCreation";
 import { db } from "./db";
+import { isInFlushWindow, shouldForceFlush } from "./utils/force-flush";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -38,6 +39,8 @@ let precompilesAdded = false;
 
 let currentTransactionId: string | null = null;
 let traceTree: TraceTree = new TraceTree("");
+
+let blockCount = 0;
 
 processor.run(db, async (ctx) => {
   const traceCreates: TraceCreate[] = [];
@@ -123,4 +126,15 @@ processor.run(db, async (ctx) => {
   await ctx.store.TraceCall.writeMany(traceCalls);
   await ctx.store.TraceSuicide.writeMany(traceSuicides);
   await ctx.store.TraceReward.writeMany(traceRewards);
+
+  const lastBlock = ctx.blocks[ctx.blocks.length - 1];
+  if (lastBlock && typeof lastBlock.header.timestamp === "number") {
+    if (isInFlushWindow(lastBlock.header.timestamp)) {
+      blockCount += ctx.blocks.length;
+      if (shouldForceFlush(blockCount)) {
+        ctx.store.setForceFlush(true);
+        blockCount = 0;
+      }
+    }
+  }
 });
