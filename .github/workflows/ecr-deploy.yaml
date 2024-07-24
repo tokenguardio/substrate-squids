@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["moonbeam-mainnet-evm-parquet-s2-b-final"]
+    branches: ["polygon-mainnet-evm-parquet-s2-b-final"]
   pull_request:
-    branches: ["moonbeam-mainnet-evm-parquet-s2-b-final"]
+    branches: ["polygon-mainnet-evm-parquet-s2-b-final"]
   workflow_dispatch:
 
 jobs:
