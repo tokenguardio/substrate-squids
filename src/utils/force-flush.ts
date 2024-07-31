@@ -1,8 +1,14 @@
-const BLOCK_TIME_SEC = parseInt(process.env.BLOCK_TIME_SEC || "1");
-const FORCE_FLUSH_WINDOW_DAYS = parseInt(
-  process.env.FORCE_FLUSH_WINDOW_DAYS || "7"
-);
-const PARTITION_SIZE_HOURS = parseInt(process.env.PARTITION_SIZE_HOURS || "12");
+import { getEnvNumber } from "./misc";
+
+const BLOCK_TIME_SEC = getEnvNumber(process.env.BLOCK_TIME_SEC, 1) as number;
+const FORCE_FLUSH_WINDOW_DAYS = getEnvNumber(
+  process.env.FORCE_FLUSH_WINDOW_DAYS,
+  7
+) as number;
+const PARTITION_SIZE_HOURS = getEnvNumber(
+  process.env.PARTITION_SIZE_HOURS,
+  12
+) as number;
 
 export function shouldForceFlush(blockCount: number): boolean {
   const blockTimeHours = (BLOCK_TIME_SEC * blockCount) / 3600;
