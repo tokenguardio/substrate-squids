@@ -9,7 +9,11 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { balances, system } from "./types/events";
-import { extractNamesFromObjects, getEnvBoolean } from "./utils/misc";
+import {
+  extractNamesFromObjects,
+  getEnvBoolean,
+  getEnvNumber,
+} from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([balances, system]);
 
@@ -17,7 +21,9 @@ export const processor = new SubstrateBatchProcessor()
   .setGateway("https://v2.archive.subsquid.io/network/moonbeam-substrate")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
-    rateLimit: 10,
+    capacity: getEnvNumber(process.env.RPC_CAPACITY),
+    maxBatchCallSize: getEnvNumber(process.env.RPC_MAX_BATCH_CALL_SIZE),
+    rateLimit: getEnvNumber(process.env.RPC_RATE_LIMIT),
   })
   .setRpcDataIngestionSettings({
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
@@ -38,12 +44,8 @@ export const processor = new SubstrateBatchProcessor()
     },
   })
   .setBlockRange({
-    from: process.env.BLOCK_RANGE_FROM
-      ? Number(process.env.BLOCK_RANGE_FROM)
-      : 1,
-    to: process.env.BLOCK_RANGE_TO
-      ? Number(process.env.BLOCK_RANGE_TO)
-      : undefined,
+    from: getEnvNumber(process.env.BLOCK_RANGE_FROM, 1) as number,
+    to: getEnvNumber(process.env.BLOCK_RANGE_TO),
   });
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
