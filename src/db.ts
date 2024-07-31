@@ -1,6 +1,7 @@
 import { S3Dest } from "@subsquid/file-store-s3";
 import { Database, LocalDest, Store } from "@subsquid/file-store";
 import { assertNotNull } from "@subsquid/util-internal";
+import { getEnvNumber } from "./utils/misc";
 import {
   Block,
   EventNorm,
@@ -28,9 +29,7 @@ export const db = new Database({
           },
         })
       : new LocalDest("./data"),
-  chunkSizeMb: process.env.CHUNK_SIZE_MB
-    ? Number(process.env.CHUNK_SIZE_MB)
-    : undefined,
+  chunkSizeMb: getEnvNumber(process.env.CHUNK_SIZE_MB),
 });
 
 export type Store_ = typeof db extends Database<infer R, any>
