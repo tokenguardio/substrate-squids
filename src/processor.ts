@@ -9,13 +9,15 @@ import {
 } from "@subsquid/evm-processor";
 import { assertNotNull } from "@subsquid/util-internal";
 import * as erc20Abi from "./abi/erc20";
-import { getEnvBoolean } from "./utils/misc";
+import { getEnvBoolean, getEnvNumber } from "./utils/misc";
 
 export const processor = new EvmBatchProcessor()
   .setGateway(assertNotNull(process.env.GATEWAY_URL))
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
-    rateLimit: 10,
+    capacity: getEnvNumber(process.env.RPC_CAPACITY),
+    maxBatchCallSize: getEnvNumber(process.env.RPC_MAX_BATCH_CALL_SIZE),
+    rateLimit: getEnvNumber(process.env.RPC_RATE_LIMIT),
   })
   .setRpcDataIngestionSettings({
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
@@ -27,12 +29,8 @@ export const processor = new EvmBatchProcessor()
   )
   .includeAllBlocks()
   .setBlockRange({
-    from: process.env.BLOCK_RANGE_FROM
-      ? Number(process.env.BLOCK_RANGE_FROM)
-      : 0,
-    to: process.env.BLOCK_RANGE_TO
-      ? Number(process.env.BLOCK_RANGE_TO)
-      : undefined,
+    from: getEnvNumber(process.env.BLOCK_RANGE_FROM, 1) as number,
+    to: getEnvNumber(process.env.BLOCK_RANGE_TO),
   })
   .addTransaction({})
   .addLog({
