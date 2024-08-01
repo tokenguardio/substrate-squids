@@ -140,6 +140,13 @@ export function normalizeDappStakingCallsArgs(call: Call): any {
         throw new UnknownCallVersionError(call.name);
       }
 
+    case dappStaking.fixAccount.name:
+      if (dappStaking.fixAccount.v90.is(call)) {
+        return dappStaking.fixAccount.v90.decode(call);
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+
     default:
       throw new UnknownCallError(call.name);
   }

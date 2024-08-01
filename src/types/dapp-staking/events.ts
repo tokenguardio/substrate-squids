@@ -1,5 +1,6 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
 import * as v79 from '../v79'
+import * as v90 from '../v90'
 
 export const maintenanceMode =  {
     name: 'DappStaking.MaintenanceMode',
@@ -226,6 +227,20 @@ export const dAppReward =  {
             beneficiary: v79.AccountId32,
             smartContract: v79.SmartContract,
             tierId: sts.number(),
+            era: sts.number(),
+            amount: sts.bigint(),
+        })
+    ),
+    /**
+     * dApp reward has been paid out to a beneficiary.
+     */
+    v90: new EventType(
+        'DappStaking.DAppReward',
+        sts.struct({
+            beneficiary: v90.AccountId32,
+            smartContract: v90.SmartContract,
+            tierId: sts.number(),
+            rank: sts.number(),
             era: sts.number(),
             amount: sts.bigint(),
         })

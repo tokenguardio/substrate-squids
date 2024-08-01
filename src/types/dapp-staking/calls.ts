@@ -1,5 +1,6 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
 import * as v79 from '../v79'
+import * as v90 from '../v90'
 
 export const unbondAndUnstake =  {
     name: 'DappStaking.unbond_and_unstake',
@@ -295,6 +296,19 @@ export const force =  {
         'DappStaking.force',
         sts.struct({
             forcingType: v79.ForcingType,
+        })
+    ),
+}
+
+export const fixAccount =  {
+    name: 'DappStaking.fix_account',
+    /**
+     * See [`Pallet::fix_account`].
+     */
+    v90: new CallType(
+        'DappStaking.fix_account',
+        sts.struct({
+            account: v90.AccountId32,
         })
     ),
 }

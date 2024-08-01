@@ -240,3 +240,17 @@ export const forceSetBalance =  {
         })
     ),
 }
+
+export const burn =  {
+    name: 'Balances.burn',
+    /**
+     * See [`Pallet::burn`].
+     */
+    v87: new CallType(
+        'Balances.burn',
+        sts.struct({
+            value: sts.bigint(),
+            ignorable: sts.boolean(),
+        })
+    ),
+}

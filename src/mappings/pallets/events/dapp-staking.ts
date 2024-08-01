@@ -34,6 +34,8 @@ export function normalizeDappStakingEventsArgs(event: Event): any {
     case dsEvents.dAppReward.name:
       if (dsEvents.dAppReward.v79.is(event)) {
         return dsEvents.dAppReward.v79.decode(event);
+      } else if (dsEvents.dAppReward.v90.is(event)) {
+        return dsEvents.dAppReward.v90.decode(event);
       } else {
         throw new UnknownEventVersionError(event.name);
       }

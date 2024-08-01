@@ -67,6 +67,12 @@ export function normalizeBalancesCallsArgs(call: Call): any {
       } else {
         throw new UnknownCallVersionError(call.name);
       }
+    case balances.burn.name:
+      if (balances.burn.v87.is(call)) {
+        return balances.burn.v87.decode(call);
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
 
     default:
       throw new UnknownCallError(call.name);
