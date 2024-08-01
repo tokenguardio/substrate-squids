@@ -9,7 +9,7 @@ import {
 } from "@subsquid/evm-processor";
 import { assertNotNull } from "@subsquid/util-internal";
 import * as erc20Abi from "./abi/erc20";
-import { getEnvBoolean } from "./utils/utils";
+import { getEnvBoolean } from "./utils/misc";
 
 export const processor = new EvmBatchProcessor()
   .setGateway(assertNotNull(process.env.GATEWAY_URL))

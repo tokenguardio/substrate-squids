@@ -10,7 +10,7 @@ import {
   convertToTransactionType,
   calculateFee,
   getTransferType,
-} from "./../utils/utils";
+} from "./misc";
 
 export function createTransaction(
   block: _BlockHeader,
