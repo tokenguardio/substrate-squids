@@ -8,7 +8,7 @@ import {
   Trace as _Trace,
 } from "@subsquid/evm-processor";
 import { assertNotNull } from "@subsquid/util-internal";
-import { getEnvBoolean } from "./utils/utils";
+import { getEnvBoolean } from "./utils/misc";
 
 export const processor = new EvmBatchProcessor()
   .setGateway(assertNotNull(process.env.GATEWAY_URL))
