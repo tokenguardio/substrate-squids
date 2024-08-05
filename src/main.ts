@@ -50,7 +50,7 @@ axiosRetry(client, {
 });
 
 client.interceptors.response.use((response) => {
-  if (response.config.url?.startsWith("/blocks/")) {
+  if (response.config && response.config.url?.startsWith("/blocks/")) {
     const data = response.data;
     const transformedData: ExtrinsicResponse = {
       extrinsics: data.extrinsics.map((e: any) => ({
@@ -114,7 +114,7 @@ processor.run(db, async (ctx) => {
 
             // There are cases when sidecar is unable to fetch information
             if (!currentExtrinsic.info.partialFee) {
-              console.log(
+              ctx.log.info(
                 `Incomplete data on sidecar side for block ${block.header.height}, moving on...`
               );
               continue;
