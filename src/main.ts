@@ -99,6 +99,12 @@ processor.run(db, async (ctx) => {
               const response: ExtrinsicResponse = await client.get(
                 `/blocks/${block.header.hash}`
               );
+              if (!response) {
+                ctx.log.info(
+                  `No response from sidecar for block ${block.header.height}, moving on...`
+                );
+                continue;
+              }
               fetchedExtrinsics = response.extrinsics;
               fetchedBlockHash = block.header.hash;
             }
