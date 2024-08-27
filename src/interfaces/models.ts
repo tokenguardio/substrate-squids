@@ -13,6 +13,7 @@ export enum EvmTransactionType {
   LEGACY = "LEGACY",
   EIP1559 = "EIP1559",
   EIP2930 = "EIP2930",
+  EIP4844 = "EIP4844",
 }
 
 export enum TransferType {
