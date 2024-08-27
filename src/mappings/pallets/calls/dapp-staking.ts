@@ -147,6 +147,20 @@ export function normalizeDappStakingCallsArgs(call: Call): any {
         throw new UnknownCallVersionError(call.name);
       }
 
+    case dappStaking.claimStakerRewardsFor.name:
+      if (dappStaking.claimStakerRewardsFor.v91.is(call)) {
+        return dappStaking.claimStakerRewardsFor.v91.decode(call);
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+
+    case dappStaking.claimBonusRewardFor.name:
+      if (dappStaking.claimBonusRewardFor.v91.is(call)) {
+        return dappStaking.claimBonusRewardFor.v91.decode(call);
+      } else {
+        throw new UnknownCallVersionError(call.name);
+      }
+
     default:
       throw new UnknownCallError(call.name);
   }

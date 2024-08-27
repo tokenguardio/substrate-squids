@@ -5,6 +5,7 @@ import * as v15 from '../v15'
 import * as v43 from '../v43'
 import * as v49 from '../v49'
 import * as v64 from '../v64'
+import * as v91 from '../v91'
 
 export const extrinsicSuccess =  {
     name: 'System.ExtrinsicSuccess',
@@ -173,6 +174,20 @@ export const remarked =  {
         sts.struct({
             sender: v9.AccountId32,
             hash: v9.H256,
+        })
+    ),
+}
+
+export const upgradeAuthorized =  {
+    name: 'System.UpgradeAuthorized',
+    /**
+     * An upgrade was authorized.
+     */
+    v91: new EventType(
+        'System.UpgradeAuthorized',
+        sts.struct({
+            codeHash: v91.H256,
+            checkVersion: sts.boolean(),
         })
     ),
 }

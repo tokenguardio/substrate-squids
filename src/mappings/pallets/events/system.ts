@@ -81,7 +81,12 @@ export function normalizeSystemEventsArgs(event: Event): any {
       } else {
         throw new UnknownEventVersionError(event.name);
       }
-
+    case system.upgradeAuthorized.name:
+      if (system.upgradeAuthorized.v91.is(event)) {
+        return system.upgradeAuthorized.v91.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
     default:
       throw new UnknownEventError(event.name);
   }

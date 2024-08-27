@@ -1,6 +1,7 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
 import * as v79 from '../v79'
 import * as v90 from '../v90'
+import * as v91 from '../v91'
 
 export const unbondAndUnstake =  {
     name: 'DappStaking.unbond_and_unstake',
@@ -309,6 +310,34 @@ export const fixAccount =  {
         'DappStaking.fix_account',
         sts.struct({
             account: v90.AccountId32,
+        })
+    ),
+}
+
+export const claimStakerRewardsFor =  {
+    name: 'DappStaking.claim_staker_rewards_for',
+    /**
+     * Claims some staker rewards for the specified account, if they have any.
+     * In the case of a successful call, at least one era will be claimed, with the possibility of multiple claims happening.
+     */
+    v91: new CallType(
+        'DappStaking.claim_staker_rewards_for',
+        sts.struct({
+            account: v91.AccountId32,
+        })
+    ),
+}
+
+export const claimBonusRewardFor =  {
+    name: 'DappStaking.claim_bonus_reward_for',
+    /**
+     * Used to claim bonus reward for a smart contract on behalf of the specified account, if eligible.
+     */
+    v91: new CallType(
+        'DappStaking.claim_bonus_reward_for',
+        sts.struct({
+            account: v91.AccountId32,
+            smartContract: v91.SmartContract,
         })
     ),
 }

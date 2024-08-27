@@ -1,6 +1,7 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
 import * as v1 from '../v1'
 import * as v64 from '../v64'
+import * as v91 from '../v91'
 
 export const transfer =  {
     name: 'Balances.transfer',
@@ -251,6 +252,24 @@ export const burn =  {
         sts.struct({
             value: sts.bigint(),
             ignorable: sts.boolean(),
+        })
+    ),
+}
+
+export const forceAdjustTotalIssuance =  {
+    name: 'Balances.force_adjust_total_issuance',
+    /**
+     * Adjust the total issuance in a saturating way.
+     * 
+     * Can only be called by root and always needs a positive `delta`.
+     * 
+     * # Example
+     */
+    v91: new CallType(
+        'Balances.force_adjust_total_issuance',
+        sts.struct({
+            direction: v91.AdjustmentDirection,
+            delta: sts.bigint(),
         })
     ),
 }

@@ -209,6 +209,13 @@ export function normalizeBalancesEventsArgs(event: Event): any {
         throw new UnknownEventVersionError(event.name);
       }
 
+    case balances.totalIssuanceForced.name:
+      if (balances.totalIssuanceForced.v91.is(event)) {
+        return balances.totalIssuanceForced.v91.decode(event);
+      } else {
+        throw new UnknownEventVersionError(event.name);
+      }
+
     default:
       throw new UnknownEventError(event.name);
   }
