@@ -1,15 +1,21 @@
 import {
   normalizeBalancesEventsArgs,
-  normalizeContractsEventsArgs,
-  normalizeSystemEventsArgs,
-  normalizeDappsStakingEventsArgs,
-  normalizeDappStakingEventsArgs,
+  normalizeFarmingEventsArgs,
+  normalizeLendMarketEventsArgs,
+  normalizeLeverageStakingEventsArgs,
+  normalizeVtokenMintingEventsArgs,
+  normalizeVtokenVotingEventsArgs,
+  normalizeZenlinkProtocolEventsArgs,
 } from "./events";
 import {
-  normalizeContractsCallsArgs,
-  normalizeDappStakingCallsArgs,
   normalizeBalancesCallsArgs,
-  normalizeDappsStakingCallsArgs,
+  normalizeFarmingCallsArgs,
+  normalizeLendMarketCallsArgs,
+  normalizeLeverageStakingCallsArgs,
+  normalizeStablePoolCallsArgs,
+  normalizeVtokenMintingCallsArgs,
+  normalizeVtokenVotingCallsArgs,
+  normalizeZenlinkProtocolCallsArgs,
 } from "./calls";
 import { Event, Call } from "./../../processor";
 import {
@@ -33,10 +39,12 @@ export const eventNormalizationHandlers: {
 } = wrapHandlers(
   {
     Balances: normalizeBalancesEventsArgs,
-    System: normalizeSystemEventsArgs,
-    Contracts: normalizeContractsEventsArgs,
-    DappsStaking: normalizeDappsStakingEventsArgs,
-    DappStaking: normalizeDappStakingEventsArgs,
+    Farming: normalizeFarmingEventsArgs,
+    LendMarket: normalizeLendMarketEventsArgs,
+    LeverageStaking: normalizeLeverageStakingEventsArgs,
+    VtokenMinting: normalizeVtokenMintingEventsArgs,
+    VtokenVoting: normalizeVtokenVotingEventsArgs,
+    ZenlinkProtocol: normalizeZenlinkProtocolEventsArgs,
   },
   wrapEventNormalizationWithFormatting
 );
@@ -45,9 +53,13 @@ export const callNormalizationHandlers: { [key: string]: (call: Call) => any } =
   wrapHandlers(
     {
       Balances: normalizeBalancesCallsArgs,
-      Contracts: normalizeContractsCallsArgs,
-      DappsStaking: normalizeDappsStakingCallsArgs,
-      DappStaking: normalizeDappStakingCallsArgs,
+      Farming: normalizeFarmingCallsArgs,
+      LendMarket: normalizeLendMarketCallsArgs,
+      LeverageStaking: normalizeLeverageStakingCallsArgs,
+      VtokenMinting: normalizeVtokenMintingCallsArgs,
+      VtokenVoting: normalizeVtokenVotingCallsArgs,
+      StablePool: normalizeStablePoolCallsArgs,
+      ZenlinkProtocol: normalizeZenlinkProtocolCallsArgs,
     },
     wrapCallNormalizationWithFormatting
   );

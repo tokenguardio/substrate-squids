@@ -9,25 +9,29 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import {
-  dappStaking,
-  dappsStaking,
   balances,
-  contracts,
-  system,
+  farming,
+  lendMarket,
+  leverageStaking,
+  vtokenMinting,
+  vtokenVoting,
+  zenlinkProtocol,
 } from "./types/events";
 import { extractNamesFromObjects } from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([
-  dappStaking,
-  dappsStaking,
   balances,
-  contracts,
-  system,
+  farming,
+  lendMarket,
+  leverageStaking,
+  vtokenMinting,
+  vtokenVoting,
+  zenlinkProtocol,
 ]);
 import { getEnvBoolean, getEnvNumber } from "./utils/misc";
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/astar-substrate")
+  .setGateway("https://v2.archive.subsquid.io/network/bifrost-polkadot")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     capacity: getEnvNumber(process.env.RPC_CAPACITY),
