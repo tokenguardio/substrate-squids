@@ -1,44 +1,46 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v108 from '../v108'
+import * as v0 from '../v0'
+import * as v9140 from '../v9140'
 
-export const vestingScheduleAdded =  {
-    name: 'Vesting.VestingScheduleAdded',
+export const vestingUpdated =  {
+    name: 'Vesting.VestingUpdated',
     /**
-     * Added new vesting schedule.
+     *  The amount vested has been updated. This could indicate more funds are available. The
+     *  balance given is the amount which is left unvested (and thus locked).
      */
-    v108: new EventType(
-        'Vesting.VestingScheduleAdded',
+    v0: new EventType(
+        'Vesting.VestingUpdated',
+        sts.tuple([v0.AccountId, v0.Balance])
+    ),
+    /**
+     * The amount vested has been updated. This could indicate a change in funds available.
+     * The balance given is the amount which is left unvested (and thus locked).
+     */
+    v9140: new EventType(
+        'Vesting.VestingUpdated',
         sts.struct({
-            from: v108.AccountId32,
-            to: v108.AccountId32,
-            vestingSchedule: v108.VestingSchedule,
+            account: v9140.AccountId32,
+            unvested: sts.bigint(),
         })
     ),
 }
 
-export const claimed =  {
-    name: 'Vesting.Claimed',
+export const vestingCompleted =  {
+    name: 'Vesting.VestingCompleted',
     /**
-     * Claimed vesting.
+     *  An account (given) has become fully vested. No further vesting can happen.
      */
-    v108: new EventType(
-        'Vesting.Claimed',
-        sts.struct({
-            who: v108.AccountId32,
-            amount: sts.bigint(),
-        })
+    v0: new EventType(
+        'Vesting.VestingCompleted',
+        v0.AccountId
     ),
-}
-
-export const vestingSchedulesUpdated =  {
-    name: 'Vesting.VestingSchedulesUpdated',
     /**
-     * Updated vesting schedules.
+     * An \[account\] has become fully vested.
      */
-    v108: new EventType(
-        'Vesting.VestingSchedulesUpdated',
+    v9140: new EventType(
+        'Vesting.VestingCompleted',
         sts.struct({
-            who: v108.AccountId32,
+            account: v9140.AccountId32,
         })
     ),
 }

@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["hydradx-mainnet-substrate-parquet"]
+    branches: ["polkadot-mainnet-substrate-parquet"]
   pull_request:
-    branches: ["hydradx-mainnet-substrate-parquet"]
+    branches: ["polkadot-mainnet-substrate-parquet"]
   workflow_dispatch:
 
 jobs:

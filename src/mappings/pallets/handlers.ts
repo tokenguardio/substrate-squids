@@ -1,24 +1,12 @@
 import {
   normalizeBalancesEventsArgs,
-  normalizeLbcEventsArgs,
-  normalizeOmnipoolEventsArgs,
-  normalizeOtcEventsArgs,
-  normalizeReferralsEventsArgs,
-  normalizeStableswapEventsArgs,
-  normalizeStakingEventsArgs,
-  normalizeXTokensEventsArgs,
-  normalizeXykEventsArgs,
+  normalizeHrmpEventsArgs,
+  normalizeXcmPalletEventsArgs,
 } from "./events";
 import {
   normalizeBalancesCallsArgs,
-  normalizeLbpCallsArgs,
-  normalizeOtcCallsArgs,
-  normalizeOmnipoolCallsArgs,
-  normalizeReferralsCallsArgs,
-  normalizeStableswapCallsArgs,
-  normalizeStakingCallsArgs,
-  normalizeXTokensCallsArgs,
-  normalizeXykCallsArgs,
+  normalizeXcmPalletCallsArgs,
+  normalizeHrmpCallsArgs,
 } from "./calls";
 import { Event, Call } from "./../../processor";
 import {
@@ -42,14 +30,8 @@ export const eventNormalizationHandlers: {
 } = wrapHandlers(
   {
     Balances: normalizeBalancesEventsArgs,
-    LBP: normalizeLbcEventsArgs,
-    OTC: normalizeOtcEventsArgs,
-    Omnipool: normalizeOmnipoolEventsArgs,
-    Referrals: normalizeReferralsEventsArgs,
-    Stableswap: normalizeStableswapEventsArgs,
-    Staking: normalizeStakingEventsArgs,
-    XTokens: normalizeXTokensEventsArgs,
-    XYK: normalizeXykEventsArgs,
+    Hrmp: normalizeHrmpEventsArgs,
+    XcmPallet: normalizeXcmPalletEventsArgs,
   },
   wrapEventNormalizationWithFormatting
 );
@@ -58,14 +40,8 @@ export const callNormalizationHandlers: { [key: string]: (call: Call) => any } =
   wrapHandlers(
     {
       Balances: normalizeBalancesCallsArgs,
-      LBP: normalizeLbpCallsArgs,
-      OTC: normalizeOtcCallsArgs,
-      Omnipool: normalizeOmnipoolCallsArgs,
-      Referrals: normalizeReferralsCallsArgs,
-      Stableswap: normalizeStableswapCallsArgs,
-      Staking: normalizeStakingCallsArgs,
-      XTokens: normalizeXTokensCallsArgs,
-      XYK: normalizeXykCallsArgs,
+      Hrmp: normalizeHrmpCallsArgs,
+      XcmPallet: normalizeXcmPalletCallsArgs,
     },
     wrapCallNormalizationWithFormatting
   );

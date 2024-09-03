@@ -1,15 +1,15 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v234 from '../v234'
+import * as v1002000 from '../v1002000'
 
 export const controlAutoMigration =  {
     name: 'StateTrieMigration.control_auto_migration',
     /**
      * See [`Pallet::control_auto_migration`].
      */
-    v234: new CallType(
+    v1002000: new CallType(
         'StateTrieMigration.control_auto_migration',
         sts.struct({
-            maybeConfig: sts.option(() => v234.MigrationLimits),
+            maybeConfig: sts.option(() => v1002000.MigrationLimits),
         })
     ),
 }
@@ -19,12 +19,12 @@ export const continueMigrate =  {
     /**
      * See [`Pallet::continue_migrate`].
      */
-    v234: new CallType(
+    v1002000: new CallType(
         'StateTrieMigration.continue_migrate',
         sts.struct({
-            limits: v234.MigrationLimits,
+            limits: v1002000.MigrationLimits,
             realSizeUpper: sts.number(),
-            witnessTask: v234.MigrationTask,
+            witnessTask: v1002000.MigrationTask,
         })
     ),
 }
@@ -34,7 +34,7 @@ export const migrateCustomTop =  {
     /**
      * See [`Pallet::migrate_custom_top`].
      */
-    v234: new CallType(
+    v1002000: new CallType(
         'StateTrieMigration.migrate_custom_top',
         sts.struct({
             keys: sts.array(() => sts.bytes()),
@@ -48,7 +48,7 @@ export const migrateCustomChild =  {
     /**
      * See [`Pallet::migrate_custom_child`].
      */
-    v234: new CallType(
+    v1002000: new CallType(
         'StateTrieMigration.migrate_custom_child',
         sts.struct({
             root: sts.bytes(),
@@ -63,10 +63,10 @@ export const setSignedMaxLimits =  {
     /**
      * See [`Pallet::set_signed_max_limits`].
      */
-    v234: new CallType(
+    v1002000: new CallType(
         'StateTrieMigration.set_signed_max_limits',
         sts.struct({
-            limits: v234.MigrationLimits,
+            limits: v1002000.MigrationLimits,
         })
     ),
 }
@@ -76,11 +76,11 @@ export const forceSetProgress =  {
     /**
      * See [`Pallet::force_set_progress`].
      */
-    v234: new CallType(
+    v1002000: new CallType(
         'StateTrieMigration.force_set_progress',
         sts.struct({
-            progressTop: v234.Progress,
-            progressChild: v234.Progress,
+            progressTop: v1002000.Progress,
+            progressChild: v1002000.Progress,
         })
     ),
 }

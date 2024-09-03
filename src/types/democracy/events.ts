@@ -1,14 +1,26 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v108 from '../v108'
-import * as v115 from '../v115'
-import * as v205 from '../v205'
+import * as v0 from '../v0'
+import * as v25 from '../v25'
+import * as v9090 from '../v9090'
+import * as v9110 from '../v9110'
+import * as v9140 from '../v9140'
+import * as v9170 from '../v9170'
+import * as v9190 from '../v9190'
+import * as v9420 from '../v9420'
 
 export const proposed =  {
     name: 'Democracy.Proposed',
     /**
+     *  A motion has been proposed by a public account.
+     */
+    v0: new EventType(
+        'Democracy.Proposed',
+        sts.tuple([v0.PropIndex, v0.Balance])
+    ),
+    /**
      * A motion has been proposed by a public account.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Proposed',
         sts.struct({
             proposalIndex: sts.number(),
@@ -20,20 +32,27 @@ export const proposed =  {
 export const tabled =  {
     name: 'Democracy.Tabled',
     /**
+     *  A public proposal has been tabled for referendum vote.
+     */
+    v0: new EventType(
+        'Democracy.Tabled',
+        sts.tuple([v0.PropIndex, v0.Balance, sts.array(() => v0.AccountId)])
+    ),
+    /**
      * A public proposal has been tabled for referendum vote.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Tabled',
         sts.struct({
             proposalIndex: sts.number(),
             deposit: sts.bigint(),
-            depositors: sts.array(() => v108.AccountId32),
+            depositors: sts.array(() => v9140.AccountId32),
         })
     ),
     /**
      * A public proposal has been tabled for referendum vote.
      */
-    v160: new EventType(
+    v9340: new EventType(
         'Democracy.Tabled',
         sts.struct({
             proposalIndex: sts.number(),
@@ -45,9 +64,9 @@ export const tabled =  {
 export const externalTabled =  {
     name: 'Democracy.ExternalTabled',
     /**
-     * An external proposal has been tabled.
+     *  An external proposal has been tabled.
      */
-    v108: new EventType(
+    v0: new EventType(
         'Democracy.ExternalTabled',
         sts.unit()
     ),
@@ -56,13 +75,20 @@ export const externalTabled =  {
 export const started =  {
     name: 'Democracy.Started',
     /**
+     *  A referendum has begun.
+     */
+    v0: new EventType(
+        'Democracy.Started',
+        sts.tuple([v0.ReferendumIndex, v0.VoteThreshold])
+    ),
+    /**
      * A referendum has begun.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Started',
         sts.struct({
             refIndex: sts.number(),
-            threshold: v108.VoteThreshold,
+            threshold: v9140.VoteThreshold,
         })
     ),
 }
@@ -70,9 +96,16 @@ export const started =  {
 export const passed =  {
     name: 'Democracy.Passed',
     /**
+     *  A proposal has been approved by referendum.
+     */
+    v0: new EventType(
+        'Democracy.Passed',
+        v0.ReferendumIndex
+    ),
+    /**
      * A proposal has been approved by referendum.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Passed',
         sts.struct({
             refIndex: sts.number(),
@@ -83,9 +116,16 @@ export const passed =  {
 export const notPassed =  {
     name: 'Democracy.NotPassed',
     /**
+     *  A proposal has been rejected by referendum.
+     */
+    v0: new EventType(
+        'Democracy.NotPassed',
+        v0.ReferendumIndex
+    ),
+    /**
      * A proposal has been rejected by referendum.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.NotPassed',
         sts.struct({
             refIndex: sts.number(),
@@ -96,9 +136,16 @@ export const notPassed =  {
 export const cancelled =  {
     name: 'Democracy.Cancelled',
     /**
+     *  A referendum has been cancelled.
+     */
+    v0: new EventType(
+        'Democracy.Cancelled',
+        v0.ReferendumIndex
+    ),
+    /**
      * A referendum has been cancelled.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Cancelled',
         sts.struct({
             refIndex: sts.number(),
@@ -109,23 +156,54 @@ export const cancelled =  {
 export const executed =  {
     name: 'Democracy.Executed',
     /**
+     *  A proposal has been enacted.
+     */
+    v0: new EventType(
+        'Democracy.Executed',
+        sts.tuple([v0.ReferendumIndex, sts.boolean()])
+    ),
+    /**
+     *  A proposal has been enacted. \[ref_index, result\]
+     */
+    v9090: new EventType(
+        'Democracy.Executed',
+        sts.tuple([v9090.ReferendumIndex, v9090.DispatchResult])
+    ),
+    /**
+     * A proposal has been enacted. \[ref_index, result\]
+     */
+    v9110: new EventType(
+        'Democracy.Executed',
+        sts.tuple([sts.number(), sts.result(() => sts.unit(), () => v9110.DispatchError)])
+    ),
+    /**
      * A proposal has been enacted.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Executed',
         sts.struct({
             refIndex: sts.number(),
-            result: sts.result(() => sts.unit(), () => v108.DispatchError),
+            result: sts.result(() => sts.unit(), () => v9140.DispatchError),
         })
     ),
     /**
      * A proposal has been enacted.
      */
-    v115: new EventType(
+    v9170: new EventType(
         'Democracy.Executed',
         sts.struct({
             refIndex: sts.number(),
-            result: sts.result(() => sts.unit(), () => v115.DispatchError),
+            result: sts.result(() => sts.unit(), () => v9170.DispatchError),
+        })
+    ),
+    /**
+     * A proposal has been enacted.
+     */
+    v9190: new EventType(
+        'Democracy.Executed',
+        sts.struct({
+            refIndex: sts.number(),
+            result: sts.result(() => sts.unit(), () => v9190.DispatchError),
         })
     ),
 }
@@ -133,13 +211,20 @@ export const executed =  {
 export const delegated =  {
     name: 'Democracy.Delegated',
     /**
+     *  An account has delegated their vote to another account.
+     */
+    v0: new EventType(
+        'Democracy.Delegated',
+        sts.tuple([v0.AccountId, v0.AccountId])
+    ),
+    /**
      * An account has delegated their vote to another account.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Delegated',
         sts.struct({
-            who: v108.AccountId32,
-            target: v108.AccountId32,
+            who: v9140.AccountId32,
+            target: v9140.AccountId32,
         })
     ),
 }
@@ -147,12 +232,19 @@ export const delegated =  {
 export const undelegated =  {
     name: 'Democracy.Undelegated',
     /**
+     *  An account has cancelled a previous delegation operation.
+     */
+    v0: new EventType(
+        'Democracy.Undelegated',
+        v0.AccountId
+    ),
+    /**
      * An account has cancelled a previous delegation operation.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Undelegated',
         sts.struct({
-            account: v108.AccountId32,
+            account: v9140.AccountId32,
         })
     ),
 }
@@ -160,13 +252,20 @@ export const undelegated =  {
 export const vetoed =  {
     name: 'Democracy.Vetoed',
     /**
+     *  An external proposal has been vetoed.
+     */
+    v0: new EventType(
+        'Democracy.Vetoed',
+        sts.tuple([v0.AccountId, v0.Hash, v0.BlockNumber])
+    ),
+    /**
      * An external proposal has been vetoed.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Vetoed',
         sts.struct({
-            who: v108.AccountId32,
-            proposalHash: v108.H256,
+            who: v9140.AccountId32,
+            proposalHash: v9140.H256,
             until: sts.number(),
         })
     ),
@@ -175,13 +274,20 @@ export const vetoed =  {
 export const preimageNoted =  {
     name: 'Democracy.PreimageNoted',
     /**
+     *  A proposal's preimage was noted, and the deposit taken.
+     */
+    v0: new EventType(
+        'Democracy.PreimageNoted',
+        sts.tuple([v0.Hash, v0.AccountId, v0.Balance])
+    ),
+    /**
      * A proposal's preimage was noted, and the deposit taken.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.PreimageNoted',
         sts.struct({
-            proposalHash: v108.H256,
-            who: v108.AccountId32,
+            proposalHash: v9140.H256,
+            who: v9140.AccountId32,
             deposit: sts.bigint(),
         })
     ),
@@ -190,13 +296,20 @@ export const preimageNoted =  {
 export const preimageUsed =  {
     name: 'Democracy.PreimageUsed',
     /**
+     *  A proposal preimage was removed and used (the deposit was returned).
+     */
+    v0: new EventType(
+        'Democracy.PreimageUsed',
+        sts.tuple([v0.Hash, v0.AccountId, v0.Balance])
+    ),
+    /**
      * A proposal preimage was removed and used (the deposit was returned).
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.PreimageUsed',
         sts.struct({
-            proposalHash: v108.H256,
-            provider: v108.AccountId32,
+            proposalHash: v9140.H256,
+            provider: v9140.AccountId32,
             deposit: sts.bigint(),
         })
     ),
@@ -205,12 +318,19 @@ export const preimageUsed =  {
 export const preimageInvalid =  {
     name: 'Democracy.PreimageInvalid',
     /**
+     *  A proposal could not be executed because its preimage was invalid.
+     */
+    v0: new EventType(
+        'Democracy.PreimageInvalid',
+        sts.tuple([v0.Hash, v0.ReferendumIndex])
+    ),
+    /**
      * A proposal could not be executed because its preimage was invalid.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.PreimageInvalid',
         sts.struct({
-            proposalHash: v108.H256,
+            proposalHash: v9140.H256,
             refIndex: sts.number(),
         })
     ),
@@ -219,12 +339,19 @@ export const preimageInvalid =  {
 export const preimageMissing =  {
     name: 'Democracy.PreimageMissing',
     /**
+     *  A proposal could not be executed because its preimage was missing.
+     */
+    v0: new EventType(
+        'Democracy.PreimageMissing',
+        sts.tuple([v0.Hash, v0.ReferendumIndex])
+    ),
+    /**
      * A proposal could not be executed because its preimage was missing.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.PreimageMissing',
         sts.struct({
-            proposalHash: v108.H256,
+            proposalHash: v9140.H256,
             refIndex: sts.number(),
         })
     ),
@@ -233,28 +360,53 @@ export const preimageMissing =  {
 export const preimageReaped =  {
     name: 'Democracy.PreimageReaped',
     /**
+     *  A registered preimage was removed and the deposit collected by the reaper (last item).
+     */
+    v0: new EventType(
+        'Democracy.PreimageReaped',
+        sts.tuple([v0.Hash, v0.AccountId, v0.Balance, v0.AccountId])
+    ),
+    /**
      * A registered preimage was removed and the deposit collected by the reaper.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.PreimageReaped',
         sts.struct({
-            proposalHash: v108.H256,
-            provider: v108.AccountId32,
+            proposalHash: v9140.H256,
+            provider: v9140.AccountId32,
             deposit: sts.bigint(),
-            reaper: v108.AccountId32,
+            reaper: v9140.AccountId32,
         })
+    ),
+}
+
+export const unlocked =  {
+    name: 'Democracy.Unlocked',
+    /**
+     *  An account has been unlocked successfully.
+     */
+    v0: new EventType(
+        'Democracy.Unlocked',
+        v0.AccountId
     ),
 }
 
 export const blacklisted =  {
     name: 'Democracy.Blacklisted',
     /**
+     *  A proposal \[hash\] has been blacklisted permanently.
+     */
+    v25: new EventType(
+        'Democracy.Blacklisted',
+        v25.Hash
+    ),
+    /**
      * A proposal_hash has been blacklisted permanently.
      */
-    v108: new EventType(
+    v9140: new EventType(
         'Democracy.Blacklisted',
         sts.struct({
-            proposalHash: v108.H256,
+            proposalHash: v9140.H256,
         })
     ),
 }
@@ -264,12 +416,12 @@ export const voted =  {
     /**
      * An account has voted in a referendum
      */
-    v108: new EventType(
+    v9170: new EventType(
         'Democracy.Voted',
         sts.struct({
-            voter: v108.AccountId32,
+            voter: v9170.AccountId32,
             refIndex: sts.number(),
-            vote: v108.AccountVote,
+            vote: v9170.AccountVote,
         })
     ),
 }
@@ -279,10 +431,10 @@ export const seconded =  {
     /**
      * An account has secconded a proposal
      */
-    v108: new EventType(
+    v9170: new EventType(
         'Democracy.Seconded',
         sts.struct({
-            seconder: v108.AccountId32,
+            seconder: v9170.AccountId32,
             propIndex: sts.number(),
         })
     ),
@@ -293,7 +445,7 @@ export const proposalCanceled =  {
     /**
      * A proposal got canceled.
      */
-    v115: new EventType(
+    v9250: new EventType(
         'Democracy.ProposalCanceled',
         sts.struct({
             propIndex: sts.number(),
@@ -306,17 +458,17 @@ export const metadataSet =  {
     /**
      * Metadata for a proposal or a referendum has been set.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Democracy.MetadataSet',
         sts.struct({
             /**
              * Metadata owner.
              */
-            owner: v205.MetadataOwner,
+            owner: v9420.MetadataOwner,
             /**
              * Preimage hash.
              */
-            hash: v205.H256,
+            hash: v9420.H256,
         })
     ),
 }
@@ -326,17 +478,17 @@ export const metadataCleared =  {
     /**
      * Metadata for a proposal or a referendum has been cleared.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Democracy.MetadataCleared',
         sts.struct({
             /**
              * Metadata owner.
              */
-            owner: v205.MetadataOwner,
+            owner: v9420.MetadataOwner,
             /**
              * Preimage hash.
              */
-            hash: v205.H256,
+            hash: v9420.H256,
         })
     ),
 }
@@ -346,21 +498,21 @@ export const metadataTransferred =  {
     /**
      * Metadata has been transferred to new owner.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Democracy.MetadataTransferred',
         sts.struct({
             /**
              * Previous metadata owner.
              */
-            prevOwner: v205.MetadataOwner,
+            prevOwner: v9420.MetadataOwner,
             /**
              * New metadata owner.
              */
-            owner: v205.MetadataOwner,
+            owner: v9420.MetadataOwner,
             /**
              * Preimage hash.
              */
-            hash: v205.H256,
+            hash: v9420.H256,
         })
     ),
 }

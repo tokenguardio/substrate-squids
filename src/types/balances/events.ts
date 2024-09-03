@@ -1,24 +1,26 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v100 from '../v100'
-import * as v104 from '../v104'
-import * as v205 from '../v205'
+import * as v0 from '../v0'
+import * as v8 from '../v8'
+import * as v9122 from '../v9122'
+import * as v9140 from '../v9140'
+import * as v9420 from '../v9420'
 
 export const endowed =  {
     name: 'Balances.Endowed',
     /**
-     * An account was created with some free balance. \[account, free_balance\]
+     *  An account was created with some free balance.
      */
-    v100: new EventType(
+    v0: new EventType(
         'Balances.Endowed',
-        sts.tuple([v100.AccountId32, sts.bigint()])
+        sts.tuple([v0.AccountId, v0.Balance])
     ),
     /**
      * An account was created with some free balance.
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.Endowed',
         sts.struct({
-            account: v104.AccountId32,
+            account: v9140.AccountId32,
             freeBalance: sts.bigint(),
         })
     ),
@@ -27,21 +29,21 @@ export const endowed =  {
 export const dustLost =  {
     name: 'Balances.DustLost',
     /**
-     * An account was removed whose balance was non-zero but below ExistentialDeposit,
-     * resulting in an outright loss. \[account, balance\]
+     *  An account was removed whose balance was non-zero but below ExistentialDeposit,
+     *  resulting in an outright loss.
      */
-    v100: new EventType(
+    v0: new EventType(
         'Balances.DustLost',
-        sts.tuple([v100.AccountId32, sts.bigint()])
+        sts.tuple([v0.AccountId, v0.Balance])
     ),
     /**
      * An account was removed whose balance was non-zero but below ExistentialDeposit,
      * resulting in an outright loss.
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.DustLost',
         sts.struct({
-            account: v104.AccountId32,
+            account: v9140.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -50,20 +52,20 @@ export const dustLost =  {
 export const transfer =  {
     name: 'Balances.Transfer',
     /**
-     * Transfer succeeded. \[from, to, value\]
+     *  Transfer succeeded (from, to, value).
      */
-    v100: new EventType(
+    v0: new EventType(
         'Balances.Transfer',
-        sts.tuple([v100.AccountId32, v100.AccountId32, sts.bigint()])
+        sts.tuple([v0.AccountId, v0.AccountId, v0.Balance])
     ),
     /**
      * Transfer succeeded.
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.Transfer',
         sts.struct({
-            from: v104.AccountId32,
-            to: v104.AccountId32,
+            from: v9140.AccountId32,
+            to: v9140.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -72,19 +74,19 @@ export const transfer =  {
 export const balanceSet =  {
     name: 'Balances.BalanceSet',
     /**
-     * A balance was set by root. \[who, free, reserved\]
+     *  A balance was set by root (who, free, reserved).
      */
-    v100: new EventType(
+    v0: new EventType(
         'Balances.BalanceSet',
-        sts.tuple([v100.AccountId32, sts.bigint(), sts.bigint()])
+        sts.tuple([v0.AccountId, v0.Balance, v0.Balance])
     ),
     /**
      * A balance was set by root.
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.BalanceSet',
         sts.struct({
-            who: v104.AccountId32,
+            who: v9140.AccountId32,
             free: sts.bigint(),
             reserved: sts.bigint(),
         })
@@ -92,11 +94,32 @@ export const balanceSet =  {
     /**
      * A balance was set by root.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.BalanceSet',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             free: sts.bigint(),
+        })
+    ),
+}
+
+export const deposit =  {
+    name: 'Balances.Deposit',
+    /**
+     *  Some amount was deposited (e.g. for transaction fees).
+     */
+    v0: new EventType(
+        'Balances.Deposit',
+        sts.tuple([v0.AccountId, v0.Balance])
+    ),
+    /**
+     * Some amount was deposited (e.g. for transaction fees).
+     */
+    v9140: new EventType(
+        'Balances.Deposit',
+        sts.struct({
+            who: v9140.AccountId32,
+            amount: sts.bigint(),
         })
     ),
 }
@@ -104,19 +127,19 @@ export const balanceSet =  {
 export const reserved =  {
     name: 'Balances.Reserved',
     /**
-     * Some balance was reserved (moved from free to reserved). \[who, value\]
+     *  Some balance was reserved (moved from free to reserved).
      */
-    v100: new EventType(
+    v8: new EventType(
         'Balances.Reserved',
-        sts.tuple([v100.AccountId32, sts.bigint()])
+        sts.tuple([v8.AccountId, v8.Balance])
     ),
     /**
      * Some balance was reserved (moved from free to reserved).
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.Reserved',
         sts.struct({
-            who: v104.AccountId32,
+            who: v9140.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -125,19 +148,19 @@ export const reserved =  {
 export const unreserved =  {
     name: 'Balances.Unreserved',
     /**
-     * Some balance was unreserved (moved from reserved to free). \[who, value\]
+     *  Some balance was unreserved (moved from reserved to free).
      */
-    v100: new EventType(
+    v8: new EventType(
         'Balances.Unreserved',
-        sts.tuple([v100.AccountId32, sts.bigint()])
+        sts.tuple([v8.AccountId, v8.Balance])
     ),
     /**
      * Some balance was unreserved (moved from reserved to free).
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.Unreserved',
         sts.struct({
-            who: v104.AccountId32,
+            who: v9140.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -146,47 +169,24 @@ export const unreserved =  {
 export const reserveRepatriated =  {
     name: 'Balances.ReserveRepatriated',
     /**
+     *  Some balance was moved from the reserve of the first account to the second account.
+     *  Final argument indicates the destination balance type.
+     */
+    v8: new EventType(
+        'Balances.ReserveRepatriated',
+        sts.tuple([v8.AccountId, v8.AccountId, v8.Balance, v8.BalanceStatus])
+    ),
+    /**
      * Some balance was moved from the reserve of the first account to the second account.
      * Final argument indicates the destination balance type.
-     * \[from, to, balance, destination_status\]
      */
-    v100: new EventType(
-        'Balances.ReserveRepatriated',
-        sts.tuple([v100.AccountId32, v100.AccountId32, sts.bigint(), v100.BalanceStatus])
-    ),
-    /**
-     * Some balance was moved from the reserve of the first account to the second account.
-     * Final argument indicates the destination balance type.
-     */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.ReserveRepatriated',
         sts.struct({
-            from: v104.AccountId32,
-            to: v104.AccountId32,
+            from: v9140.AccountId32,
+            to: v9140.AccountId32,
             amount: sts.bigint(),
-            destinationStatus: v104.BalanceStatus,
-        })
-    ),
-}
-
-export const deposit =  {
-    name: 'Balances.Deposit',
-    /**
-     * Some amount was deposited into the account (e.g. for transaction fees). \[who,
-     * deposit\]
-     */
-    v100: new EventType(
-        'Balances.Deposit',
-        sts.tuple([v100.AccountId32, sts.bigint()])
-    ),
-    /**
-     * Some amount was deposited (e.g. for transaction fees).
-     */
-    v104: new EventType(
-        'Balances.Deposit',
-        sts.struct({
-            who: v104.AccountId32,
-            amount: sts.bigint(),
+            destinationStatus: v9140.BalanceStatus,
         })
     ),
 }
@@ -196,17 +196,17 @@ export const withdraw =  {
     /**
      * Some amount was withdrawn from the account (e.g. for transaction fees). \[who, value\]
      */
-    v100: new EventType(
+    v9122: new EventType(
         'Balances.Withdraw',
-        sts.tuple([v100.AccountId32, sts.bigint()])
+        sts.tuple([v9122.AccountId32, sts.bigint()])
     ),
     /**
      * Some amount was withdrawn from the account (e.g. for transaction fees).
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.Withdraw',
         sts.struct({
-            who: v104.AccountId32,
+            who: v9140.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -218,17 +218,17 @@ export const slashed =  {
      * Some amount was removed from the account (e.g. for misbehavior). \[who,
      * amount_slashed\]
      */
-    v100: new EventType(
+    v9122: new EventType(
         'Balances.Slashed',
-        sts.tuple([v100.AccountId32, sts.bigint()])
+        sts.tuple([v9122.AccountId32, sts.bigint()])
     ),
     /**
      * Some amount was removed from the account (e.g. for misbehavior).
      */
-    v104: new EventType(
+    v9140: new EventType(
         'Balances.Slashed',
         sts.struct({
-            who: v104.AccountId32,
+            who: v9140.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -239,10 +239,10 @@ export const minted =  {
     /**
      * Some amount was minted into an account.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Minted',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -253,10 +253,10 @@ export const burned =  {
     /**
      * Some amount was burned from an account.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Burned',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -267,10 +267,10 @@ export const suspended =  {
     /**
      * Some amount was suspended from an account (it can be restored later).
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Suspended',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -281,10 +281,10 @@ export const restored =  {
     /**
      * Some amount was restored into an account.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Restored',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -295,10 +295,10 @@ export const upgraded =  {
     /**
      * An account was upgraded.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Upgraded',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
         })
     ),
 }
@@ -308,7 +308,7 @@ export const issued =  {
     /**
      * Total issuance was increased by `amount`, creating a credit to be balanced.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Issued',
         sts.struct({
             amount: sts.bigint(),
@@ -321,7 +321,7 @@ export const rescinded =  {
     /**
      * Total issuance was decreased by `amount`, creating a debt to be balanced.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Rescinded',
         sts.struct({
             amount: sts.bigint(),
@@ -334,10 +334,10 @@ export const locked =  {
     /**
      * Some balance was locked.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Locked',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -348,10 +348,10 @@ export const unlocked =  {
     /**
      * Some balance was unlocked.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Unlocked',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -362,10 +362,10 @@ export const frozen =  {
     /**
      * Some balance was frozen.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Frozen',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -376,10 +376,10 @@ export const thawed =  {
     /**
      * Some balance was thawed.
      */
-    v205: new EventType(
+    v9420: new EventType(
         'Balances.Thawed',
         sts.struct({
-            who: v205.AccountId32,
+            who: v9420.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -390,7 +390,7 @@ export const totalIssuanceForced =  {
     /**
      * The `TotalIssuance` was forcefully changed.
      */
-    v244: new EventType(
+    v1002000: new EventType(
         'Balances.TotalIssuanceForced',
         sts.struct({
             old: sts.bigint(),

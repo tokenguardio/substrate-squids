@@ -8,34 +8,14 @@ import {
   Call as _Call,
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
-import {
-  balances,
-  lbp,
-  otc,
-  omnipool,
-  referrals,
-  stableswap,
-  staking,
-  xTokens,
-  xyk,
-} from "./types/events";
+import { balances, hrmp, xcmPallet } from "./types/events";
 import { extractNamesFromObjects } from "./utils/misc";
 
-const eventNames = extractNamesFromObjects([
-  balances,
-  lbp,
-  otc,
-  omnipool,
-  referrals,
-  stableswap,
-  staking,
-  xTokens,
-  xyk,
-]);
+const eventNames = extractNamesFromObjects([balances, hrmp, xcmPallet]);
 import { getEnvBoolean, getEnvNumber } from "./utils/misc";
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/hydradx")
+  .setGateway("https://v2.archive.subsquid.io/network/polkadot")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     capacity: getEnvNumber(process.env.RPC_CAPACITY),

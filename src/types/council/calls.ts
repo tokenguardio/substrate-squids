@@ -1,66 +1,78 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v108 from '../v108'
-import * as v115 from '../v115'
-import * as v125 from '../v125'
-import * as v138 from '../v138'
-import * as v148 from '../v148'
-import * as v160 from '../v160'
-import * as v170 from '../v170'
-import * as v176 from '../v176'
-import * as v183 from '../v183'
-import * as v185 from '../v185'
-import * as v193 from '../v193'
-import * as v201 from '../v201'
-import * as v205 from '../v205'
-import * as v222 from '../v222'
-import * as v224 from '../v224'
-import * as v227 from '../v227'
-import * as v234 from '../v234'
-import * as v244 from '../v244'
-import * as v253 from '../v253'
+import * as v0 from '../v0'
+import * as v5 from '../v5'
+import * as v6 from '../v6'
+import * as v7 from '../v7'
+import * as v9 from '../v9'
+import * as v10 from '../v10'
+import * as v11 from '../v11'
+import * as v13 from '../v13'
+import * as v14 from '../v14'
+import * as v15 from '../v15'
+import * as v17 from '../v17'
+import * as v18 from '../v18'
+import * as v23 from '../v23'
+import * as v24 from '../v24'
+import * as v25 from '../v25'
+import * as v26 from '../v26'
+import * as v28 from '../v28'
+import * as v29 from '../v29'
+import * as v30 from '../v30'
+import * as v9050 from '../v9050'
+import * as v9080 from '../v9080'
+import * as v9090 from '../v9090'
+import * as v9100 from '../v9100'
+import * as v9110 from '../v9110'
+import * as v9140 from '../v9140'
+import * as v9170 from '../v9170'
+import * as v9180 from '../v9180'
+import * as v9190 from '../v9190'
+import * as v9220 from '../v9220'
+import * as v9230 from '../v9230'
+import * as v9250 from '../v9250'
+import * as v9270 from '../v9270'
+import * as v9280 from '../v9280'
+import * as v9291 from '../v9291'
+import * as v9300 from '../v9300'
+import * as v9340 from '../v9340'
+import * as v9370 from '../v9370'
+import * as v9420 from '../v9420'
+import * as v9430 from '../v9430'
 
 export const setMembers =  {
     name: 'Council.set_members',
     /**
-     * Set the collective's membership.
+     *  Set the collective's membership.
      * 
-     * - `new_members`: The new member list. Be nice to the chain and provide it sorted.
-     * - `prime`: The prime member whose vote sets the default.
-     * - `old_count`: The upper bound for the previous number of members in storage. Used for
-     *   weight estimation.
+     *  - `new_members`: The new member list. Be nice to the chain and provide it sorted.
+     *  - `prime`: The prime member whose vote sets the default.
+     *  - `old_count`: The upper bound for the previous number of members in storage.
+     *                 Used for weight estimation.
      * 
-     * Requires root origin.
+     *  Requires root origin.
      * 
-     * NOTE: Does not enforce the expected `MaxMembers` limit on the amount of members, but
-     *       the weight estimations rely on it to estimate dispatchable weight.
+     *  NOTE: Does not enforce the expected `MAX_MEMBERS` limit on the amount of members, but
+     *        the weight estimations rely on it to estimate dispatchable weight.
      * 
-     * # WARNING:
-     * 
-     * The `pallet-collective` can also be managed by logic outside of the pallet through the
-     * implementation of the trait [`ChangeMembers`].
-     * Any call to `set_members` must be careful that the member set doesn't get out of sync
-     * with other logic managing the member set.
-     * 
-     * # <weight>
-     * ## Weight
-     * - `O(MP + N)` where:
-     *   - `M` old-members-count (code- and governance-bounded)
-     *   - `N` new-members-count (code- and governance-bounded)
-     *   - `P` proposals-count (code-bounded)
-     * - DB:
-     *   - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the
-     *     members
-     *   - 1 storage read (codec `O(P)`) for reading the proposals
-     *   - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal
-     *   - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one
-     * # </weight>
+     *  # <weight>
+     *  ## Weight
+     *  - `O(MP + N)` where:
+     *    - `M` old-members-count (code- and governance-bounded)
+     *    - `N` new-members-count (code- and governance-bounded)
+     *    - `P` proposals-count (code-bounded)
+     *  - DB:
+     *    - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the members
+     *    - 1 storage read (codec `O(P)`) for reading the proposals
+     *    - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal
+     *    - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one
+     *  # </weight>
      */
-    v108: new CallType(
+    v0: new CallType(
         'Council.set_members',
         sts.struct({
-            newMembers: sts.array(() => v108.AccountId32),
-            prime: sts.option(() => v108.AccountId32),
-            oldCount: sts.number(),
+            newMembers: sts.array(() => v0.AccountId),
+            prime: sts.option(() => v0.AccountId),
+            oldCount: v0.MemberCount,
         })
     ),
 }
@@ -68,22 +80,439 @@ export const setMembers =  {
 export const execute =  {
     name: 'Council.execute',
     /**
-     * Dispatch a proposal from a member using the `Member` origin.
+     *  Dispatch a proposal from a member using the `Member` origin.
      * 
-     * Origin must be a member of the collective.
+     *  Origin must be a member of the collective.
      * 
-     * # <weight>
-     * ## Weight
-     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
-     *   `proposal`
-     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
-     * - 1 event
-     * # </weight>
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
      */
-    v108: new CallType(
+    v0: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v108.Call,
+            proposal: v0.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v5: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v5.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v6: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v6.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v7: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v7.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v9: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v9.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v10: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v10.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v11: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v11.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v13: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v13.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v14: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v14.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v15: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v15.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v17: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v17.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v18: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v18.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v23: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v23.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v24: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v24.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v25: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v25.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v26: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v26.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v28: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v28.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v29: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v29.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v30: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v30.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v9050: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v9050.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v9080: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v9080.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v9090: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v9090.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Dispatch a proposal from a member using the `Member` origin.
+     * 
+     *  Origin must be a member of the collective.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`
+     *  - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     *  - 1 event
+     *  # </weight>
+     */
+    v9100: new CallType(
+        'Council.execute',
+        sts.struct({
+            proposal: v9100.Proposal,
             lengthBound: sts.number(),
         })
     ),
@@ -100,10 +529,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v115: new CallType(
+    v9110: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v115.Call,
+            proposal: v9110.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -120,10 +549,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v125: new CallType(
+    v9140: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v125.Call,
+            proposal: v9140.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -140,10 +569,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v138: new CallType(
+    v9170: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v138.Call,
+            proposal: v9170.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -160,10 +589,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v148: new CallType(
+    v9180: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v148.Call,
+            proposal: v9180.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -180,10 +609,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v160: new CallType(
+    v9190: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v160.Call,
+            proposal: v9190.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -200,10 +629,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v170: new CallType(
+    v9220: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v170.Call,
+            proposal: v9220.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -220,10 +649,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v176: new CallType(
+    v9230: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v176.Call,
+            proposal: v9230.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -240,10 +669,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v183: new CallType(
+    v9250: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v183.Call,
+            proposal: v9250.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -260,10 +689,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v185: new CallType(
+    v9270: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v185.Call,
+            proposal: v9270.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -280,10 +709,10 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v193: new CallType(
+    v9280: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v193.Call,
+            proposal: v9280.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -300,80 +729,106 @@ export const execute =  {
      * - 1 event
      * # </weight>
      */
-    v201: new CallType(
+    v9291: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v201.Call,
+            proposal: v9291.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::execute`].
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
      */
-    v205: new CallType(
+    v9300: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v205.Call,
+            proposal: v9300.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::execute`].
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
      */
-    v222: new CallType(
+    v9340: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v222.Call,
+            proposal: v9340.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::execute`].
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching
+     *   `proposal`
+     * - DB: 1 read (codec `O(M)`) + DB access of `proposal`
+     * - 1 event
+     * # </weight>
      */
-    v224: new CallType(
+    v9370: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v224.Call,
+            proposal: v9370.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::execute`].
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * ## Complexity:
+     * - `O(B + M + P)` where:
+     * - `B` is `proposal` size in bytes (length-fee-bounded)
+     * - `M` members-count (code-bounded)
+     * - `P` complexity of dispatching `proposal`
      */
-    v227: new CallType(
+    v9420: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v227.Call,
+            proposal: v9420.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::execute`].
+     * Dispatch a proposal from a member using the `Member` origin.
+     * 
+     * Origin must be a member of the collective.
+     * 
+     * ## Complexity:
+     * - `O(B + M + P)` where:
+     * - `B` is `proposal` size in bytes (length-fee-bounded)
+     * - `M` members-count (code-bounded)
+     * - `P` complexity of dispatching `proposal`
      */
-    v234: new CallType(
+    v9430: new CallType(
         'Council.execute',
         sts.struct({
-            proposal: v234.Call,
-            lengthBound: sts.number(),
-        })
-    ),
-    /**
-     * See [`Pallet::execute`].
-     */
-    v244: new CallType(
-        'Council.execute',
-        sts.struct({
-            proposal: v244.Call,
-            lengthBound: sts.number(),
-        })
-    ),
-    /**
-     * See [`Pallet::execute`].
-     */
-    v253: new CallType(
-        'Council.execute',
-        sts.struct({
-            proposal: v253.Call,
+            proposal: v9430.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -382,39 +837,853 @@ export const execute =  {
 export const propose =  {
     name: 'Council.propose',
     /**
-     * Add a new proposal to either be voted on or executed directly.
+     *  Add a new proposal to either be voted on or executed directly.
      * 
-     * Requires the sender to be member.
+     *  Requires the sender to be member.
      * 
-     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
-     * or put up for voting.
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
      * 
-     * # <weight>
-     * ## Weight
-     * - `O(B + M + P1)` or `O(B + M + P2)` where:
-     *   - `B` is `proposal` size in bytes (length-fee-bounded)
-     *   - `M` is members-count (code- and governance-bounded)
-     *   - branching is influenced by `threshold` where:
-     *     - `P1` is proposal execution complexity (`threshold < 2`)
-     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
-     * - DB:
-     *   - 1 storage read `is_member` (codec `O(M)`)
-     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
-     *   - DB accesses influenced by `threshold`:
-     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
-     *     - OR proposal insertion (`threshold <= 2`)
-     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
-     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
-     *       - 1 storage write `ProposalOf` (codec `O(B)`)
-     *       - 1 storage write `Voting` (codec `O(M)`)
-     *   - 1 event
-     * # </weight>
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
      */
-    v108: new CallType(
+    v0: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v108.Call,
+            proposal: v0.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v5: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v5.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v6: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v6.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v7: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v7.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v9: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v9.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v10: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v10.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v11: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v11.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v13: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v13.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v14: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v14.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v15: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v15.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v17: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v17.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v18: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v18.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v23: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v23.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v24: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v24.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v25: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v25.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v26: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v26.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v28: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v28.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v29: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v29.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v30: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v30.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v9050: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v9050.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v9080: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v9080.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v9090: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v9090.Proposal,
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Add a new proposal to either be voted on or executed directly.
+     * 
+     *  Requires the sender to be member.
+     * 
+     *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     *  or put up for voting.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - branching is influenced by `threshold` where:
+     *      - `P1` is proposal execution complexity (`threshold < 2`)
+     *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     *  - DB:
+     *    - 1 storage read `is_member` (codec `O(M)`)
+     *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *    - DB accesses influenced by `threshold`:
+     *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *      - OR proposal insertion (`threshold <= 2`)
+     *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *        - 1 storage write `ProposalOf` (codec `O(B)`)
+     *        - 1 storage write `Voting` (codec `O(M)`)
+     *    - 1 event
+     *  # </weight>
+     */
+    v9100: new CallType(
+        'Council.propose',
+        sts.struct({
+            threshold: sts.number(),
+            proposal: v9100.Proposal,
             lengthBound: sts.number(),
         })
     ),
@@ -447,11 +1716,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v115: new CallType(
+    v9110: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v115.Call,
+            proposal: v9110.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -484,11 +1753,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v125: new CallType(
+    v9140: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v125.Call,
+            proposal: v9140.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -521,11 +1790,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v138: new CallType(
+    v9170: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v138.Call,
+            proposal: v9170.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -558,11 +1827,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v148: new CallType(
+    v9180: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v148.Call,
+            proposal: v9180.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -595,11 +1864,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v160: new CallType(
+    v9190: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v160.Call,
+            proposal: v9190.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -632,11 +1901,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v170: new CallType(
+    v9220: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v170.Call,
+            proposal: v9220.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -669,11 +1938,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v176: new CallType(
+    v9230: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v176.Call,
+            proposal: v9230.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -706,11 +1975,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v183: new CallType(
+    v9250: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v183.Call,
+            proposal: v9250.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -743,11 +2012,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v185: new CallType(
+    v9270: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v185.Call,
+            proposal: v9270.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -780,11 +2049,11 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v193: new CallType(
+    v9280: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v193.Call,
+            proposal: v9280.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -817,88 +2086,170 @@ export const propose =  {
      *   - 1 event
      * # </weight>
      */
-    v201: new CallType(
+    v9291: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v201.Call,
+            proposal: v9291.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::propose`].
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    v205: new CallType(
+    v9300: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v205.Call,
+            proposal: v9300.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::propose`].
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    v222: new CallType(
+    v9340: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v222.Call,
+            proposal: v9340.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::propose`].
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * # <weight>
+     * ## Weight
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+     * - DB:
+     *   - 1 storage read `is_member` (codec `O(M)`)
+     *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+     *   - DB accesses influenced by `threshold`:
+     *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+     *     - OR proposal insertion (`threshold <= 2`)
+     *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+     *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+     *       - 1 storage write `ProposalOf` (codec `O(B)`)
+     *       - 1 storage write `Voting` (codec `O(M)`)
+     *   - 1 event
+     * # </weight>
      */
-    v224: new CallType(
+    v9370: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v224.Call,
+            proposal: v9370.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::propose`].
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * ## Complexity
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
      */
-    v227: new CallType(
+    v9420: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v227.Call,
+            proposal: v9420.Call,
             lengthBound: sts.number(),
         })
     ),
     /**
-     * See [`Pallet::propose`].
+     * Add a new proposal to either be voted on or executed directly.
+     * 
+     * Requires the sender to be member.
+     * 
+     * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+     * or put up for voting.
+     * 
+     * ## Complexity
+     * - `O(B + M + P1)` or `O(B + M + P2)` where:
+     *   - `B` is `proposal` size in bytes (length-fee-bounded)
+     *   - `M` is members-count (code- and governance-bounded)
+     *   - branching is influenced by `threshold` where:
+     *     - `P1` is proposal execution complexity (`threshold < 2`)
+     *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
      */
-    v234: new CallType(
+    v9430: new CallType(
         'Council.propose',
         sts.struct({
             threshold: sts.number(),
-            proposal: v234.Call,
-            lengthBound: sts.number(),
-        })
-    ),
-    /**
-     * See [`Pallet::propose`].
-     */
-    v244: new CallType(
-        'Council.propose',
-        sts.struct({
-            threshold: sts.number(),
-            proposal: v244.Call,
-            lengthBound: sts.number(),
-        })
-    ),
-    /**
-     * See [`Pallet::propose`].
-     */
-    v253: new CallType(
-        'Council.propose',
-        sts.struct({
-            threshold: sts.number(),
-            proposal: v253.Call,
+            proposal: v9430.Call,
             lengthBound: sts.number(),
         })
     ),
@@ -907,26 +2258,23 @@ export const propose =  {
 export const vote =  {
     name: 'Council.vote',
     /**
-     * Add an aye or nay vote for the sender to the given proposal.
+     *  Add an aye or nay vote for the sender to the given proposal.
      * 
-     * Requires the sender to be a member.
+     *  Requires the sender to be a member.
      * 
-     * Transaction fees will be waived if the member is voting on any particular proposal
-     * for the first time and the call is successful. Subsequent vote changes will charge a
-     * fee.
-     * # <weight>
-     * ## Weight
-     * - `O(M)` where `M` is members-count (code- and governance-bounded)
-     * - DB:
-     *   - 1 storage read `Members` (codec `O(M)`)
-     *   - 1 storage mutation `Voting` (codec `O(M)`)
-     * - 1 event
-     * # </weight>
+     *  # <weight>
+     *  ## Weight
+     *  - `O(M)` where `M` is members-count (code- and governance-bounded)
+     *  - DB:
+     *    - 1 storage read `Members` (codec `O(M)`)
+     *    - 1 storage mutation `Voting` (codec `O(M)`)
+     *  - 1 event
+     *  # </weight>
      */
-    v108: new CallType(
+    v0: new CallType(
         'Council.vote',
         sts.struct({
-            proposal: v108.H256,
+            proposal: v0.Hash,
             index: sts.number(),
             approve: sts.boolean(),
         })
@@ -936,43 +2284,76 @@ export const vote =  {
 export const close =  {
     name: 'Council.close',
     /**
-     * Close a vote that is either approved, disapproved or whose voting period has ended.
+     *  Close a vote that is either approved, disapproved or whose voting period has ended.
      * 
-     * May be called by any signed account in order to finish voting and close the proposal.
+     *  May be called by any signed account in order to finish voting and close the proposal.
      * 
-     * If called before the end of the voting period it will only close the vote if it is
-     * has enough votes to be approved or disapproved.
+     *  If called before the end of the voting period it will only close the vote if it is
+     *  has enough votes to be approved or disapproved.
      * 
-     * If called after the end of the voting period abstentions are counted as rejections
-     * unless there is a prime member set and the prime member cast an approval.
+     *  If called after the end of the voting period abstentions are counted as rejections
+     *  unless there is a prime member set and the prime member cast an approval.
      * 
-     * If the close operation completes successfully with disapproval, the transaction fee will
-     * be waived. Otherwise execution of the approved operation will be charged to the caller.
+     *  + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed proposal.
+     *  + `length_bound`: The upper bound for the length of the proposal in storage. Checked via
+     *                    `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.
      * 
-     * + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed
-     * proposal.
-     * + `length_bound`: The upper bound for the length of the proposal in storage. Checked via
-     * `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.
-     * 
-     * # <weight>
-     * ## Weight
-     * - `O(B + M + P1 + P2)` where:
-     *   - `B` is `proposal` size in bytes (length-fee-bounded)
-     *   - `M` is members-count (code- and governance-bounded)
-     *   - `P1` is the complexity of `proposal` preimage.
-     *   - `P2` is proposal-count (code-bounded)
-     * - DB:
-     *  - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)
-     *  - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec
-     *    `O(P2)`)
-     *  - any mutations done while executing `proposal` (`P1`)
-     * - up to 3 events
-     * # </weight>
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1 + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - `P1` is the complexity of `proposal` preimage.
+     *    - `P2` is proposal-count (code-bounded)
+     *  - DB:
+     *   - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)
+     *   - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec `O(P2)`)
+     *   - any mutations done while executing `proposal` (`P1`)
+     *  - up to 3 events
+     *  # </weight>
      */
-    v108: new CallType(
+    v0: new CallType(
         'Council.close',
         sts.struct({
-            proposalHash: v108.H256,
+            proposal: v0.Hash,
+            index: sts.number(),
+            proposalWeightBound: sts.bigint(),
+            lengthBound: sts.number(),
+        })
+    ),
+    /**
+     *  Close a vote that is either approved, disapproved or whose voting period has ended.
+     * 
+     *  May be called by any signed account in order to finish voting and close the proposal.
+     * 
+     *  If called before the end of the voting period it will only close the vote if it is
+     *  has enough votes to be approved or disapproved.
+     * 
+     *  If called after the end of the voting period abstentions are counted as rejections
+     *  unless there is a prime member set and the prime member cast an approval.
+     * 
+     *  + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed proposal.
+     *  + `length_bound`: The upper bound for the length of the proposal in storage. Checked via
+     *                    `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.
+     * 
+     *  # <weight>
+     *  ## Weight
+     *  - `O(B + M + P1 + P2)` where:
+     *    - `B` is `proposal` size in bytes (length-fee-bounded)
+     *    - `M` is members-count (code- and governance-bounded)
+     *    - `P1` is the complexity of `proposal` preimage.
+     *    - `P2` is proposal-count (code-bounded)
+     *  - DB:
+     *   - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)
+     *   - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec `O(P2)`)
+     *   - any mutations done while executing `proposal` (`P1`)
+     *  - up to 3 events
+     *  # </weight>
+     */
+    v5: new CallType(
+        'Council.close',
+        sts.struct({
+            proposalHash: v5.Hash,
             index: sts.number(),
             proposalWeightBound: sts.bigint(),
             lengthBound: sts.number(),
@@ -1012,12 +2393,12 @@ export const close =  {
      * - up to 3 events
      * # </weight>
      */
-    v160: new CallType(
+    v9340: new CallType(
         'Council.close',
         sts.struct({
-            proposalHash: v160.H256,
+            proposalHash: v9340.H256,
             index: sts.number(),
-            proposalWeightBound: v160.Weight,
+            proposalWeightBound: v9340.Weight,
             lengthBound: sts.number(),
         })
     ),
@@ -1026,25 +2407,25 @@ export const close =  {
 export const disapproveProposal =  {
     name: 'Council.disapprove_proposal',
     /**
-     * Disapprove a proposal, close, and remove it from the system, regardless of its current
-     * state.
+     *  Disapprove a proposal, close, and remove it from the system, regardless of its current state.
      * 
-     * Must be called by the Root origin.
+     *  Must be called by the Root origin.
      * 
-     * Parameters:
-     * * `proposal_hash`: The hash of the proposal that should be disapproved.
+     *  Parameters:
+     *  * `proposal_hash`: The hash of the proposal that should be disapproved.
      * 
-     * # <weight>
-     * Complexity: O(P) where P is the number of max proposals
-     * DB Weight:
-     * * Reads: Proposals
-     * * Writes: Voting, Proposals, ProposalOf
-     * # </weight>
+     *  # <weight>
+     *  Complexity: O(P) where P is the number of max proposals
+     *  Base Weight: .49 * P
+     *  DB Weight:
+     *  * Reads: Proposals
+     *  * Writes: Voting, Proposals, ProposalOf
+     *  # </weight>
      */
-    v108: new CallType(
+    v5: new CallType(
         'Council.disapprove_proposal',
         sts.struct({
-            proposalHash: v108.H256,
+            proposalHash: v5.Hash,
         })
     ),
 }
@@ -1085,10 +2466,10 @@ export const closeOldWeight =  {
      * - up to 3 events
      * # </weight>
      */
-    v160: new CallType(
+    v9340: new CallType(
         'Council.close_old_weight',
         sts.struct({
-            proposalHash: v160.H256,
+            proposalHash: v9340.H256,
             index: sts.number(),
             proposalWeightBound: sts.bigint(),
             lengthBound: sts.number(),

@@ -1,5 +1,5 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v234 from '../v234'
+import * as v1002000 from '../v1002000'
 
 export const migrated =  {
     name: 'StateTrieMigration.Migrated',
@@ -7,12 +7,12 @@ export const migrated =  {
      * Given number of `(top, child)` keys were migrated respectively, with the given
      * `compute`.
      */
-    v234: new EventType(
+    v1002000: new EventType(
         'StateTrieMigration.Migrated',
         sts.struct({
             top: sts.number(),
             child: sts.number(),
-            compute: v234.MigrationCompute,
+            compute: v1002000.MigrationCompute,
         })
     ),
 }
@@ -22,10 +22,10 @@ export const slashed =  {
     /**
      * Some account got slashed by the given amount.
      */
-    v234: new EventType(
+    v1002000: new EventType(
         'StateTrieMigration.Slashed',
         sts.struct({
-            who: v234.AccountId32,
+            who: v1002000.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -36,7 +36,7 @@ export const autoMigrationFinished =  {
     /**
      * The auto migration task finished.
      */
-    v234: new EventType(
+    v1002000: new EventType(
         'StateTrieMigration.AutoMigrationFinished',
         sts.unit()
     ),
@@ -47,10 +47,10 @@ export const halted =  {
     /**
      * Migration got halted due to an error or miss-configuration.
      */
-    v234: new EventType(
+    v1002000: new EventType(
         'StateTrieMigration.Halted',
         sts.struct({
-            error: v234.Error,
+            error: v1002000.Error,
         })
     ),
 }

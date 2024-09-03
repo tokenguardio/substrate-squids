@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://v2.archive.subsquid.io/metadata/hydradx",
+  "specVersions": "https://v2.archive.subsquid.io/metadata/polkadot",
   "events": true,
   "calls": true
 }
