@@ -2,9 +2,9 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["bifrost-mainnet-substrate-parquet"]
+    branches: ["hydradx-mainnet-substrate-parquet"]
   pull_request:
-    branches: ["bifrost-mainnet-substrate-parquet"]
+    branches: ["hydradx-mainnet-substrate-parquet"]
   workflow_dispatch:
 
 jobs:

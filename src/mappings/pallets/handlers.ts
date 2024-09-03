@@ -1,21 +1,24 @@
 import {
   normalizeBalancesEventsArgs,
-  normalizeFarmingEventsArgs,
-  normalizeLendMarketEventsArgs,
-  normalizeLeverageStakingEventsArgs,
-  normalizeVtokenMintingEventsArgs,
-  normalizeVtokenVotingEventsArgs,
-  normalizeZenlinkProtocolEventsArgs,
+  normalizeLbcEventsArgs,
+  normalizeOmnipoolEventsArgs,
+  normalizeOtcEventsArgs,
+  normalizeReferralsEventsArgs,
+  normalizeStableswapEventsArgs,
+  normalizeStakingEventsArgs,
+  normalizeXTokensEventsArgs,
+  normalizeXykEventsArgs,
 } from "./events";
 import {
   normalizeBalancesCallsArgs,
-  normalizeFarmingCallsArgs,
-  normalizeLendMarketCallsArgs,
-  normalizeLeverageStakingCallsArgs,
-  normalizeStablePoolCallsArgs,
-  normalizeVtokenMintingCallsArgs,
-  normalizeVtokenVotingCallsArgs,
-  normalizeZenlinkProtocolCallsArgs,
+  normalizeLbpCallsArgs,
+  normalizeOtcCallsArgs,
+  normalizeOmnipoolCallsArgs,
+  normalizeReferralsCallsArgs,
+  normalizeStableswapCallsArgs,
+  normalizeStakingCallsArgs,
+  normalizeXTokensCallsArgs,
+  normalizeXykCallsArgs,
 } from "./calls";
 import { Event, Call } from "./../../processor";
 import {
@@ -39,12 +42,14 @@ export const eventNormalizationHandlers: {
 } = wrapHandlers(
   {
     Balances: normalizeBalancesEventsArgs,
-    Farming: normalizeFarmingEventsArgs,
-    LendMarket: normalizeLendMarketEventsArgs,
-    LeverageStaking: normalizeLeverageStakingEventsArgs,
-    VtokenMinting: normalizeVtokenMintingEventsArgs,
-    VtokenVoting: normalizeVtokenVotingEventsArgs,
-    ZenlinkProtocol: normalizeZenlinkProtocolEventsArgs,
+    LBP: normalizeLbcEventsArgs,
+    OTC: normalizeOtcEventsArgs,
+    Omnipool: normalizeOmnipoolEventsArgs,
+    Referrals: normalizeReferralsEventsArgs,
+    Stableswap: normalizeStableswapEventsArgs,
+    Staking: normalizeStakingEventsArgs,
+    XTokens: normalizeXTokensEventsArgs,
+    XYK: normalizeXykEventsArgs,
   },
   wrapEventNormalizationWithFormatting
 );
@@ -53,13 +58,14 @@ export const callNormalizationHandlers: { [key: string]: (call: Call) => any } =
   wrapHandlers(
     {
       Balances: normalizeBalancesCallsArgs,
-      Farming: normalizeFarmingCallsArgs,
-      LendMarket: normalizeLendMarketCallsArgs,
-      LeverageStaking: normalizeLeverageStakingCallsArgs,
-      VtokenMinting: normalizeVtokenMintingCallsArgs,
-      VtokenVoting: normalizeVtokenVotingCallsArgs,
-      StablePool: normalizeStablePoolCallsArgs,
-      ZenlinkProtocol: normalizeZenlinkProtocolCallsArgs,
+      LBP: normalizeLbpCallsArgs,
+      OTC: normalizeOtcCallsArgs,
+      Omnipool: normalizeOmnipoolCallsArgs,
+      Referrals: normalizeReferralsCallsArgs,
+      Stableswap: normalizeStableswapCallsArgs,
+      Staking: normalizeStakingCallsArgs,
+      XTokens: normalizeXTokensCallsArgs,
+      XYK: normalizeXykCallsArgs,
     },
     wrapCallNormalizationWithFormatting
   );

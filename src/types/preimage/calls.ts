@@ -1,6 +1,6 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v994 from '../v994'
+import * as v108 from '../v108'
+import * as v244 from '../v244'
 
 export const notePreimage =  {
     name: 'Preimage.note_preimage',
@@ -10,7 +10,7 @@ export const notePreimage =  {
      * If the preimage was previously requested, no fees or deposits are taken for providing
      * the preimage. Otherwise, a deposit is taken proportional to the size of the preimage.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Preimage.note_preimage',
         sts.struct({
             bytes: sts.bytes(),
@@ -23,10 +23,10 @@ export const unnotePreimage =  {
     /**
      * Clear an unrequested preimage from the runtime storage.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Preimage.unnote_preimage',
         sts.struct({
-            hash: v932.H256,
+            hash: v108.H256,
         })
     ),
 }
@@ -39,10 +39,10 @@ export const requestPreimage =  {
      * If the preimage requests has already been provided on-chain, we unreserve any deposit
      * a user may have paid, and take the control of the preimage out of their hands.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Preimage.request_preimage',
         sts.struct({
-            hash: v932.H256,
+            hash: v108.H256,
         })
     ),
 }
@@ -54,10 +54,10 @@ export const unrequestPreimage =  {
      * 
      * NOTE: THIS MUST NOT BE CALLED ON `hash` MORE TIMES THAN `request_preimage`.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Preimage.unrequest_preimage',
         sts.struct({
-            hash: v932.H256,
+            hash: v108.H256,
         })
     ),
 }
@@ -67,10 +67,10 @@ export const ensureUpdated =  {
     /**
      * See [`Pallet::ensure_updated`].
      */
-    v994: new CallType(
+    v244: new CallType(
         'Preimage.ensure_updated',
         sts.struct({
-            hashes: sts.array(() => v994.H256),
+            hashes: sts.array(() => v244.H256),
         })
     ),
 }

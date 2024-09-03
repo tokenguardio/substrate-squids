@@ -1,7 +1,7 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v978 from '../v978'
-import * as v11000 from '../v11000'
+import * as v100 from '../v100'
+import * as v205 from '../v205'
+import * as v244 from '../v244'
 
 export const transfer =  {
     name: 'Balances.transfer',
@@ -9,6 +9,7 @@ export const transfer =  {
      * Transfer some liquid free balance to another account.
      * 
      * `transfer` will set the `FreeBalance` of the sender and receiver.
+     * It will decrease the total issuance of the system by the `TransferFee`.
      * If the sender's account is below the existential deposit as a result
      * of the transfer, the account will be reaped.
      * 
@@ -29,13 +30,15 @@ export const transfer =  {
      *   - `transfer_keep_alive` works the same way as `transfer`, but has an additional check
      *     that the transfer will not kill the origin account.
      * ---------------------------------
+     * - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
+     * - DB Weight: 1 Read and 1 Write to destination account
      * - Origin account is already in memory, so no DB operations for them.
      * # </weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Balances.transfer',
         sts.struct({
-            dest: v932.MultiAddress,
+            dest: v100.AccountId32,
             value: sts.bigint(),
         })
     ),
@@ -47,16 +50,26 @@ export const setBalance =  {
      * Set the balances of a given account.
      * 
      * This will alter `FreeBalance` and `ReservedBalance` in storage. it will
-     * also alter the total issuance of the system (`TotalIssuance`) appropriately.
+     * also decrease the total issuance of the system (`TotalIssuance`).
      * If the new free or reserved balance is below the existential deposit,
      * it will reset the account nonce (`frame_system::AccountNonce`).
      * 
      * The dispatch origin for this call is `root`.
+     * 
+     * # <weight>
+     * - Independent of the arguments.
+     * - Contains a limited number of reads and writes.
+     * ---------------------
+     * - Base Weight:
+     *     - Creating: 27.56 µs
+     *     - Killing: 35.11 µs
+     * - DB Weight: 1 Read, 1 Write to `who`
+     * # </weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Balances.set_balance',
         sts.struct({
-            who: v932.MultiAddress,
+            who: v100.AccountId32,
             newFree: sts.bigint(),
             newReserved: sts.bigint(),
         })
@@ -73,11 +86,11 @@ export const forceTransfer =  {
      *   assumed to be in the overlay.
      * # </weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Balances.force_transfer',
         sts.struct({
-            source: v932.MultiAddress,
-            dest: v932.MultiAddress,
+            source: v100.AccountId32,
+            dest: v100.AccountId32,
             value: sts.bigint(),
         })
     ),
@@ -92,11 +105,16 @@ export const transferKeepAlive =  {
      * 99% of the time you want [`transfer`] instead.
      * 
      * [`transfer`]: struct.Pallet.html#method.transfer
+     * # <weight>
+     * - Cheaper than transfer because account cannot be killed.
+     * - Base Weight: 51.4 µs
+     * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
+     * #</weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Balances.transfer_keep_alive',
         sts.struct({
-            dest: v932.MultiAddress,
+            dest: v100.AccountId32,
             value: sts.bigint(),
         })
     ),
@@ -123,10 +141,10 @@ export const transferAll =  {
      * - O(1). Just like transfer, but reading the user's transferable balance first.
      *   #</weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Balances.transfer_all',
         sts.struct({
-            dest: v932.MultiAddress,
+            dest: v100.AccountId32,
             keepAlive: sts.boolean(),
         })
     ),
@@ -139,10 +157,10 @@ export const forceUnreserve =  {
      * 
      * Can only be called by ROOT.
      */
-    v932: new CallType(
+    v100: new CallType(
         'Balances.force_unreserve',
         sts.struct({
-            who: v932.MultiAddress,
+            who: v100.AccountId32,
             amount: sts.bigint(),
         })
     ),
@@ -151,18 +169,12 @@ export const forceUnreserve =  {
 export const transferAllowDeath =  {
     name: 'Balances.transfer_allow_death',
     /**
-     * Transfer some liquid free balance to another account.
-     * 
-     * `transfer_allow_death` will set the `FreeBalance` of the sender and receiver.
-     * If the sender's account is below the existential deposit as a result
-     * of the transfer, the account will be reaped.
-     * 
-     * The dispatch origin for this call must be `Signed` by the transactor.
+     * See [`Pallet::transfer_allow_death`].
      */
-    v978: new CallType(
+    v205: new CallType(
         'Balances.transfer_allow_death',
         sts.struct({
-            dest: v978.MultiAddress,
+            dest: v205.AccountId32,
             value: sts.bigint(),
         })
     ),
@@ -171,17 +183,12 @@ export const transferAllowDeath =  {
 export const setBalanceDeprecated =  {
     name: 'Balances.set_balance_deprecated',
     /**
-     * Set the regular balance of a given account; it also takes a reserved balance but this
-     * must be the same as the account's current reserved balance.
-     * 
-     * The dispatch origin for this call is `root`.
-     * 
-     * WARNING: This call is DEPRECATED! Use `force_set_balance` instead.
+     * See [`Pallet::set_balance_deprecated`].
      */
-    v978: new CallType(
+    v205: new CallType(
         'Balances.set_balance_deprecated',
         sts.struct({
-            who: v978.MultiAddress,
+            who: v205.AccountId32,
             newFree: sts.bigint(),
             oldReserved: sts.bigint(),
         })
@@ -191,19 +198,12 @@ export const setBalanceDeprecated =  {
 export const upgradeAccounts =  {
     name: 'Balances.upgrade_accounts',
     /**
-     * Upgrade a specified account.
-     * 
-     * - `origin`: Must be `Signed`.
-     * - `who`: The account to be upgraded.
-     * 
-     * This will waive the transaction fee if at least all but 10% of the accounts needed to
-     * be upgraded. (We let some not have to be upgraded just in order to allow for the
-     * possibililty of churn).
+     * See [`Pallet::upgrade_accounts`].
      */
-    v978: new CallType(
+    v205: new CallType(
         'Balances.upgrade_accounts',
         sts.struct({
-            who: sts.array(() => v978.AccountId32),
+            who: sts.array(() => v205.AccountId32),
         })
     ),
 }
@@ -211,14 +211,12 @@ export const upgradeAccounts =  {
 export const forceSetBalance =  {
     name: 'Balances.force_set_balance',
     /**
-     * Set the regular balance of a given account.
-     * 
-     * The dispatch origin for this call is `root`.
+     * See [`Pallet::force_set_balance`].
      */
-    v978: new CallType(
+    v205: new CallType(
         'Balances.force_set_balance',
         sts.struct({
-            who: v978.MultiAddress,
+            who: v205.AccountId32,
             newFree: sts.bigint(),
         })
     ),
@@ -229,31 +227,11 @@ export const forceAdjustTotalIssuance =  {
     /**
      * See [`Pallet::force_adjust_total_issuance`].
      */
-    v11000: new CallType(
+    v244: new CallType(
         'Balances.force_adjust_total_issuance',
         sts.struct({
-            direction: v11000.AdjustmentDirection,
+            direction: v244.AdjustmentDirection,
             delta: sts.bigint(),
-        })
-    ),
-}
-
-export const burn =  {
-    name: 'Balances.burn',
-    /**
-     * Burn the specified liquid free balance from the origin account.
-     * 
-     * If the origin's account ends up below the existential deposit as a result
-     * of the burn and `keep_alive` is false, the account will be reaped.
-     * 
-     * Unlike sending funds to a _burn_ address, which merely makes the funds inaccessible,
-     * this `burn` operation will reduce total issuance by the amount _burned_.
-     */
-    v12001: new CallType(
-        'Balances.burn',
-        sts.struct({
-            value: sts.bigint(),
-            keepAlive: sts.boolean(),
         })
     ),
 }

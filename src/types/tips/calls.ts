@@ -1,6 +1,5 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v950 from '../v950'
-import * as v968 from '../v968'
+import * as v108 from '../v108'
 
 export const reportAwesome =  {
     name: 'Tips.report_awesome',
@@ -25,39 +24,11 @@ export const reportAwesome =  {
      * - DbWrites: `Reasons`, `Tips`
      * # </weight>
      */
-    v950: new CallType(
+    v108: new CallType(
         'Tips.report_awesome',
         sts.struct({
             reason: sts.bytes(),
-            who: v950.AccountId32,
-        })
-    ),
-    /**
-     * Report something `reason` that deserves a tip and claim any eventual the finder's fee.
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Payment: `TipReportDepositBase` will be reserved from the origin account, as well as
-     * `DataDepositPerByte` for each byte in `reason`.
-     * 
-     * - `reason`: The reason for, or the thing that deserves, the tip; generally this will be
-     *   a UTF-8-encoded URL.
-     * - `who`: The account which should be credited for the tip.
-     * 
-     * Emits `NewTip` if successful.
-     * 
-     * # <weight>
-     * - Complexity: `O(R)` where `R` length of `reason`.
-     *   - encoding and hashing of 'reason'
-     * - DbReads: `Reasons`, `Tips`
-     * - DbWrites: `Reasons`, `Tips`
-     * # </weight>
-     */
-    v968: new CallType(
-        'Tips.report_awesome',
-        sts.struct({
-            reason: sts.bytes(),
-            who: v968.MultiAddress,
+            who: v108.AccountId32,
         })
     ),
 }
@@ -85,10 +56,10 @@ export const retractTip =  {
      * - DbWrites: `Reasons`, `Tips`, `origin account`
      * # </weight>
      */
-    v950: new CallType(
+    v108: new CallType(
         'Tips.retract_tip',
         sts.struct({
-            hash: v950.H256,
+            hash: v108.H256,
         })
     ),
 }
@@ -119,43 +90,11 @@ export const tipNew =  {
      * - DbWrites: `Reasons`, `Tips`
      * # </weight>
      */
-    v950: new CallType(
+    v108: new CallType(
         'Tips.tip_new',
         sts.struct({
             reason: sts.bytes(),
-            who: v950.AccountId32,
-            tipValue: sts.bigint(),
-        })
-    ),
-    /**
-     * Give a tip for something new; no finder's fee will be taken.
-     * 
-     * The dispatch origin for this call must be _Signed_ and the signing account must be a
-     * member of the `Tippers` set.
-     * 
-     * - `reason`: The reason for, or the thing that deserves, the tip; generally this will be
-     *   a UTF-8-encoded URL.
-     * - `who`: The account which should be credited for the tip.
-     * - `tip_value`: The amount of tip that the sender would like to give. The median tip
-     *   value of active tippers will be given to the `who`.
-     * 
-     * Emits `NewTip` if successful.
-     * 
-     * # <weight>
-     * - Complexity: `O(R + T)` where `R` length of `reason`, `T` is the number of tippers.
-     *   - `O(T)`: decoding `Tipper` vec of length `T`. `T` is charged as upper bound given by
-     *     `ContainsLengthBound`. The actual cost depends on the implementation of
-     *     `T::Tippers`.
-     *   - `O(R)`: hashing and encoding of reason of length `R`
-     * - DbReads: `Tippers`, `Reasons`
-     * - DbWrites: `Reasons`, `Tips`
-     * # </weight>
-     */
-    v968: new CallType(
-        'Tips.tip_new',
-        sts.struct({
-            reason: sts.bytes(),
-            who: v968.MultiAddress,
+            who: v108.AccountId32,
             tipValue: sts.bigint(),
         })
     ),
@@ -189,10 +128,10 @@ export const tip =  {
      * - DbWrites: `Tips`
      * # </weight>
      */
-    v950: new CallType(
+    v108: new CallType(
         'Tips.tip',
         sts.struct({
-            hash: v950.H256,
+            hash: v108.H256,
             tipValue: sts.bigint(),
         })
     ),
@@ -218,10 +157,10 @@ export const closeTip =  {
      * - DbWrites: `Reasons`, `Tips`, `Tippers`, `tip finder`
      * # </weight>
      */
-    v950: new CallType(
+    v108: new CallType(
         'Tips.close_tip',
         sts.struct({
-            hash: v950.H256,
+            hash: v108.H256,
         })
     ),
 }
@@ -242,10 +181,10 @@ export const slashTip =  {
      *   The actual cost depends on the implementation of `T::Tippers`.
      * # </weight>
      */
-    v950: new CallType(
+    v108: new CallType(
         'Tips.slash_tip',
         sts.struct({
-            hash: v950.H256,
+            hash: v108.H256,
         })
     ),
 }

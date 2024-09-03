@@ -1,418 +1,325 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v952 from '../v952'
-import * as v956 from '../v956'
-import * as v962 from '../v962'
-import * as v968 from '../v968'
-import * as v970 from '../v970'
-import * as v972 from '../v972'
-import * as v980 from '../v980'
-import * as v990 from '../v990'
-import * as v10000 from '../v10000'
-import * as v11000 from '../v11000'
+import * as v108 from '../v108'
+import * as v138 from '../v138'
+import * as v160 from '../v160'
+import * as v176 from '../v176'
+import * as v222 from '../v222'
+import * as v244 from '../v244'
 
-export const registerForeignAsset =  {
-    name: 'AssetRegistry.register_foreign_asset',
-    v952: new CallType(
-        'AssetRegistry.register_foreign_asset',
+export const register =  {
+    name: 'AssetRegistry.register',
+    /**
+     * Register a new asset.
+     * 
+     * Asset is identified by `name` and the name must not be used to register another asset.
+     * 
+     * New asset is given `NextAssetId` - sequential asset id
+     * 
+     * Adds mapping between `name` and assigned `asset_id` so asset id can be retrieved by name too (Note: this approach is used in AMM implementation (xyk))
+     * 
+     * Emits 'Registered` event when successful.
+     */
+    v108: new CallType(
+        'AssetRegistry.register',
         sts.struct({
-            location: v952.VersionedMultiLocation,
-            metadata: v952.AssetMetadata,
+            name: sts.bytes(),
+            assetType: v108.AssetType,
+            existentialDeposit: sts.bigint(),
+        })
+    ),
+    /**
+     * Register a new asset.
+     * 
+     * Asset is identified by `name` and the name must not be used to register another asset.
+     * 
+     * New asset is given `NextAssetId` - sequential asset id
+     * 
+     * Adds mapping between `name` and assigned `asset_id` so asset id can be retrieved by name too (Note: this approach is used in AMM implementation (xyk))
+     * 
+     * Emits 'Registered` event when successful.
+     */
+    v138: new CallType(
+        'AssetRegistry.register',
+        sts.struct({
+            name: sts.bytes(),
+            assetType: v138.AssetType,
+            existentialDeposit: sts.bigint(),
+            assetId: sts.option(() => sts.number()),
+            metadata: sts.option(() => v138.Metadata),
+            location: sts.option(() => v138.AssetLocation),
+        })
+    ),
+    /**
+     * Register a new asset.
+     * 
+     * Asset is identified by `name` and the name must not be used to register another asset.
+     * 
+     * New asset is given `NextAssetId` - sequential asset id
+     * 
+     * Adds mapping between `name` and assigned `asset_id` so asset id can be retrieved by name too (Note: this approach is used in AMM implementation (xyk))
+     * 
+     * Emits 'Registered` event when successful.
+     */
+    v160: new CallType(
+        'AssetRegistry.register',
+        sts.struct({
+            name: sts.bytes(),
+            assetType: v160.AssetType,
+            existentialDeposit: sts.bigint(),
+            assetId: sts.option(() => sts.number()),
+            metadata: sts.option(() => v160.Metadata),
+            location: sts.option(() => v160.AssetLocation),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+        })
+    ),
+    /**
+     * Register a new asset.
+     * 
+     * Asset is identified by `name` and the name must not be used to register another asset.
+     * 
+     * New asset is given `NextAssetId` - sequential asset id
+     * 
+     * Adds mapping between `name` and assigned `asset_id` so asset id can be retrieved by name too (Note: this approach is used in AMM implementation (xyk))
+     * 
+     * Emits 'Registered` event when successful.
+     */
+    v176: new CallType(
+        'AssetRegistry.register',
+        sts.struct({
+            name: sts.bytes(),
+            assetType: v176.AssetType,
+            existentialDeposit: sts.bigint(),
+            assetId: sts.option(() => sts.number()),
+            metadata: sts.option(() => v176.Metadata),
+            location: sts.option(() => v176.AssetLocation),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+        })
+    ),
+    /**
+     * See [`Pallet::register`].
+     */
+    v222: new CallType(
+        'AssetRegistry.register',
+        sts.struct({
+            assetId: sts.option(() => sts.number()),
+            name: sts.option(() => sts.bytes()),
+            assetType: v222.AssetType,
+            existentialDeposit: sts.option(() => sts.bigint()),
+            symbol: sts.option(() => sts.bytes()),
+            decimals: sts.option(() => sts.number()),
+            location: sts.option(() => v222.AssetLocation),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+            isSufficient: sts.boolean(),
+        })
+    ),
+    /**
+     * See [`Pallet::register`].
+     */
+    v244: new CallType(
+        'AssetRegistry.register',
+        sts.struct({
+            assetId: sts.option(() => sts.number()),
+            name: sts.option(() => sts.bytes()),
+            assetType: v244.AssetType,
+            existentialDeposit: sts.option(() => sts.bigint()),
+            symbol: sts.option(() => sts.bytes()),
+            decimals: sts.option(() => sts.number()),
+            location: sts.option(() => v244.AssetLocation),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+            isSufficient: sts.boolean(),
         })
     ),
 }
 
-export const updateForeignAsset =  {
-    name: 'AssetRegistry.update_foreign_asset',
-    v952: new CallType(
-        'AssetRegistry.update_foreign_asset',
+export const update =  {
+    name: 'AssetRegistry.update',
+    /**
+     * Update registered asset.
+     * 
+     * Updates also mapping between name and asset id if provided name is different than currently registered.
+     * 
+     * Emits `Updated` event when successful.
+     */
+    v108: new CallType(
+        'AssetRegistry.update',
         sts.struct({
-            foreignAssetId: sts.number(),
-            location: v952.VersionedMultiLocation,
-            metadata: v952.AssetMetadata,
+            assetId: sts.number(),
+            name: sts.bytes(),
+            assetType: v108.AssetType,
+            existentialDeposit: sts.option(() => sts.bigint()),
+        })
+    ),
+    /**
+     * Update registered asset.
+     * 
+     * Updates also mapping between name and asset id if provided name is different than currently registered.
+     * 
+     * Emits `Updated` event when successful.
+     */
+    v160: new CallType(
+        'AssetRegistry.update',
+        sts.struct({
+            assetId: sts.number(),
+            name: sts.bytes(),
+            assetType: v160.AssetType,
+            existentialDeposit: sts.option(() => sts.bigint()),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+        })
+    ),
+    /**
+     * Update registered asset.
+     * 
+     * Updates also mapping between name and asset id if provided name is different than currently registered.
+     * 
+     * Emits `Updated` event when successful.
+     */
+    v176: new CallType(
+        'AssetRegistry.update',
+        sts.struct({
+            assetId: sts.number(),
+            name: sts.bytes(),
+            assetType: v176.AssetType,
+            existentialDeposit: sts.option(() => sts.bigint()),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+        })
+    ),
+    /**
+     * See [`Pallet::update`].
+     */
+    v222: new CallType(
+        'AssetRegistry.update',
+        sts.struct({
+            assetId: sts.number(),
+            name: sts.option(() => sts.bytes()),
+            assetType: sts.option(() => v222.AssetType),
+            existentialDeposit: sts.option(() => sts.bigint()),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+            isSufficient: sts.option(() => sts.boolean()),
+            symbol: sts.option(() => sts.bytes()),
+            decimals: sts.option(() => sts.number()),
+            location: sts.option(() => v222.AssetLocation),
+        })
+    ),
+    /**
+     * See [`Pallet::update`].
+     */
+    v244: new CallType(
+        'AssetRegistry.update',
+        sts.struct({
+            assetId: sts.number(),
+            name: sts.option(() => sts.bytes()),
+            assetType: sts.option(() => v244.AssetType),
+            existentialDeposit: sts.option(() => sts.bigint()),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+            isSufficient: sts.option(() => sts.boolean()),
+            symbol: sts.option(() => sts.bytes()),
+            decimals: sts.option(() => sts.number()),
+            location: sts.option(() => v244.AssetLocation),
         })
     ),
 }
 
-export const registerNativeAsset =  {
-    name: 'AssetRegistry.register_native_asset',
-    v952: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v952.CurrencyId,
-            location: v952.VersionedMultiLocation,
-            metadata: v952.AssetMetadata,
-        })
-    ),
-    v956: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v956.CurrencyId,
-            location: v956.VersionedMultiLocation,
-            metadata: v956.AssetMetadata,
-        })
-    ),
-    v962: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v962.CurrencyId,
-            location: v962.VersionedMultiLocation,
-            metadata: v962.AssetMetadata,
-        })
-    ),
-    v970: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v970.CurrencyId,
-            location: v970.VersionedMultiLocation,
-            metadata: v970.AssetMetadata,
-        })
-    ),
-    v972: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v972.CurrencyId,
-            location: v972.VersionedMultiLocation,
-            metadata: v972.AssetMetadata,
-        })
-    ),
-    v980: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v980.CurrencyId,
-            location: v980.VersionedMultiLocation,
-            metadata: v980.AssetMetadata,
-        })
-    ),
+export const setMetadata =  {
+    name: 'AssetRegistry.set_metadata',
     /**
-     * See [`Pallet::register_native_asset`].
+     * Set metadata for an asset.
+     * 
+     * - `asset_id`: Asset identifier.
+     * - `symbol`: The exchange symbol for this asset. Limited in length by `StringLimit`.
+     * - `decimals`: The number of decimals this asset uses to represent one unit.
+     * 
+     * Emits `MetadataSet` event when successful.
      */
-    v990: new CallType(
-        'AssetRegistry.register_native_asset',
+    v108: new CallType(
+        'AssetRegistry.set_metadata',
         sts.struct({
-            currencyId: v990.CurrencyId,
-            location: v990.VersionedMultiLocation,
-            metadata: v990.AssetMetadata,
-        })
-    ),
-    /**
-     * See [`Pallet::register_native_asset`].
-     */
-    v10000: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v10000.CurrencyId,
-            location: v10000.VersionedMultiLocation,
-            metadata: v10000.AssetMetadata,
-        })
-    ),
-    /**
-     * See [`Pallet::register_native_asset`].
-     */
-    v11000: new CallType(
-        'AssetRegistry.register_native_asset',
-        sts.struct({
-            currencyId: v11000.CurrencyId,
-            location: v11000.VersionedLocation,
-            metadata: v11000.AssetMetadata,
+            assetId: sts.number(),
+            symbol: sts.bytes(),
+            decimals: sts.number(),
         })
     ),
 }
 
-export const updateNativeAsset =  {
-    name: 'AssetRegistry.update_native_asset',
-    v952: new CallType(
-        'AssetRegistry.update_native_asset',
+export const setLocation =  {
+    name: 'AssetRegistry.set_location',
+    /**
+     * Set asset native location.
+     * 
+     * Adds mapping between native location and local asset id and vice versa.
+     * 
+     * Mainly used in XCM.
+     * 
+     * Emits `LocationSet` event when successful.
+     */
+    v108: new CallType(
+        'AssetRegistry.set_location',
         sts.struct({
-            currencyId: v952.CurrencyId,
-            location: v952.VersionedMultiLocation,
-            metadata: v952.AssetMetadata,
-        })
-    ),
-    v956: new CallType(
-        'AssetRegistry.update_native_asset',
-        sts.struct({
-            currencyId: v956.CurrencyId,
-            location: v956.VersionedMultiLocation,
-            metadata: v956.AssetMetadata,
-        })
-    ),
-    v962: new CallType(
-        'AssetRegistry.update_native_asset',
-        sts.struct({
-            currencyId: v962.CurrencyId,
-            location: v962.VersionedMultiLocation,
-            metadata: v962.AssetMetadata,
-        })
-    ),
-    v970: new CallType(
-        'AssetRegistry.update_native_asset',
-        sts.struct({
-            currencyId: v970.CurrencyId,
-            location: v970.VersionedMultiLocation,
-            metadata: v970.AssetMetadata,
-        })
-    ),
-    v972: new CallType(
-        'AssetRegistry.update_native_asset',
-        sts.struct({
-            currencyId: v972.CurrencyId,
-            location: v972.VersionedMultiLocation,
-            metadata: v972.AssetMetadata,
-        })
-    ),
-    v980: new CallType(
-        'AssetRegistry.update_native_asset',
-        sts.struct({
-            currencyId: v980.CurrencyId,
-            location: v980.VersionedMultiLocation,
-            metadata: v980.AssetMetadata,
+            assetId: sts.number(),
+            location: v108.AssetLocation,
         })
     ),
     /**
-     * See [`Pallet::update_native_asset`].
+     * Set asset native location.
+     * 
+     * Adds mapping between native location and local asset id and vice versa.
+     * 
+     * Mainly used in XCM.
+     * 
+     * Emits `LocationSet` event when successful.
      */
-    v990: new CallType(
-        'AssetRegistry.update_native_asset',
+    v160: new CallType(
+        'AssetRegistry.set_location',
         sts.struct({
-            currencyId: v990.CurrencyId,
-            location: v990.VersionedMultiLocation,
-            metadata: v990.AssetMetadata,
-        })
-    ),
-    /**
-     * See [`Pallet::update_native_asset`].
-     */
-    v10000: new CallType(
-        'AssetRegistry.update_native_asset',
-        sts.struct({
-            currencyId: v10000.CurrencyId,
-            location: v10000.VersionedMultiLocation,
-            metadata: v10000.AssetMetadata,
-        })
-    ),
-    /**
-     * See [`Pallet::update_native_asset`].
-     */
-    v11000: new CallType(
-        'AssetRegistry.update_native_asset',
-        sts.struct({
-            currencyId: v11000.CurrencyId,
-            location: v11000.VersionedLocation,
-            metadata: v11000.AssetMetadata,
+            assetId: sts.number(),
+            location: v160.AssetLocation,
         })
     ),
 }
 
-export const registerTokenMetadata =  {
-    name: 'AssetRegistry.register_token_metadata',
-    v956: new CallType(
-        'AssetRegistry.register_token_metadata',
+export const registerExternal =  {
+    name: 'AssetRegistry.register_external',
+    /**
+     * See [`Pallet::register_external`].
+     */
+    v222: new CallType(
+        'AssetRegistry.register_external',
         sts.struct({
-            metadata: v956.AssetMetadata,
-        })
-    ),
-}
-
-export const registerVtokenMetadata =  {
-    name: 'AssetRegistry.register_vtoken_metadata',
-    v956: new CallType(
-        'AssetRegistry.register_vtoken_metadata',
-        sts.struct({
-            tokenId: sts.number(),
-        })
-    ),
-}
-
-export const registerVstokenMetadata =  {
-    name: 'AssetRegistry.register_vstoken_metadata',
-    v956: new CallType(
-        'AssetRegistry.register_vstoken_metadata',
-        sts.struct({
-            tokenId: sts.number(),
-        })
-    ),
-}
-
-export const registerVsbondMetadata =  {
-    name: 'AssetRegistry.register_vsbond_metadata',
-    v956: new CallType(
-        'AssetRegistry.register_vsbond_metadata',
-        sts.struct({
-            tokenId: sts.number(),
-            paraId: sts.number(),
-            firstSlot: sts.number(),
-            lastSlot: sts.number(),
-        })
-    ),
-}
-
-export const registerMultilocation =  {
-    name: 'AssetRegistry.register_multilocation',
-    v956: new CallType(
-        'AssetRegistry.register_multilocation',
-        sts.struct({
-            currencyId: v956.CurrencyId,
-            location: v956.VersionedMultiLocation,
-            weight: sts.bigint(),
-        })
-    ),
-    v962: new CallType(
-        'AssetRegistry.register_multilocation',
-        sts.struct({
-            currencyId: v962.CurrencyId,
-            location: v962.VersionedMultiLocation,
-            weight: sts.bigint(),
-        })
-    ),
-    v970: new CallType(
-        'AssetRegistry.register_multilocation',
-        sts.struct({
-            currencyId: v970.CurrencyId,
-            location: v970.VersionedMultiLocation,
-            weight: sts.bigint(),
-        })
-    ),
-    v972: new CallType(
-        'AssetRegistry.register_multilocation',
-        sts.struct({
-            currencyId: v972.CurrencyId,
-            location: v972.VersionedMultiLocation,
-            weight: v972.Weight,
-        })
-    ),
-    v980: new CallType(
-        'AssetRegistry.register_multilocation',
-        sts.struct({
-            currencyId: v980.CurrencyId,
-            location: v980.VersionedMultiLocation,
-            weight: v980.Weight,
+            location: v222.AssetLocation,
         })
     ),
     /**
-     * See [`Pallet::register_multilocation`].
+     * See [`Pallet::register_external`].
      */
-    v990: new CallType(
-        'AssetRegistry.register_multilocation',
+    v244: new CallType(
+        'AssetRegistry.register_external',
         sts.struct({
-            currencyId: v990.CurrencyId,
-            location: v990.VersionedMultiLocation,
-            weight: v990.Weight,
-        })
-    ),
-    /**
-     * See [`Pallet::register_multilocation`].
-     */
-    v10000: new CallType(
-        'AssetRegistry.register_multilocation',
-        sts.struct({
-            currencyId: v10000.CurrencyId,
-            location: v10000.VersionedMultiLocation,
-            weight: v10000.Weight,
+            location: v244.AssetLocation,
         })
     ),
 }
 
-export const forceSetMultilocation =  {
-    name: 'AssetRegistry.force_set_multilocation',
-    v968: new CallType(
-        'AssetRegistry.force_set_multilocation',
-        sts.struct({
-            currencyId: v968.CurrencyId,
-            location: v968.VersionedMultiLocation,
-            weight: sts.bigint(),
-        })
-    ),
-    v970: new CallType(
-        'AssetRegistry.force_set_multilocation',
-        sts.struct({
-            currencyId: v970.CurrencyId,
-            location: v970.VersionedMultiLocation,
-            weight: sts.bigint(),
-        })
-    ),
-    v972: new CallType(
-        'AssetRegistry.force_set_multilocation',
-        sts.struct({
-            currencyId: v972.CurrencyId,
-            location: v972.VersionedMultiLocation,
-            weight: v972.Weight,
-        })
-    ),
-    v980: new CallType(
-        'AssetRegistry.force_set_multilocation',
-        sts.struct({
-            currencyId: v980.CurrencyId,
-            location: v980.VersionedMultiLocation,
-            weight: v980.Weight,
-        })
-    ),
+export const banAsset =  {
+    name: 'AssetRegistry.ban_asset',
     /**
-     * See [`Pallet::force_set_multilocation`].
+     * See [`Pallet::ban_asset`].
      */
-    v990: new CallType(
-        'AssetRegistry.force_set_multilocation',
+    v222: new CallType(
+        'AssetRegistry.ban_asset',
         sts.struct({
-            currencyId: v990.CurrencyId,
-            location: v990.VersionedMultiLocation,
-            weight: v990.Weight,
-        })
-    ),
-    /**
-     * See [`Pallet::force_set_multilocation`].
-     */
-    v10000: new CallType(
-        'AssetRegistry.force_set_multilocation',
-        sts.struct({
-            currencyId: v10000.CurrencyId,
-            location: v10000.VersionedMultiLocation,
-            weight: v10000.Weight,
+            assetId: sts.number(),
         })
     ),
 }
 
-export const registerLocation =  {
-    name: 'AssetRegistry.register_location',
+export const unbanAsset =  {
+    name: 'AssetRegistry.unban_asset',
     /**
-     * See [`Pallet::register_location`].
+     * See [`Pallet::unban_asset`].
      */
-    v11000: new CallType(
-        'AssetRegistry.register_location',
+    v222: new CallType(
+        'AssetRegistry.unban_asset',
         sts.struct({
-            currencyId: v11000.CurrencyId,
-            location: v11000.VersionedLocation,
-            weight: v11000.Weight,
-        })
-    ),
-}
-
-export const forceSetLocation =  {
-    name: 'AssetRegistry.force_set_location',
-    /**
-     * See [`Pallet::force_set_location`].
-     */
-    v11000: new CallType(
-        'AssetRegistry.force_set_location',
-        sts.struct({
-            currencyId: v11000.CurrencyId,
-            location: v11000.VersionedLocation,
-            weight: v11000.Weight,
-        })
-    ),
-}
-
-export const updateCurrencyMetadata =  {
-    name: 'AssetRegistry.update_currency_metadata',
-    /**
-     * See [`Pallet::update_currency_metadata`].
-     */
-    v11000: new CallType(
-        'AssetRegistry.update_currency_metadata',
-        sts.struct({
-            currencyId: v11000.CurrencyId,
-            assetName: sts.option(() => sts.bytes()),
-            assetSymbol: sts.option(() => sts.bytes()),
-            assetDecimals: sts.option(() => sts.number()),
-            assetMinimalBalance: sts.option(() => sts.bigint()),
+            assetId: sts.number(),
         })
     ),
 }

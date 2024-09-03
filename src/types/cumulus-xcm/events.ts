@@ -1,7 +1,7 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v972 from '../v972'
-import * as v11000 from '../v11000'
+import * as v108 from '../v108'
+import * as v160 from '../v160'
+import * as v244 from '../v244'
 
 export const invalidFormat =  {
     name: 'CumulusXcm.InvalidFormat',
@@ -9,7 +9,7 @@ export const invalidFormat =  {
      * Downward message is invalid XCM.
      * \[ id \]
      */
-    v932: new EventType(
+    v108: new EventType(
         'CumulusXcm.InvalidFormat',
         sts.bytes()
     ),
@@ -21,7 +21,7 @@ export const unsupportedVersion =  {
      * Downward message is unsupported version of XCM.
      * \[ id \]
      */
-    v932: new EventType(
+    v108: new EventType(
         'CumulusXcm.UnsupportedVersion',
         sts.bytes()
     ),
@@ -33,24 +33,24 @@ export const executedDownward =  {
      * Downward message executed with the given outcome.
      * \[ id, outcome \]
      */
-    v932: new EventType(
+    v108: new EventType(
         'CumulusXcm.ExecutedDownward',
-        sts.tuple([sts.bytes(), v932.V2Outcome])
+        sts.tuple([sts.bytes(), v108.V2Outcome])
     ),
     /**
      * Downward message executed with the given outcome.
      * \[ id, outcome \]
      */
-    v972: new EventType(
+    v160: new EventType(
         'CumulusXcm.ExecutedDownward',
-        sts.tuple([sts.bytes(), v972.V3Outcome])
+        sts.tuple([sts.bytes(), v160.V3Outcome])
     ),
     /**
      * Downward message executed with the given outcome.
      * \[ id, outcome \]
      */
-    v11000: new EventType(
+    v244: new EventType(
         'CumulusXcm.ExecutedDownward',
-        sts.tuple([sts.bytes(), v11000.V4Outcome])
+        sts.tuple([sts.bytes(), v244.V4Outcome])
     ),
 }

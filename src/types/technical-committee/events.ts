@@ -1,8 +1,8 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v950 from '../v950'
-import * as v968 from '../v968'
-import * as v978 from '../v978'
-import * as v990 from '../v990'
+import * as v108 from '../v108'
+import * as v115 from '../v115'
+import * as v160 from '../v160'
+import * as v205 from '../v205'
 
 export const proposed =  {
     name: 'TechnicalCommittee.Proposed',
@@ -10,12 +10,12 @@ export const proposed =  {
      * A motion (given hash) has been proposed (by given account) with a threshold (given
      * `MemberCount`).
      */
-    v950: new EventType(
+    v108: new EventType(
         'TechnicalCommittee.Proposed',
         sts.struct({
-            account: v950.AccountId32,
+            account: v108.AccountId32,
             proposalIndex: sts.number(),
-            proposalHash: v950.H256,
+            proposalHash: v108.H256,
             threshold: sts.number(),
         })
     ),
@@ -27,11 +27,11 @@ export const voted =  {
      * A motion (given hash) has been voted on by given account, leaving
      * a tally (yes votes and no votes given respectively as `MemberCount`).
      */
-    v950: new EventType(
+    v108: new EventType(
         'TechnicalCommittee.Voted',
         sts.struct({
-            account: v950.AccountId32,
-            proposalHash: v950.H256,
+            account: v108.AccountId32,
+            proposalHash: v108.H256,
             voted: sts.boolean(),
             yes: sts.number(),
             no: sts.number(),
@@ -44,10 +44,10 @@ export const approved =  {
     /**
      * A motion was approved by the required threshold.
      */
-    v950: new EventType(
+    v108: new EventType(
         'TechnicalCommittee.Approved',
         sts.struct({
-            proposalHash: v950.H256,
+            proposalHash: v108.H256,
         })
     ),
 }
@@ -57,10 +57,10 @@ export const disapproved =  {
     /**
      * A motion was not approved by the required threshold.
      */
-    v950: new EventType(
+    v108: new EventType(
         'TechnicalCommittee.Disapproved',
         sts.struct({
-            proposalHash: v950.H256,
+            proposalHash: v108.H256,
         })
     ),
 }
@@ -70,41 +70,41 @@ export const executed =  {
     /**
      * A motion was executed; result will be `Ok` if it returned without error.
      */
-    v950: new EventType(
+    v108: new EventType(
         'TechnicalCommittee.Executed',
         sts.struct({
-            proposalHash: v950.H256,
-            result: sts.result(() => sts.unit(), () => v950.DispatchError),
+            proposalHash: v108.H256,
+            result: sts.result(() => sts.unit(), () => v108.DispatchError),
         })
     ),
     /**
      * A motion was executed; result will be `Ok` if it returned without error.
      */
-    v968: new EventType(
+    v115: new EventType(
         'TechnicalCommittee.Executed',
         sts.struct({
-            proposalHash: v968.H256,
-            result: sts.result(() => sts.unit(), () => v968.DispatchError),
+            proposalHash: v115.H256,
+            result: sts.result(() => sts.unit(), () => v115.DispatchError),
         })
     ),
     /**
      * A motion was executed; result will be `Ok` if it returned without error.
      */
-    v978: new EventType(
+    v160: new EventType(
         'TechnicalCommittee.Executed',
         sts.struct({
-            proposalHash: v978.H256,
-            result: sts.result(() => sts.unit(), () => v978.DispatchError),
+            proposalHash: v160.H256,
+            result: sts.result(() => sts.unit(), () => v160.DispatchError),
         })
     ),
     /**
      * A motion was executed; result will be `Ok` if it returned without error.
      */
-    v990: new EventType(
+    v205: new EventType(
         'TechnicalCommittee.Executed',
         sts.struct({
-            proposalHash: v990.H256,
-            result: sts.result(() => sts.unit(), () => v990.DispatchError),
+            proposalHash: v205.H256,
+            result: sts.result(() => sts.unit(), () => v205.DispatchError),
         })
     ),
 }
@@ -114,41 +114,41 @@ export const memberExecuted =  {
     /**
      * A single member did some action; result will be `Ok` if it returned without error.
      */
-    v950: new EventType(
+    v108: new EventType(
         'TechnicalCommittee.MemberExecuted',
         sts.struct({
-            proposalHash: v950.H256,
-            result: sts.result(() => sts.unit(), () => v950.DispatchError),
+            proposalHash: v108.H256,
+            result: sts.result(() => sts.unit(), () => v108.DispatchError),
         })
     ),
     /**
      * A single member did some action; result will be `Ok` if it returned without error.
      */
-    v968: new EventType(
+    v115: new EventType(
         'TechnicalCommittee.MemberExecuted',
         sts.struct({
-            proposalHash: v968.H256,
-            result: sts.result(() => sts.unit(), () => v968.DispatchError),
+            proposalHash: v115.H256,
+            result: sts.result(() => sts.unit(), () => v115.DispatchError),
         })
     ),
     /**
      * A single member did some action; result will be `Ok` if it returned without error.
      */
-    v978: new EventType(
+    v160: new EventType(
         'TechnicalCommittee.MemberExecuted',
         sts.struct({
-            proposalHash: v978.H256,
-            result: sts.result(() => sts.unit(), () => v978.DispatchError),
+            proposalHash: v160.H256,
+            result: sts.result(() => sts.unit(), () => v160.DispatchError),
         })
     ),
     /**
      * A single member did some action; result will be `Ok` if it returned without error.
      */
-    v990: new EventType(
+    v205: new EventType(
         'TechnicalCommittee.MemberExecuted',
         sts.struct({
-            proposalHash: v990.H256,
-            result: sts.result(() => sts.unit(), () => v990.DispatchError),
+            proposalHash: v205.H256,
+            result: sts.result(() => sts.unit(), () => v205.DispatchError),
         })
     ),
 }
@@ -158,10 +158,10 @@ export const closed =  {
     /**
      * A proposal was closed because its threshold was reached or after its duration was up.
      */
-    v950: new EventType(
+    v108: new EventType(
         'TechnicalCommittee.Closed',
         sts.struct({
-            proposalHash: v950.H256,
+            proposalHash: v108.H256,
             yes: sts.number(),
             no: sts.number(),
         })

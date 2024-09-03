@@ -1,5 +1,5 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v952 from '../v952'
+import * as v115 from '../v115'
 
 export const transactionFeePaid =  {
     name: 'TransactionPayment.TransactionFeePaid',
@@ -7,10 +7,10 @@ export const transactionFeePaid =  {
      * A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,
      * has been paid by `who`.
      */
-    v952: new EventType(
+    v115: new EventType(
         'TransactionPayment.TransactionFeePaid',
         sts.struct({
-            who: v952.AccountId32,
+            who: v115.AccountId32,
             actualFee: sts.bigint(),
             tip: sts.bigint(),
         })

@@ -1,58 +1,123 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v952 from '../v952'
-import * as v970 from '../v970'
-import * as v972 from '../v972'
-import * as v10000 from '../v10000'
-import * as v11000 from '../v11000'
+import * as v108 from '../v108'
+import * as v115 from '../v115'
+import * as v160 from '../v160'
+import * as v244 from '../v244'
+
+export const transferred =  {
+    name: 'XTokens.Transferred',
+    /**
+     * Transferred.
+     */
+    v108: new EventType(
+        'XTokens.Transferred',
+        sts.struct({
+            sender: v108.AccountId32,
+            currencyId: sts.number(),
+            amount: sts.bigint(),
+            dest: v108.V1MultiLocation,
+        })
+    ),
+}
+
+export const transferredWithFee =  {
+    name: 'XTokens.TransferredWithFee',
+    /**
+     * Transferred with fee.
+     */
+    v108: new EventType(
+        'XTokens.TransferredWithFee',
+        sts.struct({
+            sender: v108.AccountId32,
+            currencyId: sts.number(),
+            amount: sts.bigint(),
+            fee: sts.bigint(),
+            dest: v108.V1MultiLocation,
+        })
+    ),
+}
+
+export const transferredMultiAsset =  {
+    name: 'XTokens.TransferredMultiAsset',
+    /**
+     * Transferred `MultiAsset`.
+     */
+    v108: new EventType(
+        'XTokens.TransferredMultiAsset',
+        sts.struct({
+            sender: v108.AccountId32,
+            asset: v108.V1MultiAsset,
+            dest: v108.V1MultiLocation,
+        })
+    ),
+}
+
+export const transferredMultiAssetWithFee =  {
+    name: 'XTokens.TransferredMultiAssetWithFee',
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    v108: new EventType(
+        'XTokens.TransferredMultiAssetWithFee',
+        sts.struct({
+            sender: v108.AccountId32,
+            asset: v108.V1MultiAsset,
+            fee: v108.V1MultiAsset,
+            dest: v108.V1MultiLocation,
+        })
+    ),
+}
+
+export const transferredMultiCurrencies =  {
+    name: 'XTokens.TransferredMultiCurrencies',
+    /**
+     * Transferred `MultiAsset` with fee.
+     */
+    v108: new EventType(
+        'XTokens.TransferredMultiCurrencies',
+        sts.struct({
+            sender: v108.AccountId32,
+            currencies: sts.array(() => sts.tuple(() => [sts.number(), sts.bigint()])),
+            dest: v108.V1MultiLocation,
+        })
+    ),
+}
 
 export const transferredMultiAssets =  {
     name: 'XTokens.TransferredMultiAssets',
     /**
      * Transferred `MultiAsset` with fee.
      */
-    v952: new EventType(
+    v108: new EventType(
         'XTokens.TransferredMultiAssets',
         sts.struct({
-            sender: v952.AccountId32,
-            assets: sts.array(() => v952.V1MultiAsset),
-            fee: v952.V1MultiAsset,
-            dest: v952.V1MultiLocation,
+            sender: v108.AccountId32,
+            assets: sts.array(() => v108.V1MultiAsset),
+            dest: v108.V1MultiLocation,
         })
     ),
     /**
      * Transferred `MultiAsset` with fee.
      */
-    v970: new EventType(
+    v115: new EventType(
         'XTokens.TransferredMultiAssets',
         sts.struct({
-            sender: v970.AccountId32,
-            assets: sts.array(() => v970.V1MultiAsset),
-            fee: v970.V1MultiAsset,
-            dest: v970.V1MultiLocation,
+            sender: v115.AccountId32,
+            assets: sts.array(() => v115.V1MultiAsset),
+            fee: v115.V1MultiAsset,
+            dest: v115.V1MultiLocation,
         })
     ),
     /**
      * Transferred `MultiAsset` with fee.
      */
-    v972: new EventType(
+    v160: new EventType(
         'XTokens.TransferredMultiAssets',
         sts.struct({
-            sender: v972.AccountId32,
-            assets: sts.array(() => v972.V3MultiAsset),
-            fee: v972.V3MultiAsset,
-            dest: v972.V3MultiLocation,
-        })
-    ),
-    /**
-     * Transferred `MultiAsset` with fee.
-     */
-    v10000: new EventType(
-        'XTokens.TransferredMultiAssets',
-        sts.struct({
-            sender: v10000.AccountId32,
-            assets: sts.array(() => v10000.V3MultiAsset),
-            fee: v10000.V3MultiAsset,
-            dest: v10000.V3MultiLocation,
+            sender: v160.AccountId32,
+            assets: sts.array(() => v160.V3MultiAsset),
+            fee: v160.V3MultiAsset,
+            dest: v160.V3MultiLocation,
         })
     ),
 }
@@ -62,13 +127,13 @@ export const transferredAssets =  {
     /**
      * Transferred `Asset` with fee.
      */
-    v11000: new EventType(
+    v244: new EventType(
         'XTokens.TransferredAssets',
         sts.struct({
-            sender: v11000.AccountId32,
-            assets: sts.array(() => v11000.V4Asset),
-            fee: v11000.V4Asset,
-            dest: v11000.V4Location,
+            sender: v244.AccountId32,
+            assets: sts.array(() => v244.V4Asset),
+            fee: v244.V4Asset,
+            dest: v244.V4Location,
         })
     ),
 }

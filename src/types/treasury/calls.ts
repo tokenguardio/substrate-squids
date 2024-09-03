@@ -1,7 +1,7 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v952 from '../v952'
-import * as v994 from '../v994'
+import * as v100 from '../v100'
+import * as v115 from '../v115'
+import * as v244 from '../v244'
 
 export const proposeSpend =  {
     name: 'Treasury.propose_spend',
@@ -16,11 +16,11 @@ export const proposeSpend =  {
      * - DbWrites: `ProposalCount`, `Proposals`, `origin account`
      * # </weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Treasury.propose_spend',
         sts.struct({
             value: sts.bigint(),
-            beneficiary: v932.MultiAddress,
+            beneficiary: v100.AccountId32,
         })
     ),
 }
@@ -38,7 +38,7 @@ export const rejectProposal =  {
      * - DbWrites: `Proposals`, `rejected proposer account`
      * # </weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Treasury.reject_proposal',
         sts.struct({
             proposalId: sts.number(),
@@ -60,10 +60,42 @@ export const approveProposal =  {
      * - DbWrite: `Approvals`
      * # </weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Treasury.approve_proposal',
         sts.struct({
             proposalId: sts.number(),
+        })
+    ),
+}
+
+export const spend =  {
+    name: 'Treasury.spend',
+    /**
+     * Propose and approve a spend of treasury funds.
+     * 
+     * - `origin`: Must be `SpendOrigin` with the `Success` value being at least `amount`.
+     * - `amount`: The amount to be transferred from the treasury to the `beneficiary`.
+     * - `beneficiary`: The destination account for the transfer.
+     * 
+     * NOTE: For record-keeping purposes, the proposer is deemed to be equivalent to the
+     * beneficiary.
+     */
+    v115: new CallType(
+        'Treasury.spend',
+        sts.struct({
+            amount: sts.bigint(),
+            beneficiary: v115.AccountId32,
+        })
+    ),
+    /**
+     * See [`Pallet::spend`].
+     */
+    v244: new CallType(
+        'Treasury.spend',
+        sts.struct({
+            amount: sts.bigint(),
+            beneficiary: v244.AccountId32,
+            validFrom: sts.option(() => sts.number()),
         })
     ),
 }
@@ -87,42 +119,10 @@ export const removeApproval =  {
      * i.e., the proposal has not been approved. This could also mean the proposal does not
      * exist altogether, thus there is no way it would have been approved in the first place.
      */
-    v950: new CallType(
+    v115: new CallType(
         'Treasury.remove_approval',
         sts.struct({
             proposalId: sts.number(),
-        })
-    ),
-}
-
-export const spend =  {
-    name: 'Treasury.spend',
-    /**
-     * Propose and approve a spend of treasury funds.
-     * 
-     * - `origin`: Must be `SpendOrigin` with the `Success` value being at least `amount`.
-     * - `amount`: The amount to be transferred from the treasury to the `beneficiary`.
-     * - `beneficiary`: The destination account for the transfer.
-     * 
-     * NOTE: For record-keeping purposes, the proposer is deemed to be equivalent to the
-     * beneficiary.
-     */
-    v952: new CallType(
-        'Treasury.spend',
-        sts.struct({
-            amount: sts.bigint(),
-            beneficiary: v952.MultiAddress,
-        })
-    ),
-    /**
-     * See [`Pallet::spend`].
-     */
-    v994: new CallType(
-        'Treasury.spend',
-        sts.struct({
-            amount: sts.bigint(),
-            beneficiary: v994.AccountId32,
-            validFrom: sts.option(() => sts.number()),
         })
     ),
 }
@@ -132,11 +132,11 @@ export const spendLocal =  {
     /**
      * See [`Pallet::spend_local`].
      */
-    v994: new CallType(
+    v244: new CallType(
         'Treasury.spend_local',
         sts.struct({
             amount: sts.bigint(),
-            beneficiary: v994.MultiAddress,
+            beneficiary: v244.AccountId32,
         })
     ),
 }
@@ -146,7 +146,7 @@ export const payout =  {
     /**
      * See [`Pallet::payout`].
      */
-    v994: new CallType(
+    v244: new CallType(
         'Treasury.payout',
         sts.struct({
             index: sts.number(),
@@ -159,7 +159,7 @@ export const checkStatus =  {
     /**
      * See [`Pallet::check_status`].
      */
-    v994: new CallType(
+    v244: new CallType(
         'Treasury.check_status',
         sts.struct({
             index: sts.number(),
@@ -172,7 +172,7 @@ export const voidSpend =  {
     /**
      * See [`Pallet::void_spend`].
      */
-    v994: new CallType(
+    v244: new CallType(
         'Treasury.void_spend',
         sts.struct({
             index: sts.number(),

@@ -1,53 +1,29 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v10000 from '../v10000'
-import * as v12001 from '../v12001'
+import * as v244 from '../v244'
 
 export const processingFailed =  {
     name: 'MessageQueue.ProcessingFailed',
     /**
      * Message discarded due to an error in the `MessageProcessor` (usually a format error).
      */
-    v10000: new EventType(
+    v244: new EventType(
         'MessageQueue.ProcessingFailed',
         sts.struct({
             /**
              * The `blake2_256` hash of the message.
              */
-            id: v10000.H256,
+            id: v244.H256,
             /**
              * The queue of the message.
              */
-            origin: v10000.AggregateMessageOrigin,
+            origin: v244.AggregateMessageOrigin,
             /**
              * The error that occurred.
              * 
              * This error is pretty opaque. More fine-grained errors need to be emitted as events
              * by the `MessageProcessor`.
              */
-            error: v10000.ProcessMessageError,
-        })
-    ),
-    /**
-     * Message discarded due to an error in the `MessageProcessor` (usually a format error).
-     */
-    v12001: new EventType(
-        'MessageQueue.ProcessingFailed',
-        sts.struct({
-            /**
-             * The `blake2_256` hash of the message.
-             */
-            id: v12001.H256,
-            /**
-             * The queue of the message.
-             */
-            origin: v12001.AggregateMessageOrigin,
-            /**
-             * The error that occurred.
-             * 
-             * This error is pretty opaque. More fine-grained errors need to be emitted as events
-             * by the `MessageProcessor`.
-             */
-            error: v12001.ProcessMessageError,
+            error: v244.ProcessMessageError,
         })
     ),
 }
@@ -57,21 +33,21 @@ export const processed =  {
     /**
      * Message is processed.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'MessageQueue.Processed',
         sts.struct({
             /**
              * The `blake2_256` hash of the message.
              */
-            id: v10000.H256,
+            id: v244.H256,
             /**
              * The queue of the message.
              */
-            origin: v10000.AggregateMessageOrigin,
+            origin: v244.AggregateMessageOrigin,
             /**
              * How much weight was used to process the message.
              */
-            weightUsed: v10000.Weight,
+            weightUsed: v244.Weight,
             /**
              * Whether the message was processed.
              * 
@@ -90,7 +66,7 @@ export const overweightEnqueued =  {
     /**
      * Message placed in overweight queue.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'MessageQueue.OverweightEnqueued',
         sts.struct({
             /**
@@ -100,7 +76,7 @@ export const overweightEnqueued =  {
             /**
              * The queue of the message.
              */
-            origin: v10000.AggregateMessageOrigin,
+            origin: v244.AggregateMessageOrigin,
             /**
              * The page of the message.
              */
@@ -118,13 +94,13 @@ export const pageReaped =  {
     /**
      * This page was reaped.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'MessageQueue.PageReaped',
         sts.struct({
             /**
              * The queue of the page.
              */
-            origin: v10000.AggregateMessageOrigin,
+            origin: v244.AggregateMessageOrigin,
             /**
              * The index of the page.
              */

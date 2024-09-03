@@ -1,7 +1,7 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v968 from '../v968'
-import * as v10000 from '../v10000'
+import * as v108 from '../v108'
+import * as v160 from '../v160'
+import * as v244 from '../v244'
 
 export const addRegistrar =  {
     name: 'Identity.add_registrar',
@@ -20,31 +20,10 @@ export const addRegistrar =  {
      * - One event.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.add_registrar',
         sts.struct({
-            account: v932.AccountId32,
-        })
-    ),
-    /**
-     * Add a registrar to the system.
-     * 
-     * The dispatch origin for this call must be `T::RegistrarOrigin`.
-     * 
-     * - `account`: the account of the registrar.
-     * 
-     * Emits `RegistrarAdded` if successful.
-     * 
-     * # <weight>
-     * - `O(R)` where `R` registrar-count (governance-bounded and code-bounded).
-     * - One storage mutation (codec `O(R)`).
-     * - One event.
-     * # </weight>
-     */
-    v968: new CallType(
-        'Identity.add_registrar',
-        sts.struct({
-            account: v968.MultiAddress,
+            account: v108.AccountId32,
         })
     ),
 }
@@ -72,10 +51,10 @@ export const setIdentity =  {
      * - One event.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.set_identity',
         sts.struct({
-            info: v932.IdentityInfo,
+            info: v108.IdentityInfo,
         })
     ),
 }
@@ -105,10 +84,10 @@ export const setSubs =  {
      *   - One storage-exists (`IdentityOf::contains_key`).
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.set_subs',
         sts.struct({
-            subs: sts.array(() => sts.tuple(() => [v932.AccountId32, v932.Data])),
+            subs: sts.array(() => sts.tuple(() => [v108.AccountId32, v108.Data])),
         })
     ),
 }
@@ -135,7 +114,7 @@ export const clearIdentity =  {
      * - One event.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.clear_identity',
         sts.unit()
     ),
@@ -168,7 +147,7 @@ export const requestJudgement =  {
      * - One event.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.request_judgement',
         sts.struct({
             regIndex: sts.number(),
@@ -198,7 +177,7 @@ export const cancelRequest =  {
      * - One event
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.cancel_request',
         sts.struct({
             regIndex: sts.number(),
@@ -223,7 +202,7 @@ export const setFee =  {
      * - Benchmark: 7.315 + R * 0.329 µs (min squares analysis)
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.set_fee',
         sts.struct({
             index: sts.number(),
@@ -249,33 +228,11 @@ export const setAccountId =  {
      * - Benchmark: 8.823 + R * 0.32 µs (min squares analysis)
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.set_account_id',
         sts.struct({
             index: sts.number(),
-            new: v932.AccountId32,
-        })
-    ),
-    /**
-     * Change the account associated with a registrar.
-     * 
-     * The dispatch origin for this call must be _Signed_ and the sender must be the account
-     * of the registrar whose index is `index`.
-     * 
-     * - `index`: the index of the registrar whose fee is to be set.
-     * - `new`: the new account ID.
-     * 
-     * # <weight>
-     * - `O(R)`.
-     * - One storage mutation `O(R)`.
-     * - Benchmark: 8.823 + R * 0.32 µs (min squares analysis)
-     * # </weight>
-     */
-    v968: new CallType(
-        'Identity.set_account_id',
-        sts.struct({
-            index: sts.number(),
-            new: v968.MultiAddress,
+            new: v108.AccountId32,
         })
     ),
 }
@@ -297,11 +254,11 @@ export const setFields =  {
      * - Benchmark: 7.464 + R * 0.325 µs (min squares analysis)
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.set_fields',
         sts.struct({
             index: sts.number(),
-            fields: v932.BitFlags,
+            fields: v108.BitFlags,
         })
     ),
 }
@@ -329,12 +286,12 @@ export const provideJudgement =  {
      * - One event.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.provide_judgement',
         sts.struct({
             regIndex: sts.number(),
-            target: v932.MultiAddress,
-            judgement: v932.Judgement,
+            target: v108.AccountId32,
+            judgement: v108.Judgement,
         })
     ),
     /**
@@ -359,13 +316,13 @@ export const provideJudgement =  {
      * - One event.
      * # </weight>
      */
-    v968: new CallType(
+    v160: new CallType(
         'Identity.provide_judgement',
         sts.struct({
             regIndex: sts.number(),
-            target: v968.MultiAddress,
-            judgement: v968.Judgement,
-            identity: v968.H256,
+            target: v160.AccountId32,
+            judgement: v160.Judgement,
+            identity: v160.H256,
         })
     ),
 }
@@ -393,10 +350,10 @@ export const killIdentity =  {
      * - One event.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.kill_identity',
         sts.struct({
-            target: v932.MultiAddress,
+            target: v108.AccountId32,
         })
     ),
 }
@@ -412,11 +369,11 @@ export const addSub =  {
      * The dispatch origin for this call must be _Signed_ and the sender must have a registered
      * sub identity of `sub`.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.add_sub',
         sts.struct({
-            sub: v932.MultiAddress,
-            data: v932.Data,
+            sub: v108.AccountId32,
+            data: v108.Data,
         })
     ),
 }
@@ -429,11 +386,11 @@ export const renameSub =  {
      * The dispatch origin for this call must be _Signed_ and the sender must have a registered
      * sub identity of `sub`.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.rename_sub',
         sts.struct({
-            sub: v932.MultiAddress,
-            data: v932.Data,
+            sub: v108.AccountId32,
+            data: v108.Data,
         })
     ),
 }
@@ -449,10 +406,10 @@ export const removeSub =  {
      * The dispatch origin for this call must be _Signed_ and the sender must have a registered
      * sub identity of `sub`.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.remove_sub',
         sts.struct({
-            sub: v932.MultiAddress,
+            sub: v108.AccountId32,
         })
     ),
 }
@@ -471,7 +428,7 @@ export const quitSub =  {
      * NOTE: This should not normally be used, but is provided in the case that the non-
      * controller of an account is maliciously registered as a sub-account.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Identity.quit_sub',
         sts.unit()
     ),
@@ -482,10 +439,10 @@ export const addUsernameAuthority =  {
     /**
      * See [`Pallet::add_username_authority`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Identity.add_username_authority',
         sts.struct({
-            authority: v10000.MultiAddress,
+            authority: v244.AccountId32,
             suffix: sts.bytes(),
             allocation: sts.number(),
         })
@@ -497,10 +454,10 @@ export const removeUsernameAuthority =  {
     /**
      * See [`Pallet::remove_username_authority`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Identity.remove_username_authority',
         sts.struct({
-            authority: v10000.MultiAddress,
+            authority: v244.AccountId32,
         })
     ),
 }
@@ -510,12 +467,12 @@ export const setUsernameFor =  {
     /**
      * See [`Pallet::set_username_for`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Identity.set_username_for',
         sts.struct({
-            who: v10000.MultiAddress,
+            who: v244.AccountId32,
             username: sts.bytes(),
-            signature: sts.option(() => v10000.MultiSignature),
+            signature: sts.option(() => v244.MultiSignature),
         })
     ),
 }
@@ -525,10 +482,10 @@ export const acceptUsername =  {
     /**
      * See [`Pallet::accept_username`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Identity.accept_username',
         sts.struct({
-            username: sts.bytes(),
+            username: v244.BoundedVec,
         })
     ),
 }
@@ -538,10 +495,10 @@ export const removeExpiredApproval =  {
     /**
      * See [`Pallet::remove_expired_approval`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Identity.remove_expired_approval',
         sts.struct({
-            username: sts.bytes(),
+            username: v244.BoundedVec,
         })
     ),
 }
@@ -551,10 +508,10 @@ export const setPrimaryUsername =  {
     /**
      * See [`Pallet::set_primary_username`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Identity.set_primary_username',
         sts.struct({
-            username: sts.bytes(),
+            username: v244.BoundedVec,
         })
     ),
 }
@@ -564,10 +521,10 @@ export const removeDanglingUsername =  {
     /**
      * See [`Pallet::remove_dangling_username`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Identity.remove_dangling_username',
         sts.struct({
-            username: sts.bytes(),
+            username: v244.BoundedVec,
         })
     ),
 }

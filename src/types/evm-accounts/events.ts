@@ -1,16 +1,16 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v12001 from '../v12001'
+import * as v222 from '../v222'
 
 export const bound =  {
     name: 'EVMAccounts.Bound',
     /**
      * Binding was created.
      */
-    v12001: new EventType(
+    v222: new EventType(
         'EVMAccounts.Bound',
         sts.struct({
-            account: v12001.AccountId32,
-            address: v12001.H160,
+            account: v222.AccountId32,
+            address: v222.H160,
         })
     ),
 }
@@ -20,10 +20,10 @@ export const deployerAdded =  {
     /**
      * Deployer was added.
      */
-    v12001: new EventType(
+    v222: new EventType(
         'EVMAccounts.DeployerAdded',
         sts.struct({
-            who: v12001.H160,
+            who: v222.H160,
         })
     ),
 }
@@ -33,10 +33,10 @@ export const deployerRemoved =  {
     /**
      * Deployer was removed.
      */
-    v12001: new EventType(
+    v222: new EventType(
         'EVMAccounts.DeployerRemoved',
         sts.struct({
-            who: v12001.H160,
+            who: v222.H160,
         })
     ),
 }

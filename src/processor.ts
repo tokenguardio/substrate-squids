@@ -10,28 +10,32 @@ import {
 } from "@subsquid/substrate-processor";
 import {
   balances,
-  farming,
-  lendMarket,
-  leverageStaking,
-  vtokenMinting,
-  vtokenVoting,
-  zenlinkProtocol,
+  lbp,
+  otc,
+  omnipool,
+  referrals,
+  stableswap,
+  staking,
+  xTokens,
+  xyk,
 } from "./types/events";
 import { extractNamesFromObjects } from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([
   balances,
-  farming,
-  lendMarket,
-  leverageStaking,
-  vtokenMinting,
-  vtokenVoting,
-  zenlinkProtocol,
+  lbp,
+  otc,
+  omnipool,
+  referrals,
+  stableswap,
+  staking,
+  xTokens,
+  xyk,
 ]);
 import { getEnvBoolean, getEnvNumber } from "./utils/misc";
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/bifrost-polkadot")
+  .setGateway("https://v2.archive.subsquid.io/network/hydradx")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     capacity: getEnvNumber(process.env.RPC_CAPACITY),

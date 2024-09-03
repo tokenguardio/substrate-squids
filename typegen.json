@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://v2.archive.subsquid.io/metadata/bifrost-polkadot",
+  "specVersions": "https://v2.archive.subsquid.io/metadata/hydradx",
   "events": true,
   "calls": true
 }
