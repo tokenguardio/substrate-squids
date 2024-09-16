@@ -1,12 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://v2.archive.subsquid.io/metadata/aleph-zero",
-  "pallets": {
-    "Contracts": {
-      "events": ["ContractEmitted", "Called"],
-      "calls": ["call"],
-      "storage": [],
-      "constants": []
-    }
-  }
+  "specVersions": "https://v2.archive.subsquid.io/metadata/bifrost-polkadot",
+  "events": true,
+  "calls": true
 }

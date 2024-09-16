@@ -1,5 +1,4 @@
 import { assertNotNull } from "@subsquid/util-internal";
-import { lookupArchive } from "@subsquid/archive-registry";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -9,34 +8,53 @@ import {
   Call as _Call,
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
-import { getEnvBoolean } from "./utils/misc";
+import {
+  balances,
+  farming,
+  lendMarket,
+  leverageStaking,
+  vtokenMinting,
+  vtokenVoting,
+  zenlinkProtocol,
+} from "./types/events";
+import { extractNamesFromObjects } from "./utils/misc";
+
+const eventNames = extractNamesFromObjects([
+  balances,
+  farming,
+  lendMarket,
+  leverageStaking,
+  vtokenMinting,
+  vtokenVoting,
+  zenlinkProtocol,
+]);
+import { getEnvBoolean, getEnvNumber } from "./utils/misc";
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway(assertNotNull(process.env.GATEWAY_URL))
+  .setGateway("https://v2.archive.subsquid.io/network/bifrost-polkadot")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
-    rateLimit: 10,
+    capacity: getEnvNumber(process.env.RPC_CAPACITY),
+    maxBatchCallSize: getEnvNumber(process.env.RPC_MAX_BATCH_CALL_SIZE),
+    rateLimit: getEnvNumber(process.env.RPC_RATE_LIMIT),
   })
   .setRpcDataIngestionSettings({
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
   })
-  .addEvent({
-    name: ["Contracts.ContractEmitted"],
-    extrinsic: true,
-  })
-  .addCall({
-    name: ["Contracts.call"],
-    extrinsic: true,
-  })
+  .includeAllBlocks()
+  .addEvent({ name: eventNames, extrinsic: true })
+  // Ask for all calls to identify parent call name in substrate transaction
+  .addCall({ extrinsic: true })
   .setFields({
     block: {
       timestamp: true,
     },
     extrinsic: {
+      success: true,
+      signature: true,
       hash: true,
       fee: true,
       tip: true,
-      success: true,
     },
     call: {
       origin: true,
@@ -45,12 +63,8 @@ export const processor = new SubstrateBatchProcessor()
     },
   })
   .setBlockRange({
-    from: process.env.BLOCK_RANGE_FROM
-      ? Number(process.env.BLOCK_RANGE_FROM)
-      : 1,
-    to: process.env.BLOCK_RANGE_TO
-      ? Number(process.env.BLOCK_RANGE_TO)
-      : undefined,
+    from: getEnvNumber(process.env.BLOCK_RANGE_FROM, 1) as number,
+    to: getEnvNumber(process.env.BLOCK_RANGE_TO),
   });
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
