@@ -10,12 +10,13 @@ export function createDappActivityEvent(
 ): DappActivity {
   return new DappActivity({
     id: `e-${event.id}`,
-    callId: event.call?.id,
     transactionHash: event.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappId: dappId,
-    caller: fromHexToSs58(event.call?.origin?.value?.value),
+    caller: event.call?.origin?.value?.value
+      ? fromHexToSs58(event.call?.origin?.value?.value)
+      : undefined,
     contract: event.name.split(".")[0],
     success: event.call?.success,
     type: DappActivityType.event,
@@ -33,12 +34,13 @@ export function createDappActivityCall(
 ): DappActivity {
   return new DappActivity({
     id: `c-${call.id}`,
-    callId: call.id,
     transactionHash: call.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappId: dappId,
-    caller: fromHexToSs58(call.origin?.value?.value),
+    caller: call.origin?.value?.value
+      ? fromHexToSs58(call.origin?.value?.value)
+      : undefined,
     contract: call.name.split(".")[0],
     success: call.success,
     type: DappActivityType.call,

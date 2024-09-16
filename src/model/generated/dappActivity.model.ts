@@ -20,9 +20,6 @@ export class DappActivity {
   id!: string;
 
   @Column_("text", { nullable: false })
-  callId!: string;
-
-  @Column_("text", { nullable: false })
   transactionHash!: string;
 
   @Column_("int4", { nullable: false })

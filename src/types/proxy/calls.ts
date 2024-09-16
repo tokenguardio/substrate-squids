@@ -1,30 +1,23 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v950 from '../v950'
-import * as v952 from '../v952'
-import * as v954 from '../v954'
-import * as v956 from '../v956'
-import * as v958 from '../v958'
-import * as v959 from '../v959'
-import * as v962 from '../v962'
-import * as v964 from '../v964'
-import * as v968 from '../v968'
-import * as v970 from '../v970'
-import * as v972 from '../v972'
-import * as v974 from '../v974'
-import * as v976 from '../v976'
-import * as v978 from '../v978'
-import * as v980 from '../v980'
-import * as v982 from '../v982'
-import * as v990 from '../v990'
-import * as v992 from '../v992'
-import * as v994 from '../v994'
-import * as v996 from '../v996'
-import * as v998 from '../v998'
-import * as v10000 from '../v10000'
-import * as v11000 from '../v11000'
-import * as v12001 from '../v12001'
-import * as v13000 from '../v13000'
+import * as v108 from '../v108'
+import * as v115 from '../v115'
+import * as v125 from '../v125'
+import * as v138 from '../v138'
+import * as v148 from '../v148'
+import * as v160 from '../v160'
+import * as v170 from '../v170'
+import * as v176 from '../v176'
+import * as v183 from '../v183'
+import * as v185 from '../v185'
+import * as v193 from '../v193'
+import * as v201 from '../v201'
+import * as v205 from '../v205'
+import * as v222 from '../v222'
+import * as v224 from '../v224'
+import * as v227 from '../v227'
+import * as v234 from '../v234'
+import * as v244 from '../v244'
+import * as v253 from '../v253'
 
 export const proxy =  {
     name: 'Proxy.proxy',
@@ -45,12 +38,12 @@ export const proxy =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v932.AccountId32,
-            forceProxyType: sts.option(() => v932.ProxyType),
-            call: v932.Call,
+            real: v108.AccountId32,
+            forceProxyType: sts.option(() => v108.ProxyType),
+            call: v108.Call,
         })
     ),
     /**
@@ -70,12 +63,12 @@ export const proxy =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v950: new CallType(
+    v115: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v950.AccountId32,
-            forceProxyType: sts.option(() => v950.ProxyType),
-            call: v950.Call,
+            real: v115.AccountId32,
+            forceProxyType: sts.option(() => v115.ProxyType),
+            call: v115.Call,
         })
     ),
     /**
@@ -95,12 +88,12 @@ export const proxy =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v952: new CallType(
+    v125: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v952.AccountId32,
-            forceProxyType: sts.option(() => v952.ProxyType),
-            call: v952.Call,
+            real: v125.AccountId32,
+            forceProxyType: sts.option(() => v125.ProxyType),
+            call: v125.Call,
         })
     ),
     /**
@@ -120,12 +113,12 @@ export const proxy =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v954: new CallType(
+    v138: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v954.AccountId32,
-            forceProxyType: sts.option(() => v954.ProxyType),
-            call: v954.Call,
+            real: v138.AccountId32,
+            forceProxyType: sts.option(() => v138.ProxyType),
+            call: v138.Call,
         })
     ),
     /**
@@ -145,154 +138,12 @@ export const proxy =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v956: new CallType(
+    v148: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v956.AccountId32,
-            forceProxyType: sts.option(() => v956.ProxyType),
-            call: v956.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of the number of proxies the user has (P).
-     * # </weight>
-     */
-    v958: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v958.AccountId32,
-            forceProxyType: sts.option(() => v958.ProxyType),
-            call: v958.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of the number of proxies the user has (P).
-     * # </weight>
-     */
-    v959: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v959.AccountId32,
-            forceProxyType: sts.option(() => v959.ProxyType),
-            call: v959.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of the number of proxies the user has (P).
-     * # </weight>
-     */
-    v962: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v962.AccountId32,
-            forceProxyType: sts.option(() => v962.ProxyType),
-            call: v962.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of the number of proxies the user has (P).
-     * # </weight>
-     */
-    v964: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v964.AccountId32,
-            forceProxyType: sts.option(() => v964.ProxyType),
-            call: v964.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     */
-    v968: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v968.MultiAddress,
-            forceProxyType: sts.option(() => v968.ProxyType),
-            call: v968.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     */
-    v970: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v970.MultiAddress,
-            forceProxyType: sts.option(() => v970.ProxyType),
-            call: v970.Call,
+            real: v148.AccountId32,
+            forceProxyType: sts.option(() => v148.ProxyType),
+            call: v148.Call,
         })
     ),
     /**
@@ -306,12 +157,12 @@ export const proxy =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v972: new CallType(
+    v160: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v972.MultiAddress,
-            forceProxyType: sts.option(() => v972.ProxyType),
-            call: v972.Call,
+            real: v160.AccountId32,
+            forceProxyType: sts.option(() => v160.ProxyType),
+            call: v160.Call,
         })
     ),
     /**
@@ -325,12 +176,12 @@ export const proxy =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v974: new CallType(
+    v170: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v974.MultiAddress,
-            forceProxyType: sts.option(() => v974.ProxyType),
-            call: v974.Call,
+            real: v170.AccountId32,
+            forceProxyType: sts.option(() => v170.ProxyType),
+            call: v170.Call,
         })
     ),
     /**
@@ -344,12 +195,12 @@ export const proxy =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v976: new CallType(
+    v176: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v976.MultiAddress,
-            forceProxyType: sts.option(() => v976.ProxyType),
-            call: v976.Call,
+            real: v176.AccountId32,
+            forceProxyType: sts.option(() => v176.ProxyType),
+            call: v176.Call,
         })
     ),
     /**
@@ -363,12 +214,12 @@ export const proxy =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v978: new CallType(
+    v183: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v978.MultiAddress,
-            forceProxyType: sts.option(() => v978.ProxyType),
-            call: v978.Call,
+            real: v183.AccountId32,
+            forceProxyType: sts.option(() => v183.ProxyType),
+            call: v183.Call,
         })
     ),
     /**
@@ -382,12 +233,12 @@ export const proxy =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v980: new CallType(
+    v185: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v980.MultiAddress,
-            forceProxyType: sts.option(() => v980.ProxyType),
-            call: v980.Call,
+            real: v185.AccountId32,
+            forceProxyType: sts.option(() => v185.ProxyType),
+            call: v185.Call,
         })
     ),
     /**
@@ -401,127 +252,108 @@ export const proxy =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v982: new CallType(
+    v193: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v982.MultiAddress,
-            forceProxyType: sts.option(() => v982.ProxyType),
-            call: v982.Call,
+            real: v193.AccountId32,
+            forceProxyType: sts.option(() => v193.ProxyType),
+            call: v193.Call,
+        })
+    ),
+    /**
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
+     * 
+     * The dispatch origin for this call must be _Signed_.
+     * 
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
+     */
+    v201: new CallType(
+        'Proxy.proxy',
+        sts.struct({
+            real: v201.AccountId32,
+            forceProxyType: sts.option(() => v201.ProxyType),
+            call: v201.Call,
         })
     ),
     /**
      * See [`Pallet::proxy`].
      */
-    v990: new CallType(
+    v205: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v990.MultiAddress,
-            forceProxyType: sts.option(() => v990.ProxyType),
-            call: v990.Call,
+            real: v205.AccountId32,
+            forceProxyType: sts.option(() => v205.ProxyType),
+            call: v205.Call,
         })
     ),
     /**
      * See [`Pallet::proxy`].
      */
-    v992: new CallType(
+    v222: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v992.MultiAddress,
-            forceProxyType: sts.option(() => v992.ProxyType),
-            call: v992.Call,
+            real: v222.AccountId32,
+            forceProxyType: sts.option(() => v222.ProxyType),
+            call: v222.Call,
         })
     ),
     /**
      * See [`Pallet::proxy`].
      */
-    v994: new CallType(
+    v224: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v994.MultiAddress,
-            forceProxyType: sts.option(() => v994.ProxyType),
-            call: v994.Call,
+            real: v224.AccountId32,
+            forceProxyType: sts.option(() => v224.ProxyType),
+            call: v224.Call,
         })
     ),
     /**
      * See [`Pallet::proxy`].
      */
-    v996: new CallType(
+    v227: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v996.MultiAddress,
-            forceProxyType: sts.option(() => v996.ProxyType),
-            call: v996.Call,
+            real: v227.AccountId32,
+            forceProxyType: sts.option(() => v227.ProxyType),
+            call: v227.Call,
         })
     ),
     /**
      * See [`Pallet::proxy`].
      */
-    v998: new CallType(
+    v234: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v998.MultiAddress,
-            forceProxyType: sts.option(() => v998.ProxyType),
-            call: v998.Call,
+            real: v234.AccountId32,
+            forceProxyType: sts.option(() => v234.ProxyType),
+            call: v234.Call,
         })
     ),
     /**
      * See [`Pallet::proxy`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v10000.MultiAddress,
-            forceProxyType: sts.option(() => v10000.ProxyType),
-            call: v10000.Call,
+            real: v244.AccountId32,
+            forceProxyType: sts.option(() => v244.ProxyType),
+            call: v244.Call,
         })
     ),
     /**
      * See [`Pallet::proxy`].
      */
-    v11000: new CallType(
+    v253: new CallType(
         'Proxy.proxy',
         sts.struct({
-            real: v11000.MultiAddress,
-            forceProxyType: sts.option(() => v11000.ProxyType),
-            call: v11000.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     */
-    v12001: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v12001.MultiAddress,
-            forceProxyType: sts.option(() => v12001.ProxyType),
-            call: v12001.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorised for through
-     * `add_proxy`.
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     */
-    v13000: new CallType(
-        'Proxy.proxy',
-        sts.struct({
-            real: v13000.MultiAddress,
-            forceProxyType: sts.option(() => v13000.ProxyType),
-            call: v13000.Call,
+            real: v253.AccountId32,
+            forceProxyType: sts.option(() => v253.ProxyType),
+            call: v253.Call,
         })
     ),
 }
@@ -543,11 +375,11 @@ export const addProxy =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.add_proxy',
         sts.struct({
-            delegate: v932.AccountId32,
-            proxyType: v932.ProxyType,
+            delegate: v108.AccountId32,
+            proxyType: v108.ProxyType,
             delay: sts.number(),
         })
     ),
@@ -562,11 +394,11 @@ export const addProxy =  {
      * - `delay`: The announcement period required of the initial proxy. Will generally be
      * zero.
      */
-    v968: new CallType(
+    v170: new CallType(
         'Proxy.add_proxy',
         sts.struct({
-            delegate: v968.MultiAddress,
-            proxyType: v968.ProxyType,
+            delegate: v170.AccountId32,
+            proxyType: v170.ProxyType,
             delay: sts.number(),
         })
     ),
@@ -587,11 +419,11 @@ export const removeProxy =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.remove_proxy',
         sts.struct({
-            delegate: v932.AccountId32,
-            proxyType: v932.ProxyType,
+            delegate: v108.AccountId32,
+            proxyType: v108.ProxyType,
             delay: sts.number(),
         })
     ),
@@ -604,11 +436,11 @@ export const removeProxy =  {
      * - `proxy`: The account that the `caller` would like to remove as a proxy.
      * - `proxy_type`: The permissions currently enabled for the removed proxy account.
      */
-    v968: new CallType(
+    v170: new CallType(
         'Proxy.remove_proxy',
         sts.struct({
-            delegate: v968.MultiAddress,
-            proxyType: v968.ProxyType,
+            delegate: v170.AccountId32,
+            proxyType: v170.ProxyType,
             delay: sts.number(),
         })
     ),
@@ -628,7 +460,7 @@ export const removeProxies =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.remove_proxies',
         sts.unit()
     ),
@@ -661,10 +493,10 @@ export const anonymous =  {
      * # </weight>
      * TODO: Might be over counting 1 read
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.anonymous',
         sts.struct({
-            proxyType: v932.ProxyType,
+            proxyType: v108.ProxyType,
             delay: sts.number(),
             index: sts.number(),
         })
@@ -695,11 +527,11 @@ export const killAnonymous =  {
      * Weight is a function of the number of proxies the user has (P).
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.kill_anonymous',
         sts.struct({
-            spawner: v932.AccountId32,
-            proxyType: v932.ProxyType,
+            spawner: v108.AccountId32,
+            proxyType: v108.ProxyType,
             index: sts.number(),
             height: sts.number(),
             extIndex: sts.number(),
@@ -732,35 +564,11 @@ export const announce =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.announce',
         sts.struct({
-            real: v932.AccountId32,
-            callHash: v932.H256,
-        })
-    ),
-    /**
-     * Publish the hash of a proxy-call that will be made in the future.
-     * 
-     * This must be called some number of blocks before the corresponding `proxy` is attempted
-     * if the delay associated with the proxy relationship is greater than zero.
-     * 
-     * No more than `MaxPending` announcements may be made at any one time.
-     * 
-     * This will take a deposit of `AnnouncementDepositFactor` as well as
-     * `AnnouncementDepositBase` if there are no other pending announcements.
-     * 
-     * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `call_hash`: The hash of the call to be made by the `real` account.
-     */
-    v968: new CallType(
-        'Proxy.announce',
-        sts.struct({
-            real: v968.MultiAddress,
-            callHash: v968.H256,
+            real: v108.AccountId32,
+            callHash: v108.H256,
         })
     ),
 }
@@ -785,30 +593,11 @@ export const removeAnnouncement =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.remove_announcement',
         sts.struct({
-            real: v932.AccountId32,
-            callHash: v932.H256,
-        })
-    ),
-    /**
-     * Remove a given announcement.
-     * 
-     * May be called by a proxy account to remove a call they previously announced and return
-     * the deposit.
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `call_hash`: The hash of the call to be made by the `real` account.
-     */
-    v968: new CallType(
-        'Proxy.remove_announcement',
-        sts.struct({
-            real: v968.MultiAddress,
-            callHash: v968.H256,
+            real: v108.AccountId32,
+            callHash: v108.H256,
         })
     ),
 }
@@ -833,30 +622,11 @@ export const rejectAnnouncement =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.reject_announcement',
         sts.struct({
-            delegate: v932.AccountId32,
-            callHash: v932.H256,
-        })
-    ),
-    /**
-     * Remove the given announcement of a delegate.
-     * 
-     * May be called by a target (proxied) account to remove a call that one of their delegates
-     * (`delegate`) has announced they want to execute. The deposit is returned.
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `delegate`: The account that previously announced the call.
-     * - `call_hash`: The hash of the call to be made.
-     */
-    v968: new CallType(
-        'Proxy.reject_announcement',
-        sts.struct({
-            delegate: v968.MultiAddress,
-            callHash: v968.H256,
+            delegate: v108.AccountId32,
+            callHash: v108.H256,
         })
     ),
 }
@@ -882,13 +652,13 @@ export const proxyAnnounced =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v932.AccountId32,
-            real: v932.AccountId32,
-            forceProxyType: sts.option(() => v932.ProxyType),
-            call: v932.Call,
+            delegate: v108.AccountId32,
+            real: v108.AccountId32,
+            forceProxyType: sts.option(() => v108.ProxyType),
+            call: v108.Call,
         })
     ),
     /**
@@ -910,13 +680,13 @@ export const proxyAnnounced =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v950: new CallType(
+    v115: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v950.AccountId32,
-            real: v950.AccountId32,
-            forceProxyType: sts.option(() => v950.ProxyType),
-            call: v950.Call,
+            delegate: v115.AccountId32,
+            real: v115.AccountId32,
+            forceProxyType: sts.option(() => v115.ProxyType),
+            call: v115.Call,
         })
     ),
     /**
@@ -938,13 +708,13 @@ export const proxyAnnounced =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v952: new CallType(
+    v125: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v952.AccountId32,
-            real: v952.AccountId32,
-            forceProxyType: sts.option(() => v952.ProxyType),
-            call: v952.Call,
+            delegate: v125.AccountId32,
+            real: v125.AccountId32,
+            forceProxyType: sts.option(() => v125.ProxyType),
+            call: v125.Call,
         })
     ),
     /**
@@ -966,13 +736,13 @@ export const proxyAnnounced =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v954: new CallType(
+    v138: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v954.AccountId32,
-            real: v954.AccountId32,
-            forceProxyType: sts.option(() => v954.ProxyType),
-            call: v954.Call,
+            delegate: v138.AccountId32,
+            real: v138.AccountId32,
+            forceProxyType: sts.option(() => v138.ProxyType),
+            call: v138.Call,
         })
     ),
     /**
@@ -994,125 +764,13 @@ export const proxyAnnounced =  {
      * - P: the number of proxies the user has.
      * # </weight>
      */
-    v956: new CallType(
+    v148: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v956.AccountId32,
-            real: v956.AccountId32,
-            forceProxyType: sts.option(() => v956.ProxyType),
-            call: v956.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorized for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of:
-     * - A: the number of announcements made.
-     * - P: the number of proxies the user has.
-     * # </weight>
-     */
-    v958: new CallType(
-        'Proxy.proxy_announced',
-        sts.struct({
-            delegate: v958.AccountId32,
-            real: v958.AccountId32,
-            forceProxyType: sts.option(() => v958.ProxyType),
-            call: v958.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorized for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of:
-     * - A: the number of announcements made.
-     * - P: the number of proxies the user has.
-     * # </weight>
-     */
-    v959: new CallType(
-        'Proxy.proxy_announced',
-        sts.struct({
-            delegate: v959.AccountId32,
-            real: v959.AccountId32,
-            forceProxyType: sts.option(() => v959.ProxyType),
-            call: v959.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorized for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of:
-     * - A: the number of announcements made.
-     * - P: the number of proxies the user has.
-     * # </weight>
-     */
-    v962: new CallType(
-        'Proxy.proxy_announced',
-        sts.struct({
-            delegate: v962.AccountId32,
-            real: v962.AccountId32,
-            forceProxyType: sts.option(() => v962.ProxyType),
-            call: v962.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorized for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     * 
-     * # <weight>
-     * Weight is a function of:
-     * - A: the number of announcements made.
-     * - P: the number of proxies the user has.
-     * # </weight>
-     */
-    v964: new CallType(
-        'Proxy.proxy_announced',
-        sts.struct({
-            delegate: v964.AccountId32,
-            real: v964.AccountId32,
-            forceProxyType: sts.option(() => v964.ProxyType),
-            call: v964.Call,
+            delegate: v148.AccountId32,
+            real: v148.AccountId32,
+            forceProxyType: sts.option(() => v148.ProxyType),
+            call: v148.Call,
         })
     ),
     /**
@@ -1128,13 +786,13 @@ export const proxyAnnounced =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v968: new CallType(
+    v160: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v968.MultiAddress,
-            real: v968.MultiAddress,
-            forceProxyType: sts.option(() => v968.ProxyType),
-            call: v968.Call,
+            delegate: v160.AccountId32,
+            real: v160.AccountId32,
+            forceProxyType: sts.option(() => v160.ProxyType),
+            call: v160.Call,
         })
     ),
     /**
@@ -1150,13 +808,13 @@ export const proxyAnnounced =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v970: new CallType(
+    v170: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v970.MultiAddress,
-            real: v970.MultiAddress,
-            forceProxyType: sts.option(() => v970.ProxyType),
-            call: v970.Call,
+            delegate: v170.AccountId32,
+            real: v170.AccountId32,
+            forceProxyType: sts.option(() => v170.ProxyType),
+            call: v170.Call,
         })
     ),
     /**
@@ -1172,13 +830,13 @@ export const proxyAnnounced =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v972: new CallType(
+    v176: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v972.MultiAddress,
-            real: v972.MultiAddress,
-            forceProxyType: sts.option(() => v972.ProxyType),
-            call: v972.Call,
+            delegate: v176.AccountId32,
+            real: v176.AccountId32,
+            forceProxyType: sts.option(() => v176.ProxyType),
+            call: v176.Call,
         })
     ),
     /**
@@ -1194,13 +852,13 @@ export const proxyAnnounced =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v974: new CallType(
+    v183: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v974.MultiAddress,
-            real: v974.MultiAddress,
-            forceProxyType: sts.option(() => v974.ProxyType),
-            call: v974.Call,
+            delegate: v183.AccountId32,
+            real: v183.AccountId32,
+            forceProxyType: sts.option(() => v183.ProxyType),
+            call: v183.Call,
         })
     ),
     /**
@@ -1216,13 +874,13 @@ export const proxyAnnounced =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v976: new CallType(
+    v185: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v976.MultiAddress,
-            real: v976.MultiAddress,
-            forceProxyType: sts.option(() => v976.ProxyType),
-            call: v976.Call,
+            delegate: v185.AccountId32,
+            real: v185.AccountId32,
+            forceProxyType: sts.option(() => v185.ProxyType),
+            call: v185.Call,
         })
     ),
     /**
@@ -1238,13 +896,13 @@ export const proxyAnnounced =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v978: new CallType(
+    v193: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v978.MultiAddress,
-            real: v978.MultiAddress,
-            forceProxyType: sts.option(() => v978.ProxyType),
-            call: v978.Call,
+            delegate: v193.AccountId32,
+            real: v193.AccountId32,
+            forceProxyType: sts.option(() => v193.ProxyType),
+            call: v193.Call,
         })
     ),
     /**
@@ -1260,163 +918,97 @@ export const proxyAnnounced =  {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    v980: new CallType(
+    v201: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v980.MultiAddress,
-            real: v980.MultiAddress,
-            forceProxyType: sts.option(() => v980.ProxyType),
-            call: v980.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorized for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     */
-    v982: new CallType(
-        'Proxy.proxy_announced',
-        sts.struct({
-            delegate: v982.MultiAddress,
-            real: v982.MultiAddress,
-            forceProxyType: sts.option(() => v982.ProxyType),
-            call: v982.Call,
+            delegate: v201.AccountId32,
+            real: v201.AccountId32,
+            forceProxyType: sts.option(() => v201.ProxyType),
+            call: v201.Call,
         })
     ),
     /**
      * See [`Pallet::proxy_announced`].
      */
-    v990: new CallType(
+    v205: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v990.MultiAddress,
-            real: v990.MultiAddress,
-            forceProxyType: sts.option(() => v990.ProxyType),
-            call: v990.Call,
+            delegate: v205.AccountId32,
+            real: v205.AccountId32,
+            forceProxyType: sts.option(() => v205.ProxyType),
+            call: v205.Call,
         })
     ),
     /**
      * See [`Pallet::proxy_announced`].
      */
-    v992: new CallType(
+    v222: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v992.MultiAddress,
-            real: v992.MultiAddress,
-            forceProxyType: sts.option(() => v992.ProxyType),
-            call: v992.Call,
+            delegate: v222.AccountId32,
+            real: v222.AccountId32,
+            forceProxyType: sts.option(() => v222.ProxyType),
+            call: v222.Call,
         })
     ),
     /**
      * See [`Pallet::proxy_announced`].
      */
-    v994: new CallType(
+    v224: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v994.MultiAddress,
-            real: v994.MultiAddress,
-            forceProxyType: sts.option(() => v994.ProxyType),
-            call: v994.Call,
+            delegate: v224.AccountId32,
+            real: v224.AccountId32,
+            forceProxyType: sts.option(() => v224.ProxyType),
+            call: v224.Call,
         })
     ),
     /**
      * See [`Pallet::proxy_announced`].
      */
-    v996: new CallType(
+    v227: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v996.MultiAddress,
-            real: v996.MultiAddress,
-            forceProxyType: sts.option(() => v996.ProxyType),
-            call: v996.Call,
+            delegate: v227.AccountId32,
+            real: v227.AccountId32,
+            forceProxyType: sts.option(() => v227.ProxyType),
+            call: v227.Call,
         })
     ),
     /**
      * See [`Pallet::proxy_announced`].
      */
-    v998: new CallType(
+    v234: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v998.MultiAddress,
-            real: v998.MultiAddress,
-            forceProxyType: sts.option(() => v998.ProxyType),
-            call: v998.Call,
+            delegate: v234.AccountId32,
+            real: v234.AccountId32,
+            forceProxyType: sts.option(() => v234.ProxyType),
+            call: v234.Call,
         })
     ),
     /**
      * See [`Pallet::proxy_announced`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v10000.MultiAddress,
-            real: v10000.MultiAddress,
-            forceProxyType: sts.option(() => v10000.ProxyType),
-            call: v10000.Call,
+            delegate: v244.AccountId32,
+            real: v244.AccountId32,
+            forceProxyType: sts.option(() => v244.ProxyType),
+            call: v244.Call,
         })
     ),
     /**
      * See [`Pallet::proxy_announced`].
      */
-    v11000: new CallType(
+    v253: new CallType(
         'Proxy.proxy_announced',
         sts.struct({
-            delegate: v11000.MultiAddress,
-            real: v11000.MultiAddress,
-            forceProxyType: sts.option(() => v11000.ProxyType),
-            call: v11000.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorized for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     */
-    v12001: new CallType(
-        'Proxy.proxy_announced',
-        sts.struct({
-            delegate: v12001.MultiAddress,
-            real: v12001.MultiAddress,
-            forceProxyType: sts.option(() => v12001.ProxyType),
-            call: v12001.Call,
-        })
-    ),
-    /**
-     * Dispatch the given `call` from an account that the sender is authorized for through
-     * `add_proxy`.
-     * 
-     * Removes any corresponding announcement(s).
-     * 
-     * The dispatch origin for this call must be _Signed_.
-     * 
-     * Parameters:
-     * - `real`: The account that the proxy will make a call on behalf of.
-     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     * - `call`: The call to be made by the `real` account.
-     */
-    v13000: new CallType(
-        'Proxy.proxy_announced',
-        sts.struct({
-            delegate: v13000.MultiAddress,
-            real: v13000.MultiAddress,
-            forceProxyType: sts.option(() => v13000.ProxyType),
-            call: v13000.Call,
+            delegate: v253.AccountId32,
+            real: v253.AccountId32,
+            forceProxyType: sts.option(() => v253.ProxyType),
+            call: v253.Call,
         })
     ),
 }
@@ -1443,10 +1035,38 @@ export const createPure =  {
      * 
      * Fails if there are insufficient funds to pay for deposit.
      */
-    v968: new CallType(
+    v160: new CallType(
         'Proxy.create_pure',
         sts.struct({
-            proxyType: v968.ProxyType,
+            proxyType: v160.ProxyType,
+            delay: sts.number(),
+            index: sts.number(),
+        })
+    ),
+    /**
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
+     * 
+     * Requires a `Signed` origin.
+     * 
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
+     * 
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
+     * 
+     * Fails if there are insufficient funds to pay for deposit.
+     */
+    v170: new CallType(
+        'Proxy.create_pure',
+        sts.struct({
+            proxyType: v170.ProxyType,
             delay: sts.number(),
             index: sts.number(),
         })
@@ -1473,11 +1093,39 @@ export const killPure =  {
      * Fails with `NoPermission` in case the caller is not a previously created pure
      * account whose `pure` call has corresponding parameters.
      */
-    v968: new CallType(
+    v160: new CallType(
         'Proxy.kill_pure',
         sts.struct({
-            spawner: v968.MultiAddress,
-            proxyType: v968.ProxyType,
+            spawner: v160.AccountId32,
+            proxyType: v160.ProxyType,
+            index: sts.number(),
+            height: sts.number(),
+            extIndex: sts.number(),
+        })
+    ),
+    /**
+     * Removes a previously spawned pure proxy.
+     * 
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
+     * 
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
+     * 
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * 
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
+     */
+    v170: new CallType(
+        'Proxy.kill_pure',
+        sts.struct({
+            spawner: v170.AccountId32,
+            proxyType: v170.ProxyType,
             index: sts.number(),
             height: sts.number(),
             extIndex: sts.number(),

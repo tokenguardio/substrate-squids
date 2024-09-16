@@ -1,47 +1,44 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v992 from '../v992'
+import * as v108 from '../v108'
 
-export const vestingUpdated =  {
-    name: 'Vesting.VestingUpdated',
+export const vestingScheduleAdded =  {
+    name: 'Vesting.VestingScheduleAdded',
     /**
-     * The amount vested has been updated. This could indicate more funds are available. The
-     * balance given is the amount which is left unvested (and thus locked).
-     * \[account, unvested\]
+     * Added new vesting schedule.
      */
-    v932: new EventType(
-        'Vesting.VestingUpdated',
-        sts.tuple([v932.AccountId32, sts.bigint()])
-    ),
-    /**
-     * The amount vested has been updated. This could indicate a change in funds available.
-     * The balance given is the amount which is left unvested (and thus locked).
-     */
-    v992: new EventType(
-        'Vesting.VestingUpdated',
+    v108: new EventType(
+        'Vesting.VestingScheduleAdded',
         sts.struct({
-            account: v992.AccountId32,
-            unvested: sts.bigint(),
+            from: v108.AccountId32,
+            to: v108.AccountId32,
+            vestingSchedule: v108.VestingSchedule,
         })
     ),
 }
 
-export const vestingCompleted =  {
-    name: 'Vesting.VestingCompleted',
+export const claimed =  {
+    name: 'Vesting.Claimed',
     /**
-     * An \[account\] has become fully vested. No further vesting can happen.
+     * Claimed vesting.
      */
-    v932: new EventType(
-        'Vesting.VestingCompleted',
-        v932.AccountId32
-    ),
-    /**
-     * An \[account\] has become fully vested.
-     */
-    v992: new EventType(
-        'Vesting.VestingCompleted',
+    v108: new EventType(
+        'Vesting.Claimed',
         sts.struct({
-            account: v992.AccountId32,
+            who: v108.AccountId32,
+            amount: sts.bigint(),
+        })
+    ),
+}
+
+export const vestingSchedulesUpdated =  {
+    name: 'Vesting.VestingSchedulesUpdated',
+    /**
+     * Updated vesting schedules.
+     */
+    v108: new EventType(
+        'Vesting.VestingSchedulesUpdated',
+        sts.struct({
+            who: v108.AccountId32,
         })
     ),
 }

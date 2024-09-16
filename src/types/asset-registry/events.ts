@@ -1,264 +1,142 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v952 from '../v952'
-import * as v956 from '../v956'
-import * as v958 from '../v958'
-import * as v962 from '../v962'
-import * as v968 from '../v968'
-import * as v970 from '../v970'
-import * as v972 from '../v972'
-import * as v980 from '../v980'
-import * as v990 from '../v990'
-import * as v10000 from '../v10000'
-import * as v11000 from '../v11000'
+import * as v108 from '../v108'
+import * as v115 from '../v115'
+import * as v160 from '../v160'
+import * as v176 from '../v176'
+import * as v222 from '../v222'
+import * as v244 from '../v244'
 
-export const foreignAssetRegistered =  {
-    name: 'AssetRegistry.ForeignAssetRegistered',
+export const registered =  {
+    name: 'AssetRegistry.Registered',
     /**
-     * The foreign asset registered.
+     * Asset was registered. \[asset_id, name, type\]
      */
-    v952: new EventType(
-        'AssetRegistry.ForeignAssetRegistered',
+    v108: new EventType(
+        'AssetRegistry.Registered',
+        sts.tuple([sts.number(), v108.BoundedVec, v108.AssetType])
+    ),
+    /**
+     * Asset was registered.
+     */
+    v115: new EventType(
+        'AssetRegistry.Registered',
         sts.struct({
             assetId: sts.number(),
-            assetAddress: v952.V1MultiLocation,
-            metadata: v952.AssetMetadata,
+            assetName: sts.bytes(),
+            assetType: v115.AssetType,
         })
     ),
-}
-
-export const foreignAssetUpdated =  {
-    name: 'AssetRegistry.ForeignAssetUpdated',
     /**
-     * The foreign asset updated.
+     * Asset was registered.
      */
-    v952: new EventType(
-        'AssetRegistry.ForeignAssetUpdated',
+    v176: new EventType(
+        'AssetRegistry.Registered',
         sts.struct({
             assetId: sts.number(),
-            assetAddress: v952.V1MultiLocation,
-            metadata: v952.AssetMetadata,
+            assetName: sts.bytes(),
+            assetType: v176.AssetType,
+        })
+    ),
+    /**
+     * Asset was registered.
+     */
+    v222: new EventType(
+        'AssetRegistry.Registered',
+        sts.struct({
+            assetId: sts.number(),
+            assetName: sts.option(() => sts.bytes()),
+            assetType: v222.AssetType,
+            existentialDeposit: sts.bigint(),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+            symbol: sts.option(() => sts.bytes()),
+            decimals: sts.option(() => sts.number()),
+            isSufficient: sts.boolean(),
         })
     ),
 }
 
-export const assetRegistered =  {
-    name: 'AssetRegistry.AssetRegistered',
+export const updated =  {
+    name: 'AssetRegistry.Updated',
     /**
-     * The asset registered.
+     * Asset was updated. \[asset_id, name, type\]
      */
-    v952: new EventType(
-        'AssetRegistry.AssetRegistered',
+    v108: new EventType(
+        'AssetRegistry.Updated',
+        sts.tuple([sts.number(), v108.BoundedVec, v108.AssetType])
+    ),
+    /**
+     * Asset was updated.
+     */
+    v115: new EventType(
+        'AssetRegistry.Updated',
         sts.struct({
-            assetId: v952.AssetIds,
-            metadata: v952.AssetMetadata,
+            assetId: sts.number(),
+            assetName: sts.bytes(),
+            assetType: v115.AssetType,
         })
     ),
     /**
-     * The asset registered.
+     * Asset was updated.
      */
-    v956: new EventType(
-        'AssetRegistry.AssetRegistered',
+    v160: new EventType(
+        'AssetRegistry.Updated',
         sts.struct({
-            assetId: v956.AssetIds,
-            metadata: v956.AssetMetadata,
+            assetId: sts.number(),
+            assetName: sts.bytes(),
+            assetType: v160.AssetType,
+            existentialDeposit: sts.bigint(),
+            xcmRateLimit: sts.option(() => sts.bigint()),
         })
     ),
     /**
-     * The asset registered.
+     * Asset was updated.
      */
-    v962: new EventType(
-        'AssetRegistry.AssetRegistered',
+    v176: new EventType(
+        'AssetRegistry.Updated',
         sts.struct({
-            assetId: v962.AssetIds,
-            metadata: v962.AssetMetadata,
+            assetId: sts.number(),
+            assetName: sts.bytes(),
+            assetType: v176.AssetType,
+            existentialDeposit: sts.bigint(),
+            xcmRateLimit: sts.option(() => sts.bigint()),
         })
     ),
     /**
-     * The asset registered.
+     * Asset was updated.
      */
-    v980: new EventType(
-        'AssetRegistry.AssetRegistered',
+    v222: new EventType(
+        'AssetRegistry.Updated',
         sts.struct({
-            assetId: v980.AssetIds,
-            metadata: v980.AssetMetadata,
-        })
-    ),
-    /**
-     * The asset registered.
-     */
-    v990: new EventType(
-        'AssetRegistry.AssetRegistered',
-        sts.struct({
-            assetId: v990.AssetIds,
-            metadata: v990.AssetMetadata,
-        })
-    ),
-}
-
-export const assetUpdated =  {
-    name: 'AssetRegistry.AssetUpdated',
-    /**
-     * The asset updated.
-     */
-    v952: new EventType(
-        'AssetRegistry.AssetUpdated',
-        sts.struct({
-            assetId: v952.AssetIds,
-            metadata: v952.AssetMetadata,
-        })
-    ),
-    /**
-     * The asset updated.
-     */
-    v956: new EventType(
-        'AssetRegistry.AssetUpdated',
-        sts.struct({
-            assetId: v956.AssetIds,
-            metadata: v956.AssetMetadata,
-        })
-    ),
-    /**
-     * The asset updated.
-     */
-    v962: new EventType(
-        'AssetRegistry.AssetUpdated',
-        sts.struct({
-            assetId: v962.AssetIds,
-            metadata: v962.AssetMetadata,
-        })
-    ),
-    /**
-     * The asset updated.
-     */
-    v980: new EventType(
-        'AssetRegistry.AssetUpdated',
-        sts.struct({
-            assetId: v980.AssetIds,
-            metadata: v980.AssetMetadata,
-        })
-    ),
-    /**
-     * The asset updated.
-     */
-    v990: new EventType(
-        'AssetRegistry.AssetUpdated',
-        sts.struct({
-            assetId: v990.AssetIds,
-            metadata: v990.AssetMetadata,
+            assetId: sts.number(),
+            assetName: sts.option(() => sts.bytes()),
+            assetType: v222.AssetType,
+            existentialDeposit: sts.bigint(),
+            xcmRateLimit: sts.option(() => sts.bigint()),
+            symbol: sts.option(() => sts.bytes()),
+            decimals: sts.option(() => sts.number()),
+            isSufficient: sts.boolean(),
         })
     ),
 }
 
-export const currencyIdRegistered =  {
-    name: 'AssetRegistry.CurrencyIdRegistered',
+export const metadataSet =  {
+    name: 'AssetRegistry.MetadataSet',
     /**
-     * The CurrencyId registered.
+     * Metadata set for an asset. \[asset_id, symbol, decimals\]
      */
-    v958: new EventType(
-        'AssetRegistry.CurrencyIdRegistered',
-        sts.struct({
-            currencyId: v958.CurrencyId,
-            metadata: v958.AssetMetadata,
-        })
+    v108: new EventType(
+        'AssetRegistry.MetadataSet',
+        sts.tuple([sts.number(), v108.BoundedVec, sts.number()])
     ),
     /**
-     * The CurrencyId registered.
+     * Metadata set for an asset.
      */
-    v962: new EventType(
-        'AssetRegistry.CurrencyIdRegistered',
+    v115: new EventType(
+        'AssetRegistry.MetadataSet',
         sts.struct({
-            currencyId: v962.CurrencyId,
-            metadata: v962.AssetMetadata,
-        })
-    ),
-    /**
-     * The CurrencyId registered.
-     */
-    v980: new EventType(
-        'AssetRegistry.CurrencyIdRegistered',
-        sts.struct({
-            currencyId: v980.CurrencyId,
-            metadata: v980.AssetMetadata,
-        })
-    ),
-    /**
-     * The CurrencyId registered.
-     */
-    v990: new EventType(
-        'AssetRegistry.CurrencyIdRegistered',
-        sts.struct({
-            currencyId: v990.CurrencyId,
-            metadata: v990.AssetMetadata,
-        })
-    ),
-}
-
-export const multiLocationSet =  {
-    name: 'AssetRegistry.MultiLocationSet',
-    /**
-     * MultiLocation Force set.
-     */
-    v968: new EventType(
-        'AssetRegistry.MultiLocationSet',
-        sts.struct({
-            currencyId: v968.CurrencyId,
-            location: v968.V1MultiLocation,
-            weight: sts.bigint(),
-        })
-    ),
-    /**
-     * MultiLocation Force set.
-     */
-    v970: new EventType(
-        'AssetRegistry.MultiLocationSet',
-        sts.struct({
-            currencyId: v970.CurrencyId,
-            location: v970.V1MultiLocation,
-            weight: sts.bigint(),
-        })
-    ),
-    /**
-     * MultiLocation Force set.
-     */
-    v972: new EventType(
-        'AssetRegistry.MultiLocationSet',
-        sts.struct({
-            currencyId: v972.CurrencyId,
-            location: v972.V3MultiLocation,
-            weight: v972.Weight,
-        })
-    ),
-    /**
-     * MultiLocation Force set.
-     */
-    v980: new EventType(
-        'AssetRegistry.MultiLocationSet',
-        sts.struct({
-            currencyId: v980.CurrencyId,
-            location: v980.V3MultiLocation,
-            weight: v980.Weight,
-        })
-    ),
-    /**
-     * MultiLocation Force set.
-     */
-    v990: new EventType(
-        'AssetRegistry.MultiLocationSet',
-        sts.struct({
-            currencyId: v990.CurrencyId,
-            location: v990.V3MultiLocation,
-            weight: v990.Weight,
-        })
-    ),
-    /**
-     * MultiLocation Force set.
-     */
-    v10000: new EventType(
-        'AssetRegistry.MultiLocationSet',
-        sts.struct({
-            currencyId: v10000.CurrencyId,
-            location: v10000.V3MultiLocation,
-            weight: v10000.Weight,
+            assetId: sts.number(),
+            symbol: sts.bytes(),
+            decimals: sts.number(),
         })
     ),
 }
@@ -266,28 +144,82 @@ export const multiLocationSet =  {
 export const locationSet =  {
     name: 'AssetRegistry.LocationSet',
     /**
-     * Location Force set.
+     * Native location set for an asset. \[asset_id, location\]
      */
-    v11000: new EventType(
+    v108: new EventType(
+        'AssetRegistry.LocationSet',
+        sts.tuple([sts.number(), v108.AssetLocation])
+    ),
+    /**
+     * Native location set for an asset.
+     */
+    v115: new EventType(
         'AssetRegistry.LocationSet',
         sts.struct({
-            currencyId: v11000.CurrencyId,
-            location: v11000.V4Location,
-            weight: v11000.Weight,
+            assetId: sts.number(),
+            location: v115.AssetLocation,
+        })
+    ),
+    /**
+     * Native location set for an asset.
+     */
+    v160: new EventType(
+        'AssetRegistry.LocationSet',
+        sts.struct({
+            assetId: sts.number(),
+            location: v160.AssetLocation,
+        })
+    ),
+    /**
+     * Native location set for an asset.
+     */
+    v244: new EventType(
+        'AssetRegistry.LocationSet',
+        sts.struct({
+            assetId: sts.number(),
+            location: v244.AssetLocation,
         })
     ),
 }
 
-export const currencyIdUpdated =  {
-    name: 'AssetRegistry.CurrencyIdUpdated',
+export const existentialDepositPaid =  {
+    name: 'AssetRegistry.ExistentialDepositPaid',
     /**
-     * The CurrencyId updated.
+     * Existential deposit for insufficinet asset was paid.
+     * `SufficiencyCheck` triggers this event.
      */
-    v11000: new EventType(
-        'AssetRegistry.CurrencyIdUpdated',
+    v222: new EventType(
+        'AssetRegistry.ExistentialDepositPaid',
         sts.struct({
-            currencyId: v11000.CurrencyId,
-            metadata: v11000.AssetMetadata,
+            who: v222.AccountId32,
+            feeAsset: sts.number(),
+            amount: sts.bigint(),
+        })
+    ),
+}
+
+export const assetBanned =  {
+    name: 'AssetRegistry.AssetBanned',
+    /**
+     * Asset was banned.
+     */
+    v222: new EventType(
+        'AssetRegistry.AssetBanned',
+        sts.struct({
+            assetId: sts.number(),
+        })
+    ),
+}
+
+export const assetUnbanned =  {
+    name: 'AssetRegistry.AssetUnbanned',
+    /**
+     * Asset's ban was removed.
+     */
+    v222: new EventType(
+        'AssetRegistry.AssetUnbanned',
+        sts.struct({
+            assetId: sts.number(),
         })
     ),
 }

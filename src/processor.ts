@@ -9,29 +9,59 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import {
-  balances,
-  farming,
-  lendMarket,
-  leverageStaking,
-  vtokenMinting,
-  vtokenVoting,
-  zenlinkProtocol,
+  balances as balancesEvent,
+  lbp as lbpEvent,
+  otc as otcEvent,
+  omnipool as omnipoolEvent,
+  referrals as referralsEvent,
+  stableswap as stableswapEvent,
+  staking as stakingEvent,
+  xTokens as xTokensEvent,
+  xyk as xykEvent,
 } from "./types/events";
-import { extractNamesFromObjects } from "./utils/misc";
+import {
+  balances as balancesCall,
+  lbp as lbpCall,
+  otc as otcCall,
+  omnipool as omnipoolCall,
+  referrals as referralsCall,
+  stableswap as stableswapCall,
+  staking as stakingCall,
+  xTokens as xTokensCall,
+  xyk as xykCall,
+} from "./types/calls";
+import {
+  getEnvBoolean,
+  getEnvNumber,
+  extractNamesFromObjects,
+} from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([
-  balances,
-  farming,
-  lendMarket,
-  leverageStaking,
-  vtokenMinting,
-  vtokenVoting,
-  zenlinkProtocol,
+  balancesEvent,
+  lbpEvent,
+  otcEvent,
+  omnipoolEvent,
+  referralsEvent,
+  stableswapEvent,
+  stakingEvent,
+  xTokensEvent,
+  xykEvent,
 ]);
-import { getEnvBoolean, getEnvNumber } from "./utils/misc";
+
+const callNames = extractNamesFromObjects([
+  balancesCall,
+  lbpCall,
+  otcCall,
+  omnipoolCall,
+  referralsCall,
+  stableswapCall,
+  stakingCall,
+  xTokensCall,
+  xykCall,
+]);
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/bifrost-polkadot")
+  .setGateway("https://v2.archive.subsquid.io/network/hydradx")
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
     capacity: getEnvNumber(process.env.RPC_CAPACITY),
@@ -41,20 +71,14 @@ export const processor = new SubstrateBatchProcessor()
   .setRpcDataIngestionSettings({
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
   })
-  .includeAllBlocks()
-  .addEvent({ name: eventNames, extrinsic: true })
-  // Ask for all calls to identify parent call name in substrate transaction
-  .addCall({ extrinsic: true })
+  .addEvent({ name: eventNames, extrinsic: true, call: true })
+  .addCall({ name: callNames, extrinsic: true })
   .setFields({
     block: {
       timestamp: true,
     },
     extrinsic: {
-      success: true,
-      signature: true,
       hash: true,
-      fee: true,
-      tip: true,
     },
     call: {
       origin: true,

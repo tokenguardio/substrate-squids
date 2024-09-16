@@ -1,343 +1,252 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v950 from '../v950'
-import * as v952 from '../v952'
-import * as v954 from '../v954'
-import * as v956 from '../v956'
-import * as v958 from '../v958'
-import * as v959 from '../v959'
-import * as v962 from '../v962'
-import * as v964 from '../v964'
-import * as v968 from '../v968'
-import * as v970 from '../v970'
-import * as v972 from '../v972'
-import * as v974 from '../v974'
-import * as v976 from '../v976'
-import * as v978 from '../v978'
-import * as v980 from '../v980'
-import * as v982 from '../v982'
-import * as v990 from '../v990'
-import * as v992 from '../v992'
-import * as v994 from '../v994'
-import * as v996 from '../v996'
-import * as v998 from '../v998'
-import * as v10000 from '../v10000'
-import * as v11000 from '../v11000'
-import * as v12001 from '../v12001'
-import * as v13000 from '../v13000'
+import * as v108 from '../v108'
+import * as v115 from '../v115'
+import * as v125 from '../v125'
+import * as v138 from '../v138'
+import * as v148 from '../v148'
+import * as v160 from '../v160'
+import * as v170 from '../v170'
+import * as v176 from '../v176'
+import * as v183 from '../v183'
+import * as v185 from '../v185'
+import * as v193 from '../v193'
+import * as v201 from '../v201'
+import * as v205 from '../v205'
+import * as v222 from '../v222'
+import * as v224 from '../v224'
+import * as v227 from '../v227'
+import * as v234 from '../v234'
+import * as v244 from '../v244'
+import * as v253 from '../v253'
 
 export const schedule =  {
     name: 'Scheduler.schedule',
     /**
      * Anonymously schedule a task.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v932.MaybeHashed,
+            call: v108.MaybeHashed,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v950: new CallType(
+    v115: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v950.MaybeHashed,
+            call: v115.MaybeHashed,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v952: new CallType(
+    v125: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v952.MaybeHashed,
+            call: v125.MaybeHashed,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v954: new CallType(
+    v138: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v954.MaybeHashed,
+            call: v138.MaybeHashed,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v956: new CallType(
+    v148: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v956.MaybeHashed,
+            call: v148.MaybeHashed,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v958: new CallType(
+    v160: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v958.MaybeHashed,
+            call: v160.Call,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v959: new CallType(
+    v170: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v959.MaybeHashed,
+            call: v170.Call,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v962: new CallType(
+    v176: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v962.MaybeHashed,
+            call: v176.Call,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v964: new CallType(
+    v183: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v964.MaybeHashed,
+            call: v183.Call,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v968: new CallType(
+    v185: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v968.Call,
+            call: v185.Call,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v970: new CallType(
+    v193: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v970.Call,
+            call: v193.Call,
         })
     ),
     /**
      * Anonymously schedule a task.
      */
-    v972: new CallType(
+    v201: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v972.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task.
-     */
-    v974: new CallType(
-        'Scheduler.schedule',
-        sts.struct({
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v974.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task.
-     */
-    v976: new CallType(
-        'Scheduler.schedule',
-        sts.struct({
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v976.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task.
-     */
-    v978: new CallType(
-        'Scheduler.schedule',
-        sts.struct({
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v978.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task.
-     */
-    v980: new CallType(
-        'Scheduler.schedule',
-        sts.struct({
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v980.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task.
-     */
-    v982: new CallType(
-        'Scheduler.schedule',
-        sts.struct({
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v982.Call,
+            call: v201.Call,
         })
     ),
     /**
      * See [`Pallet::schedule`].
      */
-    v990: new CallType(
+    v205: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v990.Call,
+            call: v205.Call,
         })
     ),
     /**
      * See [`Pallet::schedule`].
      */
-    v992: new CallType(
+    v222: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v992.Call,
+            call: v222.Call,
         })
     ),
     /**
      * See [`Pallet::schedule`].
      */
-    v994: new CallType(
+    v224: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v994.Call,
+            call: v224.Call,
         })
     ),
     /**
      * See [`Pallet::schedule`].
      */
-    v996: new CallType(
+    v227: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v996.Call,
+            call: v227.Call,
         })
     ),
     /**
      * See [`Pallet::schedule`].
      */
-    v998: new CallType(
+    v234: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v998.Call,
+            call: v234.Call,
         })
     ),
     /**
      * See [`Pallet::schedule`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v10000.Call,
+            call: v244.Call,
         })
     ),
     /**
      * See [`Pallet::schedule`].
      */
-    v11000: new CallType(
+    v253: new CallType(
         'Scheduler.schedule',
         sts.struct({
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v11000.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task.
-     */
-    v12001: new CallType(
-        'Scheduler.schedule',
-        sts.struct({
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v12001.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task.
-     */
-    v13000: new CallType(
-        'Scheduler.schedule',
-        sts.struct({
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v13000.Call,
+            call: v253.Call,
         })
     ),
 }
@@ -347,7 +256,7 @@ export const cancel =  {
     /**
      * Cancel an anonymously scheduled task.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Scheduler.cancel',
         sts.struct({
             when: sts.number(),
@@ -361,339 +270,248 @@ export const scheduleNamed =  {
     /**
      * Schedule a named task.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v932.MaybeHashed,
+            call: v108.MaybeHashed,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v950: new CallType(
+    v115: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v950.MaybeHashed,
+            call: v115.MaybeHashed,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v952: new CallType(
+    v125: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v952.MaybeHashed,
+            call: v125.MaybeHashed,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v954: new CallType(
+    v138: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v954.MaybeHashed,
+            call: v138.MaybeHashed,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v956: new CallType(
+    v148: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v956.MaybeHashed,
+            call: v148.MaybeHashed,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v958: new CallType(
+    v160: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v958.MaybeHashed,
+            call: v160.Call,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v959: new CallType(
+    v170: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v959.MaybeHashed,
+            call: v170.Call,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v962: new CallType(
+    v176: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v962.MaybeHashed,
+            call: v176.Call,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v964: new CallType(
+    v183: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v964.MaybeHashed,
+            call: v183.Call,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v968: new CallType(
+    v185: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v968.Call,
+            call: v185.Call,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v970: new CallType(
+    v193: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v970.Call,
+            call: v193.Call,
         })
     ),
     /**
      * Schedule a named task.
      */
-    v972: new CallType(
+    v201: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v972.Call,
-        })
-    ),
-    /**
-     * Schedule a named task.
-     */
-    v974: new CallType(
-        'Scheduler.schedule_named',
-        sts.struct({
-            id: sts.bytes(),
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v974.Call,
-        })
-    ),
-    /**
-     * Schedule a named task.
-     */
-    v976: new CallType(
-        'Scheduler.schedule_named',
-        sts.struct({
-            id: sts.bytes(),
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v976.Call,
-        })
-    ),
-    /**
-     * Schedule a named task.
-     */
-    v978: new CallType(
-        'Scheduler.schedule_named',
-        sts.struct({
-            id: sts.bytes(),
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v978.Call,
-        })
-    ),
-    /**
-     * Schedule a named task.
-     */
-    v980: new CallType(
-        'Scheduler.schedule_named',
-        sts.struct({
-            id: sts.bytes(),
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v980.Call,
-        })
-    ),
-    /**
-     * Schedule a named task.
-     */
-    v982: new CallType(
-        'Scheduler.schedule_named',
-        sts.struct({
-            id: sts.bytes(),
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v982.Call,
+            call: v201.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named`].
      */
-    v990: new CallType(
+    v205: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v990.Call,
+            call: v205.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named`].
      */
-    v992: new CallType(
+    v222: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v992.Call,
+            call: v222.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named`].
      */
-    v994: new CallType(
+    v224: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v994.Call,
+            call: v224.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named`].
      */
-    v996: new CallType(
+    v227: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v996.Call,
+            call: v227.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named`].
      */
-    v998: new CallType(
+    v234: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v998.Call,
+            call: v234.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v10000.Call,
+            call: v244.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named`].
      */
-    v11000: new CallType(
+    v253: new CallType(
         'Scheduler.schedule_named',
         sts.struct({
             id: sts.bytes(),
             when: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v11000.Call,
-        })
-    ),
-    /**
-     * Schedule a named task.
-     */
-    v12001: new CallType(
-        'Scheduler.schedule_named',
-        sts.struct({
-            id: sts.bytes(),
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v12001.Call,
-        })
-    ),
-    /**
-     * Schedule a named task.
-     */
-    v13000: new CallType(
-        'Scheduler.schedule_named',
-        sts.struct({
-            id: sts.bytes(),
-            when: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v13000.Call,
+            call: v253.Call,
         })
     ),
 }
@@ -703,7 +521,7 @@ export const cancelNamed =  {
     /**
      * Cancel a named scheduled task.
      */
-    v932: new CallType(
+    v108: new CallType(
         'Scheduler.cancel_named',
         sts.struct({
             id: sts.bytes(),
@@ -720,13 +538,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v932.MaybeHashed,
+            call: v108.MaybeHashed,
         })
     ),
     /**
@@ -736,13 +554,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v950: new CallType(
+    v115: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v950.MaybeHashed,
+            call: v115.MaybeHashed,
         })
     ),
     /**
@@ -752,13 +570,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v952: new CallType(
+    v125: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v952.MaybeHashed,
+            call: v125.MaybeHashed,
         })
     ),
     /**
@@ -768,13 +586,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v954: new CallType(
+    v138: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v954.MaybeHashed,
+            call: v138.MaybeHashed,
         })
     ),
     /**
@@ -784,13 +602,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v956: new CallType(
+    v148: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v956.MaybeHashed,
+            call: v148.MaybeHashed,
         })
     ),
     /**
@@ -800,13 +618,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v958: new CallType(
+    v160: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v958.MaybeHashed,
+            call: v160.Call,
         })
     ),
     /**
@@ -816,13 +634,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v959: new CallType(
+    v170: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v959.MaybeHashed,
+            call: v170.Call,
         })
     ),
     /**
@@ -832,13 +650,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v962: new CallType(
+    v176: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v962.MaybeHashed,
+            call: v176.Call,
         })
     ),
     /**
@@ -848,13 +666,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v964: new CallType(
+    v183: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v964.MaybeHashed,
+            call: v183.Call,
         })
     ),
     /**
@@ -864,13 +682,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v968: new CallType(
+    v185: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v968.Call,
+            call: v185.Call,
         })
     ),
     /**
@@ -880,13 +698,13 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v970: new CallType(
+    v193: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v970.Call,
+            call: v193.Call,
         })
     ),
     /**
@@ -896,189 +714,97 @@ export const scheduleAfter =  {
      * Same as [`schedule`].
      * # </weight>
      */
-    v972: new CallType(
+    v201: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v972.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task after a delay.
-     * 
-     * # <weight>
-     * Same as [`schedule`].
-     * # </weight>
-     */
-    v974: new CallType(
-        'Scheduler.schedule_after',
-        sts.struct({
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v974.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task after a delay.
-     * 
-     * # <weight>
-     * Same as [`schedule`].
-     * # </weight>
-     */
-    v976: new CallType(
-        'Scheduler.schedule_after',
-        sts.struct({
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v976.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task after a delay.
-     */
-    v978: new CallType(
-        'Scheduler.schedule_after',
-        sts.struct({
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v978.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task after a delay.
-     */
-    v980: new CallType(
-        'Scheduler.schedule_after',
-        sts.struct({
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v980.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task after a delay.
-     */
-    v982: new CallType(
-        'Scheduler.schedule_after',
-        sts.struct({
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v982.Call,
+            call: v201.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_after`].
      */
-    v990: new CallType(
+    v205: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v990.Call,
+            call: v205.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_after`].
      */
-    v992: new CallType(
+    v222: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v992.Call,
+            call: v222.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_after`].
      */
-    v994: new CallType(
+    v224: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v994.Call,
+            call: v224.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_after`].
      */
-    v996: new CallType(
+    v227: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v996.Call,
+            call: v227.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_after`].
      */
-    v998: new CallType(
+    v234: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v998.Call,
+            call: v234.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_after`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v10000.Call,
+            call: v244.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_after`].
      */
-    v11000: new CallType(
+    v253: new CallType(
         'Scheduler.schedule_after',
         sts.struct({
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v11000.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task after a delay.
-     */
-    v12001: new CallType(
-        'Scheduler.schedule_after',
-        sts.struct({
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v12001.Call,
-        })
-    ),
-    /**
-     * Anonymously schedule a task after a delay.
-     */
-    v13000: new CallType(
-        'Scheduler.schedule_after',
-        sts.struct({
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v13000.Call,
+            call: v253.Call,
         })
     ),
 }
@@ -1092,14 +818,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v932: new CallType(
+    v108: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v932.MaybeHashed,
+            call: v108.MaybeHashed,
         })
     ),
     /**
@@ -1109,14 +835,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v950: new CallType(
+    v115: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v950.MaybeHashed,
+            call: v115.MaybeHashed,
         })
     ),
     /**
@@ -1126,14 +852,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v952: new CallType(
+    v125: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v952.MaybeHashed,
+            call: v125.MaybeHashed,
         })
     ),
     /**
@@ -1143,14 +869,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v954: new CallType(
+    v138: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v954.MaybeHashed,
+            call: v138.MaybeHashed,
         })
     ),
     /**
@@ -1160,14 +886,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v956: new CallType(
+    v148: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v956.MaybeHashed,
+            call: v148.MaybeHashed,
         })
     ),
     /**
@@ -1177,14 +903,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v958: new CallType(
+    v160: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v958.MaybeHashed,
+            call: v160.Call,
         })
     ),
     /**
@@ -1194,14 +920,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v959: new CallType(
+    v170: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v959.MaybeHashed,
+            call: v170.Call,
         })
     ),
     /**
@@ -1211,14 +937,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v962: new CallType(
+    v176: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v962.MaybeHashed,
+            call: v176.Call,
         })
     ),
     /**
@@ -1228,14 +954,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v964: new CallType(
+    v183: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v964.MaybeHashed,
+            call: v183.Call,
         })
     ),
     /**
@@ -1245,14 +971,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v968: new CallType(
+    v185: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v968.Call,
+            call: v185.Call,
         })
     ),
     /**
@@ -1262,14 +988,14 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v970: new CallType(
+    v193: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v970.Call,
+            call: v193.Call,
         })
     ),
     /**
@@ -1279,282 +1005,105 @@ export const scheduleNamedAfter =  {
      * Same as [`schedule_named`](Self::schedule_named).
      * # </weight>
      */
-    v972: new CallType(
+    v201: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v972.Call,
-        })
-    ),
-    /**
-     * Schedule a named task after a delay.
-     * 
-     * # <weight>
-     * Same as [`schedule_named`](Self::schedule_named).
-     * # </weight>
-     */
-    v974: new CallType(
-        'Scheduler.schedule_named_after',
-        sts.struct({
-            id: sts.bytes(),
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v974.Call,
-        })
-    ),
-    /**
-     * Schedule a named task after a delay.
-     * 
-     * # <weight>
-     * Same as [`schedule_named`](Self::schedule_named).
-     * # </weight>
-     */
-    v976: new CallType(
-        'Scheduler.schedule_named_after',
-        sts.struct({
-            id: sts.bytes(),
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v976.Call,
-        })
-    ),
-    /**
-     * Schedule a named task after a delay.
-     */
-    v978: new CallType(
-        'Scheduler.schedule_named_after',
-        sts.struct({
-            id: sts.bytes(),
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v978.Call,
-        })
-    ),
-    /**
-     * Schedule a named task after a delay.
-     */
-    v980: new CallType(
-        'Scheduler.schedule_named_after',
-        sts.struct({
-            id: sts.bytes(),
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v980.Call,
-        })
-    ),
-    /**
-     * Schedule a named task after a delay.
-     */
-    v982: new CallType(
-        'Scheduler.schedule_named_after',
-        sts.struct({
-            id: sts.bytes(),
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v982.Call,
+            call: v201.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named_after`].
      */
-    v990: new CallType(
+    v205: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v990.Call,
+            call: v205.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named_after`].
      */
-    v992: new CallType(
+    v222: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v992.Call,
+            call: v222.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named_after`].
      */
-    v994: new CallType(
+    v224: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v994.Call,
+            call: v224.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named_after`].
      */
-    v996: new CallType(
+    v227: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v996.Call,
+            call: v227.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named_after`].
      */
-    v998: new CallType(
+    v234: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v998.Call,
+            call: v234.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named_after`].
      */
-    v10000: new CallType(
+    v244: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v10000.Call,
+            call: v244.Call,
         })
     ),
     /**
      * See [`Pallet::schedule_named_after`].
      */
-    v11000: new CallType(
+    v253: new CallType(
         'Scheduler.schedule_named_after',
         sts.struct({
             id: sts.bytes(),
             after: sts.number(),
             maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
             priority: sts.number(),
-            call: v11000.Call,
-        })
-    ),
-    /**
-     * Schedule a named task after a delay.
-     */
-    v12001: new CallType(
-        'Scheduler.schedule_named_after',
-        sts.struct({
-            id: sts.bytes(),
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v12001.Call,
-        })
-    ),
-    /**
-     * Schedule a named task after a delay.
-     */
-    v13000: new CallType(
-        'Scheduler.schedule_named_after',
-        sts.struct({
-            id: sts.bytes(),
-            after: sts.number(),
-            maybePeriodic: sts.option(() => sts.tuple(() => [sts.number(), sts.number()])),
-            priority: sts.number(),
-            call: v13000.Call,
-        })
-    ),
-}
-
-export const setRetry =  {
-    name: 'Scheduler.set_retry',
-    /**
-     * Set a retry configuration for a task so that, in case its scheduled run fails, it will
-     * be retried after `period` blocks, for a total amount of `retries` retries or until it
-     * succeeds.
-     * 
-     * Tasks which need to be scheduled for a retry are still subject to weight metering and
-     * agenda space, same as a regular task. If a periodic task fails, it will be scheduled
-     * normally while the task is retrying.
-     * 
-     * Tasks scheduled as a result of a retry for a periodic task are unnamed, non-periodic
-     * clones of the original task. Their retry configuration will be derived from the
-     * original task's configuration, but will have a lower value for `remaining` than the
-     * original `total_retries`.
-     */
-    v12001: new CallType(
-        'Scheduler.set_retry',
-        sts.struct({
-            task: sts.tuple(() => [sts.number(), sts.number()]),
-            retries: sts.number(),
-            period: sts.number(),
-        })
-    ),
-}
-
-export const setRetryNamed =  {
-    name: 'Scheduler.set_retry_named',
-    /**
-     * Set a retry configuration for a named task so that, in case its scheduled run fails, it
-     * will be retried after `period` blocks, for a total amount of `retries` retries or until
-     * it succeeds.
-     * 
-     * Tasks which need to be scheduled for a retry are still subject to weight metering and
-     * agenda space, same as a regular task. If a periodic task fails, it will be scheduled
-     * normally while the task is retrying.
-     * 
-     * Tasks scheduled as a result of a retry for a periodic task are unnamed, non-periodic
-     * clones of the original task. Their retry configuration will be derived from the
-     * original task's configuration, but will have a lower value for `remaining` than the
-     * original `total_retries`.
-     */
-    v12001: new CallType(
-        'Scheduler.set_retry_named',
-        sts.struct({
-            id: sts.bytes(),
-            retries: sts.number(),
-            period: sts.number(),
-        })
-    ),
-}
-
-export const cancelRetry =  {
-    name: 'Scheduler.cancel_retry',
-    /**
-     * Removes the retry configuration of a task.
-     */
-    v12001: new CallType(
-        'Scheduler.cancel_retry',
-        sts.struct({
-            task: sts.tuple(() => [sts.number(), sts.number()]),
-        })
-    ),
-}
-
-export const cancelRetryNamed =  {
-    name: 'Scheduler.cancel_retry_named',
-    /**
-     * Cancel the retry configuration of a named task.
-     */
-    v12001: new CallType(
-        'Scheduler.cancel_retry_named',
-        sts.struct({
-            id: sts.bytes(),
+            call: v253.Call,
         })
     ),
 }

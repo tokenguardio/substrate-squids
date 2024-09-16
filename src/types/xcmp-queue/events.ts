@@ -1,48 +1,48 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v952 from '../v952'
-import * as v968 from '../v968'
-import * as v972 from '../v972'
-import * as v990 from '../v990'
+import * as v108 from '../v108'
+import * as v115 from '../v115'
+import * as v160 from '../v160'
+import * as v170 from '../v170'
+import * as v205 from '../v205'
 
 export const success =  {
     name: 'XcmpQueue.Success',
     /**
      * Some XCM was executed ok.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.Success',
-        sts.option(() => v932.H256)
+        sts.option(() => v108.H256)
     ),
     /**
      * Some XCM was executed ok.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.Success',
         sts.struct({
-            messageHash: sts.option(() => v952.H256),
-            weight: sts.bigint(),
+            messageHash: sts.option(() => v115.H256),
+            weight: v115.Weight,
         })
     ),
     /**
      * Some XCM was executed ok.
      */
-    v968: new EventType(
+    v160: new EventType(
         'XcmpQueue.Success',
         sts.struct({
-            messageHash: sts.option(() => v968.H256),
-            weight: v968.Weight,
+            messageHash: sts.option(() => sts.bytes()),
+            weight: v160.Weight,
         })
     ),
     /**
      * Some XCM was executed ok.
      */
-    v990: new EventType(
+    v205: new EventType(
         'XcmpQueue.Success',
         sts.struct({
             messageHash: sts.bytes(),
             messageId: sts.bytes(),
-            weight: v990.Weight,
+            weight: v205.Weight,
         })
     ),
 }
@@ -52,53 +52,42 @@ export const fail =  {
     /**
      * Some XCM failed.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.Fail',
-        sts.tuple([sts.option(() => v932.H256), v932.V2Error])
+        sts.tuple([sts.option(() => v108.H256), v108.V2Error])
     ),
     /**
      * Some XCM failed.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.Fail',
         sts.struct({
-            messageHash: sts.option(() => v952.H256),
-            error: v952.V2Error,
-            weight: sts.bigint(),
+            messageHash: sts.option(() => v115.H256),
+            error: v115.V2Error,
+            weight: v115.Weight,
         })
     ),
     /**
      * Some XCM failed.
      */
-    v968: new EventType(
-        'XcmpQueue.Fail',
-        sts.struct({
-            messageHash: sts.option(() => v968.H256),
-            error: v968.V2Error,
-            weight: v968.Weight,
-        })
-    ),
-    /**
-     * Some XCM failed.
-     */
-    v972: new EventType(
+    v160: new EventType(
         'XcmpQueue.Fail',
         sts.struct({
             messageHash: sts.option(() => sts.bytes()),
-            error: v972.V3Error,
-            weight: v972.Weight,
+            error: v160.V3Error,
+            weight: v160.Weight,
         })
     ),
     /**
      * Some XCM failed.
      */
-    v990: new EventType(
+    v205: new EventType(
         'XcmpQueue.Fail',
         sts.struct({
             messageHash: sts.bytes(),
             messageId: sts.bytes(),
-            error: v990.V3Error,
-            weight: v990.Weight,
+            error: v205.V3Error,
+            weight: v205.Weight,
         })
     ),
 }
@@ -108,23 +97,23 @@ export const badVersion =  {
     /**
      * Bad XCM version used.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.BadVersion',
-        sts.option(() => v932.H256)
+        sts.option(() => v108.H256)
     ),
     /**
      * Bad XCM version used.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.BadVersion',
         sts.struct({
-            messageHash: sts.option(() => v952.H256),
+            messageHash: sts.option(() => v115.H256),
         })
     ),
     /**
      * Bad XCM version used.
      */
-    v990: new EventType(
+    v205: new EventType(
         'XcmpQueue.BadVersion',
         sts.struct({
             messageHash: sts.bytes(),
@@ -137,23 +126,23 @@ export const badFormat =  {
     /**
      * Bad XCM format used.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.BadFormat',
-        sts.option(() => v932.H256)
+        sts.option(() => v108.H256)
     ),
     /**
      * Bad XCM format used.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.BadFormat',
         sts.struct({
-            messageHash: sts.option(() => v952.H256),
+            messageHash: sts.option(() => v115.H256),
         })
     ),
     /**
      * Bad XCM format used.
      */
-    v990: new EventType(
+    v205: new EventType(
         'XcmpQueue.BadFormat',
         sts.struct({
             messageHash: sts.bytes(),
@@ -166,17 +155,17 @@ export const upwardMessageSent =  {
     /**
      * An upward message was sent to the relay chain.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.UpwardMessageSent',
-        sts.option(() => v932.H256)
+        sts.option(() => v108.H256)
     ),
     /**
      * An upward message was sent to the relay chain.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.UpwardMessageSent',
         sts.struct({
-            messageHash: sts.option(() => v952.H256),
+            messageHash: sts.option(() => v115.H256),
         })
     ),
 }
@@ -186,23 +175,23 @@ export const xcmpMessageSent =  {
     /**
      * An HRMP message was sent to a sibling parachain.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.XcmpMessageSent',
-        sts.option(() => v932.H256)
+        sts.option(() => v108.H256)
     ),
     /**
      * An HRMP message was sent to a sibling parachain.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.XcmpMessageSent',
         sts.struct({
-            messageHash: sts.option(() => v952.H256),
+            messageHash: sts.option(() => v115.H256),
         })
     ),
     /**
      * An HRMP message was sent to a sibling parachain.
      */
-    v990: new EventType(
+    v205: new EventType(
         'XcmpQueue.XcmpMessageSent',
         sts.struct({
             messageHash: sts.bytes(),
@@ -215,32 +204,32 @@ export const overweightEnqueued =  {
     /**
      * An XCM exceeded the individual message weight budget.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.OverweightEnqueued',
-        sts.tuple([v932.Id, sts.number(), sts.bigint(), sts.bigint()])
+        sts.tuple([v108.Id, sts.number(), sts.bigint(), sts.bigint()])
     ),
     /**
      * An XCM exceeded the individual message weight budget.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.OverweightEnqueued',
         sts.struct({
-            sender: v952.Id,
+            sender: v115.Id,
             sentAt: sts.number(),
             index: sts.bigint(),
-            required: sts.bigint(),
+            required: v115.Weight,
         })
     ),
     /**
      * An XCM exceeded the individual message weight budget.
      */
-    v968: new EventType(
+    v160: new EventType(
         'XcmpQueue.OverweightEnqueued',
         sts.struct({
-            sender: v968.Id,
+            sender: v160.Id,
             sentAt: sts.number(),
             index: sts.bigint(),
-            required: v968.Weight,
+            required: v160.Weight,
         })
     ),
 }
@@ -250,28 +239,109 @@ export const overweightServiced =  {
     /**
      * An XCM from the overweight queue was executed with the given actual weight used.
      */
-    v932: new EventType(
+    v108: new EventType(
         'XcmpQueue.OverweightServiced',
         sts.tuple([sts.bigint(), sts.bigint()])
     ),
     /**
      * An XCM from the overweight queue was executed with the given actual weight used.
      */
-    v952: new EventType(
+    v115: new EventType(
         'XcmpQueue.OverweightServiced',
         sts.struct({
             index: sts.bigint(),
-            used: sts.bigint(),
+            used: v115.Weight,
         })
     ),
     /**
      * An XCM from the overweight queue was executed with the given actual weight used.
      */
-    v968: new EventType(
+    v160: new EventType(
         'XcmpQueue.OverweightServiced',
         sts.struct({
             index: sts.bigint(),
-            used: v968.Weight,
+            used: v160.Weight,
+        })
+    ),
+}
+
+export const xcmDeferred =  {
+    name: 'XcmpQueue.XcmDeferred',
+    /**
+     * Some XCM was deferred for later execution
+     */
+    v170: new EventType(
+        'XcmpQueue.XcmDeferred',
+        sts.struct({
+            sender: v170.Id,
+            sentAt: sts.number(),
+            deferredTo: sts.number(),
+            messageHash: sts.option(() => sts.bytes()),
+        })
+    ),
+    /**
+     * Some XCM was deferred for later execution
+     */
+    v205: new EventType(
+        'XcmpQueue.XcmDeferred',
+        sts.struct({
+            sender: v205.Id,
+            sentAt: sts.number(),
+            deferredTo: sts.number(),
+            index: sts.tuple(() => [sts.number(), sts.number()]),
+            position: sts.number(),
+            messageHash: sts.option(() => sts.bytes()),
+        })
+    ),
+}
+
+export const xcmDeferredQueueFull =  {
+    name: 'XcmpQueue.XcmDeferredQueueFull',
+    v170: new EventType(
+        'XcmpQueue.XcmDeferredQueueFull',
+        sts.unit()
+    ),
+    /**
+     * The deferred queue is full with xcm messages
+     */
+    v205: new EventType(
+        'XcmpQueue.XcmDeferredQueueFull',
+        sts.struct({
+            sender: v205.Id,
+            sentAt: sts.number(),
+            messageHash: sts.option(() => sts.bytes()),
+        })
+    ),
+}
+
+export const deferredXcmDiscarded =  {
+    name: 'XcmpQueue.DeferredXcmDiscarded',
+    /**
+     * The deferred message was successfully discarded.
+     */
+    v205: new EventType(
+        'XcmpQueue.DeferredXcmDiscarded',
+        sts.struct({
+            sender: v205.Id,
+            sentAt: sts.number(),
+            deferredTo: sts.number(),
+            index: sts.tuple(() => [sts.number(), sts.number()]),
+            position: sts.number(),
+            messageHash: sts.option(() => sts.bytes()),
+        })
+    ),
+}
+
+export const deferredBucketDiscarded =  {
+    name: 'XcmpQueue.DeferredBucketDiscarded',
+    /**
+     * The deferred bucket was discarded.
+     */
+    v205: new EventType(
+        'XcmpQueue.DeferredBucketDiscarded',
+        sts.struct({
+            sender: v205.Id,
+            index: sts.tuple(() => [sts.number(), sts.number()]),
         })
     ),
 }

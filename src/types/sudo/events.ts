@@ -1,25 +1,23 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v950 from '../v950'
+import * as v100 from '../v100'
+import * as v104 from '../v104'
 
 export const sudid =  {
     name: 'Sudo.Sudid',
     /**
      * A sudo just took place. \[result\]
      */
-    v932: new EventType(
+    v100: new EventType(
         'Sudo.Sudid',
-        sts.struct({
-            sudoResult: sts.result(() => sts.unit(), () => v932.DispatchError),
-        })
+        sts.result(() => sts.unit(), () => v100.DispatchError)
     ),
     /**
      * A sudo just took place. \[result\]
      */
-    v950: new EventType(
+    v104: new EventType(
         'Sudo.Sudid',
         sts.struct({
-            sudoResult: sts.result(() => sts.unit(), () => v950.DispatchError),
+            sudoResult: sts.result(() => sts.unit(), () => v104.DispatchError),
         })
     ),
 }
@@ -27,12 +25,19 @@ export const sudid =  {
 export const keyChanged =  {
     name: 'Sudo.KeyChanged',
     /**
+     * The \[sudoer\] just switched identity; the old key is supplied.
+     */
+    v100: new EventType(
+        'Sudo.KeyChanged',
+        v100.AccountId32
+    ),
+    /**
      * The \[sudoer\] just switched identity; the old key is supplied if one existed.
      */
-    v932: new EventType(
+    v104: new EventType(
         'Sudo.KeyChanged',
         sts.struct({
-            oldSudoer: sts.option(() => v932.AccountId32),
+            oldSudoer: sts.option(() => v104.AccountId32),
         })
     ),
 }
@@ -42,19 +47,17 @@ export const sudoAsDone =  {
     /**
      * A sudo just took place. \[result\]
      */
-    v932: new EventType(
+    v100: new EventType(
         'Sudo.SudoAsDone',
-        sts.struct({
-            sudoResult: sts.result(() => sts.unit(), () => v932.DispatchError),
-        })
+        sts.result(() => sts.unit(), () => v100.DispatchError)
     ),
     /**
      * A sudo just took place. \[result\]
      */
-    v950: new EventType(
+    v104: new EventType(
         'Sudo.SudoAsDone',
         sts.struct({
-            sudoResult: sts.result(() => sts.unit(), () => v950.DispatchError),
+            sudoResult: sts.result(() => sts.unit(), () => v104.DispatchError),
         })
     ),
 }

@@ -20,7 +20,7 @@ export const set =  {
      * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
      * # </weight>
      */
-    v932: new CallType(
+    v100: new CallType(
         'Timestamp.set',
         sts.struct({
             now: sts.bigint(),

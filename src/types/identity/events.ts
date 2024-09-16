@@ -1,16 +1,16 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
-import * as v932 from '../v932'
-import * as v10000 from '../v10000'
+import * as v108 from '../v108'
+import * as v244 from '../v244'
 
 export const identitySet =  {
     name: 'Identity.IdentitySet',
     /**
      * A name was set or reset (which will remove all judgements).
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.IdentitySet',
         sts.struct({
-            who: v932.AccountId32,
+            who: v108.AccountId32,
         })
     ),
 }
@@ -20,10 +20,10 @@ export const identityCleared =  {
     /**
      * A name was cleared, and the given balance returned.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.IdentityCleared',
         sts.struct({
-            who: v932.AccountId32,
+            who: v108.AccountId32,
             deposit: sts.bigint(),
         })
     ),
@@ -34,10 +34,10 @@ export const identityKilled =  {
     /**
      * A name was removed and the given balance slashed.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.IdentityKilled',
         sts.struct({
-            who: v932.AccountId32,
+            who: v108.AccountId32,
             deposit: sts.bigint(),
         })
     ),
@@ -48,10 +48,10 @@ export const judgementRequested =  {
     /**
      * A judgement was asked from a registrar.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.JudgementRequested',
         sts.struct({
-            who: v932.AccountId32,
+            who: v108.AccountId32,
             registrarIndex: sts.number(),
         })
     ),
@@ -62,10 +62,10 @@ export const judgementUnrequested =  {
     /**
      * A judgement request was retracted.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.JudgementUnrequested',
         sts.struct({
-            who: v932.AccountId32,
+            who: v108.AccountId32,
             registrarIndex: sts.number(),
         })
     ),
@@ -76,10 +76,10 @@ export const judgementGiven =  {
     /**
      * A judgement was given by a registrar.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.JudgementGiven',
         sts.struct({
-            target: v932.AccountId32,
+            target: v108.AccountId32,
             registrarIndex: sts.number(),
         })
     ),
@@ -90,7 +90,7 @@ export const registrarAdded =  {
     /**
      * A registrar was added.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.RegistrarAdded',
         sts.struct({
             registrarIndex: sts.number(),
@@ -103,11 +103,11 @@ export const subIdentityAdded =  {
     /**
      * A sub-identity was added to an identity and the deposit paid.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.SubIdentityAdded',
         sts.struct({
-            sub: v932.AccountId32,
-            main: v932.AccountId32,
+            sub: v108.AccountId32,
+            main: v108.AccountId32,
             deposit: sts.bigint(),
         })
     ),
@@ -118,11 +118,11 @@ export const subIdentityRemoved =  {
     /**
      * A sub-identity was removed from an identity and the deposit freed.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.SubIdentityRemoved',
         sts.struct({
-            sub: v932.AccountId32,
-            main: v932.AccountId32,
+            sub: v108.AccountId32,
+            main: v108.AccountId32,
             deposit: sts.bigint(),
         })
     ),
@@ -134,11 +134,11 @@ export const subIdentityRevoked =  {
      * A sub-identity was cleared, and the given deposit repatriated from the
      * main identity account to the sub-identity account.
      */
-    v932: new EventType(
+    v108: new EventType(
         'Identity.SubIdentityRevoked',
         sts.struct({
-            sub: v932.AccountId32,
-            main: v932.AccountId32,
+            sub: v108.AccountId32,
+            main: v108.AccountId32,
             deposit: sts.bigint(),
         })
     ),
@@ -149,10 +149,10 @@ export const authorityAdded =  {
     /**
      * A username authority was added.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'Identity.AuthorityAdded',
         sts.struct({
-            authority: v10000.AccountId32,
+            authority: v244.AccountId32,
         })
     ),
 }
@@ -162,10 +162,10 @@ export const authorityRemoved =  {
     /**
      * A username authority was removed.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'Identity.AuthorityRemoved',
         sts.struct({
-            authority: v10000.AccountId32,
+            authority: v244.AccountId32,
         })
     ),
 }
@@ -175,11 +175,11 @@ export const usernameSet =  {
     /**
      * A username was set for `who`.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'Identity.UsernameSet',
         sts.struct({
-            who: v10000.AccountId32,
-            username: sts.bytes(),
+            who: v244.AccountId32,
+            username: v244.BoundedVec,
         })
     ),
 }
@@ -189,11 +189,11 @@ export const usernameQueued =  {
     /**
      * A username was queued, but `who` must accept it prior to `expiration`.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'Identity.UsernameQueued',
         sts.struct({
-            who: v10000.AccountId32,
-            username: sts.bytes(),
+            who: v244.AccountId32,
+            username: v244.BoundedVec,
             expiration: sts.number(),
         })
     ),
@@ -204,10 +204,10 @@ export const preapprovalExpired =  {
     /**
      * A queued username passed its expiration without being claimed and was removed.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'Identity.PreapprovalExpired',
         sts.struct({
-            whose: v10000.AccountId32,
+            whose: v244.AccountId32,
         })
     ),
 }
@@ -217,11 +217,11 @@ export const primaryUsernameSet =  {
     /**
      * A username was set as a primary and can be looked up from `who`.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'Identity.PrimaryUsernameSet',
         sts.struct({
-            who: v10000.AccountId32,
-            username: sts.bytes(),
+            who: v244.AccountId32,
+            username: v244.BoundedVec,
         })
     ),
 }
@@ -232,11 +232,11 @@ export const danglingUsernameRemoved =  {
      * A dangling username (as in, a username corresponding to an account that has removed its
      * identity) has been removed.
      */
-    v10000: new EventType(
+    v244: new EventType(
         'Identity.DanglingUsernameRemoved',
         sts.struct({
-            who: v10000.AccountId32,
-            username: sts.bytes(),
+            who: v244.AccountId32,
+            username: v244.BoundedVec,
         })
     ),
 }
