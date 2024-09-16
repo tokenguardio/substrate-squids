@@ -2,7 +2,7 @@ name: Test build on PR and deploy to ECR on merge/push
 
 on:
   push:
-    branches: ["wasabi"]
+    branches: ["wasabi-substrate-bifrost"]
   pull_request:
     branches: ["wasabi"]
   workflow_dispatch:
