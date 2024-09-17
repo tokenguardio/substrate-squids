@@ -8,7 +8,7 @@ module.exports = class Data {
 
   async up(db) {
     await db.query(
-      `CREATE TABLE "dapp_analytics_${dappId}" ("id" character varying NOT NULL, "transaction_hash" text NOT NULL, "block_number" integer NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "dapp_id" text NOT NULL, "caller" text, "contract" text NOT NULL, "success" boolean, "type" character varying(5) NOT NULL, "name" text NOT NULL, "value" numeric, "decoded_args" jsonb, CONSTRAINT "PK_${dappId}" PRIMARY KEY ("id"))`
+      `CREATE TABLE "dapp_analytics_${dappId}" ("id" character varying NOT NULL, "transaction_hash" text, "block_number" integer NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "dapp_id" text NOT NULL, "caller" text, "contract" text NOT NULL, "success" boolean, "type" character varying(5) NOT NULL, "name" text NOT NULL, "value" numeric, "decoded_args" jsonb, CONSTRAINT "PK_${dappId}" PRIMARY KEY ("id"))`
     );
   }
 

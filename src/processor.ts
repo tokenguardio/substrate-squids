@@ -9,26 +9,50 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import {
-  balances,
-  farming,
-  lendMarket,
-  leverageStaking,
-  vtokenMinting,
-  vtokenVoting,
-  zenlinkProtocol,
+  balances as balancesEvent,
+  farming as farmingEvent,
+  lendMarket as lendMarketEvent,
+  leverageStaking as leverageStakingEvent,
+  vtokenMinting as vtokenMintingEvent,
+  vtokenVoting as vtokenVotingEvent,
+  zenlinkProtocol as zenlinkProtocolEvent,
 } from "./types/events";
-import { extractNamesFromObjects } from "./utils/misc";
+import {
+  balances as balancesCall,
+  farming as farmingCall,
+  lendMarket as lendMarketCall,
+  leverageStaking as leverageStakingCall,
+  vtokenMinting as vtokenMintingCall,
+  vtokenVoting as vtokenVotingCall,
+  zenlinkProtocol as zenlinkProtocolCall,
+  stablePool as stablePoolCall,
+} from "./types/calls";
+import {
+  getEnvBoolean,
+  getEnvNumber,
+  extractNamesFromObjects,
+} from "./utils/misc";
 
 const eventNames = extractNamesFromObjects([
-  balances,
-  farming,
-  lendMarket,
-  leverageStaking,
-  vtokenMinting,
-  vtokenVoting,
-  zenlinkProtocol,
+  balancesEvent,
+  farmingEvent,
+  lendMarketEvent,
+  leverageStakingEvent,
+  vtokenMintingEvent,
+  vtokenVotingEvent,
+  zenlinkProtocolEvent,
 ]);
-import { getEnvBoolean, getEnvNumber } from "./utils/misc";
+
+const callNames = extractNamesFromObjects([
+  balancesCall,
+  farmingCall,
+  lendMarketCall,
+  leverageStakingCall,
+  vtokenMintingCall,
+  vtokenVotingCall,
+  zenlinkProtocolCall,
+  stablePoolCall,
+]);
 
 export const processor = new SubstrateBatchProcessor()
   .setGateway("https://v2.archive.subsquid.io/network/bifrost-polkadot")
@@ -41,20 +65,14 @@ export const processor = new SubstrateBatchProcessor()
   .setRpcDataIngestionSettings({
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
   })
-  .includeAllBlocks()
-  .addEvent({ name: eventNames, extrinsic: true })
-  // Ask for all calls to identify parent call name in substrate transaction
-  .addCall({ extrinsic: true })
+  .addEvent({ name: eventNames, extrinsic: true, call: true })
+  .addCall({ name: callNames, extrinsic: true })
   .setFields({
     block: {
       timestamp: true,
     },
     extrinsic: {
-      success: true,
-      signature: true,
       hash: true,
-      fee: true,
-      tip: true,
     },
     call: {
       origin: true,
