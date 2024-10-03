@@ -4,15 +4,18 @@ import { Interface as EvmAbi } from "ethers";
 import { processor } from "./processor";
 import { DappActivity, Dapps } from "./model";
 import {
-  createDappActivityCall,
+  createDappActivityCallFromTrace,
+  createDappActivityCallFromTx,
   createDappActivityEvent,
 } from "./utils/factories";
+import { getEnvBoolean } from "./utils/misc";
 
 // Avoid type errors when serializing BigInts
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
 
+const tracesEnabled = getEnvBoolean(process.env.TRACES, false);
 const dappId = assertNotNull(process.env.DAPP_ID);
 const stateSchema = `${dappId}_state`;
 
@@ -47,48 +50,70 @@ processor.run(
         if (abiMap.has(log.address)) {
           try {
             const contractAbi = abiMap.get(log.address)!;
-            let contractEvent = contractAbi.parseLog({
+            let parsedEvent = contractAbi.parseLog({
               data: log.data,
               topics: log.topics,
             });
-            if (contractEvent) {
-              const dappActivityEvent = createDappActivityEvent(
-                block.header,
-                log,
-                contractEvent,
-                dappId
-              );
-              dappActivities.push(dappActivityEvent);
-            }
+            const dappActivityEvent = createDappActivityEvent(
+              block.header,
+              log,
+              parsedEvent,
+              dappId
+            );
+            dappActivities.push(dappActivityEvent);
           } catch (err) {
             console.error(err);
           }
         }
       }
-      for (const txn of block.transactions) {
-        if (txn.to !== undefined && abiMap.has(txn.to)) {
-          try {
-            const contractAbi = abiMap.get(txn.to)!;
-            let contractTx = contractAbi.parseTransaction({
-              data: txn.input,
-              value: txn.value,
-            });
-            if (contractTx) {
-              const dappActivityCall = createDappActivityCall(
+      if (tracesEnabled) {
+        for (const trc of block.traces) {
+          if (trc.type === "call") {
+            if (trc.action.to !== undefined && abiMap.has(trc.action.to)) {
+              try {
+                const contractAbi = abiMap.get(trc.action.to)!;
+                let parsedTx = contractAbi.parseTransaction({
+                  data: trc.action.input,
+                  value: trc.action.value,
+                });
+
+                const dappActivityCall = createDappActivityCallFromTrace(
+                  block.header,
+                  trc,
+                  parsedTx,
+                  dappId
+                );
+                dappActivities.push(dappActivityCall);
+              } catch (err) {
+                console.error(err);
+              }
+            }
+          }
+        }
+      } else {
+        for (const txn of block.transactions) {
+          if (txn.to !== undefined && abiMap.has(txn.to)) {
+            try {
+              const contractAbi = abiMap.get(txn.to)!;
+              let parsedTx = contractAbi.parseTransaction({
+                data: txn.input,
+                value: txn.value,
+              });
+
+              const dappActivityCall = createDappActivityCallFromTx(
                 block.header,
                 txn,
-                contractTx,
+                parsedTx,
                 dappId
               );
               dappActivities.push(dappActivityCall);
+            } catch (err) {
+              console.error(err);
             }
-          } catch (err) {
-            console.error(err);
           }
         }
       }
     }
-
     await ctx.store.save(dappActivities);
   }
 );

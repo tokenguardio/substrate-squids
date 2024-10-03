@@ -42,7 +42,10 @@ export function convertBigIntToStrings(
   return obj;
 }
 
-export function formatArgs(args: ethers.Result): Record<string, any> {
-  const argsObj = args.toObject();
-  return convertBigIntToStrings(argsObj);
+export function processArgs(args: ethers.Result): Record<string, any> | any[] {
+  try {
+    return args.toObject(true);
+  } catch (err) {
+    return args.toArray(true);
+  }
 }

@@ -23,7 +23,6 @@ export const processor = new EvmBatchProcessor()
     disabled: getEnvBoolean(process.env.RPC_INGESTION_DISABLED, true),
   })
   .addLog({ address: dappAddresses, transaction: true })
-  .addTransaction({ to: dappAddresses })
   .setFields({
     block: {
       timestamp: true,
@@ -36,6 +35,12 @@ export const processor = new EvmBatchProcessor()
     log: {
       transactionHash: true,
     },
+    trace: {
+      callFrom: true,
+      callTo: true,
+      callValue: true,
+      callInput: true,
+    },
   })
   .setBlockRange({
     from: process.env.BLOCK_RANGE_FROM
@@ -45,6 +50,17 @@ export const processor = new EvmBatchProcessor()
       ? Number(process.env.BLOCK_RANGE_TO)
       : undefined,
   });
+
+if (getEnvBoolean(process.env.TRACES, false)) {
+  processor.addTrace({
+    callTo: dappAddresses,
+    type: ["call"],
+    transaction: true,
+    parents: true,
+  });
+} else {
+  processor.addTransaction({ to: dappAddresses });
+}
 
 export type Fields = EvmBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
