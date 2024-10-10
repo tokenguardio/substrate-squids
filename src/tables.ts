@@ -83,6 +83,9 @@ export const FtTransfer = new Table(
     transaction: Column(Types.String(), {
       nullable: true,
     }),
+    transactionHash: Column(Types.String(), {
+      nullable: true,
+    }),
     blockHash: Column(Types.String()),
     timestamp: Column(Types.Timestamp()),
     eventIndex: Column(Types.Uint32(), {
