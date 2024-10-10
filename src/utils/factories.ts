@@ -96,6 +96,7 @@ export function createFtTransfer(
   return {
     id: log.id,
     transaction: log.transaction?.id,
+    transactionHash: log.transaction?.hash,
     blockHash: block.hash,
     timestamp: new Date(block.timestamp),
     eventIndex: log.logIndex,

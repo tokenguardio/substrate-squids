@@ -59,6 +59,7 @@ export interface FToken {
 export interface FtTransfer {
   id: string;
   transaction?: string;
+  transactionHash?: string;
   blockHash: string;
   timestamp: Date;
   eventIndex: number;
