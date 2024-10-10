@@ -15,10 +15,7 @@ export class DappActivity {
     id!: string
 
     @Column_("text", {nullable: false})
-    callId!: string
-
-    @Column_("text", {nullable: false})
-    extrinsicHash!: string
+    transactionHash!: string
 
     @Column_("int4", {nullable: false})
     blockNumber!: number

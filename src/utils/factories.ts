@@ -10,8 +10,7 @@ export function createDappActivityEvent(
 ): DappActivity {
   return new DappActivity({
     id: `e-${event.id}`,
-    callId: event.call?.id,
-    extrinsicHash: event.extrinsic?.hash,
+    transactionHash: event.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappId: dappId,
@@ -33,8 +32,7 @@ export function createDappActivityCall(
 ): DappActivity {
   return new DappActivity({
     id: `c-${call.id}`,
-    callId: call.id,
-    extrinsicHash: call.extrinsic?.hash,
+    transactionHash: call.extrinsic?.hash,
     blockNumber: block.height,
     timestamp: block.timestamp ? new Date(block.timestamp) : undefined,
     dappId: dappId,
