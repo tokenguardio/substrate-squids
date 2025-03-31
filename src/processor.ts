@@ -61,8 +61,8 @@ export const processor = new EvmBatchProcessor()
       callResultOutput: true,
       // 'suicide' type related fields
       suicideAddress: true,
-      suicideRefundAddress: true,
-      suicideBalance: true,
+      suicideRefundAddress: false,
+      suicideBalance: false,
       // 'reward' type related fields
       rewardAuthor: true,
       rewardValue: true,

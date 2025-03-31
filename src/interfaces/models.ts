@@ -105,8 +105,8 @@ export interface TraceCall extends CommonTraceFields {
 
 export interface TraceSuicide extends CommonTraceFields {
   address: string;
-  refundAddress: string;
-  balance?: string;
+  // refundAddress: string;
+  // balance?: string;
 }
 
 export interface TraceReward extends CommonTraceFields {

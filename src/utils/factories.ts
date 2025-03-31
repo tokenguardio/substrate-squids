@@ -98,8 +98,8 @@ export function createTraceSuicide(
     return {
       ...commonFields,
       address: ethers.getAddress(trc.action.address),
-      refundAddress: ethers.getAddress(trc.action.refundAddress),
-      balance: trc.action.balance.toString(),
+      // refundAddress: ethers.getAddress(trc.action.refundAddress),
+      // balance: trc.action.balance.toString(),
     };
   } else {
     throw new Error(
